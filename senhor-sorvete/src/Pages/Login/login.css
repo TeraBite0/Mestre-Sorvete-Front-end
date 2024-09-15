@@ -12,6 +12,50 @@ body::before {
     z-index: -1; /* Garante que o pseudo-elemento fique atrás do conteúdo */
 }
 
+.bem-vindo {
+    position: relative;
+    background: url('/public/Imagens/banner.png') no-repeat;
+    background-size: cover;
+    width: 60%;
+    display: flex;
+    align-items: flex-end;
+    justify-content: flex-end;
+    color: #fff;
+    padding: 20px;
+    border-top-left-radius: 15px;
+    border-bottom-left-radius: 15px;
+    z-index: 1;
+}
+
+.bem-vindo::before {
+    content: '';
+    position: absolute;
+    border-radius: 30px;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(to bottom, rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7));
+    z-index: -1; /* Coloca o gradiente atrás do texto */
+    filter: blur(25px); /* Aplica o desfoque ao gradiente */
+}
+
+.bem-vindo p {
+    margin: 0px;
+    position: absolute; 
+    bottom: 25px; 
+    left: 25px; 
+    display: flex;
+    width: 55%;
+    text-align-last: left;
+    font-size: 22px;
+    color: #fff;
+    font-family: "Poppins", sans-serif;
+    font-weight: 700;
+    text-shadow: 4px 4px 5px #000000;
+   
+}
+
 .login {
    margin-top: 40px;
    display: flex;
@@ -59,48 +103,7 @@ body::before {
     flex-direction: column;
 }
 
-.bem-vindo {
-    position: relative;
-    background: url('/public/Imagens/banner.png') no-repeat;
-    background-size: cover;
-    width: 60%;
-    display: flex;
-    align-items: flex-end;
-    justify-content: flex-end;
-    color: #fff;
-    padding: 20px;
-    border-top-left-radius: 15px;
-    border-bottom-left-radius: 15px;
-    z-index: 1;
-}
 
-.bem-vindo::before {
-    content: '';
-    position: absolute;
-    border-radius: 30px;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: linear-gradient(to bottom, rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.3));
-    z-index: -1; /* Coloca o gradiente atrás do texto */
-    filter: blur(20px); /* Aplica o desfoque ao gradiente */
-}
-
-.bem-vindo p {
-    margin: 0px;
-    position: absolute; 
-    bottom: 25px; 
-    left: 25px; 
-    display: flex;
-    width: 55%;
-    text-align-last: left;
-    font-size: 22px;
-    font-family: "Poppins", sans-serif;
-    font-weight: 700;
-    text-shadow: 3px 3px 5px #000000;
-   
-}
 
 .login a {
     display: flex;
