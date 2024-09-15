@@ -39,6 +39,9 @@ const Login = () => {
 
     return(
         <div className='login' aria-label='Contéudo para o cliente acessar o site'>
+            <div className='bem-vindo'>
+                <p>Bem-vindo ao sistema de gestão! Para acessar suas funcionalidades de gerenciamento, por favor, insira suas credenciais ao lado.</p>
+            </div>
             <div className='login-banner'>
             <form onSubmit={aoSalvar}>
                 <h1>Login</h1>
@@ -70,11 +73,6 @@ const Login = () => {
 
             </div>
 
-            <div className='bem-vindo'>
-                
-                <p>Bem-vindo ao sistema de gestão! Para acessar suas funcionalidades de gerenciamento, por favor, insira suas credenciais ao lado.</p>
-
-            </div>
 
         </div>
     );

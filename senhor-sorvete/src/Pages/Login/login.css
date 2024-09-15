@@ -8,7 +8,7 @@ body::before {
     background: url('/public/Imagens/banner.png') no-repeat center center fixed;
     background-size: cover;
     filter: brightness(0.20);
-    opacity: 0.8; /* Ajuste a opacidade conforme necessário */
+    opacity: 0.9; /* Ajuste a opacidade conforme necessário */
     z-index: -1; /* Garante que o pseudo-elemento fique atrás do conteúdo */
 }
 
@@ -26,10 +26,8 @@ body::before {
     display: flex;
     flex-direction: column;
     justify-content: center;
-    border-top-left-radius: 15px;
-    border-top-right-radius: 0px;
-    border-bottom-left-radius: 15px;
-    border-bottom-right-radius: 0px;
+    border-top-right-radius: 15px;
+    border-bottom-right-radius: 15px;
 
 }
 
@@ -40,6 +38,7 @@ body::before {
     font-size: 36px;
     font-weight: 700;
     font-family: "Poppins", sans-serif;
+    text-shadow: 2px 2px 4px #000000;
 }
 
 .login span {
@@ -47,8 +46,10 @@ body::before {
     color: #fff;
     font-size: 16px;
     font-family: "Poppins", sans-serif;
+    font-weight: 400;
     justify-content: center;
     margin-bottom: 8px;
+    text-shadow: 3px 3px 5px #000000;
 }
 
 .campo-texto-container {
@@ -62,16 +63,14 @@ body::before {
     position: relative;
     background: url('/public/Imagens/banner.png') no-repeat;
     background-size: cover;
-    width: 65%;
+    width: 60%;
     display: flex;
     align-items: flex-end;
     justify-content: flex-end;
     color: #fff;
     padding: 20px;
-    border-top-left-radius: 0px;
-    border-top-right-radius: 15px;
-    border-bottom-left-radius: 0px;
-    border-bottom-right-radius: 15px;
+    border-top-left-radius: 15px;
+    border-bottom-left-radius: 15px;
     z-index: 1;
 }
 
@@ -89,17 +88,17 @@ body::before {
 }
 
 .bem-vindo p {
-    position: absolute;
+    margin: 0px;
+    position: absolute; 
+    bottom: 25px; 
+    left: 25px; 
     display: flex;
     width: 55%;
-    justify-content: end;
-    align-items: end;
-    padding: 20px;
+    text-align-last: left;
     font-size: 22px;
-    text-align: right;
     font-family: "Poppins", sans-serif;
     font-weight: 700;
-    margin: 0px;
+    text-shadow: 3px 3px 5px #000000;
    
 }
 
