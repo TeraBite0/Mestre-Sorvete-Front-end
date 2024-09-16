@@ -17,7 +17,6 @@ body {
     justify-content: space-around;
     align-items: center;
     padding-right: calc(100vw - 100%);
-    
 }
 
 .containerListItem ul {
@@ -28,7 +27,6 @@ body {
 .containerListItem li {
     font-family: "Poppins";
     margin: 0px 2vw;
-
 }
 
 .containerImgLogo img {
