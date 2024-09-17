@@ -1,6 +1,10 @@
-body {
-    background-color: #E9DEB0;
-    margin: 0;
+.login {
+    margin: 35px 35px;
+    display: flex;
+    height: 90vh;
+    border-radius: 30px;
+    box-shadow: 0px 0px 10px 2px rgba(0, 0, 0, 0.5);
+
 }
 
 .bem-vindo {
@@ -26,36 +30,27 @@ body {
     right: 0;
     bottom: 0;
     background: linear-gradient(to bottom, rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7));
-    z-index: -1; /* Coloca o gradiente atrás do texto */
-    filter: blur(25px); /* Aplica o desfoque ao gradiente */
+    z-index: -1;
+    filter: blur(10px);
     border-top-left-radius: 15px;
     border-bottom-left-radius: 15px;
 }
 
 .bem-vindo p {
-    margin: 0px;
+    margin: 0;
     position: absolute; 
     bottom: 25px; 
     left: 25px; 
     display: flex;
-    width: 55%;
-    text-align-last: left;
+    width: 60%;
+    text-align: left;
     font-size: 22px;
     color: #fff;
     font-family: "Poppins", sans-serif;
     font-weight: 700;
-    text-shadow: 4px 4px 5px #000000;
-   
+    text-shadow: 2px 2px 4px #000;
 }
 
-.login {
-   margin-top: 40px;
-   display: flex;
-   height: 90vh;
-   border-top-right-radius: 15px;
-   border-bottom-right-radius: 15px;
-   box-shadow: 0px 0px 10px 4px #00000083;
-}
 
 .login-banner {
     width: 50%;
@@ -64,9 +59,9 @@ body {
     display: flex;
     flex-direction: column;
     justify-content: center;
+    align-items: center;
     border-top-right-radius: 15px;
     border-bottom-right-radius: 15px;
-
 }
 
 .login h1 {
@@ -76,7 +71,7 @@ body {
     font-size: 36px;
     font-weight: 700;
     font-family: "Poppins", sans-serif;
-    text-shadow: 2px 2px 4px #000000;
+    text-shadow: 1px 1px 3px #000;
 }
 
 .login span {
@@ -87,17 +82,8 @@ body {
     font-weight: 400;
     justify-content: center;
     margin-bottom: 8px;
-    text-shadow: 3px 3px 5px #000000;
+    text-shadow: 1px 1px 3px #000;
 }
-
-.campo-texto-container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    flex-direction: column;
-}
-
-
 
 .login a {
     display: flex;
@@ -106,4 +92,5 @@ body {
     font-weight: 400;
     font-size: 12px;
     justify-content: center;
+    text-decoration: underline;
 }
