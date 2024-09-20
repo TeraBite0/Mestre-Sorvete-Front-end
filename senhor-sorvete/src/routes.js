@@ -1,6 +1,6 @@
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import Login from "./Pages/Login";
-import Cardapio from "./Pages/Cardapio";
+import Cardapio from "./Pages/Cardapio/cardapio";
 
 
 
