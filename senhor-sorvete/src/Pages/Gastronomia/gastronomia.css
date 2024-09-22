@@ -1,15 +1,19 @@
+html, body {
+    overflow-x: hidden;
+   }
+
+
 h4{
-    margin-top: 8%;
+    margin-top: 5%;
     font-family: "Poppins", system-ui;
     font-weight: 700;
     font-style: normal;
     font-size: 32px;
-    margin-left: 5%;
+    margin-left: 6%;
 }
 
 .artigos {
     display: flex;
-    justify-content: space-around;
+    justify-content: space-between;
     flex-direction: row;
-
 }
