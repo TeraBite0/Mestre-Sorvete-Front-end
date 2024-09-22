@@ -1,0 +1,33 @@
+.sobre-sorvete {
+    margin-top: 50px;
+    display: flex;
+    justify-content: space-evenly;
+    align-items: center;
+}
+
+.texto-sobre {
+    margin: 0;
+    display: block;
+    width: 40%; 
+}
+
+.texto-sobre h1 {
+    font-size: 70px;
+    font-family: "Poppins", system-ui;
+    font-weight: 900;
+    font-style: normal;
+}
+
+.texto-sobre p {
+    font-size: 20px;
+    font-family: "Poppins", system-ui;
+    font-weight: 400;
+    font-style: normal;
+    text-align: justify;
+    border-left: 18px solid #242220;
+    padding-left: 18px;
+}
+
+.sorvete-video {
+    margin-top: 20px;
+}

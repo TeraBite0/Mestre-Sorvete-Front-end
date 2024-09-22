@@ -1,0 +1,15 @@
+h4{
+    margin-top: 8%;
+    font-family: "Poppins", system-ui;
+    font-weight: 700;
+    font-style: normal;
+    font-size: 32px;
+    margin-left: 5%;
+}
+
+.artigos {
+    display: flex;
+    justify-content: space-around;
+    flex-direction: row;
+
+}
