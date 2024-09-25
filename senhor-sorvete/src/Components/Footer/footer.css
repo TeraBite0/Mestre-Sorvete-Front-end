@@ -43,8 +43,9 @@
     margin-right: 25px;
     margin-top: 20px;
     cursor: pointer;
+    transition: all 0.3s;
 }
 
 .itens li:hover{
-    font-size: 1.2em;
+    transform: scale(1.3);
 }

@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import './cardapio.css';
 import Filtros from '../../Components/Filtros/Filtro.tsx';
 import Header from '../../Components/Header/index.jsx'
@@ -31,16 +31,10 @@ const flavors = [
 
 const Cardapio = () => {
     const [termo, setTermo] = useState('');
-    const [cartItems, setCartItems] = useState([
-        { id: 1, name: 'Trufado', price: 15.00, quantity: 1 },
-        { id: 2, name: 'Lorem', price: 15.00, quantity: 1 },
-        { id: 3, name: 'Lorem', price: 15.00, quantity: 1 },
-    ]);
+    const [cartItems, setCartItems] = useState([]);
     const [isSticky, setIsSticky] = useState(false);
-    const [isFooterVisible, setIsFooterVisible] = useState(false);
-    const footerRef = useRef(null);
-    const sidebarRef = useRef(null);
-    const cartRef = useRef(null);
+    const [priceRange, setPriceRange] = useState(15);
+    const [selectedCategories, setSelectedCategories] = useState([]);
 
     useEffect(() => {
         const handleScroll = () => {
@@ -52,50 +46,26 @@ const Cardapio = () => {
             }
         };
 
-        const observer = new IntersectionObserver(
-            ([entry]) => {
-                setIsFooterVisible(entry.isIntersecting);
-            },
-            { threshold: 0 }
-        );
-
-        if (footerRef.current) {
-            observer.observe(footerRef.current);
-        }
-
         window.addEventListener('scroll', handleScroll);
 
         return () => {
             window.removeEventListener('scroll', handleScroll);
-            if (footerRef.current) {
-                observer.unobserve(footerRef.current);
-            }
         };
     }, []);
 
-    useEffect(() => {
-        if (isFooterVisible && sidebarRef.current && cartRef.current) {
-            const footerTop = footerRef.current.getBoundingClientRect().top;
-            const sidebarBottom = sidebarRef.current.getBoundingClientRect().bottom;
-            const cartBottom = cartRef.current.getBoundingClientRect().bottom;
-
-            if (sidebarBottom > footerTop) {
-                sidebarRef.current.style.top = `${footerTop - sidebarBottom + window.pageYOffset}px`;
-            }
-
-            if (cartBottom > footerTop) {
-                cartRef.current.style.top = `${footerTop - cartBottom + window.pageYOffset}px`;
-            }
+    const addToCart = (flavor) => {
+        if (!cartItems.some(item => item.name === flavor)) {
+            setCartItems([...cartItems, { name: flavor, price: 15.00 }]);
         }
-    }, [isFooterVisible]);
-
-    const updateQuantity = (id, newQuantity) => {
-        setCartItems(cartItems.map(item => 
-            item.id === id ? { ...item, quantity: Math.max(0, newQuantity) } : item
-        ));
     };
 
-    const totalPrice = cartItems.reduce((sum, item) => sum + item.price * item.quantity, 0);
+    const removeFromCart = (flavor) => {
+        setCartItems(cartItems.filter(item => item.name !== flavor));
+    };
+
+    const filteredFlavors = flavors.filter(flavor => 
+        flavor.toLowerCase().includes(termo.toLowerCase()) && 15 <= priceRange
+    );
 
     return (
         <div className="containerCardapio">
@@ -126,48 +96,56 @@ const Cardapio = () => {
 
             <div className="mainContentWrapper">
                 <div className="mainContent">
-                    <aside ref={sidebarRef} className={`sidebar ${isSticky ? 'sticky' : ''}`}>
-                        <Filtros />
-                    </aside>
+                    <div className={`sidebarWrapper ${isSticky ? 'sticky' : ''}`}>
+                        <aside className="sidebar">
+                            <Filtros 
+                                priceRange={priceRange} 
+                                setPriceRange={setPriceRange}
+                                selectedCategories={selectedCategories}
+                                setSelectedCategories={setSelectedCategories}
+                            />
+                        </aside>
+                        <aside className="notifications">
+                            <h2>Notificações</h2>
+                            <ul>
+                                {cartItems.map((item, index) => (
+                                    <li key={index}>
+                                        <img src="/placeholder.svg?height=50&width=50" alt={item.name} />
+                                        <div className="cartItemDetails">
+                                            <h4>{item.name}</h4>
+                                            <p>R$ {item.price.toFixed(2)}</p>
+                                        </div>
+                                        <button onClick={() => removeFromCart(item.name)}>Remover</button>
+                                    </li>
+                                ))}
+                            </ul>
+                            <div className="cartTotal">
+                                <p>Total de Notificações</p>
+                                <p>{cartItems.length}</p>
+                            </div>
+                            <button className="checkoutButton">Seja Notificado</button>
+                        </aside>
+                    </div>
 
                     <main className="products">
-                        {flavors.map((flavor, index) => (
+                        {filteredFlavors.map((flavor, index) => (
                             <div key={index} className="product">
                                 <img src="Imagens/images (4).jpeg" alt={`${flavor} Ice Cream`} />
                                 <h3>{flavor.toUpperCase()}</h3>
                                 <p>R$ 15,00</p>
-                                <button className="addToCart">Add to cart</button>
+                                <button 
+                                    className="notifyMe"
+                                    onClick={() => addToCart(flavor)}
+                                    disabled={cartItems.some(item => item.name === flavor)}
+                                >
+                                    {cartItems.some(item => item.name === flavor) ? 'Notificado' : 'Notifique-me'}
+                                </button>
                             </div>
                         ))}
                     </main>
-
-                    <aside ref={cartRef} className={`cart ${isSticky ? 'sticky' : ''}`}>
-                        <h2>Cart</h2>
-                        <ul>
-                            {cartItems.map(item => (
-                                <li key={item.id}>
-                                    <img src="/placeholder.svg?height=50&width=50" alt={item.name} />
-                                    <div className="cartItemDetails">
-                                        <h4>{item.name}</h4>
-                                        <p>R$ {item.price.toFixed(2)}</p>
-                                    </div>
-                                    <div className="quantity">
-                                        <button onClick={() => updateQuantity(item.id, item.quantity - 1)}>-</button>
-                                        <span>{item.quantity}</span>
-                                        <button onClick={() => updateQuantity(item.id, item.quantity + 1)}>+</button>
-                                    </div>
-                                </li>
-                            ))}
-                        </ul>
-                        <div className="cartTotal">
-                            <p>Sub Total</p>
-                            <p>R$ {totalPrice.toFixed(2)}</p>
-                        </div>
-                        <button className="checkoutButton">TOTAL R$ {totalPrice.toFixed(2)}</button>
-                    </aside>
                 </div>
             </div>
-            <Footer ref={footerRef} />
+            <Footer />
         </div>
     );
 };
