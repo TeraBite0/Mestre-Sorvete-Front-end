@@ -9,7 +9,7 @@
 
 .bem-vindo {
     position: relative;
-    background: url('/public/Imagens/banner.png') no-repeat;
+    background: url('/public/Imagens/sorvete-de-pote-background.png') no-repeat;
     background-size: cover;
     width: 50%;
     display: flex;

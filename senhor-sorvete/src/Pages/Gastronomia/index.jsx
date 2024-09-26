@@ -23,14 +23,14 @@ const Gastronomia = (props) => {
 
             <div className='artigos'>
                 <Artigo
-                    imagem="/Imagens/images (4).jpeg"
+                    imagem="/Imagens/casquinhas-de-chocolate.jpeg"
                     placeholder="Imagem com dois sorvetes de casquinhas de chocolate"
                     titulo="MELHORES SABORES"
                     texto= "Sorvetes como baunilha, chocolate e morango, sofisticados como pistache e tiramisu, frutados como manga e limão siciliano, e exóticos como matcha e yuzu"
             />
                 <Artigo
-                    imagem="/Imagens/download (2).jpeg"
-                    placeholder="Imagem com dois sorvetes de casquinhas de chocolate"
+                    imagem="/Imagens/sorvete-e-rosto.jpeg"
+                    placeholder="Imagem sobre a história do sorvete"
                     titulo="PRIMEIRO SORVETE CRIADO"
                     texto="O primeiro sabor de sorvete criado foi uma mistura simples de neve ou gelo com frutas e mel, desenvolvida pelos chineses há cerca de 3.000 anos."
                 />

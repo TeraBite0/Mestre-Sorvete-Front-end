@@ -110,7 +110,8 @@ const Cardapio = () => {
                             <ul>
                                 {cartItems.map((item, index) => (
                                     <li key={index}>
-                                        <img src="Imagens/image-removebg-preview (5).png?height=50&width=50" alt={item.name} />
+                                        <img src="Imagens/sorvete-de-pote-chocolate.png" alt={item.name} />
+                                        {/* <img src="Imagens/sorvete-de-pote-chocolate.png?height=50&width=50" alt={item.name} /> */}
                                         <div className="cartItemDetails">
                                             <h4>{item.name}</h4>
                                             <p>R$ {item.price.toFixed(2)}</p>
@@ -130,7 +131,7 @@ const Cardapio = () => {
                     <main className="products">
                         {filteredFlavors.map((flavor, index) => (
                             <div key={index} className="product">
-                                <img src="Imagens/images (4).jpeg" alt={`${flavor} Ice Cream`} />
+                                <img src="Imagens/casquinhas-de-chocolate.jpeg" alt={`${flavor} Ice Cream`} />
                                 <h3>{flavor.toUpperCase()}</h3>
                                 <p>R$ 15,00</p>
                                 <button 

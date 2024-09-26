@@ -11,7 +11,7 @@ const Header = () => {
     return (
         <div className="containerHeader">
             <div className="containerImgLogo">
-                <img src="/Imagens/logo_semFundo.png" alt="" />
+                <img src="/Imagens/logo-sorvete.png" alt="logo sorvete" />
             </div>
             <div className="containerListItem">
                 <ul>

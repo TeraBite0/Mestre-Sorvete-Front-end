@@ -5,7 +5,7 @@ const Footer = () => {
     return (
         <div className='footer' aria-label='Rodapé do site Senhor Sorvete que contém a logo da empresa que criou o site, um texto descrevendo como foi feito o site e um menu de opções.'>
             <div className='logo'>
-                <img src='/Imagens/logo.png' alt='Logo da empresa TeraBite, responsável pela criação e desencolvimento do site.' />
+                <img src='/Imagens/logo-terabite.png' alt='Logo da empresa TeraBite, responsável pela criação e desencolvimento do site.' />
             </div>
 
             <div className='sobre-projeto'>
@@ -25,7 +25,7 @@ const Footer = () => {
                 <div className='itens-coluna2'>
                     <ul>
                         <li>Sobre</li>
-                        <li>Gastrônomia</li>
+                        <li>Gastronomia</li>
                     </ul>
                 </div>
             </div>
