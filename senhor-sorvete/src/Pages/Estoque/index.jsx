@@ -1,5 +1,6 @@
 import './estoque.css';
 
+
 const Estoque = () => {
 
 }

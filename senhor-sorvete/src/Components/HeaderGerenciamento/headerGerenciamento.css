@@ -1,0 +1,21 @@
+.header-home {
+    font-size: 22px;
+    background-color: #2F615E;
+    padding: 20px;
+    width: 100%;
+    display: flex;
+    align-items: center;
+  }
+
+
+  .containerImgLogoAmarelo img {
+    width: 35px;
+}
+
+  .titulo {
+    color: #E9DEB0;
+    font-size: 20px;
+    font-weight: 300;
+    width: 100%;
+    
+  }
