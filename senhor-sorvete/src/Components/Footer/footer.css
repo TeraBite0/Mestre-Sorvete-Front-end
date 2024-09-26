@@ -4,6 +4,7 @@
     background-color: #FFDB94;
     justify-content: space-around;
     height: 160px;
+    z-index: 5;
 }
 
 .sobre-projeto {
