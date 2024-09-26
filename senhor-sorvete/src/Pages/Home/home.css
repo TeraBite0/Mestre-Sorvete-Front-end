@@ -17,17 +17,17 @@ body {
   max-width: 50%;
 }
 
-h4 {
+.home h4 {
   font-weight: 100;
 }
 
-h1 {
+.home h1 {
   color: #772321;
   font-size: 3rem;
   margin-bottom: 20px;
 }
 
-p {
+.home p {
   font-size: 1.2rem;
   margin-bottom: 40px;
   color: #333;
@@ -38,7 +38,7 @@ p {
   gap: 20px;
 }
 
-button {
+.home button {
   padding: 10px 20px;
   border-radius: 5px;
   cursor: pointer;
