@@ -1,4 +1,3 @@
-import Footer from './Components/Footer';
 import AppRoutes from './routes';
 
 
