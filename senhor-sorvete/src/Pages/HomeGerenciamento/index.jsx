@@ -5,7 +5,9 @@ const HomeGerenciamento = () => {
 
     return (
         <div>
-           <HeaderGerencimento/>
+            <HeaderGerencimento />
+            <h1 className='ferramentas'>Ferramentas</h1>
+
         </div>
     );
 
