@@ -110,7 +110,7 @@ const Cardapio = () => {
                             <ul>
                                 {cartItems.map((item, index) => (
                                     <li key={index}>
-                                        <img src="/placeholder.svg?height=50&width=50" alt={item.name} />
+                                        <img src="Imagens/image-removebg-preview (5).png?height=50&width=50" alt={item.name} />
                                         <div className="cartItemDetails">
                                             <h4>{item.name}</h4>
                                             <p>R$ {item.price.toFixed(2)}</p>
