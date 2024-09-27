@@ -3,13 +3,15 @@
     background-color: #2F615E;
     padding: 20px;
     width: 100%;
+    height: 5vh;
     display: flex;
     align-items: center;
+    margin-bottom: 5%;
   }
 
 
   .containerImgLogoAmarelo img {
-    width: 35px;
+    width: 30px;
 }
 
   .titulo {

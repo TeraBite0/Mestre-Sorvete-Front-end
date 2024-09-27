@@ -4,6 +4,7 @@ import Login from "./Pages/Login";
 import Cardapio from "./Pages/Cardapio/cardapio";
 import Gastronomia from "./Pages/Gastronomia"
 import HomeGerenciamento from "./Pages/HomeGerenciamento";
+import ListarProdutos from "../src/Pages/ADM/listarProdutos";
 
 const AppRoutes = () => {
 
@@ -15,6 +16,7 @@ const AppRoutes = () => {
                 <Route path="/cardapio" element={<Cardapio/>}></Route>
                 <Route path="/gastronomia" element={<Gastronomia/>}></Route>
                 <Route path="/home-gerenciamento" element={<HomeGerenciamento/>}></Route>
+                <Route path="/adm/listarProdutos" element={<ListarProdutos/>}></Route>
             </Routes>
         </BrowserRouter>
     );
