@@ -4,6 +4,7 @@ import TableContainer from '@mui/material/TableContainer';
 import { Fragment, useEffect, useState } from 'react';
 import axios from "axios";
 import HeaderGerenciamento from '../../../Components/HeaderGerenciamento';
+import Pesquisa from '../../../Components/Pesquisa';
 
 const ListarProdutos = () => {
     
@@ -23,6 +24,12 @@ const ListarProdutos = () => {
             <HeaderGerenciamento/>     
         </div>
          
+         <div className='barraPesquisa'>
+            <Pesquisa
+                placeholder="Produto, Marca..."
+                botao = "+ Novo Produto"
+            />
+         </div>
 
         <div className='tabela'>
             <TableContainer component={Paper}>
