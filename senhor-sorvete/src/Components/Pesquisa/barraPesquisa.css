@@ -1,11 +1,10 @@
 .pesquisa {
     margin: auto;
-    width: 45%;
+    width: 50%;
     height: 100%;
     display: flex;
-    justify-content: space-around;
+    justify-content: center;
     margin-bottom: 5%;
-    padding-right: 30px;
 
 }
 
@@ -17,7 +16,7 @@
 
 .barra-pesquisa input{
     width: 22vw;
-    height: 80%;
+    height: 5vh;
     border-top-left-radius: 8px;
     border-bottom-left-radius: 8px;
     border: 2px solid #2F615E;
@@ -25,7 +24,7 @@
 
 .barra-pesquisa button{
     width: 3vw;
-    height: 95%;
+    height: 6vh;
     border-top-right-radius: 8px;
     border-bottom-right-radius: 8px;
     border: none;
@@ -33,23 +32,6 @@
     color: #F1C97B;
 }
 
-.botao-salvar button {
-    width: 15vw;
-    height: 6vh; 
-    color: #F1C97B;
-    border-radius: 8px;
-    background-color: #2F615E;
-    border: 1px solid #000000;
-    font-family: "Poppins", sans-serif;
-    font-size: 20px;
-    font-weight: 700;
-    font-style: normal;
-}
-
 .barra-pesquisa button:hover {
-    cursor: pointer;
-}
-
-.botao-salvar button:hover {
     cursor: pointer;
 }

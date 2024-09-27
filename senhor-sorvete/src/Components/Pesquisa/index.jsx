@@ -9,13 +9,7 @@ const barraPesquisa = (props) => {
            <div className='barra-pesquisa'>
                 <input type="text" placeholder={props.placeholder}></input>    
                 <button><SearchIcon/></button>
-           </div>
-
-           <div className='botao-salvar'>
-                <button>{props.botao}</button>
-           </div>
-
-           
+           </div>     
         
         </div>
     );

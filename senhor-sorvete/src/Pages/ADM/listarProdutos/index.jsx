@@ -5,6 +5,7 @@ import { Fragment, useEffect, useState } from 'react';
 import axios from "axios";
 import HeaderGerenciamento from '../../../Components/HeaderGerenciamento';
 import Pesquisa from '../../../Components/Pesquisa';
+import BotaoGerenciamento from '../../../Components/BotaoGerenciamento';
 
 const ListarProdutos = () => {
     
@@ -22,12 +23,16 @@ const ListarProdutos = () => {
         
         <div className='header-tabela'>
             <HeaderGerenciamento/>     
+    
         </div>
          
          <div className='barraPesquisa'>
             <Pesquisa
                 placeholder="Produto, Marca..."
-                botao = "+ Novo Produto"
+            />
+
+            <BotaoGerenciamento
+                botao="+ Novo Produto"
             />
          </div>
 
