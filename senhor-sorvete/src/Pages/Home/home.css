@@ -1,6 +1,14 @@
+/* @import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap'); */
+
 html,
 body {
   overflow-x: hidden;
+  transition: smooth;
+  /* font-family: "Poppins", sans-serif; */
+}
+
+.home {
+  background-color: white;
 }
 
 .hero {
@@ -8,9 +16,14 @@ body {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 0 5%;
-  background: linear-gradient(to right, white, #f1c97b);
+  padding: 0 0 0 5%;
+  background: linear-gradient(white, 65% ,#f1c97b);
   position: relative;
+}
+
+.hero img {
+  height: 90vh;
+  max-width: 800px;
 }
 
 .content {
@@ -18,13 +31,14 @@ body {
 }
 
 .home h4 {
-  font-weight: 100;
+  font-weight: 300;
 }
 
 .home h1 {
   color: #772321;
   font-size: 3rem;
   margin-bottom: 20px;
+  margin-top: -20px;
 }
 
 .home p {
@@ -36,39 +50,26 @@ body {
 .buttons {
   display: flex;
   gap: 20px;
+  height: 60px;
 }
 
 .home button {
   padding: 10px 20px;
   border-radius: 5px;
   cursor: pointer;
-  border: none;
   font-size: 1rem;
+  font-weight: bold;
+  border: 2px solid #772321;
 }
 
-.btn-primary {
+.buttons .btn-primary {
   background-color: #772321;
   color: white;
 }
 
-.btn-secondary {
+.buttons .btn-secondary {
   background-color: white;
-  border: 2px solid #772321;
-  color: #772321;
-}
-
-.whatsapp-icon {
-  position: fixed;
-  bottom: 20px;
-  right: 20px;
-  width: 80px;
-  height: 80px;
-  z-index: 1;
-}
-
-.whatsapp-icon img {
-  width: 100%;
-  height: 100%;
+  color: #333;
 }
 
 .sobre-nos {
@@ -82,6 +83,7 @@ body {
 .sobre-container {
   display: flex;
   align-items: center;
+  justify-content: center;
   gap: 50px;
 }
 
@@ -92,31 +94,31 @@ body {
 .sobre-text h2 {
   color: #772321;
   font-size: 2.5rem;
-  margin-bottom: 20px;
+  text-align: center;
 }
 
 .sobre-text p {
   color: #333;
   font-size: 1.2rem;
-  margin-bottom: 20px;
 }
 
 .sobre-img img {
-  width: 300px;
-  height: auto;
-  border-radius: 10px;
+  height: 55vh;
+  /* max-width: 800px; */
 }
 
 .populares {
   padding: 50px 0;
   text-align: center;
-  background-color: #f1c97b;
+  background-color: #ffffff;
 }
 
 .populares h1 {
   color: #772321;
   font-size: 2.5rem;
   margin-bottom: 40px;
+  text-align: start;
+  margin-left: 5%;
 }
 
 .carousel {
@@ -133,12 +135,19 @@ body {
 
 .card {
   min-width: 300px;
-  background-color: white;
+  background-color: lightgrey;
   margin: 0 10px;
   padding: 20px;
   border-radius: 10px;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
   text-align: center;
+}
+
+.card:hover {
+  transform: scale(1.05);
+  background-color: #772321;
+  transition: all 0.5s;
+  border-radius: 10px;
 }
 
 .card h3 {
@@ -147,9 +156,17 @@ body {
   margin-bottom: 10px;
 }
 
+.card img {
+  width: 100%;
+  height: 200px;
+  object-fit: cover;
+  border-radius: 10px;
+}
+
 .card p {
   color: #333;
-  font-size: 1.2rem;
+  font-size: 1.5rem;
+  font-weight: 600;
 }
 
 .carousel-prev,
@@ -180,14 +197,30 @@ body {
   color: #772321;
   font-size: 1.2rem;
   font-weight: bold;
+  text-decoration: underline;
 }
 
 .sugestao-do-dia {
-  padding: 50px 0;
-  background: linear-gradient(to right, #ffffff, #f1c97b);
   display: flex;
   justify-content: center;
   align-items: center;
+  margin: 7%;
+  border-radius: 20px;
+  padding: 60px 20px;
+  background: linear-gradient(180deg, #FFDB94 52%, #DEAF54 100%);
+}
+
+.sugestao-do-dia h2 {
+  text-align: center;
+  color: #772321;
+  font-size: 2.5rem;
+  margin-bottom: 10px;
+}
+
+.sugestao-do-dia .data {
+  font-size: 1rem;
+  color: #666;
+  margin-bottom: 20px;
 }
 
 .sugestao-container {
@@ -199,20 +232,13 @@ body {
   width: 100%;
 }
 
+.sugestao-img img {
+  height: 60vh;
+  border-radius: 10px;
+}
+
 .sugestao-text {
   max-width: 50%;
-}
-
-.sugestao-text h2 {
-  color: #772321;
-  font-size: 2.5rem;
-  margin-bottom: 10px;
-}
-
-.sugestao-text .data {
-  font-size: 1rem;
-  color: #666;
-  margin-bottom: 20px;
 }
 
 .titulo-sugestao {
@@ -244,19 +270,13 @@ body {
   background-color: #a12d2b;
 }
 
-.sugestao-img img {
-  width: 400px;
-  height: auto;
-  border-radius: 10px;
-}
-
 .more-info {
   display: flex;
-  justify-content: space-between;
+  justify-content: center;
   align-items: center;
+  gap: 50px;
   padding: 40px;
   background-color: #fdfdfd;
-  border-top: 1px solid #ccc;
 }
 
 .more-info h1 {
@@ -270,6 +290,10 @@ body {
   font-size: 1rem;
   line-height: 1.5;
   color: #333;
+}
+
+.more-text {
+  max-width: 50%;
 }
 
 .btn-primary {
@@ -286,8 +310,7 @@ body {
 }
 
 .more-img img {
-  width: 300px;
-  height: 200px;
+  height: 40vh;
   object-fit: cover;
   border-radius: 10px;
   background-color: #eee;
@@ -297,6 +320,7 @@ body {
   text-align: center;
   padding: 40px;
   background-color: #fdfdfd;
+  margin-bottom: 70px;
 }
 
 .newsletter h2 {

@@ -1,11 +1,11 @@
 body {
-    background: #e9deb0;
     margin: 0;
     padding: 0;
     font-family: "Poppins", sans-serif;
 }
 
 .containerCardapio {
+    background: #e9deb0;
     display: flex;
     flex-direction: column;
     min-height: 100vh;
