@@ -1,25 +1,31 @@
-.card{
+.card-gerenciamento{
     display: flex;
     flex-wrap: wrap;
     justify-content: space-around;
-    margin-top: 20px;
-    border: 2px solid #2F615E;
-    border-radius: 5px;
+    margin-top: 15px;
     padding: 20px;
     gap: 16px;
     transition: .3s;
 }
 
-.card:hover{
-    transform: scale(1.02);
+.card-gerenciamento .imagem{
+    display:flex;
+    align-items: center;
+    justify-content: center;
 }
 
-.content{
+.card-gerenciamento:hover{
+    transform: scale(1.02);
+    background-color: #f5f5f5;
+}
+
+.content-gerenciamento{
 
     & h1{
         font-size: 1.3rem;
         color: #000;
         margin: 10px 0;
+        
     }
 
     & h2{
@@ -27,6 +33,7 @@
         color: #000;
         margin: 10px 0;
         font-weight: 400;
+    
     }
 
 

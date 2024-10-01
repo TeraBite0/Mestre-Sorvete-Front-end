@@ -3,13 +3,13 @@ import "./cardsGerenciamento.css";
 
 const CardsGerenciamento = ({ titulo, subtitulo, imagem, href }) => {
     return (
-        <a href={href} className='card'>
-                <div className="content">
+        <a href={href} className='card-gerenciamento'>
+                <div className="content-gerenciamento">
                     <h1>{titulo}</h1>
                     <h2>{subtitulo}</h2>
                 </div>
 
-                <div className="imagem">
+                <div className="imagem-gerenciamento">
                     {imagem}
                 </div>
 

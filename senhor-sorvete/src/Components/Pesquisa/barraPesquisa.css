@@ -1,0 +1,37 @@
+.pesquisa {
+    margin: auto;
+    width: 50%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    margin-bottom: 5%;
+
+}
+
+.barra-pesquisa{
+    display: flex;
+    align-items: center;
+    
+}
+
+.barra-pesquisa input{
+    width: 22vw;
+    height: 5vh;
+    border-top-left-radius: 8px;
+    border-bottom-left-radius: 8px;
+    border: 2px solid #2F615E;
+}
+
+.barra-pesquisa button{
+    width: 3vw;
+    height: 6vh;
+    border-top-right-radius: 8px;
+    border-bottom-right-radius: 8px;
+    border: none;
+    background-color: #2F615E;
+    color: #F1C97B;
+}
+
+.barra-pesquisa button:hover {
+    cursor: pointer;
+}
