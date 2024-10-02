@@ -1,4 +1,9 @@
 import { useState } from "react";
+import './contato.css';
+import WhatsAppIcon from '@mui/icons-material/WhatsApp';
+import InstagramIcon from '@mui/icons-material/Instagram';
+import Header from '../../Components/Header';
+import Footer from '../../Components/Footer';
 
 const Contato = () => {
   const isMobile = () => /Mobi|Android/i.test(navigator.userAgent);
@@ -25,17 +30,30 @@ const Contato = () => {
   };
 
   return (
+<>
+    <div>
+      <Header/>
+    </div>
+
     <div>
       {selecionado ? (
         <h2>Redirecionando para {selecionado}...</h2>
       ) : (
-        <div>
-          <h2>Escolha um contato</h2>
-          <button onClick={() => handleSelect("whatsapp")}>WhatsApp</button>
-          <button onClick={() => handleSelect("instagram")}>Instagram</button>
+        <div className="contato">
+          <div>
+            <img src="" alt="" />
+          </div>
+          <h2>Senhor Sorvete</h2>
+          <button onClick={() => handleSelect("whatsapp")}><WhatsAppIcon/> WhatsApp</button>
+          <button onClick={() => handleSelect("instagram")}><InstagramIcon/> Instagram</button>
         </div>
       )}
     </div>
+
+    <div>
+      <Footer/>
+    </div>
+    </>
   );
 };
 

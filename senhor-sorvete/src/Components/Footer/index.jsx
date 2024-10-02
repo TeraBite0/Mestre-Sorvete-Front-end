@@ -1,6 +1,13 @@
+import { Link, useLocation } from 'react-router-dom';
 import './footer.css';
 
 const Footer = () => {
+
+    const location = useLocation();
+
+    const isActive = (path) => {
+        return location.pathname === path ? 'active' : '';
+    };
 
     return (
         <div className='footer' aria-label='Rodapé do site Senhor Sorvete que contém a logo da empresa que criou o site, um texto descrevendo como foi feito o site e um menu de opções.'>
@@ -17,15 +24,15 @@ const Footer = () => {
 
                 <div className='itens-coluna1'>
                     <ul>
-                        <li>Contato</li>
-                        <li>Cardápio</li>
+                        <li className={isActive('/')}><Link to="/">Home</Link></li>
+                        <li className={isActive('/cardapio')}><Link to="/cardapio">Cardápio</Link></li>
                     </ul>
                 </div>
 
                 <div className='itens-coluna2'>
                     <ul>
-                        <li>Sobre</li>
-                        <li>Gastronomia</li>
+                        <li className={isActive('/contato')}><Link to="/contato">Contato</Link></li>
+                        <li className={isActive('/gastronomia')}><Link to="/gastronomia">Gastronomia</Link></li>
                     </ul>
                 </div>
             </div>

@@ -1,0 +1,46 @@
+.contato {
+    margin: 0 auto;
+    margin-top: 4%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 30vw;
+    height: 55vh;
+    border: 2px solid #000;
+    border-radius: 15px;
+    margin-bottom: 55px;
+    /* background-image: url("../../../public/Imagens/sorvete-de-pote-background.png"); */
+    /* background-size: cover; */
+    box-shadow: 10px 10px 25px #888888;
+}
+
+
+.contato h2 {
+    font-family: "Poppins", sans-serif;
+    font-weight: 700;
+    font-style: normal;
+    font-size: 28px;
+
+}
+
+.contato button {
+    width: 20vw;
+    height: 6vh;
+    margin: 2%;
+    border-radius: 12px;
+    font-family: "Poppins", sans-serif;
+    font-weight: 400;
+    font-style: normal;
+    font-size: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 2px solid #772321;
+    background-image: linear-gradient(to bottom right, #FFDB94, #DEAF54);
+}
+
+
+.contato button:hover {
+    cursor: pointer;
+}
