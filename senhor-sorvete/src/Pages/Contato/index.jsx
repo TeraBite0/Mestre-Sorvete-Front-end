@@ -36,9 +36,9 @@ const Contato = () => {
     </div>
 
     <div>
-      {selecionado ? (
+      {/* {selecionado ? (
         <h2>Redirecionando para {selecionado}...</h2>
-      ) : (
+      ) : ( */}
         <div className="contato">
           <div>
             <img src="" alt="" />
@@ -47,7 +47,6 @@ const Contato = () => {
           <button onClick={() => handleSelect("whatsapp")}><WhatsAppIcon/> WhatsApp</button>
           <button onClick={() => handleSelect("instagram")}><InstagramIcon/> Instagram</button>
         </div>
-      )}
     </div>
 
     <div>

@@ -5,23 +5,20 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    width: 30vw;
+    width: 40vw;
     height: 55vh;
     border: 2px solid #000;
     border-radius: 15px;
     margin-bottom: 55px;
-    /* background-image: url("../../../public/Imagens/sorvete-de-pote-background.png"); */
-    /* background-size: cover; */
     box-shadow: 10px 10px 25px #888888;
+    overflow: hidden;
 }
-
 
 .contato h2 {
     font-family: "Poppins", sans-serif;
     font-weight: 700;
     font-style: normal;
     font-size: 28px;
-
 }
 
 .contato button {
@@ -33,14 +30,20 @@
     font-weight: 400;
     font-style: normal;
     font-size: 16px;
+    color: #fff;
     display: flex;
     align-items: center;
     justify-content: center;
     border: 2px solid #772321;
-    background-image: linear-gradient(to bottom right, #FFDB94, #DEAF54);
+    background-image: linear-gradient(to bottom right, #772321, #ad6664);
 }
 
 
 .contato button:hover {
     cursor: pointer;
+    background-image: linear-gradient(to bottom right, #ad6664, #772321); /* Inverte as cores do gradiente */
+    border: 2px solid #ad6664; /* Altera a cor da borda */
+    transform: scale(1.05); /* Aumenta ligeiramente o tamanho do botão */
+    transition: 0.3s ease; /* Suaviza a transição */
+
 }

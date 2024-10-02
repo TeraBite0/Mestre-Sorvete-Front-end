@@ -20,7 +20,7 @@ const Footer = () => {
                     para proporcionar a melhor experiência aos nossos clientes.</p>
             </div>
 
-            <div className="itens">
+            <div className="itens-footer">
 
                 <div className='itens-coluna1'>
                     <ul>

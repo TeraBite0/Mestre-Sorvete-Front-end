@@ -3,21 +3,25 @@
     display: flex;
     background-color: #FFDB94;
     justify-content: space-around;
-    height: 135px;
-    z-index: 5;
+    align-items: center;
+    height: 120px;
+}
+
+.logo img {
+    max-width: 100%;
 }
 
 .sobre-projeto {
   font-family: "Poppins", system-ui;
-  font-size: 1.0em;  
+  font-size: 0.9em;  
   color: #252424;
-  text-align: left;
   display: flex;
-  width: 40%;
+  width: 50%;
   align-items: center;
+  text-align: center;
 }
 
-.itens {
+.itens-footer {
   font-family: "Poppins", system-ui;
   font-weight: 600;
   font-style: normal;
@@ -40,13 +44,21 @@
     flex-direction: column;
 }
 
-.itens li {
+.itens-footer li{
     margin-right: 25px;
-    margin-top: 20px;
-    cursor: pointer;
+    margin-top: 10px;
     transition: all 0.3s;
 }
 
-.itens li:hover{
+.itens-footer li a{
+    color: inherit;
+    text-decoration: none;
+}
+
+.itens-footer li a:hover{
+    cursor: pointer;
     transform: scale(1.3);
+    color: #772321;
+    font-weight: bold;
+    text-decoration: underline;
 }
