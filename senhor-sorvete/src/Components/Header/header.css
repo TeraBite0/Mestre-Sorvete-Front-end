@@ -37,12 +37,12 @@ body {
 }
 
 /* Global */
-a {
+.containerHeader a {
     color: inherit;
     text-decoration: none;
 }
 
-a:hover {
+.containerHeader a:hover {
     color: #772321;
     font-weight: bold;
     text-decoration: underline;

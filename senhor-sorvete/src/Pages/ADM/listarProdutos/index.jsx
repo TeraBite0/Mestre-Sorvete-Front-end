@@ -1,7 +1,9 @@
 import { Paper, Table, TableBody, TableCell, TableHead, TableRow } from '@mui/material';
 import './listarProdutos.css';
 import TableContainer from '@mui/material/TableContainer';
-import { Fragment, useEffect, useState } from 'react';
+import DeleteIcon from '@mui/icons-material/Delete';
+import EditIcon from '@mui/icons-material/Edit';
+import { useEffect, useState } from 'react';
 import axios from "axios";
 import HeaderGerenciamento from '../../../Components/HeaderGerenciamento';
 import Pesquisa from '../../../Components/Pesquisa';
@@ -10,70 +12,91 @@ import BotaoGerenciamento from '../../../Components/BotaoGerenciamento';
 const ListarProdutos = () => {
     
     const [produtos, setProdutos] = useState([]);
+    const [erro, setErro] = useState(null);
+
+    // const carregarProdutos = () => {
+    //     axios.get('http://localhost:8080/produtos')
+    //     .then(resposta => {
+    //         setProdutos(resposta.data); // Atualizar a lista de produtos
+    //         setErro(null); // Resetar o erro, caso tenha ocorrido antes
+    //     })
+    //     .catch(error => {
+    //         console.error("Erro ao buscar produtos:", error);
+    //         setErro("Erro ao carregar produtos. Tente novamente mais tarde."); // Define a mensagem de erro
+    //     });
+    // };
+
+    // useEffect(() => {
+    //     carregarProdutos();
+    // }, []);
 
     useEffect(() => {
-        axios.get('http://localhost:8080/produtos')
-        .then(resposta => setProdutos(resposta.data))
-        .catch(error => console.error(error));
+        // Dados fictícios para teste
+        const mockProdutos = [
+            { id: 1, nome: 'Produto 1', marca: 'Marca A', preco: 10.0, quantidadeEstoque: 10, imagemUrl: 'https://via.placeholder.com/50' },
+            { id: 2, nome: 'Produto 2', marca: 'Marca B', preco: 15.0, quantidadeEstoque: 20, imagemUrl: 'https://via.placeholder.com/50' }
+        ];
+        setProdutos(mockProdutos);  // Definindo os produtos fictícios no estado
     }, []);
 
     return(
-        
-        <Fragment>
-        
-        <div className='header-tabela'>
-            <HeaderGerenciamento/>     
-    
-        </div>
+        <>
+            <div className='header-tabela'>
+                <HeaderGerenciamento/>     
+            </div>
          
-         <div className='barraPesquisa'>
-            <Pesquisa
-                placeholder="Produto, Marca..."
-            />
+            <div className='barraPesquisa'>
+                <Pesquisa
+                    placeholder="Produto, Marca..."
+                />
 
-            <BotaoGerenciamento
-                botao="+ Novo Produto"
-            />
-         </div>
+                <BotaoGerenciamento
+                    botao="+ Novo Produto"
+                />
+            </div>
 
-        <div className='tabela'>
-            <TableContainer component={Paper}>
-                <Table sx={{minWidth: 200}} arial-label="Tabela">
-                    <TableHead>
-                        <TableRow>
-                            <TableCell>Nome</TableCell>
-                            <TableCell>Marca</TableCell>
-                            <TableCell>Preço</TableCell>
-                            <TableCell>Quant.Estoque</TableCell>
-                            <TableCell>Imagem</TableCell>
-                            <TableCell>Editar</TableCell>
-                            <TableCell>Excluir</TableCell>
-                        </TableRow>
-                    </TableHead>
-                    <TableBody>
-                        {produtos.map(produto => (
-                            <TableRow key={produto.id}>
-                                <TableCell>{produto.nome}</TableCell>
-                                <TableCell>{produto.marca}</TableCell>
-                                <TableCell>{produto.preco}</TableCell>
-                                <TableCell>{produto.quantidadeEstoque}</TableCell>
-                                <TableCell>
-                                    <img src={produto.imagemUrl} alt={produto.nome} width="50" height="50"/>
-                                </TableCell>
-                                <TableCell>
-                                    <button>Editar</button>
-                                </TableCell>
-                                <TableCell>
-                                    <button>Excluir</button>
-                                </TableCell>
+            <div className='tabela-produtos'>
+            {erro ? (
+                <p style={{ color: 'red' }}>{erro}</p> // Exibe uma mensagem de erro se houver
+            ) : (
+                <TableContainer component={Paper}>
+                    <Table arial-label="Tabela">
+                        <TableHead className='tabela-Head'>
+                            <TableRow>
+                                <TableCell className='tabela-head-cell'>Nome</TableCell>
+                                <TableCell className='tabela-head-cell'>Marca</TableCell>
+                                <TableCell className='tabela-head-cell'>Preço</TableCell>
+                                <TableCell className='tabela-head-cell'>Quant.Estoque</TableCell>
+                                <TableCell className='tabela-head-cell'>Imagem</TableCell>
+                                <TableCell className='tabela-head-cell'>Editar</TableCell>
+                                <TableCell className='tabela-head-cell'>Excluir</TableCell>
                             </TableRow>
-                        ))}
-                    </TableBody>
-                </Table>
-            </TableContainer>
-        </div>
-        </Fragment>
+                        </TableHead>
+                        <TableBody>
+                            {produtos.map(produto => (
+                                <TableRow key={produto.id} className='tabela-row'>
+                                    <TableCell className='tabela-cell'>{produto.nome}</TableCell>
+                                    <TableCell className='tabela-cell'>{produto.marca}</TableCell>
+                                    <TableCell className='tabela-cell'>{produto.preco}</TableCell>
+                                    <TableCell className='tabela-cell'>{produto.quantidadeEstoque}</TableCell>
+                                    <TableCell className='tabela-cell'>
+                                        <img src={produto.imagemUrl} alt={produto.nome} width="50" height="50" />
+                                    </TableCell>
+                                    <TableCell className='tabela-cell'>
+                                        <button><EditIcon/></button>
+                                    </TableCell>
+                                    <TableCell className='tabela-cell'>
+                                        <button><DeleteIcon/></button>
+                                    </TableCell>
+                                </TableRow>
+                            ))}
+                        </TableBody>
+                    </Table>
+                </TableContainer>
+            )}
+            </div>
+        </>
     );
-
 }
+
 export default ListarProdutos;

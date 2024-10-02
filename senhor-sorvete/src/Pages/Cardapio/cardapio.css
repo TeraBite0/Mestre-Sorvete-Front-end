@@ -194,9 +194,6 @@ body {
     flex-shrink: 0;
 }
 
-.notifications button:hover {
-    background-color: #6d0000;
-}
 
 .products {
     flex: 1;
