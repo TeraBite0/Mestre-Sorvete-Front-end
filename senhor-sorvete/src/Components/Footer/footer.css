@@ -4,11 +4,7 @@
     background-color: #FFDB94;
     justify-content: space-around;
     align-items: center;
-    height: 120px;
-}
-
-.logo img {
-    max-width: 100%;
+    z-index: 5;
 }
 
 .sobre-projeto {
