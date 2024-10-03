@@ -6,6 +6,7 @@ import Gastronomia from "./Pages/Gastronomia";
 import Contato from "./Pages/Contato";
 import HomeGerenciamento from "./Pages/HomeGerenciamento";
 import ListarProdutos from "../src/Pages/ADM/listarProdutos";
+import Recomendacao from "./Pages/ADM/Recomendacoes";
 
 const AppRoutes = () => {
 
@@ -19,6 +20,7 @@ const AppRoutes = () => {
                 <Route path="/contato" element={<Contato/>}></Route>
                 <Route path="/home/gerenciamento" element={<HomeGerenciamento/>}></Route>
                 <Route path="/adm/listarProdutos" element={<ListarProdutos/>}></Route>
+                <Route path="/adm/recomendacao" element={<Recomendacao/>}></Route>
             </Routes>
         </BrowserRouter>
     );

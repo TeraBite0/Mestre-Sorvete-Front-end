@@ -1,0 +1,49 @@
+.tabela-recomendacao{
+    width: 70%; 
+    margin: 50px auto; 
+    padding: 20px;
+}
+
+
+.tabela-dia {
+    background-color: #f9f9f9;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.tabela-objeto {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px;
+    font-size: 17px !important;
+    font-weight: 500 !important;
+    text-align: center !important; 
+}
+
+.tabela-objeto button{
+    border: none;
+    background: none;
+    color: inherit;
+    transition: all 0.3s ease;
+
+    
+}
+
+.tabela-cell button:hover {
+    cursor: pointer;
+    color: #F1C97B; 
+    
+}
+
+.table-container{
+    display: flex;
+    justify-content: center;
+    border: 2px solid #2F615E; 
+    border-radius: 15px !important; 
+}
+
+.containerRecomendacoes{
+    display: flex;
+    justify-content: start;
+    margin-left: 3%;
+}
