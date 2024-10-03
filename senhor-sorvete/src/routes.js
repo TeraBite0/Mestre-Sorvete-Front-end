@@ -6,19 +6,21 @@ import Gastronomia from "./Pages/Gastronomia";
 import Contato from "./Pages/Contato";
 import HomeGerenciamento from "./Pages/HomeGerenciamento";
 import ListarProdutos from "../src/Pages/ADM/listarProdutos";
+import Estoque from "./Pages/ADM/Estoque";
 
 const AppRoutes = () => {
 
     return (
         <BrowserRouter>
             <Routes>
-                <Route path="/" element={<Home/>}></Route>
-                <Route path="/login" element={<Login/>}></Route>
-                <Route path="/cardapio" element={<Cardapio/>}></Route>
-                <Route path="/gastronomia" element={<Gastronomia/>}></Route>
-                <Route path="/contato" element={<Contato/>}></Route>
-                <Route path="/home/gerenciamento" element={<HomeGerenciamento/>}></Route>
-                <Route path="/adm/listarProdutos" element={<ListarProdutos/>}></Route>
+                <Route path="/" element={<Home/>}/>
+                <Route path="/login" element={<Login/>}/>
+                <Route path="/cardapio" element={<Cardapio/>}/>
+                <Route path="/gastronomia" element={<Gastronomia/>}/>
+                <Route path="/contato" element={<Contato/>}/>
+                <Route path="/home/gerenciamento" element={<HomeGerenciamento/>}/>
+                <Route path="/adm/listarProdutos" element={<ListarProdutos/>}/>
+                <Route path="/adm/estoque" element={<Estoque/>}/>
             </Routes>
         </BrowserRouter>
     );
