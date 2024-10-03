@@ -23,3 +23,17 @@
 .wopperWrapper button {
     margin: 0px 10px;
 }
+
+.modal-button-container {
+    display: flex;
+    justify-content: center;
+    gap: 50px;
+    margin-top: 15px;
+    margin: 0 10px;
+}
+
+.modal-button-container button {
+    width: 11rem;
+    font-size: 16px;
+}
+
