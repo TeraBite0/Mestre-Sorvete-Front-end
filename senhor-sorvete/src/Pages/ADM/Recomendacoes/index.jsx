@@ -5,6 +5,8 @@ import EditIcon from '@mui/icons-material/Edit';
 import { useEffect, useState } from 'react';
 import axios from "axios";
 import HeaderGerenciamento from '../../../Components/HeaderGerenciamento';
+import BotaoVoltarGerenciamento from '../../../Components/BotaoVoltarGerenciamento';
+import ArrowBackIcon from '@mui/icons-material/ArrowBack'
 
 const Recomendacao = () => {
     
@@ -30,7 +32,7 @@ const Recomendacao = () => {
     useEffect(() => {
         // Dados fictícios para teste
         const mockProdutos = [
-            { id: 1, nome: 'Produto 1', marca: 'Marca A', preco: 'R$: ' + 10.0},
+            { id: 1, nome: 'Produto 1', marca: 'Marca A', preco: 'R$' + 10.0},
         ];
         setProdutos(mockProdutos);  // Definindo os produtos fictícios no estado
     }, []);
@@ -41,10 +43,12 @@ const Recomendacao = () => {
                 <HeaderGerenciamento/>     
             </div>
 
-            <div className="containerRecomendacoes">
-                <h2>Recomendação do dia</h2>
-            </div>
-        
+            <div className='titulo-recomendar'>
+                    <BotaoVoltarGerenciamento
+                        pagina="Recomendação do dia"
+                    />
+                    </div>
+
 
             <div className='tabela-recomendacao'>
             {erro ? (

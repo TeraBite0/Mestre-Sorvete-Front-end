@@ -29,7 +29,7 @@
     
 }
 
-.tabela-cell button:hover {
+.tabela-objeto button:hover {
     cursor: pointer;
     color: #F1C97B; 
     
@@ -46,4 +46,10 @@
     display: flex;
     justify-content: start;
     margin-left: 3%;
+}
+
+.titulo-recomendar {
+    font-size: 18px;
+    font-weight: 500;
+    padding: 15px;
 }

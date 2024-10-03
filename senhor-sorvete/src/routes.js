@@ -7,7 +7,7 @@ import Contato from "./Pages/Contato";
 import HomeGerenciamento from "./Pages/HomeGerenciamento";
 import ListarProdutos from "../src/Pages/ADM/listarProdutos";
 import Recomendacao from "./Pages/ADM/Recomendacoes";
-
+import Estoque from "./Pages/ADM/Estoque";
 const AppRoutes = () => {
 
     return (
@@ -21,6 +21,7 @@ const AppRoutes = () => {
                 <Route path="/home/gerenciamento" element={<HomeGerenciamento/>}></Route>
                 <Route path="/adm/listarProdutos" element={<ListarProdutos/>}></Route>
                 <Route path="/adm/recomendacao" element={<Recomendacao/>}></Route>
+                <Route path="/adm/estoque" element={<Estoque/>}/>
             </Routes>
         </BrowserRouter>
     );

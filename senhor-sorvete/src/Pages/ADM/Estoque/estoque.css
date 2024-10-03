@@ -1,0 +1,25 @@
+.estoqueContainer {
+    margin: 0 5rem
+}
+.estoqueContainer .header-home {
+    margin-bottom: 1px;
+}
+
+.controlesWrapper {
+    margin-top: 15px;
+    display: flex;
+    justify-content: space-around;
+}
+.controlesWrapper .pesquisa {
+    margin: 0px 5px;
+    justify-content: flex-start;
+}
+
+
+.wopperWrapper {
+    display: flex;
+    justify-content: space-evenly;
+}
+.wopperWrapper button {
+    margin: 0px 10px;
+}
