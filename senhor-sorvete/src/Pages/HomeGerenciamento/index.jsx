@@ -32,7 +32,7 @@ const HomeGerenciamento = () => {
                         titulo="Cardápio" 
                         subtitulo="Modifique os produtos amostra" 
                         imagem={imagens[1]} 
-                        href='/cardapio'
+                        href='/adm/listarProdutos'
                     />
                 </div>
                 <div className='cards-rumo'>
