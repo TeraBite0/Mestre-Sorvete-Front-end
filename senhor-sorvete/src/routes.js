@@ -8,6 +8,7 @@ import HomeGerenciamento from "./Pages/HomeGerenciamento";
 import ListarProdutos from "../src/Pages/ADM/listarProdutos";
 import Recomendacao from "./Pages/ADM/Recomendacoes";
 import Estoque from "./Pages/ADM/Estoque";
+import Vendas from "./Pages/ADM/Vendas/vendas";
 const AppRoutes = () => {
 
     return (
@@ -22,6 +23,7 @@ const AppRoutes = () => {
                 <Route path="/adm/listarProdutos" element={<ListarProdutos/>}></Route>
                 <Route path="/adm/recomendacao" element={<Recomendacao/>}></Route>
                 <Route path="/adm/estoque" element={<Estoque/>}/>
+                <Route path= "/adm/vendas" element={<Vendas/>}/>
             </Routes>
         </BrowserRouter>
     );
