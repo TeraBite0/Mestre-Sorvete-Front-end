@@ -39,12 +39,14 @@ const HomeGerenciamento = () => {
                     <CardsGerenciamento 
                         titulo="Recomendação" 
                         subtitulo="Altere a recomendação do dia" 
-                        imagem={imagens[2]} 
+                        imagem={imagens[2]}
+                        href='/adm/recomendacao' 
                     />
                     <CardsGerenciamento 
                         titulo="Estoque" 
                         subtitulo="Registre e rastreie seus produtos" 
-                        imagem={imagens[3]} 
+                        imagem={imagens[3]}
+                        href='/adm/estoque' 
                     />
 
                 </div>

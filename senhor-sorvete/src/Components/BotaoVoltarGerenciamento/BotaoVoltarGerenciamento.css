@@ -1,18 +1,27 @@
 .voltarGerenciamentoBtn {
     display: flex;
     align-items: center;
+    background: none;
+    border: none;
+    color: inherit;
+    font-size: 18px;
+    font-weight: 550;
+    cursor: pointer;
     width: fit-content;
+    transition: color 0.3s ease;
 }
 
 .voltarGerenciamentoBtn .arrow-icon {
     margin-right: 10px;
     transition: transform 0.3s ease;
+    font-size: 25px;
 }
 
 .voltarGerenciamentoBtn:hover .arrow-icon {
     transform: translateX(-8px);
 }
+
 .voltarGerenciamentoBtn:hover {
     text-decoration: underline;
-    cursor: pointer;
+    color: #5a3f08; 
 }

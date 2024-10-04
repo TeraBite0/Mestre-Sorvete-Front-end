@@ -1,17 +1,17 @@
-import { Paper, Table, TableBody, TableCell, TableHead, TableRow } from '@mui/material';
+import { Paper, Table, TableBody, TableCell, TableRow } from '@mui/material';
 import './recomendacoes.css';
 import TableContainer from '@mui/material/TableContainer';
 import EditIcon from '@mui/icons-material/Edit';
 import { useEffect, useState } from 'react';
-import axios from "axios";
 import HeaderGerenciamento from '../../../Components/HeaderGerenciamento';
 import BotaoVoltarGerenciamento from '../../../Components/BotaoVoltarGerenciamento';
-import ArrowBackIcon from '@mui/icons-material/ArrowBack'
+import ReusableModal from '../../../Components/ModalGerenciamento';
 
 const Recomendacao = () => {
-    
     const [produtos, setProdutos] = useState([]);
     const [erro, setErro] = useState(null);
+    const [modalOpen, setModalOpen] = useState(false); 
+    const [selectedProduto, setSelectedProduto] = useState(null); 
 
     // const carregarProdutos = () => {
     //     axios.get('http://localhost:8080/produtos')
@@ -37,6 +37,20 @@ const Recomendacao = () => {
         setProdutos(mockProdutos);  // Definindo os produtos fictícios no estado
     }, []);
 
+    const handleEditClick = (produto) => {
+        setSelectedProduto(produto);
+        setModalOpen(true); 
+    };
+
+    const handleSave = () => {
+       
+        setModalOpen(false);
+    };
+
+    const handleCloseModal = () => {
+        setModalOpen(false);
+    };
+
     return(
         <>
             <div className='header-tabela'>
@@ -44,35 +58,52 @@ const Recomendacao = () => {
             </div>
 
             <div className='titulo-recomendar'>
-                    <BotaoVoltarGerenciamento
-                        pagina="Recomendação do dia"
-                    />
-                    </div>
-
+                <BotaoVoltarGerenciamento
+                    pagina="Recomendação do dia"
+                />
+            </div>
 
             <div className='tabela-recomendacao'>
-            {erro ? (
-                <p style={{ color: 'red' }}>{erro}</p> // Exibe uma mensagem de erro se houver
-            ) : (
-                <TableContainer component={Paper} className='table-container'>
-                    <Table arial-label="produto-dia">
-                        <TableBody>
-                            {produtos.map(produto => (
-                                <TableRow key={produto.id} className='tabela-dia'>
-                                    <TableCell className='tabela-objeto'>{produto.nome}</TableCell>
-                                    <TableCell className='tabela-objeto'>{produto.marca}</TableCell>
-                                    <TableCell className='tabela-objeto'>{produto.preco}</TableCell>
-                                    <TableCell className='tabela-objeto'>
-                                        <button><EditIcon/></button>
-                                    </TableCell>
-                                </TableRow>
-                            ))}
-                        </TableBody>
-                    </Table>
-                </TableContainer>
-            )}
+                {erro ? (
+                    <p style={{ color: 'red' }}>{erro}</p> 
+                ) : (
+                    <TableContainer component={Paper} className='table-container'>
+                        <Table arial-label="produto-dia">
+                            <TableBody>
+                                {produtos.map(produto => (
+                                    <TableRow key={produto.id} className='tabela-dia'>
+                                        <TableCell className='tabela-objeto'>{produto.nome}</TableCell>
+                                        <TableCell className='tabela-objeto'>{produto.marca}</TableCell>
+                                        <TableCell className='tabela-objeto'>{produto.preco}</TableCell>
+                                        <TableCell className='tabela-objeto'>
+                                            <button onClick={() => handleEditClick(produto)}>
+                                                <EditIcon/>
+                                            </button>
+                                        </TableCell>
+                                    </TableRow>
+                                ))}
+                            </TableBody>
+                        </Table>
+                    </TableContainer>
+                )}
             </div>
+
+            {/* Modal para edição do produto */}
+            {selectedProduto && (
+                <ReusableModal
+                    open={modalOpen}
+                    onClose={handleCloseModal}
+                    title={`Editar ${selectedProduto.nome}`}
+                    fields={[
+                        { label: 'Nome do Produto', type: 'text' },
+                        { label: 'Marca', type: 'text' },
+                        { label: 'Preço', type: 'number' }
+                    ]}
+                    onSave={handleSave}
+                />
+            )}
         </>
     );
 }
+
 export default Recomendacao;
