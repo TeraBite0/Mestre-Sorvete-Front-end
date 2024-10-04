@@ -4,7 +4,8 @@ import HeaderGerenciamento from "../../../Components/HeaderGerenciamento";
 import BotaoVoltarGerenciamento from '../../../Components/BotaoVoltarGerenciamento';
 import Pesquisa from "../../../Components/Pesquisa";
 import BotaoGerenciamento from "../../../Components/BotaoGerenciamento";
-import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Modal, Box, Typography, TextField } from '@mui/material';
+import ReusableModal from '../../../Components/ModalGerenciamento';
+import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper } from '@mui/material';
 
 const criarDados = (codigo, nome, marca, preco, qtdEmEstoque) => {
     return { codigo, nome, marca, preco, qtdEmEstoque };
@@ -60,6 +61,21 @@ const Estoque = () => {
     const abrirModalAdicionarLote = () => setAbrirAdicionarLote(true);
     const fecharModalAdicionarLote = () => setAbrirAdicionarLote(false);
 
+    const camposRegistrarPerda = [
+        { label: "Nome" },
+        { label: "Marca" },
+        { label: "Quantidade", type: "number" },
+    ];
+
+    const camposAdicionarLote = [
+        { label: "Produto" },
+        { label: "Marca" },
+        { label: "Quantidade comprada", type: "number" },
+        { label: "Data da compra", type: "date" },
+        { label: "Valor da nota", type: "number" },
+        { label: "Previsão de entrega", type: "date" },
+    ];
+
     return (
         <>
             <HeaderGerenciamento />
@@ -107,60 +123,21 @@ const Estoque = () => {
                 </TableContainer>
             </div>
 
-            <Modal
+            <ReusableModal
                 open={abrirRegistrarPerda}
                 onClose={fecharModalRegistrarPerda}
-                aria-labelledby="modal-registrar-perda"
-            >
-                <Box sx={estiloModal}>
-                    <Typography id="modal-registrar-perda" variant="h6" component="h2" mb={2}>
-                        Registrar Perda
-                    </Typography>
-                    <TextField fullWidth label="Nome" variant="outlined" margin="normal" />
-                    <TextField fullWidth label="Marca" variant="outlined" margin="normal" />
-                    <TextField fullWidth label="Quantidade" type="number" variant="outlined" margin="normal" />
-                    <Box className="modal-button-container">
-                        <BotaoGerenciamento botao="Salvar" onClick={fecharModalRegistrarPerda} />
-                        <BotaoGerenciamento botao="Cancelar" onClick={fecharModalRegistrarPerda} />
-                    </Box>
-                </Box>
-            </Modal>
+                title="Registrar Perda"
+                fields={camposRegistrarPerda}
+                onSave={fecharModalRegistrarPerda}
+            />
 
-            <Modal
+            <ReusableModal
                 open={abrirAdicionarLote}
                 onClose={fecharModalAdicionarLote}
-                aria-labelledby="modal-adicionar-lote"
-            >
-                <Box sx={estiloModal}>
-                    <Typography id="modal-adicionar-lote" variant="h6" component="h2" mb={2}>
-                        Adicionar Lote
-                    </Typography>
-                    <TextField fullWidth label="Produto" variant="outlined" margin="normal" />
-                    <TextField fullWidth label="Marca" variant="outlined" margin="normal" />
-                    <TextField fullWidth label="Quantidade comprada" type="number" variant="outlined" margin="normal" />
-                    <TextField
-                        fullWidth
-                        label="Data da compra"
-                        type="date"
-                        InputLabelProps={{ shrink: true }}
-                        variant="outlined"
-                        margin="normal"
-                    />
-                    <TextField fullWidth label="Valor da nota" type="number" variant="outlined" margin="normal" />
-                    <TextField
-                        fullWidth
-                        label="Previsão de entrega"
-                        type="date"
-                        InputLabelProps={{ shrink: true }}
-                        variant="outlined"
-                        margin="normal"
-                    />
-                    <Box className="modal-button-container">
-                        <BotaoGerenciamento botao="Salvar" onClick={fecharModalAdicionarLote} className="modal-button" />
-                        <BotaoGerenciamento botao="Cancelar" onClick={fecharModalAdicionarLote} className="modal-button" />
-                    </Box>
-                </Box>
-            </Modal>
+                title="Adicionar Lote"
+                fields={camposAdicionarLote}
+                onSave={fecharModalAdicionarLote}
+            />
         </>
     );
 };
