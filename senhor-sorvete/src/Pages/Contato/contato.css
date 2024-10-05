@@ -1,18 +1,29 @@
+/* Container geral da página de contato */
+.contato-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    height: 100vh; /* Ocupa toda a altura da tela */
+    overflow: hidden; 
+}
+
+
 .contato {
     margin: 0 auto;
-    margin-top: 4%;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    width: 40vw;
-    height: 55vh;
+    width: 35vw;
+    height: 45vh; /* Define uma altura máxima */
     border: 2px solid #000;
     border-radius: 15px;
-    margin-bottom: 55px;
     box-shadow: 10px 10px 25px #888888;
-    overflow: hidden;
+    padding: 25px;
+    background-color: #F8F2D9;
+    overflow: hidden; 
 }
+
 
 .contato h2 {
     font-family: "Poppins", sans-serif;
@@ -38,12 +49,19 @@
     background-image: linear-gradient(to bottom right, #772321, #ad6664);
 }
 
-
 .contato button:hover {
     cursor: pointer;
     background-image: linear-gradient(to bottom right, #ad6664, #772321); /* Inverte as cores do gradiente */
-    border: 2px solid #ad6664; /* Altera a cor da borda */
-    transform: scale(1.05); /* Aumenta ligeiramente o tamanho do botão */
-    transition: 0.3s ease; /* Suaviza a transição */
+    border: 2px solid #ad6664; 
+    transform: scale(1.05); 
+    transition: 0.3s ease; 
+}
 
+/* Ajustes de responsividade */
+@media (max-width: 768px) {
+    .contato {
+        width: 80vw;
+        max-height: 50vh;
+        padding: 20px;
+    }
 }

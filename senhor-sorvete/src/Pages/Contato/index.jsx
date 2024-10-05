@@ -30,29 +30,24 @@ const Contato = () => {
   };
 
   return (
-<>
-    <div>
-      <Header/>
-    </div>
+    <div className="contato-container">
+      <Header />
 
-    <div>
-      {/* {selecionado ? (
-        <h2>Redirecionando para {selecionado}...</h2>
-      ) : ( */}
-        <div className="contato">
-          <div>
-            <img src="" alt="" />
-          </div>
-          <h2>Senhor Sorvete</h2>
-          <button onClick={() => handleSelect("whatsapp")}><WhatsAppIcon/> WhatsApp</button>
-          <button onClick={() => handleSelect("instagram")}><InstagramIcon/> Instagram</button>
+      <div className="contato">
+        <div>
+          <img src="" alt="" />
         </div>
-    </div>
+        <h2>Senhor Sorvete</h2>
+        <button onClick={() => handleSelect("whatsapp")}>
+          <WhatsAppIcon /> WhatsApp
+        </button>
+        <button onClick={() => handleSelect("instagram")}>
+          <InstagramIcon /> Instagram
+        </button>
+      </div>
 
-    <div>
-      <Footer/>
+      <Footer />
     </div>
-    </>
   );
 };
 
