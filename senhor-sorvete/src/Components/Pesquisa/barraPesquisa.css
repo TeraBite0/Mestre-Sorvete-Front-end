@@ -4,7 +4,7 @@
     height: 100%;
     display: flex;
     justify-content: center;
-    margin-bottom: 5%;
+    margin-bottom: 4%;
 
 }
 
@@ -24,11 +24,12 @@
 
 .barra-pesquisa button{
     width: 3vw;
-    height: 6vh;
+    height: 42px;
     border-top-right-radius: 8px;
     border-bottom-right-radius: 8px;
     border: none;
     background-color: #2F615E;
+    border: 2px solid #2F615E;
     color: #F1C97B;
 }
 
