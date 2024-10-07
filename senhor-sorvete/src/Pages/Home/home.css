@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap");
 
 html,
 body {
@@ -17,7 +17,7 @@ body {
   justify-content: space-between;
   align-items: center;
   padding: 0 0 0 5%;
-  background: linear-gradient(white, 65% ,#f1c97b);
+  background: linear-gradient(white, 65%, #f1c97b);
   position: relative;
 }
 
@@ -41,7 +41,7 @@ body {
   margin-top: -20px;
 }
 
-.home p {
+.hero p {
   font-size: 1.2rem;
   margin-bottom: 40px;
   color: #333;
@@ -49,7 +49,6 @@ body {
 
 .buttons {
   display: flex;
-  gap: 20px;
   height: 60px;
 }
 
@@ -67,16 +66,11 @@ body {
   color: white;
 }
 
-.buttons .btn-secondary {
-  background-color: white;
-  color: #333;
-}
-
 .sobre-nos {
   display: flex;
   justify-content: center;
   align-items: center;
-  padding: 50px 20px;
+  padding: 85px 20px;
   background-color: #fff;
 }
 
@@ -107,120 +101,41 @@ body {
   /* max-width: 800px; */
 }
 
-.populares {
-  padding: 50px 0;
-  text-align: center;
-  background-color: #ffffff;
-}
+/* Carrossel aqui */
 
-.populares h1 {
+.sugestao-do-dia h2 {
+  letter-spacing: -1px;
+  text-align: center;
   color: #772321;
   font-size: 2.5rem;
-  margin-bottom: 40px;
-  text-align: start;
-  margin-left: 5%;
+  margin-bottom: -20px;
 }
 
-.carousel {
-  position: relative;
-  width: 90%;
-  margin: 0 auto;
-  overflow: hidden;
-}
-
-.carousel-inner {
-  display: flex;
-  transition: transform 0.5s ease-in-out;
-}
-
-.card {
-  min-width: 300px;
-  background-color: lightgrey;
-  margin: 0 10px;
-  padding: 20px;
-  border-radius: 10px;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+.sugestao-do-dia .data {
   text-align: center;
-}
-
-.card:hover {
-  transform: scale(1.05);
-  background-color: #772321;
-  transition: all 0.5s;
-  border-radius: 10px;
-}
-
-.card h3 {
+  font-size: 1rem;
   color: #772321;
-  font-size: 1.5rem;
-  margin-bottom: 10px;
-}
-
-.card img {
-  width: 100%;
-  height: 200px;
-  object-fit: cover;
-  border-radius: 10px;
-}
-
-.card p {
-  color: #333;
-  font-size: 1.5rem;
-  font-weight: 600;
-}
-
-.carousel-prev,
-.carousel-next {
-  position: absolute;
-  top: 50%;
-  transform: translateY(-50%);
-  background-color: #772321;
-  color: white;
-  border: none;
-  padding: 10px;
-  cursor: pointer;
-  border-radius: 50%;
-}
-
-.carousel-prev {
-  left: 20px;
-}
-
-.carousel-next {
-  right: 20px;
-}
-
-.ver-tudo {
-  display: block;
-  margin-top: 20px;
-  text-decoration: none;
-  color: #772321;
-  font-size: 1.2rem;
   font-weight: bold;
-  text-decoration: underline;
+  margin-bottom: -150px;
+  text-shadow: 1px 2px 3px rgba(0, 0, 0, 0.4);
 }
 
-.sugestao-do-dia {
+.sugestao-do-dia-child {
   display: flex;
   justify-content: center;
   align-items: center;
   margin: 7%;
   border-radius: 20px;
   padding: 60px 20px;
-  background: linear-gradient(180deg, #FFDB94 52%, #DEAF54 100%);
+  background: linear-gradient(180deg, #ffdb94 52%, #deaf54 100%);
 }
 
-.sugestao-do-dia h2 {
+.sugestao-do-dia-child h2 {
   text-align: center;
   color: #772321;
   font-size: 2.5rem;
   margin-bottom: 10px;
-}
-
-.sugestao-do-dia .data {
-  font-size: 1rem;
-  color: #666;
-  margin-bottom: 20px;
+  text-shadow: 3px 3px 5px rgba(0, 0, 0, 0.4);
 }
 
 .sugestao-container {
@@ -233,7 +148,7 @@ body {
 }
 
 .sugestao-img img {
-  height: 60vh;
+  height: 65vh;
   border-radius: 10px;
 }
 
@@ -246,7 +161,7 @@ body {
   color: #772321;
   margin-bottom: 20px;
   position: relative;
-  text-shadow: 3px 3px 5px rgba(0, 0, 0, 0.3);
+  text-shadow: 5px -6px 4px rgb(255, 255, 255);
 }
 
 .descricao {
@@ -287,8 +202,7 @@ body {
 }
 
 .more-info p {
-  font-size: 1rem;
-  line-height: 1.5;
+  font-size: 1.2rem;
   color: #333;
 }
 
@@ -311,9 +225,6 @@ body {
 
 .more-img img {
   height: 40vh;
-  object-fit: cover;
-  border-radius: 10px;
-  background-color: #eee;
 }
 
 .newsletter {

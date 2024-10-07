@@ -8,6 +8,7 @@ body {
 .containerHeader {
     top: 0;
     position: sticky;
+    /* position: fixed; */
     z-index: 100000;
     background-color: #ffff;
     width: 100%;
@@ -15,7 +16,7 @@ body {
     display: flex;
     justify-content: space-around;
     align-items: center;
-    padding-right: calc(100vw - 100%);
+    /* padding-right: calc(100vw - 100%); */
 }
 
 .containerListItem ul {
@@ -36,7 +37,6 @@ body {
     font-weight: bold;
 }
 
-/* Global */
 .containerHeader a {
     color: inherit;
     text-decoration: none;
