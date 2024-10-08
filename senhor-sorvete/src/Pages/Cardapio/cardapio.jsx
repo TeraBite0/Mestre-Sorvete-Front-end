@@ -1,32 +1,20 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import './cardapio.css';
 import Filtros from '../../Components/Filtros/Filtro.tsx';
 import Header from '../../Components/Header/index.jsx'
 import Footer from '../../Components/Footer/index.jsx'
+import SearchIcon from '@mui/icons-material/Search';
 
 const flavors = [
-    "Nescolak",
-    "Cookies",
-    "Biscoitos",
-    "Brigadeirissimo",
-    "Maximum: Paçoca Cremosa",
-    "Premium: Chocolate Trufado",
-    "Mousse de Maracujá",
-    "Black Classico",
-    "Premium: Frutas Vermelha",
-    "Petit Gateau",
-    "Gourmet: Cocada Baiana",
-    "Trufado Chocolate",
-    "Torta de Limão",
-    "Trufa",
-    "Caramelo",
-    "Bolo de Brownie",
-    "Bolo de Cenoura",
-    "Torta Holandesa",
-    "Avelã",
-    "Bem Casado",
-    "Duo Amore",
-    "Brownie com Doce de Leite"
+    "Nescolak", "Cookies", "Biscoitos", "Brigadeirissimo", "Paçoca",
+    "Chocolate", "Mousse", "Black", "Frutas", "Cocada",
+    "Trufado", "Limão", "Trufa", "Caramelo", "Brownie",
+    "Cenoura", "Avelã", "Bem Casado", "Duo Amore", "Doce de Leite",
+    "Cenoura", "Avelã", "Bem Casado", "Duo Amore", "Doce de Leite",
+    "Cenoura", "Avelã", "Bem Casado", "Duo Amore", "Doce de Leite",
+    "Cenoura", "Avelã", "Bem Casado", "Duo Amore", "Doce de Leite",
+    "Cenoura", "Avelã", "Bem Casado", "Duo Amore", "Doce de Leite",
+    "Cenoura", "Avelã", "Bem Casado", "Duo Amore", "Doce de Leite",
 ];
 
 const Cardapio = () => {
@@ -35,23 +23,9 @@ const Cardapio = () => {
     const [isSticky, setIsSticky] = useState(false);
     const [priceRange, setPriceRange] = useState(15);
     const [selectedCategories, setSelectedCategories] = useState([]);
-
-    useEffect(() => {
-        const handleScroll = () => {
-            const offset = window.scrollY;
-            if (offset > 300) {
-                setIsSticky(true);
-            } else {
-                setIsSticky(false);
-            }
-        };
-
-        window.addEventListener('scroll', handleScroll);
-
-        return () => {
-            window.removeEventListener('scroll', handleScroll);
-        };
-    }, []);
+    
+    const sidebarRef = useRef(null);
+    const mainContentRef = useRef(null);
 
     const addToCart = (flavor) => {
         if (!cartItems.some(item => item.name === flavor)) {
@@ -68,6 +42,7 @@ const Cardapio = () => {
     );
 
     return (
+        <>
         <div className="containerCardapio">
             <Header/>
             <header className="header">
@@ -79,9 +54,9 @@ const Cardapio = () => {
 
             <nav className="navigation">
                 <ul>
-                    <li><a href="#flavors">Flavors</a></li>
-                    <li><a href="#sundaes">Sundaes</a></li>
-                    <li><a href="#recipes">Recipes</a></li>
+                    <li><a href="#recipes">Popular</a></li>
+                    <li><a href="#flavors">Sorvetes</a></li>
+                    <li><a href="#sundaes">Picolés</a></li>
                 </ul>
                 <div className="searchBar">
                     <input 
@@ -90,13 +65,13 @@ const Cardapio = () => {
                         value={termo} 
                         onChange={(e) => setTermo(e.target.value)}
                     />
-                    <button>🔍</button>
+                    <button><SearchIcon sx={{fontSize: 16}}/></button>
                 </div>
             </nav>
 
-            <div className="mainContentWrapper">
+            <div className="mainContentWrapper" ref={mainContentRef}>
                 <div className="mainContent">
-                    <div className={`sidebarWrapper ${isSticky ? 'sticky' : ''}`}>
+                    <div className={`sidebarWrapper ${isSticky ? 'sticky' : ''}`} ref={sidebarRef}>
                         <aside className="sidebar">
                             <Filtros 
                                 priceRange={priceRange} 
@@ -111,7 +86,6 @@ const Cardapio = () => {
                                 {cartItems.map((item, index) => (
                                     <li key={index}>
                                         <img src="Imagens/sorvete-de-pote-chocolate.png" alt={item.name} />
-                                        {/* <img src="Imagens/sorvete-de-pote-chocolate.png?height=50&width=50" alt={item.name} /> */}
                                         <div className="cartItemDetails">
                                             <h4>{item.name}</h4>
                                             <p>R$ {item.price.toFixed(2)}</p>
@@ -146,8 +120,10 @@ const Cardapio = () => {
                     </main>
                 </div>
             </div>
-            <Footer />
         </div>
+        
+        <Footer />
+        </>
     );
 };
 
