@@ -17,7 +17,7 @@ const estiloModal = {
     p: 4,
 };
 
-const ReusableModal = ({ open, onClose, title, fields, onSave }) => {
+const ModalGerenciamento = ({ open, onClose, title, fields, onSave }) => {
     return (
         <Modal
             open={open}
@@ -48,4 +48,4 @@ const ReusableModal = ({ open, onClose, title, fields, onSave }) => {
     );
 };
 
-export default ReusableModal;
+export default ModalGerenciamento;

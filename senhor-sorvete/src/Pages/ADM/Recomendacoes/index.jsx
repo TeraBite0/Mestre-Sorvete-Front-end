@@ -5,7 +5,7 @@ import EditIcon from '@mui/icons-material/Edit';
 import { useEffect, useState } from 'react';
 import HeaderGerenciamento from '../../../Components/HeaderGerenciamento';
 import BotaoVoltarGerenciamento from '../../../Components/BotaoVoltarGerenciamento';
-import ReusableModal from '../../../Components/ModalGerenciamento';
+import ModalGerenciamento from '../../../Components/ModalGerenciamento';
 
 const Recomendacao = () => {
     const [produtos, setProdutos] = useState([]);
@@ -112,7 +112,7 @@ const Recomendacao = () => {
 
             {/* Modal para edição do produto */}
             {selectedProduto && (
-                <ReusableModal
+                <ModalGerenciamento
                     open={modalOpen}
                     onClose={handleCloseModal}
                     title={`Editar ${selectedProduto.nome}`}

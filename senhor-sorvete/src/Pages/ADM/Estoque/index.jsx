@@ -4,7 +4,7 @@ import HeaderGerenciamento from "../../../Components/HeaderGerenciamento";
 import BotaoVoltarGerenciamento from '../../../Components/BotaoVoltarGerenciamento';
 import Pesquisa from "../../../Components/Pesquisa";
 import BotaoGerenciamento from "../../../Components/BotaoGerenciamento";
-import ReusableModal from '../../../Components/ModalGerenciamento';
+import ModalGerenciamento from '../../../Components/ModalGerenciamento';
 import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper } from '@mui/material';
 
 const criarDados = (codigo, nome, marca, preco, qtdEmEstoque) => {
@@ -27,21 +27,6 @@ const estiloCabecalhoTabela = {
 
 const estiloCelulaTabela = {
     borderRight: '1px solid #ddd',
-};
-
-const estiloModal = {
-    position: 'absolute',
-    top: '50%',
-    left: '50%',
-    transform: 'translate(-50%, -50%)',
-    width: 400,
-    height: 'auto',
-    maxHeight: '80vh', 
-    overflowY: 'auto', 
-    bgcolor: 'background.paper',
-    border: '2px solid #000',
-    boxShadow: 24,
-    p: 4,
 };
 
 const Estoque = () => {
@@ -123,7 +108,7 @@ const Estoque = () => {
                 </TableContainer>
             </div>
 
-            <ReusableModal
+            <ModalGerenciamento
                 open={abrirRegistrarPerda}
                 onClose={fecharModalRegistrarPerda}
                 title="Registrar Perda"
@@ -131,7 +116,7 @@ const Estoque = () => {
                 onSave={fecharModalRegistrarPerda}
             />
 
-            <ReusableModal
+            <ModalGerenciamento
                 open={abrirAdicionarLote}
                 onClose={fecharModalAdicionarLote}
                 title="Adicionar Lote"
