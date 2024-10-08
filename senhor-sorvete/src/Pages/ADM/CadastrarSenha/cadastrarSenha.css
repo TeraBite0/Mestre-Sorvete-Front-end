@@ -1,3 +1,48 @@
-.inputs-cadastrar labels {
-    color: #000;
+.main-container {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    overflow: hidden; /* Remove o scroll */
 }
+
+.titulo-cadastrar {
+    font-size: 22px;
+    font-weight: 600;
+    padding-left: 50px;
+    margin-bottom: 2%;
+}
+
+.inputs-cadastrar {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+}
+
+.campo-texto-cadastrar {
+    width: 100%;
+    max-width: 500px; /* Limita o tamanho máximo dos inputs */
+    margin-bottom: 20px;
+}
+
+.campo-texto-cadastrar label {
+    font-size: 16px;
+    font-weight: 400;
+    display: block;
+    margin-bottom: 5px;
+}
+
+.campo-texto-cadastrar input {
+    width: 100%; 
+    height: 40px;
+    border-radius: 5px;
+    border: 1px solid #000;
+    box-sizing: border-box; 
+    padding: 10px;
+}
+
+.botao-atualizar {
+    margin-top: 2%;
+}
+

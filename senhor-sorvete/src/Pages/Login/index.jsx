@@ -30,7 +30,7 @@ const Login = () => {
         }
 
         if(email === 'josue@gmail.com' && senha === 'sorvete123') {
-            navigate('/home');
+            navigate('/');
 
         } else {
             alert ('Credenciais inválidas')
@@ -69,7 +69,7 @@ const Login = () => {
                 </Botao>
             </form>
 
-            <a href=''>Esqueci minha senha</a>
+            <a href='/adm/cadastrar-senha'>Esqueci minha senha</a>
 
             </div>
 
