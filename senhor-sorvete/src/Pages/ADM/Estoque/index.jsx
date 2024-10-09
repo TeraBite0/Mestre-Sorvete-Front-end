@@ -39,7 +39,7 @@ const Estoque = () => {
         criarDados(1003, "Limão", "KeBaum", 5.99, 100),
         criarDados(1004, "Pistache", "Orggi", 15.99, 0),
         criarDados(1005, "Coco", "Kaskinha", 7.99, 50),
-    ];
+    ]; 
 
     const abrirModalRegistrarPerda = () => setAbrirRegistrarPerda(true);
     const fecharModalRegistrarPerda = () => setAbrirRegistrarPerda(false);
