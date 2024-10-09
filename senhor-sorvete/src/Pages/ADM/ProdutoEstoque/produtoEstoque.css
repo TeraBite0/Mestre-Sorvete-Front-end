@@ -1,0 +1,54 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
+
+
+
+.estoqueContainer {
+    margin: 0 5rem;
+    margin-bottom: 50px;
+}
+.estoqueContainer .header-home {
+    margin-bottom: 1px;
+}
+
+.controlesWrapper {
+    margin-top: 15px;
+    display: flex;
+    justify-content: space-around;
+    margin-bottom: 2%;
+}
+.controlesWrapper .pesquisa {
+    margin: 0px 5px;
+    justify-content: flex-start;
+}
+
+.wopperWrapper {
+    display: flex;
+    justify-content: space-evenly;
+}
+.wopperWrapper button {
+    margin: 0px 10px;
+}
+
+.modal-button-container {
+    display: flex;
+    justify-content: center;
+    gap: 50px;
+    margin-top: 15px;
+    margin: 0 10px;
+}
+.modal-button-container button {
+    width: 11rem;
+    font-size: 16px;
+}
+
+.barraTopoWrapper {
+    height: fit-content;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 2%;
+}
+.barraTopoWrapper span{
+    font-weight: 550;
+    font-size: 18px;
+}
