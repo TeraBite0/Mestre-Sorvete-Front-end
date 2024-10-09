@@ -7,8 +7,12 @@ import { useNavigate } from 'react-router-dom';
 const BotaoVoltarGerenciamento = ({ pagina, texto }) => {
     const navigate = useNavigate();
 
+    if (pagina === "" || pagina == null) {
+        pagina = "/home/gerenciamento"
+    }
+
     const handleVoltar = () => {
-        navigate('/home/gerenciamento');
+        navigate(pagina);
     };
 
     if (texto === "" || texto == null) {

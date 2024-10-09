@@ -66,7 +66,7 @@ const ProdutoEstoque = () => {
             <HeaderGerenciamento />
             <div className='estoqueContainer'>
                 <div className='barraTopoWrapper'>
-                    <BotaoVoltarGerenciamento pagina="Estoque" texto="Voltar ao Estoque" />
+                    <BotaoVoltarGerenciamento pagina="/adm/estoque" texto="Voltar ao Estoque" />
                     <span>Marca</span>
                     <div className='wopperWrapper'>
                         <BotaoGerenciamento botao="Buscar" />
