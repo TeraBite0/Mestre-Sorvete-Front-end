@@ -1,7 +1,7 @@
 import { Paper, Table, TableBody, TableCell, TableHead, TableRow } from '@mui/material';
+import { Dialog, DialogActions, DialogContent, DialogTitle, TextField, Button } from '@mui/material';
 import './listarProdutos.css';
 import TableContainer from '@mui/material/TableContainer';
-import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
 import { useEffect, useState } from 'react';
 import axios from "axios";
@@ -11,35 +11,81 @@ import BotaoVoltarGerenciamento from '../../../Components/BotaoVoltarGerenciamen
 import BotaoGerenciamento from '../../../Components/BotaoGerenciamento';
 
 const ListarProdutos = () => {
-
     const [produtos, setProdutos] = useState([]);
     const [erro, setErro] = useState(null);
+    const [open, setOpen] = useState(false); // Estado para controlar abertura do modal
+    const [novoProduto, setNovoProduto] = useState({ nome: '', marca: '', preco: '', imagemUrl: '' }); // Estado para os dados do novo produto
+    const [produtoSelecionado, setProdutoSelecionado] = useState(null); // Estado para produto em edição
+    const [imagemPreview, setImagemPreview] = useState(null); // Estado para mostrar o preview da imagem
 
-    // const carregarProdutos = () => {
-    //     axios.get('http://localhost:8080/produtos')
-    //     .then(resposta => {
-    //         setProdutos(resposta.data); // Atualizar a lista de produtos
-    //         setErro(null); // Resetar o erro, caso tenha ocorrido antes
-    //     })
-    //     .catch(error => {
-    //         console.error("Erro ao buscar produtos:", error);
-    //         setErro("Erro ao carregar produtos. Tente novamente mais tarde."); // Define a mensagem de erro
-    //     });
-    // };
-
-    // useEffect(() => {
-    //     carregarProdutos();
-    // }, []);
 
     useEffect(() => {
-        // Dados fictícios para teste
         const mockProdutos = [
-            { id: 1, nome: 'Produto 1', marca: 'Marca A', preco: 10.0, quantidadeEstoque: 10, imagemUrl: 'https://via.placeholder.com/50' },
-            { id: 2, nome: 'Produto 2', marca: 'Marca B', preco: 15.0, quantidadeEstoque: 20, imagemUrl: 'https://via.placeholder.com/50' },
-            { id: 3, nome: 'Produtooooooo 2', marca: 'Marca C', preco: 15.0, quantidadeEstoque: 20, imagemUrl: 'https://via.placeholder.com/50' }
+            { id: 1, nome: 'Produto 1', marca: 'Marca A', preco: 10.0, imagemUrl: 'https://via.placeholder.com/50' },
+            { id: 2, nome: 'Produto 2', marca: 'Marca B', preco: 15.0, imagemUrl: 'https://via.placeholder.com/50' },
+            { id: 3, nome: 'Produto 3', marca: 'Marca C', preco: 20.0, imagemUrl: 'https://via.placeholder.com/50' }
         ];
-        setProdutos(mockProdutos);  // Definindo os produtos fictícios no estado
+        setProdutos(mockProdutos); // Definindo os produtos fictícios no estado
     }, []);
+
+    const handleOpen = () => {
+        setNovoProduto({ nome: '', marca: '', preco: '', imagemUrl: '' });
+        setImagemPreview(null); // Vai resetar preview
+        setProdutoSelecionado(null);
+        setOpen(true);
+    };
+
+    // Fechar modal
+    const handleClose = () => {
+        setNovoProduto({ nome: '', marca: '', preco: '', imagemUrl: '' });
+        setImagemPreview(null); // Vai resetar preview
+        setProdutoSelecionado(null);
+        setOpen(false);
+    };
+
+    // Atualiza os valores inserido no formulário
+    const handleInputChange = (evento) => {
+        const { name, value } = evento.target;
+        setNovoProduto(prevState => ({ ...prevState, [name]: value }));
+    };
+
+    // Lidar com upload de imagem e mostrar preview
+    const handleImageUpload = (evento) => {
+        const file = evento.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onloadend = () => {
+                setImagemPreview(reader.result); // Mostra o preview
+                setNovoProduto(prevState => ({ ...prevState, imagemUrl: reader.result })); // Armazena a imagem no estado
+            };
+            reader.readAsDataURL(file);
+        }
+    };
+
+    // adicionar ou editar
+    const handleSubmit = () => {
+        if (produtoSelecionado) {
+            // Editar produto
+            const produtosAtualizados = produtos.map((produto) =>
+                produto.id === produtoSelecionado.id ? { ...produto, ...novoProduto } : produto
+            );
+            setProdutos(produtosAtualizados);
+        } else {
+            // Adicionar produto
+            const produtoAdicionado = { ...novoProduto, id: produtos.length + 1 };
+            setProdutos(prevState => [...prevState, produtoAdicionado]);
+        }
+
+        handleClose();
+    };
+
+    //  edição de produto
+    const handleEdit = (produto) => {
+        setProdutoSelecionado(produto);
+        setNovoProduto(produto);
+        setImagemPreview(produto.imagemUrl); // Exibir imagem atual no preview
+        setOpen(true);
+    };
 
     return (
         <>
@@ -51,16 +97,9 @@ const ListarProdutos = () => {
                 <BotaoVoltarGerenciamento />
             </div>
 
-
-
             <div className='barraPesquisa'>
-                <Pesquisa
-                    placeholder="Produto, Marca..."
-                />
-
-                <BotaoGerenciamento
-                    botao="+ Novo Produto"
-                />
+                <Pesquisa placeholder="Produto, Marca..." />
+                <BotaoGerenciamento botao="+ Novo Produto" onClick={handleOpen} />
             </div>
 
             <div className='tabela-produtos'>
@@ -68,17 +107,16 @@ const ListarProdutos = () => {
                     <p style={{ color: 'red' }}>{erro}</p> // Exibe uma mensagem de erro se houver
                 ) : (
                     <TableContainer component={Paper} className='container-tabela'>
-                        <Table arial-label="Tabela">
-                        <TableHead className='tabela-Head'>
-                            <TableRow>
-                                <TableCell className='tabela-head-cell'>Imagem</TableCell>
-                                <TableCell className='tabela-head-cell'>Nome</TableCell>
-                                <TableCell className='tabela-head-cell'>Marca</TableCell>
-                                <TableCell className='tabela-head-cell'>Preço</TableCell>
-                                <TableCell className='tabela-head-cell'>Quant.Estoque</TableCell>
-                                <TableCell className='tabela-head-cell'>Editar</TableCell>
-                            </TableRow>
-                        </TableHead>
+                        <Table aria-label="Tabela">
+                            <TableHead className='tabela-Head'>
+                                <TableRow>
+                                    <TableCell className='tabela-head-cell'>Imagem</TableCell>
+                                    <TableCell className='tabela-head-cell'>Nome</TableCell>
+                                    <TableCell className='tabela-head-cell'>Marca</TableCell>
+                                    <TableCell className='tabela-head-cell'>Preço</TableCell>
+                                    <TableCell className='tabela-head-cell'>Editar</TableCell>
+                                </TableRow>
+                            </TableHead>
                             <TableBody>
                                 {produtos.map(produto => (
                                     <TableRow key={produto.id} className='tabela-row'>
@@ -88,9 +126,10 @@ const ListarProdutos = () => {
                                         <TableCell className='tabela-cell'>{produto.nome}</TableCell>
                                         <TableCell className='tabela-cell'>{produto.marca}</TableCell>
                                         <TableCell className='tabela-cell'>{produto.preco}</TableCell>
-                                        <TableCell className='tabela-cell'>{produto.quantidadeEstoque}</TableCell>
                                         <TableCell className='tabela-cell'>
-                                            <button><EditIcon /></button>
+                                            <button onClick={() => handleEdit(produto)}>
+                                                <EditIcon />
+                                            </button>
                                         </TableCell>
                                     </TableRow>
                                 ))}
@@ -99,8 +138,61 @@ const ListarProdutos = () => {
                     </TableContainer>
                 )}
             </div>
+
+            <Dialog open={open} onClose={handleClose}>
+                <DialogTitle className='tituloModal'>{produtoSelecionado ? "Editar Produto" : "Adicionar Produto"}</DialogTitle>
+                <DialogContent>
+                    <TextField
+                        autoFocus
+                        margin="dense"
+                        name="nome"
+                        label="Nome do Produto"
+                        fullWidth
+                        value={novoProduto.nome}
+                        onChange={handleInputChange}
+                    />
+                    <TextField
+                        margin="dense"
+                        name="marca"
+                        label="Marca"
+                        fullWidth
+                        value={novoProduto.marca}
+                        onChange={handleInputChange}
+                    />
+                    <TextField
+                        margin="dense"
+                        name="preco"
+                        label="Preço"
+                        type="number"
+                        fullWidth
+                        value={novoProduto.preco}
+                        onChange={handleInputChange}
+                    />
+
+                    {/* Upload da imagem */}
+                    <input
+                        accept="image/*"
+                        type="file"
+                        onChange={handleImageUpload}
+                        style={{ marginTop: '10px' }}
+                    />
+
+                    {/* Preview da imagem */}
+                    {imagemPreview && (
+                        <img
+                            src={imagemPreview}
+                            alt="Preview"
+                            style={{ width: '50px', height: '50px', marginTop: '10px' }}
+                        />
+                    )}
+                </DialogContent>
+                <DialogActions>
+                    <Button className='botaoModal' onClick={handleClose}>Cancelar</Button>
+                    <Button className='botaoModal' onClick={handleSubmit}>{produtoSelecionado ? "Salvar" : "Adicionar"}</Button>
+                </DialogActions>
+            </Dialog>
         </>
     );
-}
+};
 
 export default ListarProdutos;
