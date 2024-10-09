@@ -10,6 +10,7 @@ import Recomendacao from "./Pages/ADM/Recomendacoes";
 import Estoque from "./Pages/ADM/Estoque";
 import Vendas from "./Pages/ADM/Vendas/vendas";
 import CadastrarSenha from "./Pages/ADM/CadastrarSenha";
+import Image from "./Pages/Image/image";
 const AppRoutes = () => {
 
     return (
@@ -26,6 +27,7 @@ const AppRoutes = () => {
                 <Route path="/adm/estoque" element={<Estoque/>}/>
                 <Route path= "/adm/vendas" element={<Vendas/>}/>
                 <Route path="/adm/cadastrar-senha" element={<CadastrarSenha/>}/>
+                <Route path="/adm/image" element={<Image/>}/>
             </Routes>
         </BrowserRouter>
     );
