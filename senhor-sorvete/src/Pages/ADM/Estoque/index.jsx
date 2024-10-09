@@ -27,6 +27,14 @@ const estiloCabecalhoTabela = {
 
 const estiloCelulaTabela = {
     borderRight: '1px solid #ddd',
+    whiteSpace: 'nowrap',
+};
+
+const estiloQuantidade = {
+    ...estiloCelulaTabela,
+    width: '8px',
+    maxWidth: '80px',
+    minWidth: '80px',
 };
 
 const Estoque = () => {
@@ -67,7 +75,7 @@ const Estoque = () => {
             <div className='estoqueContainer'>
                 <BotaoVoltarGerenciamento pagina="Estoque" />
                 <div className='controlesWrapper'>
-                    <Pesquisa />
+                    <Pesquisa/>
                     <div className='wopperWrapper'>
                         <BotaoGerenciamento botao="Registrar Perda" onClick={abrirModalRegistrarPerda} />
                         <BotaoGerenciamento botao="Adicionar Lote" onClick={abrirModalAdicionarLote} />
@@ -75,14 +83,14 @@ const Estoque = () => {
                 </div>
                 <span>Atualmente {produtos.length} produtos cadastrados</span>
                 <TableContainer component={Paper}>
-                    <Table sx={{ minWidth: 650 }} aria-label="tabela de estoque">
+                    <Table size="small" aria-label="tabela de estoque">
                         <TableHead>
                             <TableRow>
                                 <TableCell style={estiloCabecalhoTabela}>Código</TableCell>
                                 <TableCell style={estiloCabecalhoTabela}>Nome</TableCell>
                                 <TableCell style={estiloCabecalhoTabela}>Marca</TableCell>
                                 <TableCell style={estiloCabecalhoTabela}>Preço</TableCell>
-                                <TableCell style={estiloCabecalhoTabela}>Quantidade em Estoque</TableCell>
+                                <TableCell style={{...estiloCabecalhoTabela, ...estiloQuantidade}}>Quantidade</TableCell>
                             </TableRow>
                         </TableHead>
                         <TableBody>
@@ -94,7 +102,7 @@ const Estoque = () => {
                                     <TableCell style={estiloCelulaTabela} align="right">{produto.preco.toFixed(2)}</TableCell>
                                     <TableCell
                                         style={{
-                                            ...estiloCelulaTabela,
+                                            ...estiloQuantidade,
                                             backgroundColor: obterCorQuantidade(produto.qtdEmEstoque),
                                         }}
                                         align="center"
