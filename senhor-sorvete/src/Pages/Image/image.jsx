@@ -5,7 +5,7 @@ const { BlobServiceClient, generateBlobSASQueryParameters, ContainerSASPermissio
 
 const accountName = "terabite";
 const containerName = "terabite-container";
-const sasToken = "";
+const sasToken = "sv=2021w&sig=dN0fIr0ci2FaEL0Jq1T6n4jq4YOPAGvYupNrPGI0g1Q%3D";
 
 const Image = () => {
     const [file, setFile] = useState('');
@@ -22,7 +22,9 @@ const Image = () => {
 
         const blobServiceClient = new BlobServiceClient("https://" + accountName + ".blob.core.windows.net/?" + sasToken);
         const containerClient = blobServiceClient.getContainerClient(containerName);
-        const blobName = `${new Date().getTime()}-${file.name}`;
+
+        //const blobName = `${produto.id}.${file.name.split('.').pop()}`; lógica verdadeira
+        const blobName = `1245.${file.name.split('.').pop()}`; // MOCKADO
 
         const blockBlobClient = containerClient.getBlockBlobClient(blobName);
 
