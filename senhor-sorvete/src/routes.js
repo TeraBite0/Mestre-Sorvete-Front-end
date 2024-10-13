@@ -11,6 +11,7 @@ import Estoque from "./Pages/ADM/Estoque";
 import Vendas from "./Pages/ADM/Vendas/vendas";
 import CadastrarSenha from "./Pages/ADM/CadastrarSenha";
 import ProdutoEstoque from "./Pages/ADM/ProdutoEstoque";
+import Dashboard from "./Pages/ADM/Dashboard";
 
 const AppRoutes = () => {
 
@@ -28,6 +29,7 @@ const AppRoutes = () => {
                 <Route path="/adm/estoque" element={<Estoque/>}/>
                 <Route path= "/adm/vendas" element={<Vendas/>}/>
                 <Route path="/adm/cadastrar-senha" element={<CadastrarSenha/>}/>
+                <Route path="/adm/dashboard" element={<Dashboard/>}></Route>
                 
                 {/* TODO: TROCAR O CAMINHO PARA ":idEstoque" para receber o id do produto na URL */}
                 <Route path="/adm/produto-estoque" element={<ProdutoEstoque/>}/>

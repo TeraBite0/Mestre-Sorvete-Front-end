@@ -24,21 +24,24 @@ const Home = (props) => {
         <IconeWhatsapp />
         <section className="hero">
           <div className="content">
-            <h4>Bem vindo à</h4>
+            <h4>Bem-vindo ao</h4>
             <h1>MESTRE SORVETE</h1>
             <p>
               Descubra uma experiência deliciosa com nossos sorvetes artesanais,
               preparados com ingredientes frescos e sabores únicos. Venha
               experimentar combinações clássicas e inovações surpreendentes!
             </p>
-            <div className="buttons">
+            <div className="button">
               <button className="btn-primary">Saiba Mais</button>
             </div>
           </div>
-          <img src="Imagens/imagem-principal-homepage.png" alt="" />
+          <img
+            src="Imagens/imagem-principal-homepage.png"
+            alt="Imagem principal banner"
+          />
         </section>
 
-        <section className="sobre-nos">
+        <section className="section-2">
           <div className="sobre-container">
             <div className="sobre-img">
               <img src="Imagens/imagem-2-homepage.png" alt="Imagem sobre nós" />
@@ -60,8 +63,10 @@ const Home = (props) => {
             </div>
           </div>
         </section>
+
         <CarrosselImagens />
-        <section className="sugestao-do-dia">
+
+        <section className="section-3">
           <h2>SUGESTÃO DO DIA</h2>
           <p className="data">
             <span id="data-atual">{dataAtual}</span>
@@ -88,9 +93,9 @@ const Home = (props) => {
           </div>
         </section>
 
-        <section className="more-info">
+        <section className="section-4">
           <div className="more-text">
-            <h1>Mais!</h1>
+            <h1>Mais</h1>
             <p>
               Mergulhe na arte da culinária gastronômica com um toque
               refrescante! Descubra como os mestres da cozinha transformam
@@ -106,7 +111,7 @@ const Home = (props) => {
           </div>
         </section>
 
-        <section className="newsletter">
+        <section className="section-5">
           <h2>Receber notificações</h2>
           <p>
             Não perca a chance de ser o primeiro a saber quando novos sabores
