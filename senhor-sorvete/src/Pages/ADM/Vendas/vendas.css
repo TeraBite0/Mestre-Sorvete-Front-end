@@ -1,0 +1,37 @@
+.container-vendas {
+    display: flex;
+    flex-direction: column;
+  
+  }
+  
+  .tabela-cont{
+    display: flex;
+    width: 95% !important;
+    margin: 0 auto;
+  }
+
+  
+  h1{
+    font-size: 1.8rem;
+    padding: 0 30px;
+  }
+  
+  .tabela-cont .MuiTableCell-head {
+    color: white !important;
+    font-weight: bold;
+    font-size: 17px !important;
+  }
+  
+  .tabela-cont .MuiTableRow-root:nth-of-type(even) {
+    background-color: #f9f9f9;
+  }
+  
+  .tabela-cont .MuiTableRow-root:hover {
+    background-color: #e0f7fa; 
+  }
+  
+  .tabela-cont .MuiPaper-root {
+    box-shadow: none !important; 
+  }
+  
+  

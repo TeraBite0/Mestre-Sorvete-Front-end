@@ -28,14 +28,14 @@ function createData(codigo, data, produtos, precos) {
             <HeaderGerenciamento />
             <BotaoVoltarGerenciamento />
             <h1>Vendas</h1>
-            <TableContainer component={Paper}>
+            <TableContainer component={Paper} className='tabela-cont'>
       <Table sx={{ minWidth: 650 }} size="small" aria-label="a dense table">
-        <TableHead>
+        <TableHead className='tabela-Head' >
           <TableRow>
-            <TableCell>codigo</TableCell>
-            <TableCell align="right">data</TableCell>
-            <TableCell align="right">produtos</TableCell>
-            <TableCell align="right">precos</TableCell>
+            <TableCell className='tabela-Head'>Código</TableCell>
+            <TableCell className='tabela-Head' align="right">Data</TableCell>
+            <TableCell className='tabela-Head' align="right">Produtos</TableCell>
+            <TableCell className='tabela-Head' align="right">Preços</TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
@@ -44,7 +44,7 @@ function createData(codigo, data, produtos, precos) {
               key={row.codigo}
               sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
             >
-              <TableCell component="th" scope="row">
+              <TableCell component="th" scope="row" >
                 {row.codigo}
               </TableCell>
               <TableCell align="right">{row.data}</TableCell>

@@ -9,7 +9,7 @@ import ModalGerenciamento from '../../../Components/ModalGerenciamento';
 
 const Recomendacao = () => {
     const [produtos, setProdutos] = useState([]);
-    const [erro, setErro] = useState(null);
+    const [erro] = useState(null);
     const [modalOpen, setModalOpen] = useState(false); 
     const [selectedProduto, setSelectedProduto] = useState(null); 
 
@@ -51,10 +51,10 @@ const Recomendacao = () => {
                         <Table arial-label="Tabela">
                             <TableHead className='tabela-Head'>
                                 <TableRow>
-                                    <TableCell className='tabela-head-cell'>Nome</TableCell>
-                                    <TableCell className='tabela-head-cell'>Marca</TableCell>
-                                    <TableCell className='tabela-head-cell'>Preço</TableCell>
-                                    <TableCell className='tabela-head-cell'>Editar</TableCell>
+                                    <TableCell className='tabela-head'>Nome</TableCell>
+                                    <TableCell className='tabela-head'>Marca</TableCell>
+                                    <TableCell className='tabela-head'>Preço</TableCell>
+                                    <TableCell className='tabela-head'>Editar</TableCell>
                                 </TableRow>
                             </TableHead>
                             <TableBody>

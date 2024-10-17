@@ -5,8 +5,7 @@
 }
 
 .tabela-head-cell {
-    padding: 10px;  
-    text-align: center !important;  
+    padding: 10px;   
 }
 
 .tabela-row {
@@ -26,3 +25,10 @@
     cursor: pointer;
     color: #F1C97B;
 }
+
+.container-tabela .MuiTableCell-head {
+    color: white !important;
+    font-weight: bold;
+    font-size: 17px !important;
+    text-align: center !important;
+  }

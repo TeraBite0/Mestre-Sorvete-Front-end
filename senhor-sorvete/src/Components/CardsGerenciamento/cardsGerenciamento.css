@@ -1,4 +1,4 @@
-.card-gerenciamento{
+.card-gerenciamento {
     display: flex;
     flex-wrap: wrap;
     justify-content: space-around;
@@ -9,37 +9,40 @@
     background-color: white;
     border: 1px solid #ddd;
     border-radius: 8px;
-    text-align: start;
+    text-align: start !important;
     box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
     width: 30%;
 }
 
-.card-gerenciamento .imagem{
-    display:flex;
+.card-gerenciamento img {
+    display: flex;
     align-items: center;
     justify-content: center;
+    margin-top: 6%;
 }
 
-.card-gerenciamento:hover{
+.card-gerenciamento:hover {
     transform: scale(1.02);
     background-color: #f5f5f5;
 }
 
-.content-gerenciamento{
+.content-gerenciamento {
 
-    & h1{
+
+    & h1 {
         font-size: 1.3rem;
         color: #000;
-        margin: 10px 0;
-        
+
+        padding: 0;
+        margin: 10 0;
     }
 
-    & h2{
+    & h2 {
         font-size: 1rem;
         color: #000;
         margin: 10px 0;
         font-weight: 400;
-    
+
     }
 
 
@@ -48,4 +51,3 @@
 a {
     text-decoration: none;
 }
-

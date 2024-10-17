@@ -15,7 +15,7 @@
     width: 100%;
 
   }
-  
+
   .ferramentas img {
     width: 80%;
     height: 90%;
@@ -24,6 +24,6 @@
   .containerFerramentas {
     display: flex;
     justify-content: start;
-    margin-left: 3%;
+    margin-left: 1.5%;
   }
   
