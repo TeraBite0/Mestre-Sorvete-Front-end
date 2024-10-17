@@ -1,33 +1,12 @@
-.container-tabela {
-    display: flex;
-    justify-content: center;
-    border: 2px solid #2F615E; 
-    border-radius: 15px !important; 
-}
-
-.secao-recomendacoes {
-    display: flex;
-    justify-content: space-around;
-    width: 20%;
-    margin-bottom: 5%;
-}
-
-.tabela-produtos {
-    margin: 40px;
-    padding: 10px;
-}
-
-.tabela-Head {
-    display: flex;
-    background-color: #2F615E; 
-   
+.tabela-cell {
+    padding: 10px;  
+    text-align: center !important;
+    white-space: nowrap; 
 }
 
 .tabela-head-cell {
-    color: #fff !important;
-    font-family: "Poppins", system-ui !important;
-    font-size: 18px !important;
-    font-weight: bold;
+    padding: 10px;  
+    text-align: center !important;  
 }
 
 .tabela-row {
@@ -35,22 +14,15 @@
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
-.tabela-cell {
-    display: flex;
-    font-size: 17px !important;
-    font-weight: 500 !important;
-    padding: 10px 15px;
-    align-items: center;
-}
-
-.tabela-cell button{
+.tabela-cell button {
     border: none;
     background: none;
     color: inherit;
     transition: all 0.3s ease;
+    padding: 5px;  
 }
 
 .tabela-cell button:hover {
     cursor: pointer;
-    color: #F1C97B; 
+    color: #F1C97B;
 }

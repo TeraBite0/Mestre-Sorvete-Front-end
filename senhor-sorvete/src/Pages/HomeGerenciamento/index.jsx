@@ -56,6 +56,7 @@ const HomeGerenciamento = () => {
                         titulo="Vendas" 
                         subtitulo="Registre as saidas de estoque" 
                         imagem={imagens[4]} 
+                        href='/adm/vendas'
                     />
                 </div>
             </div>
