@@ -1,4 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
+import { useCallback } from "react";
 import "./carrosselImagens.css";
 
 const CarrosselImagens = () => {
@@ -8,12 +9,11 @@ const CarrosselImagens = () => {
   const visibleCards = 3; // Número de cards visíveis ao mesmo tempo
 
   // Mover o carrossel
-  const updateCarousel = () => {
-    const cardWidth =
-      carouselInnerRef.current.querySelector(".card").offsetWidth;
+  const updateCarousel = useCallback(() => {
+    const cardWidth = carouselInnerRef.current.querySelector(".card").offsetWidth;
     const newTransformValue = -currentIndex * (cardWidth + 20); // margin - 20px
     carouselInnerRef.current.style.transform = `translateX(${newTransformValue}px)`;
-  };
+  }, [currentIndex]);
 
   // Avançar o carrossel
   const handleNextClick = () => {
@@ -35,7 +35,7 @@ const CarrosselImagens = () => {
 
   useEffect(() => {
     updateCarousel(); // Atualiza o carrossel sempre que o currentIndex mudar
-  }, [currentIndex]);
+  }, [currentIndex, updateCarousel]);
 
   useEffect(() => {
     let autoScroll = setInterval(() => {

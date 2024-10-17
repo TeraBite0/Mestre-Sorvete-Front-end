@@ -1,0 +1,26 @@
+.titulo-cadastrar {
+    text-align: center;
+}
+
+.dashboard-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  justify-content: space-around;
+}
+
+.dashboard-item {
+  flex: 1 1 calc(25% - 20px);
+  min-width: 300px;
+  margin: 10px;
+  padding: 20px;
+  border: 1px solid #ccc;
+  background-color: #f9f9f9;
+  border-radius: 8px;
+}
+
+@media (max-width: 768px) {
+  .dashboard-item {
+    flex: 1 1 100%;
+  }
+}

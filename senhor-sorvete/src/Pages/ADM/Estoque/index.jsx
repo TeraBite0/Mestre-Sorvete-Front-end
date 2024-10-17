@@ -4,7 +4,7 @@ import HeaderGerenciamento from "../../../Components/HeaderGerenciamento";
 import BotaoVoltarGerenciamento from '../../../Components/BotaoVoltarGerenciamento';
 import Pesquisa from "../../../Components/Pesquisa";
 import BotaoGerenciamento from "../../../Components/BotaoGerenciamento";
-import ReusableModal from '../../../Components/ModalGerenciamento';
+import ModalGerenciamento from '../../../Components/ModalGerenciamento';
 import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper } from '@mui/material';
 
 const criarDados = (codigo, nome, marca, preco, qtdEmEstoque) => {
@@ -27,21 +27,14 @@ const estiloCabecalhoTabela = {
 
 const estiloCelulaTabela = {
     borderRight: '1px solid #ddd',
+    whiteSpace: 'nowrap',
 };
 
-const estiloModal = {
-    position: 'absolute',
-    top: '50%',
-    left: '50%',
-    transform: 'translate(-50%, -50%)',
-    width: 400,
-    height: 'auto',
-    maxHeight: '80vh', 
-    overflowY: 'auto', 
-    bgcolor: 'background.paper',
-    border: '2px solid #000',
-    boxShadow: 24,
-    p: 4,
+const estiloQuantidade = {
+    ...estiloCelulaTabela,
+    width: '8px',
+    maxWidth: '80px',
+    minWidth: '80px',
 };
 
 const Estoque = () => {
@@ -54,7 +47,7 @@ const Estoque = () => {
         criarDados(1003, "Limão", "KeBaum", 5.99, 100),
         criarDados(1004, "Pistache", "Orggi", 15.99, 0),
         criarDados(1005, "Coco", "Kaskinha", 7.99, 50),
-    ];
+    ]; 
 
     const abrirModalRegistrarPerda = () => setAbrirRegistrarPerda(true);
     const fecharModalRegistrarPerda = () => setAbrirRegistrarPerda(false);
@@ -82,7 +75,7 @@ const Estoque = () => {
             <div className='estoqueContainer'>
                 <BotaoVoltarGerenciamento pagina="Estoque" />
                 <div className='controlesWrapper'>
-                    <Pesquisa />
+                    <Pesquisa/>
                     <div className='wopperWrapper'>
                         <BotaoGerenciamento botao="Registrar Perda" onClick={abrirModalRegistrarPerda} />
                         <BotaoGerenciamento botao="Adicionar Lote" onClick={abrirModalAdicionarLote} />
@@ -90,14 +83,14 @@ const Estoque = () => {
                 </div>
                 <span>Atualmente {produtos.length} produtos cadastrados</span>
                 <TableContainer component={Paper}>
-                    <Table sx={{ minWidth: 650 }} aria-label="tabela de estoque">
+                    <Table size="small" aria-label="tabela de estoque">
                         <TableHead>
                             <TableRow>
                                 <TableCell style={estiloCabecalhoTabela}>Código</TableCell>
                                 <TableCell style={estiloCabecalhoTabela}>Nome</TableCell>
                                 <TableCell style={estiloCabecalhoTabela}>Marca</TableCell>
                                 <TableCell style={estiloCabecalhoTabela}>Preço</TableCell>
-                                <TableCell style={estiloCabecalhoTabela}>Quantidade em Estoque</TableCell>
+                                <TableCell style={{...estiloCabecalhoTabela, ...estiloQuantidade}}>Quantidade</TableCell>
                             </TableRow>
                         </TableHead>
                         <TableBody>
@@ -109,7 +102,7 @@ const Estoque = () => {
                                     <TableCell style={estiloCelulaTabela} align="right">{produto.preco.toFixed(2)}</TableCell>
                                     <TableCell
                                         style={{
-                                            ...estiloCelulaTabela,
+                                            ...estiloQuantidade,
                                             backgroundColor: obterCorQuantidade(produto.qtdEmEstoque),
                                         }}
                                         align="center"
@@ -123,7 +116,7 @@ const Estoque = () => {
                 </TableContainer>
             </div>
 
-            <ReusableModal
+            <ModalGerenciamento
                 open={abrirRegistrarPerda}
                 onClose={fecharModalRegistrarPerda}
                 title="Registrar Perda"
@@ -131,7 +124,7 @@ const Estoque = () => {
                 onSave={fecharModalRegistrarPerda}
             />
 
-            <ReusableModal
+            <ModalGerenciamento
                 open={abrirAdicionarLote}
                 onClose={fecharModalAdicionarLote}
                 title="Adicionar Lote"

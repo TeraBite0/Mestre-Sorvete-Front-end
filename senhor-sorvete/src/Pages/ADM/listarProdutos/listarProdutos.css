@@ -66,3 +66,23 @@
     color: #F1C97B; 
     
 }
+
+.tituloModal {
+    font-family: "Poppins", system-ui !important;
+    font-size: 22px;
+}
+
+.botaoModal{
+    background-color: #2F615E !important;
+    color: #F1C97B !important;
+    font-family: "Poppins", system-ui !important;
+    font-size: 22px;
+    border-radius: 5px;
+}
+
+.botaoModal:hover {
+    cursor: pointer;
+    background-color: #1f4a43; /* Muda a cor de fundo ao passar o mouse */
+    transform: translateY(-2px); /* Levanta o botão levemente */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Adiciona uma sombra ao botão */
+}

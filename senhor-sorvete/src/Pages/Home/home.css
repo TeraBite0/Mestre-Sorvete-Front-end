@@ -11,14 +11,17 @@ body {
   background-color: white;
 }
 
+/* main {
+  margin: 0 5%;
+} */
+
 .hero {
-  height: 100vh;
   display: flex;
   justify-content: space-between;
   align-items: center;
   padding: 0 0 0 5%;
   background: linear-gradient(white, 65%, #f1c97b);
-  position: relative;
+  box-sizing: border-box;
 }
 
 .hero img {
@@ -27,14 +30,15 @@ body {
 }
 
 .content {
-  max-width: 50%;
+  max-width: 100%;
+  padding: 20px;
 }
 
 .home h4 {
   font-weight: 300;
 }
 
-.home h1 {
+.hero h1 {
   color: #772321;
   font-size: 3rem;
   margin-bottom: 20px;
@@ -47,31 +51,25 @@ body {
   color: #333;
 }
 
-.buttons {
+.content .button {
   display: flex;
   height: 60px;
 }
 
-.home button {
-  padding: 10px 20px;
+.button .btn-primary {
   border-radius: 5px;
-  cursor: pointer;
-  font-size: 1rem;
-  font-weight: bold;
-  border: 2px solid #772321;
-}
-
-.buttons .btn-primary {
+  font-size: 1.2rem;
+  padding: 10px 15px;
+  width: auto;
   background-color: #772321;
   color: white;
 }
 
-.sobre-nos {
+.section-2 {
   display: flex;
   justify-content: center;
   align-items: center;
   padding: 85px 20px;
-  background-color: #fff;
 }
 
 .sobre-container {
@@ -96,14 +94,15 @@ body {
   font-size: 1.2rem;
 }
 
-.sobre-img img {
-  height: 55vh;
-  /* max-width: 800px; */
+.sobre-img img, .sugestao-img img {
+  height: auto;
+  max-width: 100%;
+  border-radius: 10px;
 }
 
 /* Carrossel aqui */
 
-.sugestao-do-dia h2 {
+.section-3 h2 {
   letter-spacing: -1px;
   text-align: center;
   color: #772321;
@@ -111,11 +110,12 @@ body {
   margin-bottom: -20px;
 }
 
-.sugestao-do-dia .data {
+.section-3 .data {
   text-align: center;
   font-size: 1rem;
   color: #772321;
   font-weight: bold;
+  /* TEMPORÁRIO */
   margin-bottom: -150px;
   text-shadow: 1px 2px 3px rgba(0, 0, 0, 0.4);
 }
@@ -126,11 +126,11 @@ body {
   align-items: center;
   margin: 7%;
   border-radius: 20px;
-  padding: 60px 20px;
+  /* padding: 60px 20px; */
   background: linear-gradient(180deg, #ffdb94 52%, #deaf54 100%);
 }
 
-.sugestao-do-dia-child h2 {
+.section-3-child h2 {
   text-align: center;
   color: #772321;
   font-size: 2.5rem;
@@ -145,11 +145,6 @@ body {
   gap: 50px;
   max-width: 1200px;
   width: 100%;
-}
-
-.sugestao-img img {
-  height: 65vh;
-  border-radius: 10px;
 }
 
 .sugestao-text {
@@ -185,62 +180,66 @@ body {
   background-color: #a12d2b;
 }
 
-.more-info {
+.section-4 {
   display: flex;
   justify-content: center;
   align-items: center;
   gap: 50px;
-  padding: 40px;
-  background-color: #fdfdfd;
+  /* padding: 40px; */
 }
 
-.more-info h1 {
+.section-4 h1 {
   color: #772321;
   font-size: 2.5rem;
   margin-bottom: 20px;
   position: relative;
 }
 
-.more-info p {
+.section-4 p {
   font-size: 1.2rem;
   color: #333;
+}
+
+.more-text .btn-primary {
+  font-size: 1.2rem;
+  background-color: #772321;
+  color: white;
+  padding: 10px 20px;
+  border: none;
 }
 
 .more-text {
   max-width: 50%;
 }
 
-.btn-primary {
+/* .btn-primary {
+  font-size: 1.2rem;
   background-color: #772321;
   color: white;
   padding: 10px 20px;
   border: none;
-  cursor: pointer;
-  transition: background-color 0.3s;
 }
-
 .btn-primary:hover {
   background-color: #590f19;
-}
+} */
 
 .more-img img {
   height: 40vh;
 }
 
-.newsletter {
+.section-5 {
   text-align: center;
-  padding: 40px;
-  background-color: #fdfdfd;
-  margin-bottom: 70px;
+  /* padding: 40px; */
+  margin: 90px;
 }
 
-.newsletter h2 {
+.section-5 h2 {
   color: #772321;
   font-size: 2rem;
   margin-bottom: 20px;
 }
 
-.newsletter p {
+.section-5 p {
   font-size: 1rem;
   margin-bottom: 20px;
   color: #333;
@@ -271,4 +270,45 @@ body {
 
 .newsletter-form button:hover {
   background-color: #590f19;
+}
+
+
+@media (max-width: 1024px) {
+  /* Ajustes para tablets */
+  .content, .sobre-text, .more-text {
+    max-width: 100%; 
+  }
+
+  .sobre-container, .sugestao-container, .section-4 {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .hero img, .sugestao-img img, .more-img img {
+    height: auto;
+    width: 100%;
+  }
+}
+
+@media (max-width: 600px) {
+  /* Ajustes para smartphones */
+  .hero {
+    height: auto;
+    padding: 10px;
+  }
+
+  .content {
+    text-align: center;
+    margin-bottom: 20px;
+  }
+
+  .hero img {
+    width: 100%;
+    max-height: 50vh;
+  }
+
+  .sugestao-container, .section-4 {
+    flex-direction: column;
+    gap: 20px;
+  }
 }
