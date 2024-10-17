@@ -73,7 +73,7 @@ const Estoque = () => {
         <>
             <HeaderGerenciamento />
             <div className='estoqueContainer'>
-                <BotaoVoltarGerenciamento pagina="Estoque" />
+                <BotaoVoltarGerenciamento pagina="/home/gerenciamento" />
                 <div className='controlesWrapper'>
                     <Pesquisa/>
                     <div className='wopperWrapper'>
