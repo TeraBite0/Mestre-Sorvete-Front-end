@@ -3,7 +3,6 @@ import './contato.css';
 import WhatsAppIcon from '@mui/icons-material/WhatsApp';
 import InstagramIcon from '@mui/icons-material/Instagram';
 import Header from '../../Components/Header';
-import Footer from '../../Components/Footer';
 
 const Contato = () => {
   const isMobile = () => /Mobi|Android/i.test(navigator.userAgent);
@@ -35,9 +34,9 @@ const Contato = () => {
 
       <div className="contato">
         <div>
-          <img src="" alt="" />
+          <img src="Imagens/logo-josue.jpg" alt="Logo do mestre sorvete" />
         </div>
-        <h2>Senhor Sorvete</h2>
+        <h2>Mestre Sorvete</h2>
         <button onClick={() => handleSelect("whatsapp")}>
           <WhatsAppIcon /> WhatsApp
         </button>
@@ -46,7 +45,7 @@ const Contato = () => {
         </button>
       </div>
 
-      <Footer />
+
     </div>
   );
 };

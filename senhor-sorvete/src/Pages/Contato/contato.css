@@ -4,21 +4,22 @@
     flex-direction: column;
     justify-content: space-between;
     height: 100vh; /* Ocupa toda a altura da tela */
-    overflow: hidden; 
+    overflow: hidden;
 }
 
 
 .contato {
     margin: 0 auto;
+    margin-bottom: 30px;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    width: 35vw;
-    height: 45vh; /* Define uma altura máxima */
+    width: 30vw;
+    height: 70vh; /* Define uma altura máxima */
     border: 2px solid #000;
     border-radius: 15px;
-    box-shadow: 10px 10px 25px #888888;
+    box-shadow: 10px 10px 30px #888888;
     padding: 25px;
     background-color: #F8F2D9;
     overflow: hidden; 
@@ -33,8 +34,8 @@
 }
 
 .contato button {
-    width: 20vw;
-    height: 6vh;
+    width: 250px;
+    height: 50px;
     margin: 2%;
     border-radius: 12px;
     font-family: "Poppins", sans-serif;
