@@ -34,13 +34,13 @@ const Contato = () => {
 
       <div className="contato">
         <div>
-          <img src="Imagens/logo-josue.jpg" alt="Logo do mestre sorvete" />
+          <img src="/Imagens/logo-josue.jpg" alt="Logo do mestre sorvete" />
         </div>
         <h2>Mestre Sorvete</h2>
-        <button onClick={() => handleSelect("whatsapp")}>
+        <button className="botao-whatsaap" onClick={() => handleSelect("whatsapp")}>
           <WhatsAppIcon /> WhatsApp
         </button>
-        <button onClick={() => handleSelect("instagram")}>
+        <button className="botao-instagram" onClick={() => handleSelect("instagram")}>
           <InstagramIcon /> Instagram
         </button>
       </div>

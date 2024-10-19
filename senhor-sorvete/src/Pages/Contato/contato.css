@@ -7,53 +7,85 @@
     overflow: hidden;
 }
 
-
 .contato {
     margin: 0 auto;
-    margin-bottom: 30px;
+    margin-bottom: 50px;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    width: 30vw;
-    height: 70vh; /* Define uma altura máxima */
-    border: 2px solid #000;
+    width: 80vw;
+    height: 70vh; 
     border-radius: 15px;
     box-shadow: 10px 10px 30px #888888;
     padding: 25px;
-    background-color: #F8F2D9;
+    background: linear-gradient(to bottom right,#deaf54 40%, #ffdb94 50%);
     overflow: hidden; 
 }
 
-
-.contato h2 {
-    font-family: "Poppins", sans-serif;
-    font-weight: 700;
-    font-style: normal;
-    font-size: 28px;
+.contato img {
+    width: 220px; /* Aumentei o tamanho do logotipo */
+    height: 220px;
+    border-radius: 50%;
+    border: 2px groove #772321;
+    margin-bottom: 10px
 }
 
-.contato button {
-    width: 250px;
-    height: 50px;
-    margin: 2%;
-    border-radius: 12px;
+.contato h2 {
+    font-family: "Poppins", system-ui;
+    font-weight: 700;
+    font-style: normal;
+    font-size: 48px; /* Um pouco maior */
+    text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.5);
+    margin-bottom: 30px;
+}
+
+.botao-whatsaap {
+    width: 300px;
+    height: 60px;
+    margin: 15px 0; /* Aumentei o espaçamento entre os botões */
+    border-radius: 18px;
     font-family: "Poppins", sans-serif;
     font-weight: 400;
     font-style: normal;
-    font-size: 16px;
+    font-size: 18px;
     color: #fff;
     display: flex;
     align-items: center;
     justify-content: center;
-    border: 2px solid #772321;
-    background-image: linear-gradient(to bottom right, #772321, #ad6664);
+    border: none;
+    background-image: linear-gradient(to bottom right, #25d366, #128c7e); /* Verde WhatsApp */
 }
 
-.contato button:hover {
+.botao-instagram {
+    width: 300px;
+    height: 60px;
+    margin: 15px 0; /* Aumentei o espaçamento entre os botões */
+    border-radius: 18px;
+    font-family: "Poppins", sans-serif;
+    font-weight: 400;
+    font-style: normal;
+    font-size: 18px;
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: none;
+    background-image: linear-gradient(to bottom right, #E1306C, #C13584); /* Cores do Instagram */
+}
+
+.botao-whatsaap:hover {
     cursor: pointer;
-    background-image: linear-gradient(to bottom right, #ad6664, #772321); /* Inverte as cores do gradiente */
-    border: 2px solid #ad6664; 
+    background-image: linear-gradient(to bottom right, #128c7e, #25d366); /* Inverte as cores do WhatsApp */
+    border: 2px solid #128c7e; 
+    transform: scale(1.05); 
+    transition: 0.3s ease; 
+}
+
+.botao-instagram:hover {
+    cursor: pointer;
+    background-image: linear-gradient(to bottom right, #C13584, #E1306C); /* Inverte as cores do Instagram */
+    border: 2px solid #C13584; 
     transform: scale(1.05); 
     transition: 0.3s ease; 
 }
@@ -64,5 +96,19 @@
         width: 80vw;
         max-height: 50vh;
         padding: 20px;
+    }
+    
+    .contato img {
+        width: 150px; /* Reduz o tamanho do logotipo para telas menores */
+        height: 150px;
+    }
+
+    .contato h2 {
+        font-size: 24px; /* Ajusta o tamanho da fonte em telas menores */
+    }
+
+    .botao-whatsapp, .botao-instagram {
+        width: 200px; /* Botões menores em dispositivos menores */
+        height: 45px;
     }
 }
