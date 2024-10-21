@@ -56,7 +56,7 @@
     margin-top: -20px;
 }
 
-/* Media Queries for Responsiveness */
+
 @media (max-width: 768px) {
     .footer-content {
         flex-direction: column;

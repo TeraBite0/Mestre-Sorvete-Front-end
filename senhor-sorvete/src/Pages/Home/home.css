@@ -191,7 +191,7 @@ button {
 }
 
 .more-img img {
-  height: 40vh;
+  max-height: 40vh;
 }
 
 .section-5 {
@@ -257,7 +257,7 @@ button {
   .section-4 {
     flex-direction: column;
     text-align: center;
-    width: 100%;
+    /* width: 100%; */
     max-width: 1200px;
     padding: 2rem;
   }
