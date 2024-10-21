@@ -1,48 +1,38 @@
 .footer {
+    display: flex;
+    flex-direction: column;
     background-color: #FFDB94;
-    padding: 5px 0;
-    align-items: center;
+    padding: 10px 0;
     width: 100%;
 }
 
 .footer-content {
     display: flex;
+    flex-direction: row;
     justify-content: space-between;
-    align-items: center; 
-    width: 90%; 
+    align-items: center;
+    width: 90%;
     margin: 0 auto;
 }
 
-.logo img{
-    width: 150px;
-}
-
 .sobre-projeto {
-    font-family: "Poppins", system-ui;
-    font-size: 1.0em;
+    font-size: 1rem;
     color: #252424;
     text-align: center;
-    max-width: 60%; 
+    max-width: 60%;
 }
 
 .itens-footer {
-    font-family: "Poppins", system-ui;
-    font-weight: 600;
-    font-size: 1.0em;
-    color: #252424;
     display: flex;
-    flex-direction: row;
-    justify-content: space-between;
-    margin-top: 2%;
-    gap: 25px; 
+    gap: 2rem;
 }
 
 .itens-footer ul {
-    list-style-type: none;
+    list-style: none;
     padding: 0;
     display: flex;
     flex-direction: column;
-    gap: 25px; 
+    gap: 10px;
 }
 
 .itens-footer li a {
@@ -51,17 +41,60 @@
 }
 
 .itens-footer li a:hover {
-    cursor: pointer;
-    transform: scale(1.1);
     color: #772321;
     font-weight: bold;
     text-decoration: underline;
+    transform: scale(1.05);
+    transition: all 0.3s ease;
 }
 
 .copyright {
-    font-family: "Poppins", system-ui;
-    font-size: 0.9em;
+    font-size: 0.9rem;
     color: #252424;
     font-weight: bold;
     text-align: center;
+    margin-top: -20px;
+}
+
+/* Media Queries for Responsiveness */
+@media (max-width: 768px) {
+    .footer-content {
+        flex-direction: column;
+        text-align: center;
+        gap: 20px;
+    }
+
+    .itens-footer {
+        flex-direction: column;
+        align-items: center;
+        gap: 1rem;
+    }
+
+    .sobre-projeto {
+        max-width: 100%;
+        font-size: 0.9rem;
+    }
+
+    .copyright {
+        margin-top: 0;
+    }
+}
+
+@media (max-width: 480px) {
+    .footer {
+        padding: 15px;
+    }
+
+    .itens-footer {
+        gap: 1rem;
+    }
+
+    .sobre-projeto {
+        font-size: 0.85rem;
+    }
+
+    .copyright {
+        font-size: 0.8rem;
+        margin-top: 0;
+    }
 }

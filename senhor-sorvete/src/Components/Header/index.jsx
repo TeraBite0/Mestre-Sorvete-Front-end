@@ -9,7 +9,7 @@ const Header = () => {
     };
 
     return (
-        <div className="containerHeader">
+        <div className="containerHeader" id="start">
             <div className="containerImgLogo">
                 <img src="/Imagens/logo-sorvete.png" alt="logo sorvete" />
             </div>

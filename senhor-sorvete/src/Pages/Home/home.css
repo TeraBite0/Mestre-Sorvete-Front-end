@@ -3,19 +3,30 @@
 html,
 body {
   overflow-x: hidden;
-  transition: smooth;
+  scroll-behavior: smooth;
   /* font-family: "Poppins", sans-serif; */
+}
+
+/* GLOBAL */
+button {
+  cursor: pointer;
 }
 
 .home {
   background-color: white;
 }
 
-/* main {
-  margin: 0 5%;
-} */
+.home button {
+  background-color: #772321;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 5px;
+  font-size: 1.2rem;
+  width: auto;
+}
 
-.hero {
+.section-1 {
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -24,9 +35,9 @@ body {
   box-sizing: border-box;
 }
 
-.hero img {
+.section-1 img {
   height: 90vh;
-  max-width: 800px;
+  /* max-width: 800px; */
 }
 
 .content {
@@ -38,14 +49,14 @@ body {
   font-weight: 300;
 }
 
-.hero h1 {
+.section-1 h1 {
   color: #772321;
   font-size: 3rem;
   margin-bottom: 20px;
-  margin-top: -20px;
+  margin-top: -20px; 
 }
 
-.hero p {
+.section-1 p {
   font-size: 1.2rem;
   margin-bottom: 40px;
   color: #333;
@@ -56,27 +67,23 @@ body {
   height: 60px;
 }
 
-.button .btn-primary {
-  border-radius: 5px;
-  font-size: 1.2rem;
-  padding: 10px 15px;
-  width: auto;
-  background-color: #772321;
+.btn-primary a {
   color: white;
+  text-decoration: none;
 }
 
 .section-2 {
   display: flex;
   justify-content: center;
   align-items: center;
-  padding: 85px 20px;
+  padding: 7% 8%;
 }
 
 .sobre-container {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 50px;
+  gap: 5vw;
 }
 
 .sobre-text {
@@ -94,90 +101,69 @@ body {
   font-size: 1.2rem;
 }
 
-.sobre-img img, .sugestao-img img {
+.sobre-img img,
+.sugestao-img img {
   height: auto;
   max-width: 100%;
-  border-radius: 10px;
 }
 
 /* Carrossel aqui */
 
+.section-3 {
+  background: linear-gradient(180deg, #ffdb94 52%, #deaf54 100%);
+  padding: 2rem;
+  border-radius: 45px;
+  /* max-width: 1200px; */
+  max-width: 80%;
+  margin: 0 auto;
+  text-align: center;
+}
+
 .section-3 h2 {
   letter-spacing: -1px;
-  text-align: center;
   color: #772321;
   font-size: 2.5rem;
-  margin-bottom: -20px;
-}
-
-.section-3 .data {
-  text-align: center;
-  font-size: 1rem;
-  color: #772321;
-  font-weight: bold;
-  /* TEMPORÁRIO */
-  margin-bottom: -150px;
-  text-shadow: 1px 2px 3px rgba(0, 0, 0, 0.4);
-}
-
-.sugestao-do-dia-child {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  margin: 7%;
-  border-radius: 20px;
-  /* padding: 60px 20px; */
-  background: linear-gradient(180deg, #ffdb94 52%, #deaf54 100%);
-}
-
-.section-3-child h2 {
-  text-align: center;
-  color: #772321;
-  font-size: 2.5rem;
-  margin-bottom: 10px;
+  margin-bottom: -10px;
   text-shadow: 3px 3px 5px rgba(0, 0, 0, 0.4);
 }
 
-.sugestao-container {
+.section-3 .data {
+  font-size: 1rem;
+  color: #772321;
+  font-weight: bold;
+  text-shadow: 1px 2px 3px rgba(0, 0, 0, 0.4);
+  margin-bottom: -40px;
+}
+
+.sugestao-content {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 50px;
-  max-width: 1200px;
-  width: 100%;
+  gap: 5vw;
 }
 
 .sugestao-text {
-  max-width: 50%;
+  max-width: 45%;
+  text-align: left;
 }
 
-.titulo-sugestao {
-  font-size: 3rem;
+.sugestao-text h3 {
+  font-size: 2.5rem;
   color: #772321;
   margin-bottom: 20px;
   position: relative;
   text-shadow: 5px -6px 4px rgb(255, 255, 255);
 }
 
-.descricao {
+.sugestao-text p {
   font-size: 1.2rem;
   color: #333;
   margin-bottom: 20px;
 }
 
-.btn-experimentar {
-  background-color: #772321;
+.btn-experimentar a {
   color: white;
-  padding: 10px 20px;
-  border: none;
-  border-radius: 5px;
-  font-size: 1.2rem;
-  cursor: pointer;
-  transition: background-color 0.3s;
-}
-
-.btn-experimentar:hover {
-  background-color: #a12d2b;
+  text-decoration: none;
 }
 
 .section-4 {
@@ -185,7 +171,7 @@ body {
   justify-content: center;
   align-items: center;
   gap: 50px;
-  /* padding: 40px; */
+  padding: 7% 5%;
 }
 
 .section-4 h1 {
@@ -200,43 +186,31 @@ body {
   color: #333;
 }
 
-.more-text .btn-primary {
-  font-size: 1.2rem;
-  background-color: #772321;
-  color: white;
-  padding: 10px 20px;
-  border: none;
-}
-
 .more-text {
   max-width: 50%;
 }
-
-/* .btn-primary {
-  font-size: 1.2rem;
-  background-color: #772321;
-  color: white;
-  padding: 10px 20px;
-  border: none;
-}
-.btn-primary:hover {
-  background-color: #590f19;
-} */
 
 .more-img img {
   height: 40vh;
 }
 
 .section-5 {
-  text-align: center;
-  /* padding: 40px; */
-  margin: 90px;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  gap: 50px;
+  padding: 0 5% 7%;
+}
+
+.notificacoes-text {
+  max-width: 50%;
 }
 
 .section-5 h2 {
   color: #772321;
   font-size: 2rem;
   margin-bottom: 20px;
+  position: relative;
 }
 
 .section-5 p {
@@ -247,52 +221,57 @@ body {
 
 .newsletter-form {
   display: flex;
-  justify-content: center;
+  flex-direction: column;
   gap: 10px;
 }
 
 .newsletter-form input {
   padding: 10px;
   font-size: 1rem;
-  border: 1px solid #ccc;
+  border: 1px solid lightgray;
+  background-color: lightgray;
   border-radius: 5px;
-  width: 300px;
+  width: 350px;
 }
 
 .newsletter-form button {
-  padding: 10px 20px;
-  background-color: #772321;
-  color: white;
-  border: none;
-  cursor: pointer;
-  transition: background-color 0.3s;
+  width: 50%;
 }
-
-.newsletter-form button:hover {
-  background-color: #590f19;
-}
-
 
 @media (max-width: 1024px) {
-  /* Ajustes para tablets */
-  .content, .sobre-text, .more-text {
-    max-width: 100%; 
+  .section-1 {
+    flex-direction: column;
+  }
+  .content,
+  .sobre-text,
+  .more-text {
+    max-width: 100%;
   }
 
-  .sobre-container, .sugestao-container, .section-4 {
+  .content .button {
+    justify-content: center;
+  }
+
+  .sobre-container,
+  .sugestao-content,
+  .section-4 {
     flex-direction: column;
     text-align: center;
+    width: 100%;
+    max-width: 1200px;
+    padding: 2rem;
   }
 
-  .hero img, .sugestao-img img, .more-img img {
+  .section-1 img,
+  .sugestao-img img,
+  .more-img img {
     height: auto;
     width: 100%;
   }
 }
 
 @media (max-width: 600px) {
-  /* Ajustes para smartphones */
-  .hero {
+  .section-1 {
     height: auto;
     padding: 10px;
   }
@@ -302,12 +281,17 @@ body {
     margin-bottom: 20px;
   }
 
-  .hero img {
+  .section-1 img {
     width: 100%;
     max-height: 50vh;
   }
 
-  .sugestao-container, .section-4 {
+  .section-3 .data {
+    margin: 0;
+  }
+
+  .sugestao-content,
+  .section-4 {
     flex-direction: column;
     gap: 20px;
   }
