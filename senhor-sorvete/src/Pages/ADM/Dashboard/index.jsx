@@ -185,7 +185,7 @@ const Dashboard = () => {
           <p>
             Legenda: <span style={{ color: "red" }}>Média abaixo de 30</span> |{" "}
             <span style={{ color: "yellow" }}>Média abaixo de 50</span> |{" "}
-            <span style={{ color: "green" }}>Média maior que 50</span>
+            <span style={{ color: "green" }}>Média maior ou igual à 50</span>
           </p>
         </div>
       </div>
