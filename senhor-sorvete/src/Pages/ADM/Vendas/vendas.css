@@ -1,6 +1,5 @@
 .container-vendas {
-  display: flex;
-  flex-direction: column;
+  margin: auto;
 }
 
 .tabela-cont {
@@ -10,11 +9,27 @@
 }
 
 .container-vendas h1 {
-  font-size: 1.8rem;
+  font-size: 1.9rem;
   padding: 0 30px;
 }
 
-.tabela-cont .MuiTableCell-head {
+.container-informacoes {
+  display: flex;
+  margin: 30px 0;
+  justify-content: space-between;
+ 
+}
+
+.container-botoes {
+  display: flex;
+  flex-direction: row;
+  padding: 0;
+  align-items: center;
+  margin: 15px 0;
+  width: 40%;
+}
+
+.tabela-vendas .tabela-cont .MuiTableCell-head {
   color: white !important;
   font-weight: bold;
   font-size: 17px !important;
@@ -30,4 +45,28 @@
 
 .tabela-cont .MuiPaper-root {
   box-shadow: none !important;
+}
+
+.tituloModal {
+  font-family: "Poppins", system-ui !important;
+  font-size: 22px;
+}
+
+.campos-modais {
+  margin-bottom: 20px;
+}
+
+.botaoModal{
+  background-color: #2F615E !important;
+  color: #F1C97B !important;
+  font-family: "Poppins", system-ui !important;
+  font-size: 22px;
+  border-radius: 5px;
+}
+
+.botaoModal:hover {
+  cursor: pointer;
+  background-color: #1f4a43; /* Muda a cor de fundo ao passar o mouse */
+  transform: translateY(-2px); /* Levanta o botão levemente */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Adiciona uma sombra ao botão */
 }
