@@ -9,6 +9,8 @@ import HeaderGerenciamento from '../../../Components/HeaderGerenciamento';
 import Pesquisa from '../../../Components/Pesquisa';
 import BotaoVoltarGerenciamento from '../../../Components/BotaoVoltarGerenciamento';
 import BotaoGerenciamento from '../../../Components/BotaoGerenciamento';
+import { ToastContainer, toast } from 'react-toastify'; // Importa o ToastContainer e a função toast
+import 'react-toastify/dist/ReactToastify.css'; // Importa os estilos
 
 const ListarProdutos = () => {
     const [produtos, setProdutos] = useState([]);
@@ -20,12 +22,13 @@ const ListarProdutos = () => {
 
 
     useEffect(() => {
-        const mockProdutos = [
-            { id: 1, nome: 'Produto 1', marca: 'Marca A', preco: 10.0, imagemUrl: 'https://via.placeholder.com/50' },
-            { id: 2, nome: 'Produto 2', marca: 'Marca B', preco: 15.0, imagemUrl: 'https://via.placeholder.com/50' },
-            { id: 3, nome: 'Produto 3', marca: 'Marca C', preco: 20.0, imagemUrl: 'https://via.placeholder.com/50' }
-        ];
-        setProdutos(mockProdutos); // Definindo os produtos fictícios no estado
+        axios.get('http://localhost:8080/produtos')
+        .then(response => {
+            setProdutos(response.data);
+        })
+        .catch(error => {
+            toast.error('Erro ao carregar produtos.');
+        });
     }, []);
 
     const handleOpen = () => {
