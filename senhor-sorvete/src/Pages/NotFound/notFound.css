@@ -1,11 +1,17 @@
 .notfound {
+    background-image: url("../../../public/Imagens/background-not-found-2.jpeg");
+    background-size: cover;
+    background-position: center;
+    min-height: 90vh;
+}
+
+/* .notfound {
     display: flex;
     padding: 0 1rem;
     min-height: 100vh;
     align-items: center;
     flex-direction: column;
     justify-content: center;
-    /* background: linear-gradient(white, 65%, #f1c97b); */
     background-color: #f5f5f5;
 }
 
@@ -13,22 +19,10 @@
     width: 100%;
     font-size: 3rem;
     text-align: center;
-    /* margin-bottom: 1.5rem; */
     justify-content: center;
     text-shadow: 2px 2px 2px rgba(0, 0, 0, 0.6);
 }
 
 .notfound img {
     max-height: 20vh;
-}
-
-/* .notfound h2 {
-    color: red;
-    text-shadow: 4px 2px 2px rgba(255, 0, 0, 0.3);
-    width: 100%;
-    font-size: 2rem;
-    text-align: center;
-    margin-bottom: 2rem;
-    justify-content: center;
-    font-weight: 600;
 } */

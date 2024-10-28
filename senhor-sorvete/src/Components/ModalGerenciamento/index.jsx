@@ -40,8 +40,8 @@ const ModalGerenciamento = ({ open, onClose, title, fields, onSave }) => {
                     />
                 ))}
                 <Box className="modal-button-container">
-                    <BotaoGerenciamento botao="Salvar" onClick={onSave} />
                     <BotaoGerenciamento botao="Cancelar" onClick={onClose} />
+                    <BotaoGerenciamento botao="Salvar" onClick={onSave} />
                 </Box>
             </Box>
         </Modal>
