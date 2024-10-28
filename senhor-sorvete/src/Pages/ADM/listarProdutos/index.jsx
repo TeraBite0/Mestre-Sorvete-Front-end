@@ -11,9 +11,9 @@ import BotaoGerenciamento from '../../../Components/BotaoGerenciamento';
 
 const ListarProdutos = () => {
     const [produtos, setProdutos] = useState([
-        { id: 1, nome: "Sorvete Limão", marca: "Marca A", preco: "20.0", imagemUrl: "/Imagens/sorvete-baunilha.jpg" },
-        { id: 2, nome: "Sorvete Napolitano", marca: "Marca B", preco: "25.0", imagemUrl: "/Imagens/picoles-napolitanos.png" },
-        { id: 3, nome: "Sorvete Chocolate", marca: "Marca C", preco: "16.0", imagemUrl: "/Imagens/casquinhas-de-chocolate.jpeg" }
+        { id: 1, nome: "Sorvete Limão", marca: "Marca A", preco: "20.00", imagemUrl: "/Imagens/sorvete-baunilha.jpg" },
+        { id: 2, nome: "Sorvete Napolitano", marca: "Marca B", preco: "25.00", imagemUrl: "/Imagens/picoles-napolitanos.png" },
+        { id: 3, nome: "Sorvete Chocolate", marca: "Marca C", preco: "16.00", imagemUrl: "/Imagens/casquinhas-de-chocolate.jpeg" }
     ]);
 
     const [pesquisa, setPesquisa] = useState('');

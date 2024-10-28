@@ -19,20 +19,20 @@ import TextField from "@mui/material/TextField";
 
 // Dados iniciais mockados
 const initialRows = [
-  { codigo: 23459, data: "27-09-2024", produtos: "Sorvete Limão seco", precos: "20.0" },
-  { codigo: 12345, data: "28-09-2024", produtos: "Sorvete Castanha do Paraná", precos: "25.0" },
-  { codigo: 67890, data: "29-09-2024", produtos: "Sorvete Guns and Ices", precos: "16.0" },
-  { codigo: 78908, data: "02-10-2024", produtos: "Sorvete Cachorro Caramelo", precos: "15.0" },
-  { codigo: 74656, data: "05-10-2024", produtos: "Sorvete Morango", precos: "20.0" },
-  { codigo: 85674, data: "10-10-2024", produtos: "Sorvete Chocolate Intenso", precos: "18.0" },
-  { codigo: 97345, data: "12-10-2024", produtos: "Sorvete Maracujá Tropical", precos: "22.0" },
-  { codigo: 64532, data: "15-10-2024", produtos: "Sorvete Baunilha Gourmet", precos: "21.0" },
-  // { codigo: 11234, data: "18-10-2024", produtos: "Sorvete Frutas Vermelhas", precos: "19.0" },
-  // { codigo: 56789, data: "22-10-2024", produtos: "Sorvete Coco Cremoso", precos: "23.0" },
-  // { codigo: 38475, data: "25-10-2024", produtos: "Sorvete Pistache Premium", precos: "26.0" },
-  // { codigo: 67893, data: "26-10-2024", produtos: "Sorvete Abacaxi com Hortelã", precos: "24.0" },
-  // { codigo: 34212, data: "27-10-2024", produtos: "Sorvete Banana com Doce de Leite", precos: "20.0" },
-  // { codigo: 98034, data: "30-10-2024", produtos: "Sorvete Caramelo Salgado", precos: "25.0" }
+  { codigo: 23459, data: "27-09-2024", produtos: "Sorvete Limão seco", precos: "20.00" },
+  { codigo: 12345, data: "28-09-2024", produtos: "Sorvete Castanha do Paraná", precos: "25.00" },
+  { codigo: 67890, data: "29-09-2024", produtos: "Sorvete Guns and Ices", precos: "16.00" },
+  { codigo: 78908, data: "02-10-2024", produtos: "Sorvete Cachorro Caramelo", precos: "15.00" },
+  { codigo: 74656, data: "05-10-2024", produtos: "Sorvete Morango", precos: "20.00" },
+  { codigo: 85674, data: "10-10-2024", produtos: "Sorvete Chocolate Intenso", precos: "18.00" },
+  { codigo: 97345, data: "12-10-2024", produtos: "Sorvete Maracujá Tropical", precos: "22.00" },
+  { codigo: 64532, data: "15-10-2024", produtos: "Sorvete Baunilha Gourmet", precos: "21.00" },
+  // { codigo: 11234, data: "18-10-2024", produtos: "Sorvete Frutas Vermelhas", precos: "19.00" },
+  // { codigo: 56789, data: "22-10-2024", produtos: "Sorvete Coco Cremoso", precos: "23.00" },
+  // { codigo: 38475, data: "25-10-2024", produtos: "Sorvete Pistache Premium", precos: "26.00" },
+  // { codigo: 67893, data: "26-10-2024", produtos: "Sorvete Abacaxi com Hortelã", precos: "24.00" },
+  // { codigo: 34212, data: "27-10-2024", produtos: "Sorvete Banana com Doce de Leite", precos: "20.00" },
+  // { codigo: 98034, data: "30-10-2024", produtos: "Sorvete Caramelo Salgado", precos: "25.00" }
 ];
 
 const Vendas = () => {

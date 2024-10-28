@@ -47,7 +47,7 @@ const Cardapio = () => {
             <Header/>
             <header className="header">
                 <div className="headerContent">
-                    <h1>Bem Vindo!</h1>
+                    <h1>Bem-Vindo!</h1>
                     <p>Experimente nossos sabores únicos e refrescantes! Feitos com ingredientes frescos e naturais.</p>
                 </div>
             </header>
@@ -61,7 +61,7 @@ const Cardapio = () => {
                 <div className="searchBar">
                     <input 
                         type="text" 
-                        placeholder="TRUFADO" 
+                        placeholder="Trufado" 
                         value={termo} 
                         onChange={(e) => setTermo(e.target.value)}
                     />

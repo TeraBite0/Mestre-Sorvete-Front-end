@@ -10,7 +10,8 @@ const CarrosselImagens = () => {
 
   // Mover o carrossel
   const updateCarousel = useCallback(() => {
-    const cardWidth = carouselInnerRef.current.querySelector(".card").offsetWidth;
+    const cardWidth =
+      carouselInnerRef.current.querySelector(".card").offsetWidth;
     const newTransformValue = -currentIndex * (cardWidth + 20); // margin - 20px
     carouselInnerRef.current.style.transform = `translateX(${newTransformValue}px)`;
   }, [currentIndex]);
@@ -75,39 +76,53 @@ const CarrosselImagens = () => {
       <div className="carousel">
         <div className="carousel-inner" ref={carouselInnerRef}>
           <div className="card">
-            <img src="Imagens/sorvete-de-chocolate.png" alt="" />
-            <h3>Banana Soft Cream</h3>
-            <p>R$ 9,99</p>
+            <a href="/cardapio">
+              <img src="Imagens/sorvete-de-chocolate.png" alt="" />
+              <h3>Banana Soft Cream</h3>
+              <p>R$ 9,99</p>
+            </a>
           </div>
           <div className="card">
-            <img src="Imagens/sorvete-de-chocolate.png" alt="" />
-            <h3>Chocolate Soft Cream</h3>
-            <p>R$ 9,99</p>
+            <a href="/cardapio">
+              <img src="Imagens/sorvete-de-chocolate.png" alt="" />
+              <h3>Chocolate Soft Cream</h3>
+              <p>R$ 9,99</p>
+            </a>
           </div>
           <div className="card">
-            <img src="Imagens/sorvete-de-chocolate.png" alt="" />
-            <h3>Morango Soft Cream</h3>
-            <p>R$ 9,99</p>
+            <a href="/cardapio">
+              <img src="Imagens/sorvete-de-chocolate.png" alt="" />
+              <h3>Morango Soft Cream</h3>
+              <p>R$ 9,99</p>
+            </a>
           </div>
           <div className="card">
-            <img src="Imagens/sorvete-de-chocolate.png" alt="" />
-            <h3>Baunilha Soft Cream</h3>
-            <p>R$ 9,99</p>
+            <a href="/cardapio">
+              <img src="Imagens/sorvete-de-chocolate.png" alt="" />
+              <h3>Baunilha Soft Cream</h3>
+              <p>R$ 9,99</p>
+            </a>
           </div>
           <div className="card">
-            <img src="Imagens/sorvete-de-chocolate.png" alt="" />
-            <h3>Café Soft Cream</h3>
-            <p>R$ 9,99</p>
+            <a href="/cardapio">
+              <img src="Imagens/sorvete-de-chocolate.png" alt="" />
+              <h3>Café Soft Cream</h3>
+              <p>R$ 9,99</p>
+            </a>
           </div>
           <div className="card">
-            <img src="Imagens/sorvete-de-chocolate.png" alt="" />
-            <h3>Caramelo Soft Cream</h3>
-            <p>R$ 9,99</p>
+            <a href="/cardapio">
+              <img src="Imagens/sorvete-de-chocolate.png" alt="" />
+              <h3>Caramelo Soft Cream</h3>
+              <p>R$ 9,99</p>
+            </a>
           </div>
           <div className="card">
-            <img src="Imagens/sorvete-de-chocolate.png" alt="" />
-            <h3>Banana Soft Cream</h3>
-            <p>R$ 9,99</p>
+            <a href="/cardapio">
+              <img src="Imagens/sorvete-de-chocolate.png" alt="" />
+              <h3>Banana Soft Cream</h3>
+              <p>R$ 9,99</p>
+            </a>
           </div>
         </div>
         <button className="carousel-prev" onClick={handlePrevClick}>
@@ -125,7 +140,6 @@ const CarrosselImagens = () => {
 };
 
 export default CarrosselImagens;
-
 
 
 
