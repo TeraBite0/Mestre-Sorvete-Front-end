@@ -16,7 +16,7 @@
 
 .barra-pesquisa input{
     width: 22vw;
-    height: 5vh;
+    height: 35px;
     border-top-left-radius: 8px;
     border-bottom-left-radius: 8px;
     border: 2px solid #2F615E;
@@ -24,7 +24,7 @@
 
 .barra-pesquisa button{
     width: 3vw;
-    height: 42px;
+    height: 41px;
     border-top-right-radius: 8px;
     border-bottom-right-radius: 8px;
     border: none;

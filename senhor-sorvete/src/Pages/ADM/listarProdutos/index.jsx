@@ -23,10 +23,13 @@ const ListarProdutos = () => {
     const [imagemPreview, setImagemPreview] = useState(null);
 
     // Filtro de produtos baseado na pesquisa
-    const buscarProdutos = produtos.filter(produto =>
-        produto.nome.toLowerCase().includes(pesquisa.toLowerCase()) || 
-        produto.marca.toLowerCase().includes(pesquisa.toLowerCase())
-    );
+    const buscarProdutos = produtos.filter(produto => {
+        const nomeInclusao = produto.nome.toLowerCase().includes(pesquisa.trim().toLowerCase());
+        const marcaInclusao = produto.marca.toLowerCase().includes(pesquisa.trim().toLowerCase());
+        console.log(`Nome: ${produto.nome}, Marca: ${produto.marca}, Pesquisa: ${pesquisa}, Nome Inclusão: ${nomeInclusao}, Marca Inclusão: ${marcaInclusao}`);
+        return nomeInclusao || marcaInclusao;
+    });
+    
 
     const handleOpen = () => {
         setNovoProduto({ nome: '', marca: '', preco: '', imagemUrl: '' });
@@ -93,7 +96,7 @@ const ListarProdutos = () => {
                 <Pesquisa 
                     placeholder="Produto, Marca..." 
                     value={pesquisa}
-                    onChange={setPesquisa}
+                    onChange={(e) => setPesquisa(e.target.value)} 
                 />
                 <BotaoGerenciamento botao="+ Novo Produto" onClick={handleOpen} />
             </div>
@@ -112,9 +115,9 @@ const ListarProdutos = () => {
                         </TableHead>
                         <TableBody>
                             {buscarProdutos.map(produto => (
-                                <TableRow key={produto.id} className='tabela-row'>
+                                <TableRow key={produto.nome} className='tabela-row'>
                                     <TableCell className='tabela-cell'>
-                                        <img src={produto.imagemUrl} alt={produto.nome} width="50" height="50" />
+                                        <img src={produto.imagemUrl} alt={produto.nome} width="35" height="35" />
                                     </TableCell>
                                     <TableCell className='tabela-cell'>{produto.nome}</TableCell>
                                     <TableCell className='tabela-cell'>{produto.marca}</TableCell>
