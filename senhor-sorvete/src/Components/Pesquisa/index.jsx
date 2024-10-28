@@ -3,11 +3,13 @@ import SearchIcon from '@mui/icons-material/Search';
 
 const barraPesquisa = (props) => {
 
+
+
     return(
         <div className='pesquisa'>
            
            <div className='barra-pesquisa'>
-                <input type="text" placeholder={props.placeholder}></input>    
+                <input type="text" placeholder={props.placeholder} value={props.valor}></input>    
                 <button><SearchIcon/></button>
            </div>     
         

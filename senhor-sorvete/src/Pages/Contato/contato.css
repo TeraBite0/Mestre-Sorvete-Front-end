@@ -24,11 +24,10 @@
 }
 
 .contato img {
-    width: 220px; /* Aumentei o tamanho do logotipo */
-    height: 220px;
+    width: 200px; /* Aumentei o tamanho do logotipo */
+    height: 200px;
     border-radius: 50%;
     border: 2px groove #772321;
-    margin-bottom: 10px
 }
 
 .contato h2 {
@@ -37,7 +36,7 @@
     font-style: normal;
     font-size: 48px; /* Um pouco maior */
     text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.5);
-    margin-bottom: 30px;
+    margin-bottom: 10px;
 }
 
 .botao-whatsaap {

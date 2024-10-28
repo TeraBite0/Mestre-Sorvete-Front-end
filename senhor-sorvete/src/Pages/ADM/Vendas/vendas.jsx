@@ -19,11 +19,20 @@ import TextField from "@mui/material/TextField";
 
 // Dados iniciais mockados
 const initialRows = [
-  { codigo: 23459, data: "27-09-2024", produtos: "Sorvete Limão seco", precos: "R$20.0" },
-  { codigo: 12345, data: "28-09-2024", produtos: "Sorvete Castanha do Paraná", precos: "R$25.0" },
-  { codigo: 67890, data: "29-09-2024", produtos: "Sorvete Guns and Ices", precos: "R$16.0" },
-  { codigo: 78908, data: "02-10-2024", produtos: "Sorvete Cachorro Caramelo", precos: "R$15.0" },
-  { codigo: 74656, data: "05-10-2024", produtos: "Sorvete Morango", precos: "R$20.0" },
+  { codigo: 23459, data: "27-09-2024", produtos: "Sorvete Limão seco", precos: "20.0" },
+  { codigo: 12345, data: "28-09-2024", produtos: "Sorvete Castanha do Paraná", precos: "25.0" },
+  { codigo: 67890, data: "29-09-2024", produtos: "Sorvete Guns and Ices", precos: "16.0" },
+  { codigo: 78908, data: "02-10-2024", produtos: "Sorvete Cachorro Caramelo", precos: "15.0" },
+  { codigo: 74656, data: "05-10-2024", produtos: "Sorvete Morango", precos: "20.0" },
+  { codigo: 85674, data: "10-10-2024", produtos: "Sorvete Chocolate Intenso", precos: "18.0" },
+  { codigo: 97345, data: "12-10-2024", produtos: "Sorvete Maracujá Tropical", precos: "22.0" },
+  { codigo: 64532, data: "15-10-2024", produtos: "Sorvete Baunilha Gourmet", precos: "21.0" },
+  // { codigo: 11234, data: "18-10-2024", produtos: "Sorvete Frutas Vermelhas", precos: "19.0" },
+  // { codigo: 56789, data: "22-10-2024", produtos: "Sorvete Coco Cremoso", precos: "23.0" },
+  // { codigo: 38475, data: "25-10-2024", produtos: "Sorvete Pistache Premium", precos: "26.0" },
+  // { codigo: 67893, data: "26-10-2024", produtos: "Sorvete Abacaxi com Hortelã", precos: "24.0" },
+  // { codigo: 34212, data: "27-10-2024", produtos: "Sorvete Banana com Doce de Leite", precos: "20.0" },
+  // { codigo: 98034, data: "30-10-2024", produtos: "Sorvete Caramelo Salgado", precos: "25.0" }
 ];
 
 const Vendas = () => {
@@ -31,11 +40,17 @@ const Vendas = () => {
   const [openAdicionar, setOpenAdicionar] = useState(false);
   const [openBuscar, setOpenBuscar] = useState(false);
   const [novaVenda, setNovaVenda] = useState({ codigo: "", data: "", produtos: "", precos: "" });
+  const [vendasTemporarias, setVendasTemporarias] = useState([]); // Lista de vendas temporárias
+  const [totalVendas, setTotalVendas] = useState(0); // Total dos preços das vendas temporárias
   const [codigoBusca, setCodigoBusca] = useState("");
   const [resultadoBusca, setResultadoBusca] = useState(null);
 
   const handleOpenAdicionar = () => setOpenAdicionar(true);
-  const handleCloseAdicionar = () => setOpenAdicionar(false);
+  const handleCloseAdicionar = () => {
+    setOpenAdicionar(false);
+    setVendasTemporarias([]);
+    setTotalVendas(0);
+  };
 
   const handleOpenBuscar = () => setOpenBuscar(true);
   const handleCloseBuscar = () => {
@@ -43,14 +58,23 @@ const Vendas = () => {
     setResultadoBusca(null);
   };
 
-  // Função mockada para adicionar nova venda
-  const handleSubmitAdicionar = () => {
-    setRows((prevRows) => [...prevRows, novaVenda]);
-    setNovaVenda({ Produtos: "", Quantidade: "" });
+  // Adicionar venda temporária e atualizar o total - Mudar depois da apresentação
+  const handleAdicionarVendaTemporaria = () => {
+    const preco = parseFloat(novaVenda.precos.replace("R$", "").replace(",", "."));
+    setVendasTemporarias((prev) => [...prev, novaVenda]);
+    setTotalVendas((prevTotal) => prevTotal + preco);
+    setNovaVenda({ codigo: "", data: "", produtos: "", precos: "" });
+  };
+
+  // Finalizar e adicionar todas as vendas temporárias ao array principal - Mudar depois da apresentação
+  const handleSubmitAdicionarTodasVendas = () => {
+    setRows((prevRows) => [...prevRows, ...vendasTemporarias]);
+    setVendasTemporarias([]);
+    setTotalVendas(0);
     handleCloseAdicionar();
   };
 
-  // Função mockada para buscar venda
+  // Buscar venda pelo código - Ver se vai buscar pelo código mesmo
   const handleSubmitBuscar = () => {
     const vendaEncontrada = rows.find((row) => row.codigo.toString() === codigoBusca);
     setResultadoBusca(vendaEncontrada || "Venda não encontrada.");
@@ -87,7 +111,7 @@ const Vendas = () => {
                   <TableCell component="th" scope="row">{row.codigo}</TableCell>
                   <TableCell align="right">{row.data}</TableCell>
                   <TableCell align="right">{row.produtos}</TableCell>
-                  <TableCell align="right">{row.precos}</TableCell>
+                  <TableCell align="right">R$ {row.precos}</TableCell>
                 </TableRow>
               ))}
             </TableBody>
@@ -95,26 +119,61 @@ const Vendas = () => {
         </TableContainer>
       </div>
 
-      {/* Modal Adicionar Venda */}
-      <Dialog open={openAdicionar} onClose={handleCloseAdicionar}>
-        <DialogTitle className='tituloModal'> Adicionar Venda</DialogTitle>
+      <Dialog open={openAdicionar} onClose={handleCloseAdicionar}> {/*Modal Adicionar*/}
+        <DialogTitle className='tituloModal'>Adicionar Venda</DialogTitle>
         <DialogContent className="campos-modais">
-          {/* <TextField label="Código" fullWidth value={novaVenda.codigo} onChange={(e) => setNovaVenda({ ...novaVenda, codigo: e.target.value })} />
-          <TextField label="Data" fullWidth value={novaVenda.data} onChange={(e) => setNovaVenda({ ...novaVenda, data: e.target.value })} /> */}
-          <TextField label="Produtos" fullWidth value={novaVenda.Produtos} onChange={(e) => setNovaVenda({ ...novaVenda, Produtos: e.target.value })} />
-          <TextField label="Quantidade" fullWidth value={novaVenda.Quantidade} onChange={(e) => setNovaVenda({ ...novaVenda, Quantidade: e.target.value })} />
+          <TextField
+            autoFocus
+            margin="dense"
+            label="Código"
+            fullWidth value={novaVenda.codigo}
+            onChange={(e) => setNovaVenda({ ...novaVenda, codigo: e.target.value })}
+          />
+          <TextField
+            margin="dense"
+            label="Data"
+            fullWidth value={novaVenda.data}
+            onChange={(e) => setNovaVenda({ ...novaVenda, data: e.target.value })}
+          />
+          <TextField
+            margin="dense"
+            label="Produtos"
+            fullWidth value={novaVenda.produtos}
+            onChange={(e) => setNovaVenda({ ...novaVenda, produtos: e.target.value })}
+          />
+          <TextField
+            margin="dense"
+            label="Preço"
+            fullWidth value={novaVenda.precos}
+            onChange={(e) => setNovaVenda({ ...novaVenda, precos: e.target.value })}
+          />
+
+          <Button className='botaoModal' onClick={handleAdicionarVendaTemporaria}>+</Button>
+          
+          {/* Exibir vendas temporárias e o total */}
+          <div style={{ marginTop: "1em" }}>
+            {vendasTemporarias.map((venda, index) => (
+              <p key={index}>{`${venda.produtos} - ${venda.precos}`}</p>
+            ))}
+            <p><strong>Total:</strong> R${totalVendas.toFixed(2)}</p>
+          </div>
         </DialogContent>
         <DialogActions>
           <Button className='botaoModal' onClick={handleCloseAdicionar}>Cancelar</Button>
-          <Button className='botaoModal' onClick={handleSubmitAdicionar}>Finalizar Venda</Button>
+          <Button className='botaoModal' onClick={handleSubmitAdicionarTodasVendas}>Finalizar Vendas</Button>
         </DialogActions>
       </Dialog>
 
-      {/* Modal Buscar Venda */}
-      <Dialog open={openBuscar} onClose={handleCloseBuscar}>
+      <Dialog open={openBuscar} onClose={handleCloseBuscar}> {/*Modal Buscar*/}
         <DialogTitle>Buscar Venda</DialogTitle>
         <DialogContent className="campos-modais">
-          <TextField label="Código da Venda" fullWidth value={codigoBusca} onChange={(e) => setCodigoBusca(e.target.value)} />
+          <TextField
+            autoFocus
+            margin="dense"
+            label="Código da Venda"
+            fullWidth value={codigoBusca}
+            onChange={(e) => setCodigoBusca(e.target.value)}
+          />
           {resultadoBusca && (
             <div style={{ marginTop: "1em" }}>
               {typeof resultadoBusca === "string" ? (
