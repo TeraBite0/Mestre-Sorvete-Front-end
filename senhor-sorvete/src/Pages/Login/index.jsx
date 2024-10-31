@@ -3,6 +3,9 @@ import { useNavigate } from 'react-router-dom';
 import './login.css';
 import CampoTexto from '../../Components/CampoTexto';
 import Botao from '../../Components/Botao';
+import axios from "axios";
+import 'react-toastify/dist/ReactToastify.css';
+import { toast } from 'react-toastify';
 
 const Login = () => {
 
@@ -15,28 +18,32 @@ const Login = () => {
         evento.preventDefault()
 
         if(!email || !senha) {
-            alert('Por favor, preencha todos os campos!');
+            toast.error('Por favor, preencha todos os campos!');
             return;
         }
+       
+            //Realiza a validação das informações
+         axios.post('http://localhost:8080/usuarios/login', {
+                email: email,
+                senha: senha
+            })
+            .then((response) => {
+                if(response.status === 200) {
+                    const data = response.data;
+                    sessionStorage.setItem('token', data.token); //Vai receber um toker e armazenar
+                    sessionStorage.setItem('usuario', JSON.stringify(data.usuario)) // Armazena os dados do usuario
+                    navigate('/home/gerenciamento');
+                } else {
+                    toast.error('Credenciais Inválidas!');
+                }
+            })
+            .catch((error) => {
+                console.error('Erro ao realizar o login!', error);
+                toast.error('Ocorreu um erro ao efetuar login. Tente novamente!');
+            });           
 
-        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        if(!emailRegex.test(email))  {
-            alert('Por favor, insira um email válido.');
-            return;
-        
-        } else if(senha.length < 6) {
-            alert('A senha deve ter pelo menos 6 caracteres.');
-            return;
         }
-
-        if(email === 'josue@gmail.com' && senha === 'sorvete123') {
-            navigate('/');
-
-        } else {
-            alert ('Credenciais inválidas')
-        }
-    }
-
+            
     return(
         <div className='login' aria-label='Contéudo para o cliente acessar o site'>
             <div className='bem-vindo'>
@@ -49,6 +56,7 @@ const Login = () => {
                 <span>Acesse sua conta</span>
                 <div className='campo-texto-container' aria-label='Campos que o cliente deve preencher '>
                 <CampoTexto
+                    
                     obrigatorio={true}
                     label = "E-mail:"
                     placeholder = "exemplo@email.com"
@@ -57,6 +65,7 @@ const Login = () => {
                 />
 
                 <CampoTexto
+                    type="password"
                     obrigatorio={true}
                     label= "Senha:"
                     placeholder = "Digite sua senha"

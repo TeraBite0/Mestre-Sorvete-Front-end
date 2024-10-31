@@ -173,7 +173,7 @@ const Dashboard = () => {
 
         {/* 3º Dashboard - Vendas e Temperatura */}
         <div className="dashboard-item">
-          <h1>Vendas e Temperatura</h1>
+          <h1 id="h1-dash-3">Vendas e Temperatura</h1>
           <Bar data={dashVendasETemperatura} />
         </div>
 

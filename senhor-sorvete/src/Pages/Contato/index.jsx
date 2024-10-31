@@ -34,7 +34,7 @@ const Contato = () => {
 
       <div className="contato">
         <div>
-          <img src="/Imagens/logo-josue.jpg" alt="Logo do mestre sorvete" />
+          <img src="/Imagens/logo-josue.jpg" alt="Logo do mestre sorvete"/>
         </div>
         <h2>Mestre Sorvete</h2>
         <button className="botao-whatsaap" onClick={() => handleSelect("whatsapp")}>

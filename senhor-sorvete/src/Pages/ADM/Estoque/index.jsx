@@ -7,6 +7,9 @@ import BotaoGerenciamento from "../../../Components/BotaoGerenciamento";
 import ModalGerenciamento from '../../../Components/ModalGerenciamento';
 import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper } from '@mui/material';
 
+
+
+
 const criarDados = (codigo, nome, marca, preco, qtdEmEstoque) => {
     return { codigo, nome, marca, preco, qtdEmEstoque };
 };
@@ -40,6 +43,7 @@ const estiloQuantidade = {
 const Estoque = () => {
     const [abrirRegistrarPerda, setAbrirRegistrarPerda] = useState(false);
     const [abrirAdicionarLote, setAbrirAdicionarLote] = useState(false);
+    const [pesquisa, setPesquisa] = useState('')
 
     const produtos = [
         criarDados(1001, "Morango", "Maneiro", 12.99, 5),
@@ -69,13 +73,24 @@ const Estoque = () => {
         { label: "Previsão de entrega", type: "date" },
     ];
 
+    const buscarProdutos = produtos.filter(produto => {
+        const nomeInclusao = produto.nome.toLowerCase().includes(pesquisa.trim().toLowerCase());
+        const marcaInclusao = produto.marca.toLowerCase().includes(pesquisa.trim().toLowerCase());
+        console.log(`Nome: ${produto.nome}, Marca: ${produto.marca}, Pesquisa: ${pesquisa}, Nome Inclusão: ${nomeInclusao}, Marca Inclusão: ${marcaInclusao}`);
+        return nomeInclusao || marcaInclusao;
+    })
+
     return (
         <>
             <HeaderGerenciamento />
             <div className='estoqueContainer'>
                 <BotaoVoltarGerenciamento pagina="/home/gerenciamento" />
                 <div className='controlesWrapper'>
-                    <Pesquisa/>
+                    <Pesquisa
+                        placeholder="Nome, marca..."
+                        value={pesquisa}
+                        onChange={(e) => setPesquisa(e.target.value)}
+                    />
                     <div className='wopperWrapper'>
                         <BotaoGerenciamento botao="Registrar Perda" onClick={abrirModalRegistrarPerda} />
                         <BotaoGerenciamento botao="Adicionar Lote" onClick={abrirModalAdicionarLote} />
@@ -94,7 +109,7 @@ const Estoque = () => {
                             </TableRow>
                         </TableHead>
                         <TableBody>
-                            {produtos.map((produto) => (
+                            {buscarProdutos.map((produto) => (
                                 <TableRow key={produto.codigo}>
                                     <TableCell style={estiloCelulaTabela}>{produto.codigo}</TableCell>
                                     <TableCell style={estiloCelulaTabela}>{produto.nome}</TableCell>
@@ -134,5 +149,6 @@ const Estoque = () => {
         </>
     );
 };
+
 
 export default Estoque;

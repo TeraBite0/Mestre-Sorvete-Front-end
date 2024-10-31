@@ -1,5 +1,6 @@
 import "./home.css";
 import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import Header from "../../Components/Header";
 import Footer from "../../Components/Footer";
 import IconeWhatsapp from "../../Components/IconeWhatsapp";
@@ -9,6 +10,10 @@ const Home = (props) => {
   // Função data atual
   const [dataAtual, setDataAtual] = useState("");
 
+  const [email, setEmail] = useState("");
+  const [error, setError] = useState("");
+  const navigate = useNavigate();
+
   useEffect(() => {
     const data = new Date();
     const dia = String(data.getDate()).padStart(2, "0");
@@ -16,6 +21,22 @@ const Home = (props) => {
     const ano = data.getFullYear();
     setDataAtual(`${dia}/${mes}/${ano}`);
   }, []);
+
+  const validateEmail = (email) => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+
+    if (validateEmail(email)) {
+      setError("");
+      navigate("/cardapio");
+    } else {
+      setError("Por favor, insira um E-mail válido.");
+    }
+  };
 
   return (
     <div className="home">
@@ -118,8 +139,15 @@ const Home = (props) => {
             e-mail e fique por dentro de todas as novidades.
           </p>
           </div>
-          <form className="newsletter-form">
-            <input type="email" placeholder="Email" required />
+          <form className="newsletter-form" onSubmit={handleSubmit}>
+            <input
+              type="email"
+              placeholder="Email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
+            />
+            {error && <p id="validacao-email">{error}</p>}
             <button className="btn-primary" type="submit">
               Receber
             </button>
