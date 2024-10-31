@@ -10,11 +10,6 @@ const flavors = [
     "Chocolate", "Mousse", "Black", "Frutas", "Cocada",
     "Trufado", "Limão", "Trufa", "Caramelo", "Brownie",
     "Cenoura", "Avelã", "Bem Casado", "Duo Amore", "Doce de Leite",
-    "Cenoura", "Avelã", "Bem Casado", "Duo Amore", "Doce de Leite",
-    "Cenoura", "Avelã", "Bem Casado", "Duo Amore", "Doce de Leite",
-    "Cenoura", "Avelã", "Bem Casado", "Duo Amore", "Doce de Leite",
-    "Cenoura", "Avelã", "Bem Casado", "Duo Amore", "Doce de Leite",
-    "Cenoura", "Avelã", "Bem Casado", "Duo Amore", "Doce de Leite",
 ];
 
 const Cardapio = () => {
@@ -42,37 +37,89 @@ const Cardapio = () => {
     );
 
     return (
-        <>
         <div className="containerCardapio">
             <Header/>
-            <header className="header">
-                <div className="headerContent">
-                    <h1>Bem Vindo!</h1>
-                    <p>Experimente nossos sabores únicos e refrescantes! Feitos com ingredientes frescos e naturais.</p>
+            
+            <header className="header" style={{
+                backgroundImage: 'linear-gradient(to bottom, rgba(0,0,0,0.2) 0%, rgba(0,0,0,0.2) 100%), url("../../../public/Imagens/sorvete-baunilha.jpg")',
+                height: '400px',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                textAlign: 'center',
+                position: 'relative'
+            }}>
+                <div className="headerContent" style={{
+                    position: 'absolute',
+                    top: '50%',
+                    left: '50%',
+                    transform: 'translate(-50%, -50%)',
+                    width: '100%'
+                }}>
+                    <h1 style={{
+                        fontSize: '2.5rem',
+                        fontWeight: 'bold',
+                        marginBottom: '0.5rem'
+                    }}>Lorem Ipsum Lorem</h1>
+                    <p style={{
+                        fontSize: '1.1rem'
+                    }}>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed.</p>
                 </div>
             </header>
 
-            <nav className="navigation">
-                <ul>
-                    <li><a href="#recipes">Popular</a></li>
-                    <li><a href="#flavors">Sorvetes</a></li>
-                    <li><a href="#sundaes">Picolés</a></li>
+            <nav className="navigation" style={{
+                backgroundColor: 'transparent',
+                boxShadow: 'none',
+                padding: '1rem 2rem'
+            }}>
+                <ul style={{
+                    display: 'flex',
+                    gap: '1rem'
+                }}>
+                    <li style={{
+                        backgroundColor: 'white',
+                        padding: '0.5rem 1.5rem',
+                        borderRadius: '9999px',
+                        cursor: 'pointer'
+                    }}>Popular</li>
+                    <li style={{
+                        backgroundColor: 'white',
+                        padding: '0.5rem 1.5rem',
+                        borderRadius: '9999px',
+                        cursor: 'pointer'
+                    }}>Sorvetes</li>
+                    <li style={{
+                        backgroundColor: 'white',
+                        padding: '0.5rem 1.5rem',
+                        borderRadius: '9999px',
+                        cursor: 'pointer'
+                    }}>Picolés</li>
                 </ul>
                 <div className="searchBar">
                     <input 
                         type="text" 
-                        placeholder="TRUFADO" 
+                        placeholder="Pesquisar..." 
                         value={termo} 
                         onChange={(e) => setTermo(e.target.value)}
+                        style={{
+                            borderRadius: '9999px',
+                            padding: '0.5rem 1rem'
+                        }}
                     />
-                    <button><SearchIcon sx={{fontSize: 16}}/></button>
+                    <button style={{
+                        borderRadius: '0 9999px 9999px 0'
+                    }}><SearchIcon sx={{fontSize: 16}}/></button>
                 </div>
             </nav>
 
             <div className="mainContentWrapper" ref={mainContentRef}>
                 <div className="mainContent">
                     <div className={`sidebarWrapper ${isSticky ? 'sticky' : ''}`} ref={sidebarRef}>
-                        <aside className="sidebar">
+                        <aside className="sidebar" style={{
+                            backgroundColor: 'white',
+                            borderRadius: '24px',
+                            padding: '1.5rem'
+                        }}>
                             <Filtros 
                                 priceRange={priceRange} 
                                 setPriceRange={setPriceRange}
@@ -80,7 +127,12 @@ const Cardapio = () => {
                                 setSelectedCategories={setSelectedCategories}
                             />
                         </aside>
-                        <aside className="notifications">
+                        <aside className="notifications" style={{
+                            backgroundColor: 'white',
+                            borderRadius: '24px',
+                            padding: '1.5rem',
+                            marginTop: '1rem'
+                        }}>
                             <h2>Notificações</h2>
                             <ul>
                                 {cartItems.map((item, index) => (
@@ -104,26 +156,34 @@ const Cardapio = () => {
 
                     <main className="products">
                         {filteredFlavors.map((flavor, index) => (
-                            <div key={index} className="product">
+                            <div key={index} className="product" style={{
+                                backgroundColor: 'white',
+                                borderRadius: '24px',
+                                padding: '1.5rem'
+                            }}>
                                 <img src="Imagens/casquinhas-de-chocolate.jpeg" alt={`${flavor} Ice Cream`} />
-                                <h3>{flavor.toUpperCase()}</h3>
-                                <p>R$ 15,00</p>
+                                <h3>{flavor}</h3>
+                                <p>R$ 12,00</p>
                                 <button 
                                     className="notifyMe"
                                     onClick={() => addToCart(flavor)}
                                     disabled={cartItems.some(item => item.name === flavor)}
+                                    style={{
+                                        backgroundColor: 'white',
+                                        border: '1px solid #e5e5e5',
+                                        borderRadius: '8px',
+                                        width: '100%'
+                                    }}
                                 >
-                                    {cartItems.some(item => item.name === flavor) ? 'Notificado' : 'Notifique-me'}
+                                    Em Estoque
                                 </button>
                             </div>
                         ))}
                     </main>
                 </div>
             </div>
+            <Footer />
         </div>
-        
-        <Footer />
-        </>
     );
 };
 

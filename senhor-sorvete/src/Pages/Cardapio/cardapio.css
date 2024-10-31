@@ -12,11 +12,9 @@ body {
 }
 
 .header {
-    background-image: linear-gradient(to bottom, rgba(0,0,0,0.4) 0%, rgba(0,0,0,0.4) 100%), url("../../../public/Imagens/sorvete-baunilha.jpg");
     background-size: cover;
     background-position: center;
     color: white;
-    padding: 40px 20px;
     text-align: center;
 }
 
@@ -26,23 +24,26 @@ body {
 }
 
 .navigation {
-    background-color: #fff;
     display: flex;
-    justify-content: space-around;
+    justify-content: space-between;
     align-items: center;
-    padding: 10px 20px;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    padding: 1rem 2rem;
+    margin-top: -1rem;
 }
 
 .navigation ul {
     display: flex;
     list-style-type: none;
+    gap: 1rem;
     padding: 0;
     margin: 0;
 }
 
 .navigation ul li {
-    margin: 10px 30px;
+    background-color: white;
+    padding: 0.5rem 1.5rem;
+    border-radius: 9999px;
+    cursor: pointer;
 }
 
 .navigation ul li a {
@@ -57,11 +58,11 @@ body {
 }
 
 .searchBar input {
-    padding: 8px 12px;
-    border: 1px solid #ccc;
-    border-radius: 4px 0 0 4px;
+    padding: 0.5rem 1rem;
+    border: 1px solid #e5e5e5;
+    border-radius: 9999px;
     font-size: 14px;
-    width: 15vw;
+    width: 200px;
 }
 
 .searchBar button {
@@ -79,6 +80,7 @@ body {
     padding-top: 20px;
     min-height: calc(100vh - 60px);
     display: flex;
+    margin: 5px 25px;
 }
 
 .mainContent {
@@ -116,7 +118,7 @@ body {
     padding: 20px;
     border-radius: 8px;
     box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-    margin-bottom: 10px;
+    margin-bottom: 25px;
 }
 
 .sidebar h3 {
@@ -124,7 +126,14 @@ body {
 }
 
 .sidebar h4 {
-    margin: 10px 0px;
+    margin: 3px 0px;
+}
+
+.sidebar, .notifications {
+    background-color: white;
+    border-radius: 24px;
+    padding: 1.5rem;
+    margin-bottom: 1rem;
 }
 
 #price-range {
@@ -233,28 +242,27 @@ body {
 }
 
 .products {
-    flex: 1;
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(217px, 1fr));
-    gap: 30px;
-    margin-left: 310px;
-    margin-right: 20px;
-    margin-bottom: 50px;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 2rem;
+    padding: 2rem;
+    margin-left: 300px;
 }
 
 .product {
-    background-color: #fff;
-    border-radius: 8px;
-    padding: 20px;
+    background-color: white;
+    border-radius: 24px;
+    padding: 1.5rem;
     text-align: center;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
 }
 
+
 .product img {
-    width: 70%;
-    height: auto;
-    border-radius: 8px;
-    margin-bottom: 10px;
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+    border-radius: 16px;
+    margin-bottom: 1rem;
 }
 
 .product h3 {
@@ -269,13 +277,12 @@ body {
 }
 
 .notifyMe {
-    background-color: #8B0000;
-    color: white;
-    border: none;
-    padding: 10px 20px;
-    border-radius: 4px;
+    background-color: white;
+    border: 1px solid #e5e5e5;
+    border-radius: 8px;
+    padding: 0.5rem 1rem;
+    width: 100%;
     cursor: pointer;
-    transition: background-color 0.3s;
 }
 
 .notifyMe:hover {
@@ -299,12 +306,11 @@ body {
 }
 
 .price-range {
-    margin-bottom: 20px;
+
 }
 
 .price-range input[type="range"] {
     width: 100%;
-    margin-bottom: 10px;
 }
 
 .price-labels {
@@ -315,7 +321,7 @@ body {
 }
 
 .categories {
-    margin-top: 20px;
+    
 }
 
 .categories h4 {
