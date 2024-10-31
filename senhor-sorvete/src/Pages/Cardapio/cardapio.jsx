@@ -18,7 +18,7 @@ const Cardapio = () => {
     const [isSticky, setIsSticky] = useState(false);
     const [priceRange, setPriceRange] = useState(15);
     const [selectedCategories, setSelectedCategories] = useState([]);
-    
+
     const sidebarRef = useRef(null);
     const mainContentRef = useRef(null);
 
@@ -32,14 +32,13 @@ const Cardapio = () => {
         setCartItems(cartItems.filter(item => item.name !== flavor));
     };
 
-    const filteredFlavors = flavors.filter(flavor => 
+    const filteredFlavors = flavors.filter(flavor =>
         flavor.toLowerCase().includes(termo.toLowerCase()) && 15 <= priceRange
     );
 
     return (
         <div className="containerCardapio">
-            <Header/>
-            
+            <Header />
             <header className="header" style={{
                 backgroundImage: 'linear-gradient(to bottom, rgba(0,0,0,0.2) 0%, rgba(0,0,0,0.2) 100%), url("../../../public/Imagens/sorvete-baunilha.jpg")',
                 height: '400px',
@@ -96,19 +95,21 @@ const Cardapio = () => {
                     }}>Picolés</li>
                 </ul>
                 <div className="searchBar">
-                    <input 
-                        type="text" 
-                        placeholder="Pesquisar..." 
-                        value={termo} 
+                    <input
+                        type="text"
+                        placeholder="Pesquisar..."
+                        value={termo}
                         onChange={(e) => setTermo(e.target.value)}
                         style={{
                             borderRadius: '9999px',
+                            borderTopRightRadius: '0px',
+                            borderBottomRightRadius: '0px',
                             padding: '0.5rem 1rem'
                         }}
                     />
                     <button style={{
                         borderRadius: '0 9999px 9999px 0'
-                    }}><SearchIcon sx={{fontSize: 16}}/></button>
+                    }}><SearchIcon sx={{ fontSize: 16 }} /></button>
                 </div>
             </nav>
 
@@ -120,8 +121,8 @@ const Cardapio = () => {
                             borderRadius: '24px',
                             padding: '1.5rem'
                         }}>
-                            <Filtros 
-                                priceRange={priceRange} 
+                            <Filtros
+                                priceRange={priceRange}
                                 setPriceRange={setPriceRange}
                                 selectedCategories={selectedCategories}
                                 setSelectedCategories={setSelectedCategories}
@@ -154,26 +155,16 @@ const Cardapio = () => {
                         </aside>
                     </div>
 
-                    <main className="products">
+                    <main className="products grid grid-cols-3 gap-6 justify-center">
                         {filteredFlavors.map((flavor, index) => (
-                            <div key={index} className="product" style={{
-                                backgroundColor: 'white',
-                                borderRadius: '24px',
-                                padding: '1.5rem'
-                            }}>
-                                <img src="Imagens/casquinhas-de-chocolate.jpeg" alt={`${flavor} Ice Cream`} />
-                                <h3>{flavor}</h3>
-                                <p>R$ 12,00</p>
-                                <button 
-                                    className="notifyMe"
+                            <div key={index} className="product bg-white rounded-3xl p-6 text-center">
+                                <img src="Imagens/casquinhas-de-chocolate.jpeg" alt={`${flavor} Ice Cream`} className="w-full h-48 object-cover rounded-2xl mb-4" />
+                                <h3 className="font-bold mb-2">{flavor}</h3>
+                                <p className="font-semibold mb-2">R$ 12,00</p>
+                                <button
+                                    className="notifyMe w-full py-2 bg-white border border-gray-200 rounded-lg"
                                     onClick={() => addToCart(flavor)}
                                     disabled={cartItems.some(item => item.name === flavor)}
-                                    style={{
-                                        backgroundColor: 'white',
-                                        border: '1px solid #e5e5e5',
-                                        borderRadius: '8px',
-                                        width: '100%'
-                                    }}
                                 >
                                     Em Estoque
                                 </button>
