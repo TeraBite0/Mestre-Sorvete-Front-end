@@ -1,38 +1,48 @@
 import React, { useState, useEffect, useRef } from 'react';
 import './cardapio.css';
 import Filtros from '../../Components/Filtros/Filtro.tsx';
-import Header from '../../Components/Header/index.jsx'
-import Footer from '../../Components/Footer/index.jsx'
+import Header from '../../Components/Header/index.jsx';
+import Footer from '../../Components/Footer/index.jsx';
 import SearchIcon from '@mui/icons-material/Search';
-
-const flavors = [
-    "Nescolak", "Cookies", "Biscoitos", "Brigadeirissimo", "Paçoca",
-    "Chocolate", "Mousse", "Black", "Frutas", "Cocada",
-    "Trufado", "Limão", "Trufa", "Caramelo", "Brownie",
-    "Cenoura", "Avelã", "Bem Casado", "Duo Amore", "Doce de Leite",
-];
+import axios from 'axios';
 
 const Cardapio = () => {
     const [termo, setTermo] = useState('');
     const [cartItems, setCartItems] = useState([]);
     const [priceRange, setPriceRange] = useState(15);
     const [selectedCategories, setSelectedCategories] = useState([]);
+    const [produtos, setProdutos] = useState([]); // Estado para armazenar os produtos
 
     const sidebarRef = useRef(null);
     const mainContentRef = useRef(null);
 
-    const addToCart = (flavor) => {
-        if (!cartItems.some(item => item.name === flavor)) {
-            setCartItems([...cartItems, { name: flavor, price: 15.00 }]);
+    useEffect(() => {
+        // Busca os produtos da API ao carregar o componente
+        const fetchProdutos = async () => {
+            try {
+                const response = await axios.get('http://localhost:8080/produtos/isAtivos');
+                setProdutos(response.data); // Armazena os produtos no estado
+            } catch (error) {
+                console.error('Erro ao buscar produtos:', error);
+            }
+        };
+        fetchProdutos();
+    }, []);
+
+    const addToCart = (produto) => {
+        if (!cartItems.some(item => item.id === produto.id)) {
+            setCartItems([...cartItems, { ...produto, price: produto.preco }]);
         }
     };
 
-    const removeFromCart = (flavor) => {
-        setCartItems(cartItems.filter(item => item.name !== flavor));
+    const removeFromCart = (produtoId) => {
+        setCartItems(cartItems.filter(item => item.id !== produtoId));
     };
 
-    const filteredFlavors = flavors.filter(flavor =>
-        flavor.toLowerCase().includes(termo.toLowerCase()) && 15 <= priceRange
+    // Filtra os produtos com base no termo de pesquisa e na faixa de preço
+    const filteredProdutos = produtos.filter(produto =>
+        produto.nome.toLowerCase().includes(termo.toLowerCase()) &&
+        produto.preco <= priceRange
     );
 
     return (
@@ -115,11 +125,7 @@ const Cardapio = () => {
             <div className="mainContentWrapper" ref={mainContentRef}>
                 <div className="mainContent">
                     <div className={`sidebarWrapper`} ref={sidebarRef}>
-                        <aside className="sidebar" style={{
-                            backgroundColor: 'white',
-                            borderRadius: '24px',
-                            padding: '1.5rem'
-                        }}>
+                        <aside className="sidebar" style={{ backgroundColor: 'white', borderRadius: '24px', padding: '1.5rem' }}>
                             <Filtros
                                 priceRange={priceRange}
                                 setPriceRange={setPriceRange}
@@ -127,22 +133,17 @@ const Cardapio = () => {
                                 setSelectedCategories={setSelectedCategories}
                             />
                         </aside>
-                        <aside className="notifications" style={{
-                            backgroundColor: 'white',
-                            borderRadius: '24px',
-                            padding: '1.5rem',
-                            marginTop: '1rem'
-                        }}>
+                        <aside className="notifications" style={{ backgroundColor: 'white', borderRadius: '24px', padding: '1.5rem', marginTop: '1rem' }}>
                             <h2>Notificações</h2>
                             <ul>
                                 {cartItems.map((item, index) => (
                                     <li key={index}>
-                                        <img src="Imagens/sorvete-de-pote-chocolate.png" alt={item.name} />
+                                        <img src="Imagens/sorvete-de-pote-chocolate.png" alt={item.nome} />
                                         <div className="cartItemDetails">
-                                            <h4>{item.name}</h4>
+                                            <h4>{item.nome}</h4>
                                             <p>R$ {item.price.toFixed(2)}</p>
                                         </div>
-                                        <button onClick={() => removeFromCart(item.name)}>Remover</button>
+                                        <button onClick={() => removeFromCart(item.id)}>Remover</button>
                                     </li>
                                 ))}
                             </ul>
@@ -155,17 +156,17 @@ const Cardapio = () => {
                     </div>
 
                     <main className="products grid grid-cols-3 gap-6 justify-center">
-                        {filteredFlavors.map((flavor, index) => (
+                        {filteredProdutos.map((produto, index) => (
                             <div key={index} className="product bg-white rounded-3xl p-6 text-center">
-                                <img src="Imagens/casquinhas-de-chocolate.jpeg" alt={`${flavor} Ice Cream`} className="w-full h-48 object-cover rounded-2xl mb-4" />
-                                <h3 className="font-bold mb-2">{flavor}</h3>
-                                <p className="font-semibold mb-2">R$ 12,00</p>
+                                <img src="Imagens/casquinhas-de-chocolate.jpeg" alt={`${produto.nome} Ice Cream`} className="w-full h-48 object-cover rounded-2xl mb-4" />
+                                <h3 className="font-bold mb-2">{produto.nome}</h3>
+                                <p className="font-semibold mb-2">R$ {produto.preco.toFixed(2)}</p>
                                 <button
                                     className="notifyMe w-full py-2 bg-white border border-gray-200 rounded-lg"
-                                    onClick={() => addToCart(flavor)}
-                                    disabled={cartItems.some(item => item.name === flavor)}
+                                    onClick={() => addToCart(produto)}
+                                    disabled={cartItems.some(item => item.id === produto.id)}
                                 >
-                                    Em Estoque
+                                    {produto.emEstoque ? "Em Estoque" : "Notifique-me"}
                                 </button>
                             </div>
                         ))}
