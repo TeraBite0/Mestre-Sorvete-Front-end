@@ -15,7 +15,6 @@ const flavors = [
 const Cardapio = () => {
     const [termo, setTermo] = useState('');
     const [cartItems, setCartItems] = useState([]);
-    const [isSticky, setIsSticky] = useState(false);
     const [priceRange, setPriceRange] = useState(15);
     const [selectedCategories, setSelectedCategories] = useState([]);
 
