@@ -114,7 +114,7 @@ const Cardapio = () => {
 
             <div className="mainContentWrapper" ref={mainContentRef}>
                 <div className="mainContent">
-                    <div className={`sidebarWrapper ${isSticky ? 'sticky' : ''}`} ref={sidebarRef}>
+                    <div className={`sidebarWrapper`} ref={sidebarRef}>
                         <aside className="sidebar" style={{
                             backgroundColor: 'white',
                             borderRadius: '24px',
