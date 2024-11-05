@@ -4,8 +4,8 @@ const IconeWhatsapp = (props) => {
   return (
     <div className="whatsapp-icon">
       <a
-        href="https://wa.me/00000000000"
-        target="_blank"
+        href="https://wa.me/5511988469500"
+        target="_blank" // Abrir em uma nova guia
         className="whatsapp-icon"
         rel="noopener noreferrer"
       >

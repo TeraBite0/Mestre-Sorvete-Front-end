@@ -11,7 +11,7 @@ const Header = () => {
     return (
         <div className="containerHeader" id="start">
             <div className="containerImgLogo">
-                <img src="/Imagens/logo-sorvete.png" alt="logo sorvete" />
+                <a href="/"><img src="/Imagens/logo-sorvete.png" alt="logo sorvete" /></a>
             </div>
             <div className="containerListItem">
                 <ul>

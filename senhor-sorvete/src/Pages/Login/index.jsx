@@ -56,6 +56,7 @@ const Login = () => {
                 <span>Acesse sua conta</span>
                 <div className='campo-texto-container' aria-label='Campos que o cliente deve preencher '>
                 <CampoTexto
+                    
                     obrigatorio={true}
                     label = "E-mail:"
                     placeholder = "exemplo@email.com"
@@ -64,6 +65,7 @@ const Login = () => {
                 />
 
                 <CampoTexto
+                    type="password"
                     obrigatorio={true}
                     label= "Senha:"
                     placeholder = "Digite sua senha"

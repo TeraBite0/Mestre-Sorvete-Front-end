@@ -30,7 +30,7 @@ const HomeGerenciamento = () => {
           />
           <CardsGerenciamento
             titulo="Cardápio"
-            subtitulo="Modifique os produtos amostra"
+            subtitulo="Modifique os produtos à mostra"
             imagem={imagens[1]}
             href="/adm/listarProdutos"
           />

@@ -21,12 +21,39 @@ import Autocomplete from "@mui/material/Autocomplete";
 import { toast } from "react-toastify";
 import rootShouldForwardProp from "@mui/material/styles/rootShouldForwardProp";
 
+
+// Dados iniciais mockados
+const initialRows = [
+  { codigo: 23459, data: "27-09-2024", produtos: "Sorvete Limão seco", precos: "20.00" },
+  { codigo: 12345, data: "28-09-2024", produtos: "Sorvete Castanha do Paraná", precos: "25.00" },
+  { codigo: 67890, data: "29-09-2024", produtos: "Sorvete Guns and Ices", precos: "16.00" },
+  { codigo: 78908, data: "02-10-2024", produtos: "Sorvete Cachorro Caramelo", precos: "15.00" },
+  { codigo: 74656, data: "05-10-2024", produtos: "Sorvete Morango", precos: "20.00" },
+  { codigo: 85674, data: "10-10-2024", produtos: "Sorvete Chocolate Intenso", precos: "18.00" },
+  { codigo: 97345, data: "12-10-2024", produtos: "Sorvete Maracujá Tropical", precos: "22.00" },
+  { codigo: 64532, data: "15-10-2024", produtos: "Sorvete Baunilha Gourmet", precos: "21.00" },
+  // { codigo: 11234, data: "18-10-2024", produtos: "Sorvete Frutas Vermelhas", precos: "19.00" },
+  // { codigo: 56789, data: "22-10-2024", produtos: "Sorvete Coco Cremoso", precos: "23.00" },
+  // { codigo: 38475, data: "25-10-2024", produtos: "Sorvete Pistache Premium", precos: "26.00" },
+  // { codigo: 67893, data: "26-10-2024", produtos: "Sorvete Abacaxi com Hortelã", precos: "24.00" },
+  // { codigo: 34212, data: "27-10-2024", produtos: "Sorvete Banana com Doce de Leite", precos: "20.00" },
+  // { codigo: 98034, data: "30-10-2024", produtos: "Sorvete Caramelo Salgado", precos: "25.00" }
+];
+
+
 const Vendas = () => {
 
   const [rows, setRows] = useState([]);
   const [openAdicionar, setOpenAdicionar] = useState(false);
+
   const [novasVendas, setNovasVendas] = useState([{ produto: "", quantidade: 0, precoTotal: 0 }]);
   const [dataVenda, setDataVenda] = useState([]);
+  const [openBuscar, setOpenBuscar] = useState(false);
+  const [novaVenda, setNovaVenda] = useState({ codigo: "", data: "", produtos: "", precos: "" });
+  const [vendasTemporarias, setVendasTemporarias] = useState([]); // Lista de vendas temporárias
+  const [totalVendas, setTotalVendas] = useState(0); // Total dos preços das vendas temporárias
+  const [codigoBusca, setCodigoBusca] = useState("");
+
   const [resultadoBusca, setResultadoBusca] = useState(null);
   const [openBuscar, setOpenBuscar] = useState(false);
   const [total, setTotal] = useState(0);
@@ -70,8 +97,13 @@ const Vendas = () => {
   const handleOpenAdicionar = () => setOpenAdicionar(true);
   const handleCloseAdicionar = () => {
     setOpenAdicionar(false);
+
     setNovasVendas([{ produto: "", quantidade: 0, precoTotal: 0 }]);
     setTotal(0);
+
+    setVendasTemporarias([]);
+    setTotalVendas(0);
+
   };
 
   const handleOpenBuscar = () => setOpenBuscar(true);
@@ -80,6 +112,7 @@ const Vendas = () => {
     setDataVenda("");
     setResultadoBusca(null);
   };
+
 
   const handleAdicionarCampo = () => {
     setNovasVendas([...novasVendas, { produto: "", quantidade: 0, precoTotal: 0 }]);
@@ -175,6 +208,28 @@ const Vendas = () => {
         toast.error('Erro ao registrar venda. Por favor, tente novamente.');
       }
     }
+
+  // Adicionar venda temporária e atualizar o total - Mudar depois da apresentação
+  const handleAdicionarVendaTemporaria = () => {
+    const preco = parseFloat(novaVenda.precos.replace("R$", "").replace(",", "."));
+    setVendasTemporarias((prev) => [...prev, novaVenda]);
+    setTotalVendas((prevTotal) => prevTotal + preco);
+    setNovaVenda({ codigo: "", data: "", produtos: "", precos: "" });
+  };
+
+  // Finalizar e adicionar todas as vendas temporárias ao array principal - Mudar depois da apresentação
+  const handleSubmitAdicionarTodasVendas = () => {
+    setRows((prevRows) => [...prevRows, ...vendasTemporarias]);
+    setVendasTemporarias([]);
+    setTotalVendas(0);
+    handleCloseAdicionar();
+  };
+
+  // Buscar venda pelo código - Ver se vai buscar pelo código mesmo
+  const handleSubmitBuscar = () => {
+    const vendaEncontrada = rows.find((row) => row.codigo.toString() === codigoBusca);
+    setResultadoBusca(vendaEncontrada || "Venda não encontrada.");
+
   };
   
 
@@ -209,6 +264,7 @@ const Vendas = () => {
               </TableRow>
             </TableHead>
             <TableBody>
+
               {vendasComProdutos.map((row) => {
 
                 const precoTotal = row.produtos.reduce((total, item) => {
@@ -235,10 +291,21 @@ const Vendas = () => {
               </TableRow>
               );
               })}
+
+              {rows.map((row) => (
+                <TableRow key={row.codigo} sx={{ "&:last-child td, &:last-child th": { border: 0 } }}>
+                  <TableCell component="th" scope="row">{row.codigo}</TableCell>
+                  <TableCell align="right">{row.data}</TableCell>
+                  <TableCell align="right">{row.produtos}</TableCell>
+                  <TableCell align="right">R$ {row.precos}</TableCell>
+                </TableRow>
+              ))}
+
             </TableBody>
           </Table>
         </TableContainer>
       </div>
+
 
       {/* Modal Adicionar Venda */}
       <Dialog open={openAdicionar} onClose={handleCloseAdicionar}>
@@ -280,12 +347,56 @@ const Vendas = () => {
         <DialogActions>
           <Button className="botaoModal" onClick={handleCloseAdicionar}>Cancelar</Button>
           <Button className="botaoModal" onClick={handleSubmitAdicionar} variant="contained">Adicionar</Button>
+
+      <Dialog open={openAdicionar} onClose={handleCloseAdicionar}> {/*Modal Adicionar*/}
+        <DialogTitle className='tituloModal'>Adicionar Venda</DialogTitle>
+        <DialogContent className="campos-modais">
+          <TextField
+            autoFocus
+            margin="dense"
+            label="Código"
+            fullWidth value={novaVenda.codigo}
+            onChange={(e) => setNovaVenda({ ...novaVenda, codigo: e.target.value })}
+          />
+          <TextField
+            margin="dense"
+            label="Data"
+            fullWidth value={novaVenda.data}
+            onChange={(e) => setNovaVenda({ ...novaVenda, data: e.target.value })}
+          />
+          <TextField
+            margin="dense"
+            label="Produtos"
+            fullWidth value={novaVenda.produtos}
+            onChange={(e) => setNovaVenda({ ...novaVenda, produtos: e.target.value })}
+          />
+          <TextField
+            margin="dense"
+            label="Preço"
+            fullWidth value={novaVenda.precos}
+            onChange={(e) => setNovaVenda({ ...novaVenda, precos: e.target.value })}
+          />
+
+          <Button className='botaoModal' onClick={handleAdicionarVendaTemporaria}>+</Button>
+          
+          {/* Exibir vendas temporárias e o total */}
+          <div style={{ marginTop: "1em" }}>
+            {vendasTemporarias.map((venda, index) => (
+              <p key={index}>{`${venda.produtos} - ${venda.precos}`}</p>
+            ))}
+            <p><strong>Total:</strong> R${totalVendas.toFixed(2)}</p>
+          </div>
+        </DialogContent>
+        <DialogActions>
+          <Button className='botaoModal' onClick={handleCloseAdicionar}>Cancelar</Button>
+          <Button className='botaoModal' onClick={handleSubmitAdicionarTodasVendas}>Finalizar Vendas</Button>
+
         </DialogActions>
       </Dialog>
 
-      {/* Modal Buscar Venda */}
-      <Dialog open={openBuscar} onClose={handleCloseBuscar}>
+      <Dialog open={openBuscar} onClose={handleCloseBuscar}> {/*Modal Buscar*/}
         <DialogTitle>Buscar Venda</DialogTitle>
+
         <DialogContent>
           <TextField
             label="Data da venda"
@@ -293,6 +404,30 @@ const Vendas = () => {
             value={dataVenda}
             onChange={(e) => setDataVenda(e.target.value)}
           />
+
+        <DialogContent className="campos-modais">
+          <TextField
+            autoFocus
+            margin="dense"
+            label="Código da Venda"
+            fullWidth value={codigoBusca}
+            onChange={(e) => setCodigoBusca(e.target.value)}
+          />
+          {resultadoBusca && (
+            <div style={{ marginTop: "1em" }}>
+              {typeof resultadoBusca === "string" ? (
+                <p>{resultadoBusca}</p>
+              ) : (
+                <div>
+                  <p><strong>Código:</strong> {resultadoBusca.codigo}</p>
+                  <p><strong>Data:</strong> {resultadoBusca.data}</p>
+                  <p><strong>Produtos:</strong> {resultadoBusca.produtos}</p>
+                  <p><strong>Preços:</strong> {resultadoBusca.precos}</p>
+                </div>
+              )}
+            </div>
+          )}
+
         </DialogContent>
         <DialogActions>
           <Button onClick={handleCloseBuscar}>Cancelar</Button>

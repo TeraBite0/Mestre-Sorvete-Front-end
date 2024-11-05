@@ -29,6 +29,10 @@
   font-weight: bold;
 }
 
+#h1-dash-3 {
+  margin-bottom: 50px;
+}
+
 .dashboard-item h5 {
   font-weight: 400;
   margin-top: -20px;
