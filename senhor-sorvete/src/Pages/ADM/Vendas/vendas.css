@@ -52,9 +52,16 @@
   font-size: 22px;
 }
 
-.campos-modais {
-  margin-bottom: 20px;
+.container-modais {
+  width: 500px;
 }
+
+.campo-modal {
+  display: flex;
+  margin-bottom: 15px;
+}
+
+
 
 .botaoModal{
   background-color: #2F615E !important;
