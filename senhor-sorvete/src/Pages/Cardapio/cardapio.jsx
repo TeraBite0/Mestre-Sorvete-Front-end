@@ -159,7 +159,9 @@ const Cardapio = () => {
                         {filteredProdutos.map((produto, index) => (
                             <div key={index} className="product bg-white rounded-3xl p-6 text-center">
                                 <img src="Imagens/casquinhas-de-chocolate.jpeg" alt={`${produto.nome} Ice Cream`} className="w-full h-48 object-cover rounded-2xl mb-4" />
-                                <h3 className="font-bold mb-2">{produto.nome}</h3>
+                                <div className="product-name font-bold mb-2" title={produto.nome}>
+                                    {produto.nome}
+                                </div>
                                 <p className="font-semibold mb-2">R$ {produto.preco.toFixed(2)}</p>
                                 <button
                                     className="notifyMe w-full py-2 bg-white border border-gray-200 rounded-lg"
@@ -171,6 +173,7 @@ const Cardapio = () => {
                             </div>
                         ))}
                     </main>
+
                 </div>
             </div>
             <Footer />
