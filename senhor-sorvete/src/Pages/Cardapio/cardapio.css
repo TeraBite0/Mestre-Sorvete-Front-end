@@ -2,85 +2,118 @@ body {
     margin: 0;
     padding: 0;
     font-family: "Poppins", sans-serif;
+    background-color: #e9deb0;
 }
 
 .containerCardapio {
-    background: #e9deb0;
     display: flex;
     flex-direction: column;
     min-height: 100vh;
 }
 
-.header {
+.banner {
     background-size: cover;
     background-position: center;
     color: white;
     text-align: center;
 }
 
-.headerContent {
-    max-width: 800px;
-    margin: 0 auto;
+.banner img {
+    position: absolute;
+    width: 100%;
+    height: 13.8rem;
+    left: 0;
+    z-index: -1;
+    object-fit: cover;  
 }
 
-.navigation {
+.bannerContent {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    height: 100%;
+    margin: 0 auto;
+    padding: 2rem;
+    z-index: 0;
+    background-color: #00000031;
+}
+
+.bannerContent h1 {
+    font-size: 2.5rem;
+    font-weight: bold;
+    margin-bottom: 0.5rem;
+}
+
+.bannerContent p {
+    font-size: 1.1rem;
+}
+
+.navegacao {
     display: flex;
     justify-content: space-between;
     align-items: center;
     padding: 1rem 2rem;
     margin-top: -1rem;
+    background-color: transparent;
+    box-shadow: none;
+    height: 4rem;
 }
 
-.navigation ul {
+.listaNavegacao {
     display: flex;
     list-style-type: none;
     gap: 1rem;
     padding: 0;
     margin: 0;
+    align-items: center;
 }
 
-.navigation ul li {
+.itemNavegacao {
     background-color: white;
     padding: 0.5rem 1.5rem;
-    border-radius: 9999px;
+    border-radius: 100px;
     cursor: pointer;
+    text-align: center;
+    line-height: 1;
 }
 
-.navigation ul li a {
+.itemNavegacao a {
     text-decoration: none;
     color: #333;
     font-weight: 500;
+    vertical-align: middle;
 }
 
-.searchBar {
+.barraPesquisa {
     display: flex;
     align-items: center;
 }
 
-.searchBar input {
-    padding: 0.5rem 1rem;
-    border: 1px solid #e5e5e5;
-    border-radius: 9999px;
+.inputPesquisa {
+    font-family: "Poppins", sans-serif;
+    flex-grow: 1;
+    padding: 0.35rem 1rem;
+    border: none;
+    border-radius: 24px 0 0 24px;
     font-size: 14px;
-    width: 200px;
+    background-color: white;
 }
 
-.searchBar button {
+.botaoPesquisa {
     background-color: #8B0000;
     color: white;
     border: none;
-    padding: 8px 12px;
-    border-radius: 0 4px 4px 0;
+    padding: 0.43rem 1rem;
+    border-radius: 0 24px 24px 0;
     cursor: pointer;
     font-size: 14px;
 }
 
 .mainContentWrapper {
     position: relative;
-    padding-top: 20px;
-    min-height: calc(100vh - 60px);
     display: flex;
     margin: 5px 25px;
+    flex-grow: 1;
 }
 
 .mainContent {
@@ -88,37 +121,21 @@ body {
     gap: 20px;
     margin-bottom: 40px;
     flex: 1;
+    justify-content: space-between;
 }
 
 .sidebarWrapper {
-    width: 280px;
-    position: absolute;
+    width: 24%;
     left: 9px;
     transition: all 0.3s ease;
 }
 
-.sidebarWrapper.normal {
-    position: absolute;
-    top: 20px;
-}
-
-.sidebarWrapper.sticky {
-    position: fixed;
-    top: 20px;
-}
-
-.sidebarWrapper.bottom {
-    position: absolute;
-    bottom: 20px;
-    top: auto;
-}
-
-.sidebar {
-    background-color: #fff;
-    padding: 20px;
-    border-radius: 8px;
+.sidebar, .notifications {
+    background-color: white;
+    border-radius: 24px;
+    padding: 1.5rem;
+    margin-bottom: 1rem;
     box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-    margin-bottom: 25px;
 }
 
 .sidebar h3 {
@@ -129,23 +146,12 @@ body {
     margin: 3px 0px;
 }
 
-.sidebar, .notifications {
-    background-color: white;
-    border-radius: 24px;
-    padding: 1.5rem;
-    margin-bottom: 1rem;
-}
-
-#price-range {
+.priceRange {
     width: 100%;
     max-width: 200px;
 }
 
 .notifications {
-    background-color: #fff;
-    padding: 15px;
-    border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
     overflow-y: auto;
     height: 35vh;
     width: 100%;
@@ -243,10 +249,9 @@ body {
 
 .products {
     display: grid;
-    grid-template-columns: repeat(3, minmax(250px, 1fr));
-    gap: 1rem;
+    grid-template-columns: repeat(4, 13rem);
+    gap: 1.5rem;
     padding: 1rem 0rem;
-    margin-left: 24rem;
     padding-left: 1.5rem;
     align-content: start;
     max-height: 486px;
@@ -264,7 +269,7 @@ body {
     padding: 1rem;
     padding-top: 1.3rem;
     text-align: center;
-    width: 12rem;
+    width: 10rem;
     transform: scale(0.96);
 }
 
@@ -272,9 +277,15 @@ body {
     white-space: nowrap;
     overflow: hidden;  
     text-overflow: ellipsis;
-    /* display: inline-block; */
     max-width: 100%;
     text-align: center;
+    cursor: default;
+    transition: 0.5s;
+}
+
+.product-name:hover {
+    transition: 0.5s;
+    text-decoration: underline;
 }
 
 .product img {
@@ -325,7 +336,6 @@ body {
     margin-bottom: 15px;
     font-size: 18px;
 }
-
 
 .price-range input[type="range"] {
     width: 100%;

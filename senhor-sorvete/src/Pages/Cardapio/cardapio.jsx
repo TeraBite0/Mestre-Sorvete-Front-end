@@ -48,77 +48,32 @@ const Cardapio = () => {
     return (
         <div className="containerCardapio">
             <Header />
-            <header className="header" style={{
-                backgroundImage: 'linear-gradient(to bottom, rgba(0,0,0,0.2) 0%, rgba(0,0,0,0.2) 100%), url("../../../public/Imagens/sorvete-baunilha.jpg")',
-                height: '400px',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                textAlign: 'center',
-                position: 'relative'
-            }}>
-                <div className="headerContent" style={{
-                    position: 'absolute',
-                    top: '50%',
-                    left: '50%',
-                    transform: 'translate(-50%, -50%)',
-                    width: '100%'
-                }}>
-                    <h1 style={{
-                        fontSize: '2.5rem',
-                        fontWeight: 'bold',
-                        marginBottom: '0.5rem'
-                    }}>Lorem Ipsum Lorem</h1>
-                    <p style={{
-                        fontSize: '1.1rem'
-                    }}>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed.</p>
+            <div className="banner">
+                <img src="Imagens/sorvete-baunilha.jpg" alt="" />
+                <div className="bannerContent">
+                    <h1>Lorem Ipsum Lorem</h1>
+                    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed.</p>
                 </div>
-            </header>
+            </div>
 
-            <nav className="navigation" style={{
-                backgroundColor: 'transparent',
-                boxShadow: 'none',
-                padding: '1rem 2rem'
-            }}>
-                <ul style={{
-                    display: 'flex',
-                    gap: '1rem'
+            <nav className="navegacao">
+                <ul className="listaNavegacao" style={{
                 }}>
-                    <li style={{
-                        backgroundColor: 'white',
-                        padding: '0.5rem 1.5rem',
-                        borderRadius: '9999px',
-                        cursor: 'pointer'
-                    }}>Popular</li>
-                    <li style={{
-                        backgroundColor: 'white',
-                        padding: '0.5rem 1.5rem',
-                        borderRadius: '9999px',
-                        cursor: 'pointer'
-                    }}>Sorvetes</li>
-                    <li style={{
-                        backgroundColor: 'white',
-                        padding: '0.5rem 1.5rem',
-                        borderRadius: '9999px',
-                        cursor: 'pointer'
-                    }}>Picolés</li>
+                    <li className="itemNavegacao">Popular</li>
+                    <li className="itemNavegacao">Sorvetes</li>
+                    <li className="itemNavegacao">Picolés</li>
                 </ul>
-                <div className="searchBar">
+                <div className="barraPesquisa">
                     <input
                         type="text"
                         placeholder="Pesquisar..."
                         value={termo}
                         onChange={(e) => setTermo(e.target.value)}
-                        style={{
-                            borderRadius: '9999px',
-                            borderTopRightRadius: '0px',
-                            borderBottomRightRadius: '0px',
-                            padding: '0.5rem 1rem'
-                        }}
+                        className="inputPesquisa"
                     />
-                    <button style={{
-                        borderRadius: '0 9999px 9999px 0'
-                    }}><SearchIcon sx={{ fontSize: 16 }} /></button>
+                    <button className="botaoPesquisa">
+                        <SearchIcon sx={{ fontSize: 16 }} />
+                    </button>
                 </div>
             </nav>
 
@@ -140,7 +95,7 @@ const Cardapio = () => {
                                     <li key={index}>
                                         <img src="Imagens/sorvete-de-pote-chocolate.png" alt={item.nome} />
                                         <div className="cartItemDetails">
-                                            <h4>{item.nome}</h4>
+                                            <h4 title={item.nome}>{item.nome}</h4>
                                             <p>R$ {item.price.toFixed(2)}</p>
                                         </div>
                                         <button onClick={() => removeFromCart(item.id)}>Remover</button>
@@ -166,10 +121,11 @@ const Cardapio = () => {
                                 <button
                                     className="notifyMe w-full py-2 bg-white border border-gray-200 rounded-lg"
                                     onClick={() => addToCart(produto)}
-                                    disabled={cartItems.some(item => item.id === produto.id)}
+                                    disabled={produto.emEstoque}
                                 >
                                     {produto.emEstoque ? "Em Estoque" : "Notifique-me"}
                                 </button>
+
                             </div>
                         ))}
                     </main>
