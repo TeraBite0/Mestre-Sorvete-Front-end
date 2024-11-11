@@ -17,53 +17,60 @@ import DialogContent from "@mui/material/DialogContent";
 import DialogActions from "@mui/material/DialogActions";
 import Button from "@mui/material/Button";
 import TextField from "@mui/material/TextField";
-import Autocomplete from "@mui/material/Autocomplete";
 import { toast } from "react-toastify";
-import rootShouldForwardProp from "@mui/material/styles/rootShouldForwardProp";
-
-
-// Dados iniciais mockados
-const initialRows = [
-  { codigo: 23459, data: "27-09-2024", produtos: "Sorvete Limão seco", precos: "20.00" },
-  { codigo: 12345, data: "28-09-2024", produtos: "Sorvete Castanha do Paraná", precos: "25.00" },
-  { codigo: 67890, data: "29-09-2024", produtos: "Sorvete Guns and Ices", precos: "16.00" },
-  { codigo: 78908, data: "02-10-2024", produtos: "Sorvete Cachorro Caramelo", precos: "15.00" },
-  { codigo: 74656, data: "05-10-2024", produtos: "Sorvete Morango", precos: "20.00" },
-  { codigo: 85674, data: "10-10-2024", produtos: "Sorvete Chocolate Intenso", precos: "18.00" },
-  { codigo: 97345, data: "12-10-2024", produtos: "Sorvete Maracujá Tropical", precos: "22.00" },
-  { codigo: 64532, data: "15-10-2024", produtos: "Sorvete Baunilha Gourmet", precos: "21.00" },
-  // { codigo: 11234, data: "18-10-2024", produtos: "Sorvete Frutas Vermelhas", precos: "19.00" },
-  // { codigo: 56789, data: "22-10-2024", produtos: "Sorvete Coco Cremoso", precos: "23.00" },
-  // { codigo: 38475, data: "25-10-2024", produtos: "Sorvete Pistache Premium", precos: "26.00" },
-  // { codigo: 67893, data: "26-10-2024", produtos: "Sorvete Abacaxi com Hortelã", precos: "24.00" },
-  // { codigo: 34212, data: "27-10-2024", produtos: "Sorvete Banana com Doce de Leite", precos: "20.00" },
-  // { codigo: 98034, data: "30-10-2024", produtos: "Sorvete Caramelo Salgado", precos: "25.00" }
-];
-
 
 const Vendas = () => {
-
   const [rows, setRows] = useState([]);
   const [openAdicionar, setOpenAdicionar] = useState(false);
-
-  const [novasVendas, setNovasVendas] = useState([{ produto: "", quantidade: 0, precoTotal: 0 }]);
-  const [dataVenda, setDataVenda] = useState([]);
+  const [novasVendas, setNovasVendas] = useState([{
+    produtoId: "",
+    quantidade: 1,
+    precoUnitario: 0,
+    precoTotal: 0
+  }]);
+  const [precoTotal, setPrecoTotal] = useState(0);
   const [openBuscar, setOpenBuscar] = useState(false);
-  const [novaVenda, setNovaVenda] = useState({ codigo: "", data: "", produtos: "", precos: "" });
-  const [vendasTemporarias, setVendasTemporarias] = useState([]); // Lista de vendas temporárias
-  const [totalVendas, setTotalVendas] = useState(0); // Total dos preços das vendas temporárias
-  const [codigoBusca, setCodigoBusca] = useState("");
-
+  const [dataBusca, setDataBusca] = useState("");
   const [resultadoBusca, setResultadoBusca] = useState(null);
-  const [openBuscar, setOpenBuscar] = useState(false);
-  const [total, setTotal] = useState(0);
+  const [vendasDoDia, setVendasDoDia] = useState([]);
   const [produtosDisponiveis, setProdutosDisponiveis] = useState([]);
+  const [isLoadingProdutos, setIsLoadingProdutos] = useState(false);
 
 
+
+  const agruparVendasPorData = (vendas) => {
+    return vendas.reduce((acc, venda) => {
+      const dataCompra = venda.dataCompra ?
+        new Date(venda.dataCompra).toLocaleDateString('pt-BR') :
+        'Data não disponível';
+
+      const vendaExistente = acc.find(v =>
+        new Date(v.dataCompra).toLocaleDateString('pt-BR') === dataCompra
+      );
+
+      if (vendaExistente) {
+        return acc.map(v => {
+          if (new Date(v.dataCompra).toLocaleDateString('pt-BR') === dataCompra) {
+            return {
+              ...v,
+              produtos: [...v.produtos, ...venda.produtos]
+            };
+          }
+          return v;
+        });
+      }
+
+      return [...acc, venda];
+    }, []).sort((a, b) => new Date(b.dataCompra) - new Date(a.dataCompra));
+  };
 
   useEffect(() => {
     const token = sessionStorage.getItem('token');
-    console.log("Token:", token);
+
+    if (!token) {
+      toast.error('Token não encontrado. Faça login novamente.');
+      return;
+    }
 
     axios.get('http://localhost:8080/vendas', {
       headers: {
@@ -71,116 +78,112 @@ const Vendas = () => {
       }
     })
       .then(response => {
-        console.log("Response Data:", response.data);
-        setRows(response.data);
-        console.log("Estrutura dos dados:", JSON.stringify(response.data, null, 2));
-
+        const vendasAgrupadas = agruparVendasPorData(response.data);
+        setRows(vendasAgrupadas);
       })
       .catch(error => {
         console.error("Error loading vendas:", error);
         toast.error('Erro ao carregar vendas.');
       });
+  }, []);
 
-      axios.get('http://localhost:8080/produtos', {
+  const handleOpenAdicionar = async () => {
+    setIsLoadingProdutos(true);
+    const token = sessionStorage.getItem('token');
+
+    try {
+      const response = await axios.get('http://localhost:8080/produtos', {
         headers: {
           Authorization: `Bearer ${token}`
         }
-      })
-      .then(response => setProdutosDisponiveis(response.data)
-    )
-    .catch(error => {
-      toast.error('Erro ao carregar produtos', error);
-    })
-
-  }, []);
-
-  const handleOpenAdicionar = () => setOpenAdicionar(true);
-  const handleCloseAdicionar = () => {
-    setOpenAdicionar(false);
-
-    setNovasVendas([{ produto: "", quantidade: 0, precoTotal: 0 }]);
-    setTotal(0);
-
-    setVendasTemporarias([]);
-    setTotalVendas(0);
-
+      });
+      setProdutosDisponiveis(response.data);
+      setOpenAdicionar(true);
+    } catch (error) {
+      console.error("Erro ao carregar produtos:", error);
+      toast.error('Erro ao carregar lista de produtos.');
+    } finally {
+      setIsLoadingProdutos(false);
+    }
   };
+
 
   const handleOpenBuscar = () => setOpenBuscar(true);
-  const handleCloseBuscar = () => {
-    setOpenBuscar(false);
-    setDataVenda("");
-    setResultadoBusca(null);
-  };
+
+  // const handleCloseBuscar = () => {
+  //   setOpenBuscar(false);
+  //   setDataBusca("");
+  //   setResultadoBusca(null);
+  // };
 
 
-  const handleAdicionarCampo = () => {
-    setNovasVendas([...novasVendas, { produto: "", quantidade: 0, precoTotal: 0 }]);
+  const calcularPrecoTotal = (produtos) => {
+    return produtos.reduce((total, item) => total + (item.produto.preco * item.qtdVendida), 0);
   };
 
   const handleChangeNovaVenda = (index, field, value) => {
-    const updatedVendas = novasVendas.map((venda, i) => {
-      if (i === index) {
-        if (field === 'produto') {
-          const produtoSelecionado = produtosDisponiveis.find(p => p.nome === value);
-          return { 
-            ...venda, 
-            [field]: value,
-            precoTotal: produtoSelecionado ? produtoSelecionado.preco * (venda.quantidade || 0) : 0
-          };
+    setNovasVendas(prevVendas => {
+      const updatedVendas = [...prevVendas];
+      const venda = { ...updatedVendas[index] };
+
+      if (field === "produtoId") {
+        const produtoSelecionado = produtosDisponiveis.find(p => p.id === parseInt(value));
+        if (produtoSelecionado) {
+          venda.produtoId = parseInt(value);
+          venda.precoUnitario = produtoSelecionado.preco;
+          venda.precoTotal = produtoSelecionado.preco * venda.quantidade;
         }
-        if (field === 'quantidade') {
-          const produtoSelecionado = produtosDisponiveis.find(p => p.nome === venda.produto);
-          return {
-            ...venda,
-            quantidade: value,
-            precoTotal: produtoSelecionado ? produtoSelecionado.preco * value : 0
-          };
-        }
-        return { ...venda, [field]: value };
+      } else if (field === "quantidade") {
+        const quantidade = parseInt(value) || 0;
+        venda.quantidade = quantidade;
+        venda.precoTotal = venda.precoUnitario * quantidade;
       }
-      return venda;
+
+      updatedVendas[index] = venda;
+
+      // Atualizar o preço total
+      const novoPrecoTotal = updatedVendas.reduce((total, v) => total + (v.precoTotal || 0), 0);
+      setPrecoTotal(novoPrecoTotal);
+
+      return updatedVendas;
     });
-    setNovasVendas(updatedVendas);
-    calcularValorTotal(updatedVendas);
   };
 
-  const calcularValorTotal = (vendas) => {
-    const totalCalculado = vendas.reduce((acc, venda) => {
-      return acc + (venda.precoTotal || 0);
-    }, 0);
-    setTotal(totalCalculado);
+  const handleAdicionarCampo = () => {
+    setNovasVendas(prev => [...prev, {
+      produtoId: "",
+      quantidade: 1,
+      precoUnitario: 0,
+      precoTotal: 0
+    }]);
   };
 
-  // const calcularValorTotal = (vendas) => {
-  //   const totalCalculado = vendas.reduce((acc, venda) => {
-  //     const produtoSelecionado = produtosDisponiveis.find(prod => prod.nome === venda.produto);
-  //     const preco = produtoSelecionado ? produtoSelecionado.preco : 0;
-  //     const quantidade = parseInt(venda.quantidade, 10) || 0;
-  //     const precoTotal = preco * quantidade;
-  //     venda.precoTotal = precoTotal;
-  //     return acc + precoTotal;
-  //   }, 0);
-  //   setTotal(totalCalculado);
-  // };
+  const handleCloseAdicionar = () => {
+    setOpenAdicionar(false);
+    setNovasVendas([{
+      produtoId: "",
+      quantidade: 1,
+      precoUnitario: 0,
+      precoTotal: 0
+    }]);
+    setPrecoTotal(0);
+  };
+
 
   const handleSubmitAdicionar = async () => {
+
     const token = sessionStorage.getItem('token');
-  
-    // Preparar o array de produtos para envio, filtrando e formatando os dados
-    const produtosParaEnviar = novasVendas
-      .filter(venda => venda.produto && venda.quantidade > 0)
-      .map(venda => ({
-        produtoNome: venda.produto,
-        quantidade: venda.quantidade,
-      }));
-  
-    if (produtosParaEnviar.length === 0) {
-      toast.error("Por favor, adicione pelo menos um produto com quantidade válida.");
+    if (!token) {
+      toast.error('Token não encontrado. Faça login novamente.');
       return;
     }
-  
+
     try {
+      const produtosParaEnviar = novasVendas.map(venda => ({
+        produtoId: venda.produtoId,
+        qtdVendida: venda.quantidade
+      }));
+
       const response = await axios.post(
         'http://localhost:8080/vendas',
         { produtos: produtosParaEnviar },
@@ -188,62 +191,69 @@ const Vendas = () => {
           headers: {
             'Authorization': `Bearer ${token}`,
             'Content-Type': 'application/json',
-          },
+          }
         }
       );
-  
+
       if (response.data) {
-        setRows(prevRows => [...prevRows, response.data]);
+        console.log("Resposta da requisição:", response.data);  // Verifique aqui a resposta do servidor
+        const vendasAtualizadas = agruparVendasPorData([...rows, response.data]);
+        setRows(vendasAtualizadas);
         handleCloseAdicionar();
         toast.success('Venda registrada com sucesso!');
       }
     } catch (error) {
       console.error('Erro ao registrar venda:', error);
-  
-      // Verificar e exibir os erros detalhados de validação, se houver
-      if (error.response && error.response.status === 400 && error.response.data.errors) {
-        const errorMessages = error.response.data.errors.map(err => err.defaultMessage).join(", ");
-        toast.error(`Erro de validação: ${errorMessages}`);
-      } else {
-        toast.error('Erro ao registrar venda. Por favor, tente novamente.');
-      }
+      toast.error('Erro ao registrar venda.');
     }
-
-  // Adicionar venda temporária e atualizar o total - Mudar depois da apresentação
-  const handleAdicionarVendaTemporaria = () => {
-    const preco = parseFloat(novaVenda.precos.replace("R$", "").replace(",", "."));
-    setVendasTemporarias((prev) => [...prev, novaVenda]);
-    setTotalVendas((prevTotal) => prevTotal + preco);
-    setNovaVenda({ codigo: "", data: "", produtos: "", precos: "" });
   };
-
-  // Finalizar e adicionar todas as vendas temporárias ao array principal - Mudar depois da apresentação
-  const handleSubmitAdicionarTodasVendas = () => {
-    setRows((prevRows) => [...prevRows, ...vendasTemporarias]);
-    setVendasTemporarias([]);
-    setTotalVendas(0);
-    handleCloseAdicionar();
-  };
-
-  // Buscar venda pelo código - Ver se vai buscar pelo código mesmo
-  const handleSubmitBuscar = () => {
-    const vendaEncontrada = rows.find((row) => row.codigo.toString() === codigoBusca);
-    setResultadoBusca(vendaEncontrada || "Venda não encontrada.");
-
-  };
-  
 
   const handleSubmitBuscar = async () => {
-    // Implementar a lógica de busca de vendas aqui
-  };
+    const token = sessionStorage.getItem('token');
+    
+    if (!token) {
+      toast.error("Token não encontrado. Faça login novamente.");
+      return;
+    }
+    
+    try {
+      const dataFormatada = dataBusca;
+      const response = await axios.get('http://localhost:8080/vendas/data', {
+        params: { data: dataFormatada },
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      
+      if (response.data.length === 0) {
+        setResultadoBusca("Nenhuma venda encontrada nesta data.");
+        setVendasDoDia([]);
+      } else {
+        console.log('Dados da venda:', response.data); // Para debug
+        setVendasDoDia(response.data);
+        setResultadoBusca("Vendas encontradas!");
+      }
+    } catch (error) {
+      console.error('Erro ao buscar venda:', error.response || error.message);
+      toast.error('Erro ao buscar venda.');
+      setVendasDoDia([]);
+      setResultadoBusca("Erro ao buscar vendas.");
+    }
+};
 
-  const vendasComProdutos = rows.filter(row => row.produtos && row.produtos.length > 0);
+const handleCloseBuscar = () => {
+    setOpenBuscar(false);
+    setDataBusca("");
+    setResultadoBusca(null);
+    setVendasDoDia([]);
+};
+
+
 
   return (
     <div className="container-vendas">
       <HeaderGerenciamento />
       <BotaoVoltarGerenciamento />
-
       <div className="container-informacoes">
         <h1>Vendas</h1>
         <div className="container-botoes">
@@ -253,187 +263,193 @@ const Vendas = () => {
       </div>
 
       <div className="tabela-vendas">
-        <TableContainer component={Paper} className="tabela-cont">
-          <Table sx={{ minWidth: 650 }} size="small" aria-label="a dense table">
+        <TableContainer component={Paper} className="tabela-container">
+          <Table sx={{ minWidth: 500 }} size="small" aria-label="a dense table">
             <TableHead className="tabela-Head">
               <TableRow>
-                <TableCell className="tabela-Head">Código</TableCell>
-                <TableCell className="tabela-Head" align="right">Data</TableCell>
+                <TableCell className="tabela-Head">ID</TableCell>
+                <TableCell className="tabela-Head" align="right">Data da Compra</TableCell>
+                <TableCell className="tabela-Head" align="right">Horario</TableCell>
                 <TableCell className="tabela-Head" align="right">Produtos</TableCell>
-                <TableCell className="tabela-Head" align="right">Preços</TableCell>
+                <TableCell className="tabela-Head" align="right">Preço Unitário</TableCell>
+                <TableCell className="tabela-Head" align="right">Valor Total</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
+              {rows
+                .filter(row => row.produtos?.length > 0)
+                .map((row) => {
+                  const dataCompra = new Date(row.dataCompra).toLocaleDateString('pt-BR');
+                  const precoTotalVenda = calcularPrecoTotal(row.produtos);
 
-              {vendasComProdutos.map((row) => {
-
-                const precoTotal = row.produtos.reduce((total, item) => {
-                return total + (item.produto.preco * item.qtdVendida);
-              }, 0);
-
-              return (
-              <TableRow key={row.id} sx={{ "&:last-child td, &:last-child th": { border: 0 } }}>
-                <TableCell component="th" scope="row">{row.id}</TableCell>
-                <TableCell align="right">
-                  {new Date(row.dataCompra).toLocaleDateString('pt-BR')}
-                </TableCell>
-                <TableCell align="right">
-                  {row.produtos.map(item => (
-                    <div key={item.produto.id}>
-                      {item.produto.nome}
-                    </div>
-                  ))
-                  }
-                </TableCell>
-                <TableCell align="right" style={{ fontWeight: 'bold' }}>
-                R$ {precoTotal.toFixed(2)}
-                </TableCell>
-              </TableRow>
-              );
-              })}
-
-              {rows.map((row) => (
-                <TableRow key={row.codigo} sx={{ "&:last-child td, &:last-child th": { border: 0 } }}>
-                  <TableCell component="th" scope="row">{row.codigo}</TableCell>
-                  <TableCell align="right">{row.data}</TableCell>
-                  <TableCell align="right">{row.produtos}</TableCell>
-                  <TableCell align="right">R$ {row.precos}</TableCell>
-                </TableRow>
-              ))}
-
+                  return (
+                    <TableRow key={row.id} sx={{ "&:last-child td, &:last-child th": { border: 0 } }}>
+                      <TableCell component="th" scope="row">{row.id}</TableCell>
+                      <TableCell align="right">{dataCompra}</TableCell>
+                      <TableCell align="right">
+                        {row.produtos.map((item, index) => {
+                          const horarioVenda = new Date(item.horarioVenda);
+                          return (
+                            <div key={index}>
+                              {!isNaN(horarioVenda)
+                                ? horarioVenda.toLocaleTimeString('pt-BR', {
+                                  hour: '2-digit',
+                                  minute: '2-digit'
+                                })
+                                : 'Horário não disponível'
+                              }
+                            </div>
+                          );
+                        })}
+                      </TableCell>
+                      <TableCell align="right">
+                        {row.produtos.map((item) => (
+                          <div key={item.produto.id}>
+                            <strong>{item.produto.nome}</strong> - {item.qtdVendida} un
+                            <br />
+                            <small style={{ color: 'gray' }}>
+                              {item.produto.subtipo.nome} - {item.produto.marca.nome}
+                            </small>
+                          </div>
+                        ))}
+                      </TableCell>
+                      <TableCell align="right">
+                        {row.produtos.map((item, index) => (
+                          <div key={index}>R$ {item.produto.preco.toFixed(2)}</div>
+                        ))}
+                      </TableCell>
+                      <TableCell align="right">R$ {precoTotalVenda.toFixed(2)}</TableCell>
+                    </TableRow>
+                  );
+                })}
             </TableBody>
           </Table>
         </TableContainer>
       </div>
 
-
-      {/* Modal Adicionar Venda */}
       <Dialog open={openAdicionar} onClose={handleCloseAdicionar}>
-        <DialogTitle className='tituloModal'>Adicionar Vendas</DialogTitle>
-        <DialogContent className="container-modais">
-          {novasVendas.map((venda, index) => (
-            <div key={index}>
-              <Autocomplete
-                options={produtosDisponiveis.map((produto) => produto.nome)}
-                renderInput={(params) =>
+        <DialogTitle>Adicionar Venda</DialogTitle>
+        <DialogContent>
+          {isLoadingProdutos ? (
+            <div>Carregando produtos...</div>
+          ) : (
+            <>
+              {novasVendas.map((venda, index) => (
+                <div key={index} style={{
+                  marginBottom: '20px',
+                  padding: '10px',
+                  border: '1px solid #eee',
+                  borderRadius: '4px'
+                }}>
                   <TextField
-                    className="campo-modal"
-                    autoFocus
-                    margin="dense"
-                    {...params}
-                    label="Produto"
+                    select
+                    value={venda.produtoId}
+                    onChange={(e) => handleChangeNovaVenda(index, "produtoId", e.target.value)}
                     fullWidth
-                  />}
-                value={venda.produto}
-                onChange={(event, newValue) => handleChangeNovaVenda(index, 'produto', newValue)}
-              />
-              <TextField
-                className="campo-modal"
-                autoFocus
-                margin="dense"
-                type="number"
-                label="Quantidade"
-                fullWidth
-                value={venda.quantidade}
-                onChange={(e) => handleChangeNovaVenda(index, 'quantidade', e.target.value)}
-              />
-              <h4>Preço Total: R${venda.precoTotal.toFixed(2)}</h4>
-              <br />
-            </div>
-          ))}
-          <Button variant="outlined" onClick={handleAdicionarCampo}>Adicionar Produto</Button>
-          <h3>Total: R${total.toFixed(2)}</h3>
+                    margin="dense"
+                    SelectProps={{
+                      native: true,
+                    }}
+                  >
+                    <option value="">Selecione o produto</option>
+                    {produtosDisponiveis.map((produto) => (
+                      <option key={produto.id} value={produto.id}>
+                        {`${produto.nome} - ${produto.marca.nome} (R$ ${produto.preco?.toFixed(2)})`}
+                      </option>
+                    ))}
+                  </TextField>
+
+                  <TextField
+                    type="number"
+                    label="Quantidade"
+                    value={venda.quantidade}
+                    onChange={(e) => handleChangeNovaVenda(index, "quantidade", e.target.value)}
+                    fullWidth
+                    margin="normal"
+                    inputProps={{
+                      min: 1
+                    }}
+                  />
+
+                  {venda.precoTotal > 0 && (
+                    <div style={{ marginTop: '8px', color: '#666' }}>
+                      Subtotal: R$ {venda.precoTotal.toFixed(2)}
+                    </div>
+                  )}
+                </div>
+              ))}
+
+              <div style={{ marginTop: '20px', padding: '15px' }}>
+                <h3>Total Geral: R$ {precoTotal.toFixed(2)}</h3>
+              </div>
+
+              <Button
+                onClick={handleAdicionarCampo}
+                style={{ marginTop: '15px' }}
+                variant="outlined"
+              >
+                Adicionar produto
+              </Button>
+            </>
+          )}
         </DialogContent>
         <DialogActions>
           <Button className="botaoModal" onClick={handleCloseAdicionar}>Cancelar</Button>
-          <Button className="botaoModal" onClick={handleSubmitAdicionar} variant="contained">Adicionar</Button>
-
-      <Dialog open={openAdicionar} onClose={handleCloseAdicionar}> {/*Modal Adicionar*/}
-        <DialogTitle className='tituloModal'>Adicionar Venda</DialogTitle>
-        <DialogContent className="campos-modais">
-          <TextField
-            autoFocus
-            margin="dense"
-            label="Código"
-            fullWidth value={novaVenda.codigo}
-            onChange={(e) => setNovaVenda({ ...novaVenda, codigo: e.target.value })}
-          />
-          <TextField
-            margin="dense"
-            label="Data"
-            fullWidth value={novaVenda.data}
-            onChange={(e) => setNovaVenda({ ...novaVenda, data: e.target.value })}
-          />
-          <TextField
-            margin="dense"
-            label="Produtos"
-            fullWidth value={novaVenda.produtos}
-            onChange={(e) => setNovaVenda({ ...novaVenda, produtos: e.target.value })}
-          />
-          <TextField
-            margin="dense"
-            label="Preço"
-            fullWidth value={novaVenda.precos}
-            onChange={(e) => setNovaVenda({ ...novaVenda, precos: e.target.value })}
-          />
-
-          <Button className='botaoModal' onClick={handleAdicionarVendaTemporaria}>+</Button>
-          
-          {/* Exibir vendas temporárias e o total */}
-          <div style={{ marginTop: "1em" }}>
-            {vendasTemporarias.map((venda, index) => (
-              <p key={index}>{`${venda.produtos} - ${venda.precos}`}</p>
-            ))}
-            <p><strong>Total:</strong> R${totalVendas.toFixed(2)}</p>
-          </div>
-        </DialogContent>
-        <DialogActions>
-          <Button className='botaoModal' onClick={handleCloseAdicionar}>Cancelar</Button>
-          <Button className='botaoModal' onClick={handleSubmitAdicionarTodasVendas}>Finalizar Vendas</Button>
-
+          <Button className="botaoModal"
+            onClick={handleSubmitAdicionar}
+            disabled={isLoadingProdutos || novasVendas.some(v => !v.produtoId || !v.quantidade)}
+          >
+            Confirmar
+          </Button>
         </DialogActions>
       </Dialog>
 
-      <Dialog open={openBuscar} onClose={handleCloseBuscar}> {/*Modal Buscar*/}
+
+      <Dialog open={openBuscar} onClose={handleCloseBuscar}>
         <DialogTitle>Buscar Venda</DialogTitle>
-
         <DialogContent>
-          <TextField
-            label="Data da venda"
-            fullWidth
-            value={dataVenda}
-            onChange={(e) => setDataVenda(e.target.value)}
-          />
-
-        <DialogContent className="campos-modais">
-          <TextField
-            autoFocus
-            margin="dense"
-            label="Código da Venda"
-            fullWidth value={codigoBusca}
-            onChange={(e) => setCodigoBusca(e.target.value)}
-          />
-          {resultadoBusca && (
-            <div style={{ marginTop: "1em" }}>
-              {typeof resultadoBusca === "string" ? (
-                <p>{resultadoBusca}</p>
-              ) : (
+            <TextField
+                type="date"
+                value={dataBusca}
+                onChange={(e) => setDataBusca(e.target.value)}
+                fullWidth
+                InputLabelProps={{
+                    shrink: true,
+                }}
+            />
+            {resultadoBusca && (
                 <div>
-                  <p><strong>Código:</strong> {resultadoBusca.codigo}</p>
-                  <p><strong>Data:</strong> {resultadoBusca.data}</p>
-                  <p><strong>Produtos:</strong> {resultadoBusca.produtos}</p>
-                  <p><strong>Preços:</strong> {resultadoBusca.precos}</p>
+                    <p>{resultadoBusca}</p>
+                    {vendasDoDia.length > 0 && (
+                        <div>
+                            {vendasDoDia.map((venda) => {
+                                                      
+                                return (
+                                    <div key={venda.id} className="mb-4 border-b pb-2">
+                                        <h3>Venda #{venda.id}</h3>
+                                        <div>
+                                            <strong>Produtos:</strong>
+                                            <ul>
+                                                {venda.produtos?.map((item, index) => (
+                                                    <li key={index}>
+                                                        {item.produto?.nome} - {item.qtdVendida} unidades
+                                                    </li>
+                                                ))}
+                                            </ul>
+                                        </div>
+                                    </div>
+                                );
+                            })}
+                        </div>
+                    )}
                 </div>
-              )}
-            </div>
-          )}
-
+            )}
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleCloseBuscar}>Cancelar</Button>
-          <Button onClick={handleSubmitBuscar} variant="contained">Buscar</Button>
+            <Button className="botaoModal" onClick={handleCloseBuscar}>Fechar</Button>
+            <Button className="botaoModal" onClick={handleSubmitBuscar}>Buscar</Button>
         </DialogActions>
-      </Dialog>
+    </Dialog>
     </div>
   );
 };
