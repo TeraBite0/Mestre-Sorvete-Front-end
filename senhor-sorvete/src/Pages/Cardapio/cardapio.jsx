@@ -51,8 +51,9 @@ const Cardapio = () => {
             <div className="banner">
                 <img src="Imagens/sorvete-baunilha.jpg" alt="" />
                 <div className="bannerContent">
-                    <h1>Lorem Ipsum Lorem</h1>
-                    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed.</p>
+                    {/* TODO: ALTERAR ESSE TEXTO PARA ALGO MELHOR */}
+                    <h1>Bem vindo!</h1>
+                    <p>Aqui você pode encontrar todos os sabores disponíveis</p>
                 </div>
             </div>
 
