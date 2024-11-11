@@ -1,96 +1,105 @@
 import React, { useState, useEffect, useRef } from 'react';
 import './cardapio.css';
 import Filtros from '../../Components/Filtros/Filtro.tsx';
-import Header from '../../Components/Header/index.jsx'
-import Footer from '../../Components/Footer/index.jsx'
+import Header from '../../Components/Header/index.jsx';
+import Footer from '../../Components/Footer/index.jsx';
 import SearchIcon from '@mui/icons-material/Search';
-
-const flavors = [
-    "Nescolak", "Cookies", "Biscoitos", "Brigadeirissimo", "Paçoca",
-    "Chocolate", "Mousse", "Black", "Frutas", "Cocada",
-    "Trufado", "Limão", "Trufa", "Caramelo", "Brownie",
-    "Cenoura", "Avelã", "Bem Casado", "Duo Amore", "Doce de Leite",
-    "Cenoura", "Avelã", "Bem Casado", "Duo Amore", "Doce de Leite",
-    "Cenoura", "Avelã", "Bem Casado", "Duo Amore", "Doce de Leite",
-    "Cenoura", "Avelã", "Bem Casado", "Duo Amore", "Doce de Leite",
-    "Cenoura", "Avelã", "Bem Casado", "Duo Amore", "Doce de Leite",
-    "Cenoura", "Avelã", "Bem Casado", "Duo Amore", "Doce de Leite",
-];
+import axios from 'axios';
 
 const Cardapio = () => {
     const [termo, setTermo] = useState('');
     const [cartItems, setCartItems] = useState([]);
-    const [isSticky, setIsSticky] = useState(false);
     const [priceRange, setPriceRange] = useState(15);
     const [selectedCategories, setSelectedCategories] = useState([]);
-    
+    const [produtos, setProdutos] = useState([]); // Estado para armazenar os produtos
+
     const sidebarRef = useRef(null);
     const mainContentRef = useRef(null);
 
-    const addToCart = (flavor) => {
-        if (!cartItems.some(item => item.name === flavor)) {
-            setCartItems([...cartItems, { name: flavor, price: 15.00 }]);
+    useEffect(() => {
+        // Busca os produtos da API ao carregar o componente
+        const fetchProdutos = async () => {
+            try {
+                const response = await axios.get('http://localhost:8080/produtos/isAtivos');
+                setProdutos(response.data); // Armazena os produtos no estado
+            } catch (error) {
+                console.error('Erro ao buscar produtos:', error);
+            }
+        };
+        fetchProdutos();
+    }, []);
+
+    const addToCart = (produto) => {
+        if (!cartItems.some(item => item.id === produto.id)) {
+            setCartItems([...cartItems, { ...produto, price: produto.preco }]);
         }
     };
 
-    const removeFromCart = (flavor) => {
-        setCartItems(cartItems.filter(item => item.name !== flavor));
+    const removeFromCart = (produtoId) => {
+        setCartItems(cartItems.filter(item => item.id !== produtoId));
     };
 
-    const filteredFlavors = flavors.filter(flavor => 
-        flavor.toLowerCase().includes(termo.toLowerCase()) && 15 <= priceRange
+    // Filtra os produtos com base no termo de pesquisa e na faixa de preço
+    const filteredProdutos = produtos.filter(produto =>
+        produto.nome.toLowerCase().includes(termo.toLowerCase()) &&
+        produto.preco <= priceRange
     );
 
     return (
-        <>
         <div className="containerCardapio">
-            <Header/>
-            <header className="header">
-                <div className="headerContent">
-                    <h1>Bem-Vindo!</h1>
-                    <p>Experimente nossos sabores únicos e refrescantes! Feitos com ingredientes frescos e naturais.</p>
+            <Header />
+            <div className="banner">
+                <img src="Imagens/sorvete-baunilha.jpg" alt="" />
+                <div className="bannerContent">
+                    {/* TODO: ALTERAR ESSE TEXTO PARA ALGO MELHOR */}
+                    <h1>Bem vindo!</h1>
+                    <p>Aqui você pode encontrar todos os sabores disponíveis</p>
                 </div>
-            </header>
+            </div>
 
-            <nav className="navigation">
-                <ul>
-                    <li><a href="#recipes">Popular</a></li>
-                    <li><a href="#flavors">Sorvetes</a></li>
-                    <li><a href="#sundaes">Picolés</a></li>
+            <nav className="navegacao">
+                <ul className="listaNavegacao" style={{
+                }}>
+                    <li className="itemNavegacao">Popular</li>
+                    <li className="itemNavegacao">Sorvetes</li>
+                    <li className="itemNavegacao">Picolés</li>
                 </ul>
-                <div className="searchBar">
-                    <input 
-                        type="text" 
-                        placeholder="Trufado" 
-                        value={termo} 
+                <div className="barraPesquisa">
+                    <input
+                        type="text"
+                        placeholder="Pesquisar..."
+                        value={termo}
                         onChange={(e) => setTermo(e.target.value)}
+                        className="inputPesquisa"
                     />
-                    <button><SearchIcon sx={{fontSize: 16}}/></button>
+                    <button className="botaoPesquisa">
+                        <SearchIcon sx={{ fontSize: 16 }} />
+                    </button>
                 </div>
             </nav>
 
             <div className="mainContentWrapper" ref={mainContentRef}>
                 <div className="mainContent">
-                    <div className={`sidebarWrapper ${isSticky ? 'sticky' : ''}`} ref={sidebarRef}>
-                        <aside className="sidebar">
-                            <Filtros 
-                                priceRange={priceRange} 
+                    <div className={`sidebarWrapper`} ref={sidebarRef}>
+                        <aside className="sidebar" style={{ backgroundColor: 'white', borderRadius: '24px', padding: '1.5rem' }}>
+                            <Filtros
+                                priceRange={priceRange}
                                 setPriceRange={setPriceRange}
                                 selectedCategories={selectedCategories}
                                 setSelectedCategories={setSelectedCategories}
                             />
                         </aside>
-                        <aside className="notifications">
+                        <aside className="notifications" style={{ backgroundColor: 'white', borderRadius: '24px', padding: '1.5rem', marginTop: '1rem' }}>
                             <h2>Notificações</h2>
                             <ul>
                                 {cartItems.map((item, index) => (
                                     <li key={index}>
-                                        <img src="Imagens/sorvete-de-pote-chocolate.png" alt={item.name} />
+                                        <img src="Imagens/sorvete-de-pote-chocolate.png" alt={item.nome} />
                                         <div className="cartItemDetails">
-                                            <h4>{item.name}</h4>
+                                            <h4 title={item.nome}>{item.nome}</h4>
                                             <p>R$ {item.price.toFixed(2)}</p>
                                         </div>
-                                        <button onClick={() => removeFromCart(item.name)}>Remover</button>
+                                        <button onClick={() => removeFromCart(item.id)}>Remover</button>
                                     </li>
                                 ))}
                             </ul>
@@ -102,28 +111,30 @@ const Cardapio = () => {
                         </aside>
                     </div>
 
-                    <main className="products">
-                        {filteredFlavors.map((flavor, index) => (
-                            <div key={index} className="product">
-                                <img src="Imagens/casquinhas-de-chocolate.jpeg" alt={`${flavor} Ice Cream`} />
-                                <h3>{flavor.toUpperCase()}</h3>
-                                <p>R$ 15,00</p>
-                                <button 
-                                    className="notifyMe"
-                                    onClick={() => addToCart(flavor)}
-                                    disabled={cartItems.some(item => item.name === flavor)}
+                    <main className="products grid grid-cols-3 gap-6 justify-center">
+                        {filteredProdutos.map((produto, index) => (
+                            <div key={index} className="product bg-white rounded-3xl p-6 text-center">
+                                <img src="Imagens/casquinhas-de-chocolate.jpeg" alt={`${produto.nome} Ice Cream`} className="w-full h-48 object-cover rounded-2xl mb-4" />
+                                <div className="product-name font-bold mb-2" title={produto.nome}>
+                                    {produto.nome}
+                                </div>
+                                <p className="font-semibold mb-2">R$ {produto.preco.toFixed(2)}</p>
+                                <button
+                                    className="notifyMe w-full py-2 bg-white border border-gray-200 rounded-lg"
+                                    onClick={() => addToCart(produto)}
+                                    disabled={produto.emEstoque}
                                 >
-                                    {cartItems.some(item => item.name === flavor) ? 'Notificado' : 'Notifique-me'}
+                                    {produto.emEstoque ? "Em Estoque" : "Notifique-me"}
                                 </button>
+
                             </div>
                         ))}
                     </main>
+
                 </div>
             </div>
+            <Footer />
         </div>
-        
-        <Footer />
-        </>
     );
 };
 
