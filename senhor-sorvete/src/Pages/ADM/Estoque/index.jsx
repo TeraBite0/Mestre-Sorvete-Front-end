@@ -66,9 +66,20 @@ const Estoque = () => {
     const fecharModalAdicionarLote = () => setAbrirAdicionarLote(false);
 
     const camposRegistrarPerda = [
-        { label: "Nome" },
-        { label: "Marca" },
-        { label: "Quantidade", type: "number" },
+        {
+            name: "produtoId",
+            label: "Produto",
+            type: "select",
+            options: produtos.map(p => ({
+                value: p.codigo,
+                label: `${p.produto} - ${p.marca}`,
+            })),
+        },
+        {
+            name: "qtdPerda",
+            label: "Quantidade de Perda",
+            type: "number",
+        },
     ];
 
     const camposAdicionarLote = [
@@ -156,6 +167,42 @@ const Estoque = () => {
         }
     };
 
+    const handleRegistrarPerda = async (formData) => {
+        const token = sessionStorage.getItem('token');
+        setLoading(true);
+    
+        const payload = {
+            produtoId: Number(formData.produtoId),
+            qtdPerda: Number(formData.qtdPerda),
+        };
+    
+        try {
+            await axios.post('http://localhost:8080/perdas', payload, {
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                    'Content-Type': 'application/json',
+                },
+            });
+    
+            toast.success('Perda registrada com sucesso!');
+            fecharModalRegistrarPerda();
+    
+            // Atualiza a lista de produtos
+            const response = await axios.get('http://localhost:8080/estoque', {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            });
+            setProdutos(response.data);
+        } catch (error) {
+            console.error('Erro ao registrar perda:', error);
+            toast.error(error.response?.data?.message || 'Erro ao registrar perda');
+        } finally {
+            setLoading(false);
+        }
+    };
+    
+
     const transformBeforeSubmit = (data) => {
         return {
             ...data,
@@ -226,8 +273,10 @@ const Estoque = () => {
                 onClose={fecharModalRegistrarPerda}
                 title="Registrar Perda"
                 fields={camposRegistrarPerda}
-                onSave={fecharModalRegistrarPerda}
+                onSubmit={handleRegistrarPerda}
+                loading={loading}
             />
+
 
             <ModalGerenciamento
                 open={abrirAdicionarLote}
