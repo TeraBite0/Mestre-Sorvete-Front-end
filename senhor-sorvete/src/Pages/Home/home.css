@@ -246,12 +246,13 @@ button {
 @media (max-width: 1024px) {
   .section-1 {
     flex-direction: column;
+    padding: 0;
   }
 
   .content,
   .sobre-text,
   .more-text {
-    max-width: 100%;
+    max-width: 90%;
   }
 
   .content .button {
@@ -265,7 +266,7 @@ button {
     text-align: center;
     /* width: 100%; */
     max-width: 1200px;
-    padding: 2rem;
+    padding: 2rem 2rem 0;
   }
 
   .sugestao-content {
@@ -297,14 +298,23 @@ button {
     max-height: 50vh;
   }
 
+  .section-2 {
+    padding-bottom: 0;
+  }
+
   .section-3 .data {
     margin: 0;
+  }
+
+  .sugestao-text {
+    max-width: 70%;
+    text-align: center;
   }
 
   .sugestao-content,
   .section-4 {
     flex-direction: column;
-    gap: 20px;
+    align-items: center;
   }
 
   .section-5 {

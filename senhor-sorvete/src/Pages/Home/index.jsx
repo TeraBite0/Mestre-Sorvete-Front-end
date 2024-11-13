@@ -43,7 +43,7 @@ const Home = (props) => {
       <Header />
       <main>
         <IconeWhatsapp />
-        <section className="section-1" id="section-1">
+        <section className="section-1">
           <div className="content">
             <h4>Bem-vindo ao</h4>
             <h1>MESTRE SORVETE</h1>
@@ -53,7 +53,7 @@ const Home = (props) => {
               experimentar combinações clássicas e inovações surpreendentes!
             </p>
             <div className="button">
-              <button className="btn-primary"><a href="#section-2">Saiba Mais</a></button>
+              <button className="btn-primary">Saiba Mais</button>
             </div>
           </div>
           <img
@@ -62,7 +62,7 @@ const Home = (props) => {
           />
         </section>
 
-        <section className="section-2" id="section-2">
+        <section className="section-2">
           <div className="sobre-container">
             <div className="sobre-img">
               <img src="Imagens/imagem-2-homepage.png" alt="Imagem sobre nós" />
@@ -90,7 +90,7 @@ const Home = (props) => {
         <section className="section-3">
           <h2>SUGESTÃO DO DIA</h2>
           <p className="data">
-            <span id="data-atual">{dataAtual}</span>
+            <span>{dataAtual}</span>
           </p>
             <div className="sugestao-content">
               <div className="sugestao-img">
