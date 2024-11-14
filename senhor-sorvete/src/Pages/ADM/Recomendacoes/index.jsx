@@ -11,77 +11,121 @@ import axios from "axios";
 
 const Recomendacao = () => {
     const [produtos, setProdutos] = useState([]);
-    const [todosProdutos, setTodosProdutos] = useState([]); // Estado para armazenar todos os produtos disponíveis
+    const [todosProdutos, setTodosProdutos] = useState([]);
     const [erro, setErro] = useState(null);
-    const [modalOpen, setModalOpen] = useState(false); 
-    const [selectedProduto, setSelectedProduto] = useState(null); 
+    const [modalOpen, setModalOpen] = useState(false);
+    const [selectedProduto, setSelectedProduto] = useState(null);
 
     useEffect(() => {
-        // Busca dos produtos recomendados do dia
-        axios.get('http://localhost:8080/produtos/recomendacao-do-dia')
-            .then(response => {
-                console.log("Produtos recomendados:", response.data);  // Verifique o que está sendo retornado
-                const produtosData = Array.isArray(response.data) ? response.data : [];
-                setProdutos(produtosData);
-            })
-            .catch(error => {
-                setErro('Erro ao carregar produtos.');
-                console.error("Erro na requisição:", error);
-            });
-    
-        // Busca de todos os produtos disponíveis para exibir na seleção
         const token = sessionStorage.getItem('token');
+        
+        // Busca dos produtos recomendados
+        axios.get('http://localhost:8080/produtos/recomendacao-do-dia', {
+            headers: {
+                'Authorization': `Bearer ${token}`
+            }
+        })
+        .then(response => {
+            console.log("Dados recebidos:", response.data);
+            // Garantir que temos um array e mapear apenas os campos necessários
+            const produtosFormatados = Array.isArray(response.data) 
+                ? response.data.map(produto => ({
+                    id: produto.id,
+                    nome: produto.nome || 'Nome não informado',
+                    preco: produto.preco || 0,
+                    marca: {
+                        nome: produto.marca?.nome || 'Marca não informada'
+                    }
+                }))
+                : [];
+            
+            console.log("Produtos formatados:", produtosFormatados);
+            setProdutos(produtosFormatados);
+        })
+        .catch(error => {
+            console.error("Erro na requisição:", error);
+            setErro('Erro ao carregar produtos.');
+        });
+
+        // Busca de todos os produtos
         axios.get('http://localhost:8080/produtos', {
             headers: {
                 'Authorization': `Bearer ${token}`
             }
         })
         .then(response => {
-            console.log("Todos os produtos carregados:", response.data);  // Verifique os produtos carregados
-            setTodosProdutos(response.data);
+            const produtosFormatados = response.data.map(produto => ({
+                id: produto.id,
+                nome: produto.nome || 'Nome não informado',
+                preco: produto.preco || 0,
+                marca: {
+                    nome: produto.marca?.nome || 'Marca não informada'
+                }
+            }));
+            setTodosProdutos(produtosFormatados);
         })
         .catch(error => {
             console.error("Erro ao carregar todos os produtos:", error);
         });
     }, []);
-    
+
 
     const handleEditClick = (produto) => {
-        setSelectedProduto(produto);
-        setModalOpen(true); 
-    };
+
+    }
+
 
     const atualizarProduto = async () => {
+        if (!selectedProduto) return;
+
         try {
             const token = sessionStorage.getItem('token');
-            await axios.put(`http://localhost:8080/produtos/recomendacao-do-dia/${selectedProduto.id}`, selectedProduto, {
-                headers: {
-                    'Authorization': `Bearer ${token}`
+            // Formatando o produto para o formato esperado pelo backend
+            const produtoParaAtualizar = {
+                id: selectedProduto.id,
+                nome: selectedProduto.nome,
+                preco: selectedProduto.preco,
+                marca: selectedProduto.marca,
+                isAtivo: true,  // valores default
+                emEstoque: true // valores default
+            };
+
+            await axios.put(
+                `http://localhost:8080/produtos/recomendacao-do-dia/${selectedProduto.id}`,
+                produtoParaAtualizar,
+                {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
                 }
-            });
+            );
+
             toast.success('Produto atualizado com sucesso!');
             setModalOpen(false);
-            setProdutos(produtos.map(prod => prod.id === selectedProduto.id ? selectedProduto : prod));
+            
+            // Atualiza a lista local com os dados formatados
+            setProdutos(prevProdutos => 
+                prevProdutos.map(prod => 
+                    prod.id === selectedProduto.id 
+                        ? {
+                            id: selectedProduto.id,
+                            nome: selectedProduto.nome,
+                            preco: selectedProduto.preco,
+                            marca: {
+                                nome: selectedProduto.marca?.nome || 'Marca não informada'
+                            }
+                          }
+                        : prod
+                )
+            );
         } catch (error) {
-            toast.error('Erro ao atualizar o produto.');
             console.error("Erro ao atualizar:", error);
+            toast.error('Erro ao atualizar o produto.');
         }
-    };
-
-    const handleCloseModal = () => {
-        setModalOpen(false);
     };
 
     return (
         <>
-            <div className='header-tabela'>
-                <HeaderGerenciamento />
-            </div>
-
-            <div className='secao-recomendacoes'>
-                <BotaoVoltarGerenciamento />
-            </div>
-
             <div className='tabela-produtos'>
                 {erro ? (
                     <p style={{ color: 'red' }}>{erro}</p>
@@ -100,17 +144,33 @@ const Recomendacao = () => {
                                 {produtos.length > 0 ? (
                                     produtos.map(produto => (
                                         <TableRow key={produto.id} className='tabela-row'>
-                                            <TableCell className='tabela-cell'>{produto.nome}</TableCell>
-                                            <TableCell className='tabela-cell'>{produto.marca?.nome || 'N/A'}</TableCell>
-                                            <TableCell className='tabela-cell'>{produto.preco}</TableCell>
                                             <TableCell className='tabela-cell'>
-                                                <button onClick={() => handleEditClick(produto)}><EditIcon /></button>
+                                                {produto.nome}
+                                            </TableCell>
+                                            <TableCell className='tabela-cell'>
+                                                {produto.marca?.nome || 'N/A'}
+                                            </TableCell>
+                                            <TableCell className='tabela-cell'>
+                                                {typeof produto.preco === 'number' 
+                                                    ? produto.preco.toLocaleString('pt-BR', {
+                                                        style: 'currency',
+                                                        currency: 'BRL'
+                                                    })
+                                                    : 'R$ 0,00'
+                                                }
+                                            </TableCell>
+                                            <TableCell className='tabela-cell'>
+                                                <button onClick={() => handleEditClick(produto)}>
+                                                    <EditIcon />
+                                                </button>
                                             </TableCell>
                                         </TableRow>
                                     ))
                                 ) : (
                                     <TableRow>
-                                        <TableCell colSpan={4} style={{ textAlign: 'center' }}>Nenhum produto disponível.</TableCell>
+                                        <TableCell colSpan={4} style={{ textAlign: 'center' }}>
+                                            Nenhum produto recomendado encontrado.
+                                        </TableCell>
                                     </TableRow>
                                 )}
                             </TableBody>
@@ -119,31 +179,34 @@ const Recomendacao = () => {
                 )}
             </div>
 
-            {selectedProduto && (
-                <ModalGerenciamento
-                    open={modalOpen}
-                    onClose={handleCloseModal}
-                    title="Selecionar Novo Produto"
-                    fields={[
-                        {
-                            label: 'Selecione um novo produto',
-                            component: (
-                                <Autocomplete
-                                    options={todosProdutos}
-                                    getOptionLabel={(option) => option.nome}
-                                    onChange={(event, newValue) => {
-                                        console.log("Produto selecionado:", newValue);  // Depuração
-                                        setSelectedProduto(newValue);
-                                    }}
-                                    renderInput={(params) => <TextField {...params} label="Produto" />}
-                                    value={selectedProduto || null}
-                                />
-                            ),
-                        }
-                    ]}
-                    onSave={atualizarProduto}
-                />
-            )}
+            {/* Modal com Autocomplete */}
+            <ModalGerenciamento
+                open={modalOpen}
+                onClose={() => setModalOpen(false)}
+                title="Selecionar Novo Produto"
+                fields={[
+                    {
+                        label: 'Selecione um novo produto',
+                        component: (
+                            <Autocomplete
+                                options={todosProdutos}
+                                getOptionLabel={(option) => option.nome || ''}
+                                onChange={(event, newValue) => {
+                                    setSelectedProduto(newValue);
+                                }}
+                                renderInput={(params) => 
+                                    <TextField {...params} label="Produto" />
+                                }
+                                value={selectedProduto}
+                                isOptionEqualToValue={(option, value) => 
+                                    option?.id === value?.id
+                                }
+                            />
+                        ),
+                    }
+                ]}
+                onSave={atualizarProduto}
+            />
         </>
     );
 };

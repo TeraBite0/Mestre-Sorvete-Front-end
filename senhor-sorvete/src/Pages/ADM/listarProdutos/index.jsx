@@ -8,28 +8,53 @@ import HeaderGerenciamento from '../../../Components/HeaderGerenciamento';
 import Pesquisa from '../../../Components/Pesquisa';
 import BotaoVoltarGerenciamento from '../../../Components/BotaoVoltarGerenciamento';
 import BotaoGerenciamento from '../../../Components/BotaoGerenciamento';
+import { toast } from "react-toastify";
 
 const ListarProdutos = () => {
-    const [produtos, setProdutos] = useState([
-        { id: 1, nome: "Sorvete Limão", marca: "Marca A", preco: "20.00", imagemUrl: "/Imagens/sorvete-baunilha.jpg" },
-        { id: 2, nome: "Sorvete Napolitano", marca: "Marca B", preco: "25.00", imagemUrl: "/Imagens/picoles-napolitanos.png" },
-        { id: 3, nome: "Sorvete Chocolate", marca: "Marca C", preco: "16.00", imagemUrl: "/Imagens/casquinhas-de-chocolate.jpeg" }
-    ]);
-
+    const [rows, setRows] = useState([]);
     const [pesquisa, setPesquisa] = useState('');
     const [open, setOpen] = useState(false);
     const [novoProduto, setNovoProduto] = useState({ nome: '', marca: '', preco: '', imagemUrl: '' });
     const [produtoSelecionado, setProdutoSelecionado] = useState(null);
     const [imagemPreview, setImagemPreview] = useState(null);
+    const [loading, setLoading] = useState(false);
 
-    // Filtro de produtos baseado na pesquisa
-    const buscarProdutos = produtos.filter(produto => {
-        const nomeInclusao = produto.nome.toLowerCase().includes(pesquisa.trim().toLowerCase());
-        const marcaInclusao = produto.marca.toLowerCase().includes(pesquisa.trim().toLowerCase());
-        console.log(`Nome: ${produto.nome}, Marca: ${produto.marca}, Pesquisa: ${pesquisa}, Nome Inclusão: ${nomeInclusao}, Marca Inclusão: ${marcaInclusao}`);
-        return nomeInclusao || marcaInclusao;
-    });
-    
+    useEffect(() => {
+        const fetchProdutos = async () => {
+            const token = sessionStorage.getItem('token');
+            setLoading(true);
+            try {
+                const response = await fetch('http://localhost:8080/produtos', {
+                    headers: {
+                        Authorization: `Bearer ${token}`
+                    }
+                });
+
+                const data = await response.json();
+                const produtosFormatados = data.map(produto => ({
+                    id: produto.id?.toString() || Math.random().toString(),
+                    nome: produto.nome || '',
+                    marca: produto.marca?.nome || '', // Acessando o nome da marca
+                    subtipo: produto.subtipo?.nome || '', // Acessando o nome do subtipo
+                    preco: typeof produto.preco === 'number' ? produto.preco : 0,
+                    imagemUrl: produto.imagemUrl || ''
+                }));
+                setRows(produtosFormatados);
+            } catch {
+                toast.error("Erro ao carregar os produtos");
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchProdutos();
+    }, []);
+
+
+    const buscarProdutos = rows.filter(produto =>
+        produto.nome.toLowerCase().includes(pesquisa.toLowerCase()) ||
+        produto.marca.toLowerCase().includes(pesquisa.toLowerCase())
+    );
 
     const handleOpen = () => {
         setNovoProduto({ nome: '', marca: '', preco: '', imagemUrl: '' });
@@ -64,16 +89,17 @@ const ListarProdutos = () => {
 
     const handleSubmit = () => {
         if (produtoSelecionado) {
-            const produtosAtualizados = produtos.map((produto) =>
+            const produtosAtualizados = rows.map(produto =>
                 produto.id === produtoSelecionado.id ? { ...produto, ...novoProduto } : produto
             );
-            setProdutos(produtosAtualizados);
+            setRows(produtosAtualizados);
         } else {
-            const produtoAdicionado = { ...novoProduto, id: produtos.length + 1 };
-            setProdutos(prevState => [...prevState, produtoAdicionado]);
+            const produtoAdicionado = { ...novoProduto, id: rows.length + 1 };
+            setRows(prevState => [...prevState, produtoAdicionado]);
         }
         handleClose();
     };
+
 
     const handleEdit = (produto) => {
         setProdutoSelecionado(produto);
@@ -93,17 +119,17 @@ const ListarProdutos = () => {
             </div>
 
             <div className='barraPesquisa'>
-                <Pesquisa 
-                    placeholder="Produto, Marca..." 
+                <Pesquisa
+                    placeholder="Produto, Marca..."
                     value={pesquisa}
-                    onChange={(e) => setPesquisa(e.target.value)} 
+                    onChange={(e) => setPesquisa(e.target.value)}
                 />
                 <BotaoGerenciamento botao="+ Novo Produto" onClick={handleOpen} />
             </div>
 
             <div className='tabela-produtos'>
                 <TableContainer component={Paper} className='container-tabela'>
-                    <Table aria-label="Tabela">
+                <Table sx={{ minWidth: 500 }} size="small" aria-label="a dense table">
                         <TableHead className='tabela-Head'>
                             <TableRow>
                                 <TableCell className='tabela-head-cell'>Imagem</TableCell>
@@ -115,13 +141,13 @@ const ListarProdutos = () => {
                         </TableHead>
                         <TableBody>
                             {buscarProdutos.map(produto => (
-                                <TableRow key={produto.nome} className='tabela-row'>
-                                    <TableCell className='tabela-cell'>
+                                <TableRow key={produto.id} className='tabela-row'>
+                                    <TableCell>
                                         <img src={produto.imagemUrl} alt={produto.nome} width="35" height="35" />
                                     </TableCell>
-                                    <TableCell className='tabela-cell'>{produto.nome}</TableCell>
-                                    <TableCell className='tabela-cell'>{produto.marca}</TableCell>
-                                    <TableCell className='tabela-cell'>R$ {produto.preco}</TableCell>
+                                    <TableCell >{produto.nome}</TableCell>
+                                    <TableCell >{produto.marca}</TableCell>
+                                    <TableCell >R$ {produto.preco}</TableCell>
                                     <TableCell className='tabela-cell'>
                                         <button onClick={() => handleEdit(produto)}>
                                             <EditIcon />
@@ -154,6 +180,7 @@ const ListarProdutos = () => {
                         value={novoProduto.marca}
                         onChange={handleInputChange}
                     />
+
                     <TextField
                         margin="dense"
                         name="preco"
