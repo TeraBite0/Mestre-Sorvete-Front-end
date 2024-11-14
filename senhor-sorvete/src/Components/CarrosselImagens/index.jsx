@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import { useCallback } from "react";
+import { Link} from 'react-router-dom';
 import "./carrosselImagens.css";
 
 const CarrosselImagens = () => {
@@ -76,53 +77,53 @@ const CarrosselImagens = () => {
       <div className="carousel">
         <div className="carousel-inner" ref={carouselInnerRef}>
           <div className="card">
-            <a href="/cardapio">
+            <Link to="/cardapio">
               <img src="Imagens/sorvete-de-chocolate.png" alt="" />
               <h3>Banana Soft Cream</h3>
               <p>R$ 9,99</p>
-            </a>
+            </Link>
           </div>
           <div className="card">
-            <a href="/cardapio">
+            <Link to="/cardapio">
               <img src="Imagens/sorvete-de-chocolate.png" alt="" />
               <h3>Chocolate Soft Cream</h3>
               <p>R$ 9,99</p>
-            </a>
+            </Link>
           </div>
           <div className="card">
-            <a href="/cardapio">
+            <Link to="/cardapio">
               <img src="Imagens/sorvete-de-chocolate.png" alt="" />
               <h3>Morango Soft Cream</h3>
               <p>R$ 9,99</p>
-            </a>
+            </Link>
           </div>
           <div className="card">
-            <a href="/cardapio">
+            <Link to="/cardapio">
               <img src="Imagens/sorvete-de-chocolate.png" alt="" />
               <h3>Baunilha Soft Cream</h3>
               <p>R$ 9,99</p>
-            </a>
+            </Link>
           </div>
           <div className="card">
-            <a href="/cardapio">
+            <Link to="/cardapio">
               <img src="Imagens/sorvete-de-chocolate.png" alt="" />
               <h3>Café Soft Cream</h3>
               <p>R$ 9,99</p>
-            </a>
+            </Link>
           </div>
           <div className="card">
-            <a href="/cardapio">
+            <Link to="/cardapio">
               <img src="Imagens/sorvete-de-chocolate.png" alt="" />
               <h3>Caramelo Soft Cream</h3>
               <p>R$ 9,99</p>
-            </a>
+            </Link>
           </div>
           <div className="card">
-            <a href="/cardapio">
+            <Link to="/cardapio">
               <img src="Imagens/sorvete-de-chocolate.png" alt="" />
               <h3>Banana Soft Cream</h3>
               <p>R$ 9,99</p>
-            </a>
+            </Link>
           </div>
         </div>
         <button className="carousel-prev" onClick={handlePrevClick}>
@@ -133,7 +134,7 @@ const CarrosselImagens = () => {
         </button>
       </div>
       <div className="ver-tudo">
-        <a href="/cardapio">ver tudo</a>
+        <Link to="/cardapio">ver tudo</Link>
       </div>
     </section>
   );

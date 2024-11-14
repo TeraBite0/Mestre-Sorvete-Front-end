@@ -1,95 +1,138 @@
-.login {
-    margin: 35px 35px;
+.loginContainer {
     display: flex;
-    height: 90vh;
-    border-radius: 30px;
-    box-shadow: 0px 0px 10px 2px rgba(0, 0, 0, 0.5);
+    height: 100vh;
+    width: 100%;
 }
 
-.bem-vindo {
-    position: relative;
-    background: url('/public/Imagens/sorvete-de-pote-background.png') no-repeat;
-    background-size: cover;
-    width: 50%;
-    display: flex;
-    align-items: flex-end;
-    justify-content: flex-end;
-    color: #fff;
-    padding: 20px;
-    border-top-left-radius: 15px;
-    border-bottom-left-radius: 15px;
-    z-index: 1;
-}
-
-.bem-vindo::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: linear-gradient(to bottom, rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7));
-    z-index: -1;
-    filter: blur(10px);
-    border-top-left-radius: 15px;
-    border-bottom-left-radius: 15px;
-}
-
-.bem-vindo p {
-    margin: 0;
-    position: absolute; 
-    bottom: 25px; 
-    left: 25px; 
-    display: flex;
-    width: 60%;
-    text-align: left;
-    font-size: 22px;
-    color: #fff;
-    font-family: "Poppins", sans-serif;
-    font-weight: 700;
-    text-shadow: 2px 2px 4px #000;
-}
-
-
-.login-banner {
-    width: 50%;
+.loginLeft {
     background-image: linear-gradient(to bottom left, #BC4744, #772321);
-    padding: 20px;
+    color: white;
+    padding: 2rem;
+    width: 50%;
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    border-top-right-radius: 15px;
-    border-bottom-right-radius: 15px;
+    border-top-left-radius: 20px;
+    border-bottom-left-radius: 20px;
 }
 
-.login h1 {
+.loginLeft h1 {
+    font-size: 2rem;
+    margin-bottom: 1rem;
+}
+
+.loginLeft p {
+    font-size: 1rem;
+    margin-bottom: 2rem;
+    text-align: center;
+}
+
+.loginLeft form {
     display: flex;
-    justify-content: center;
-    color: #fff;
-    font-size: 36px;
+    flex-direction: column;
+    width: 100%;
+    max-width: 300px;
+}
+
+.loginLeft label {
+    margin-bottom: 0.5rem;
+}
+
+.loginLeft input {
+    padding: 0.8rem;
+    border: none;
+    border-radius: 10px;
+    margin-bottom: 1rem;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+}
+
+.loginLeft button {
+    padding: 0.8rem;
+    background-color: #ddd;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    color: #772321;
     font-weight: 700;
-    font-family: "Poppins", sans-serif;
-    text-shadow: 1px 1px 3px #000;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+    margin: 0 20%;
 }
 
-.login span {
-    display: flex;
-    color: #fff;
-    font-size: 16px;
-    font-family: "Poppins", sans-serif;
-    font-weight: 400;
-    justify-content: center;
-    margin-bottom: 8px;
-    text-shadow: 1px 1px 3px #000;
+.loginLeft button:hover {
+    background-color: #772321;
+    color: #ddd;
 }
 
-.login a {
-    display: flex;
-    color: #fff;
-    font-family: "Poppins", system-ui;
-    font-weight: 400;
-    font-size: 12px;
-    justify-content: center;
+.loginLeft a {
+    color: white;
+    text-align: center;
+    margin-top: 1rem;
+    text-decoration: none;
+}
+
+.loginLeft a:hover {
     text-decoration: underline;
+}
+
+.loginRight {
+    position: relative;
+    z-index: 0;
+    width: 50%;
+    background-image: url('/public/Imagens/sorvete-de-pote-background.png');
+    background-size: cover;
+    background-position: center;
+    display: flex;
+    justify-content: center;
+    align-items: flex-end;
+    padding: 2rem;
+    border-top-right-radius: 20px;
+    border-bottom-right-radius: 20px;
+}
+
+/* Aplicar desfoque somente à imagem */
+.loginRight::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: inherit;
+    background-size: inherit;
+    background-position: inherit;
+    border-top-right-radius: 20px;
+    border-bottom-right-radius: 20px;
+    filter: blur(3px);
+    z-index: -1;
+}
+
+.loginRight p {
+    z-index: 1;
+    color: white;
+    font-size: 1.2rem;
+    font-weight: 700;
+    text-align: right;
+}
+
+@media (max-width: 768px) {
+    .loginContainer {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .loginLeft,
+    .loginRight {
+        width: 100%;
+        border-radius: 0;
+    }
+
+    .loginLeft,
+    .loginRight {
+        height: 50vh;
+    }
+
+    .loginRight p {
+        padding-right: .6rem;
+    }
 }

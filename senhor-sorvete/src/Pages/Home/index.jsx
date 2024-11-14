@@ -5,6 +5,7 @@ import Header from "../../Components/Header";
 import Footer from "../../Components/Footer";
 import IconeWhatsapp from "../../Components/IconeWhatsapp";
 import CarrosselImagens from "../../Components/CarrosselImagens";
+import { Link } from "react-router-dom";
 
 const Home = (props) => {
   // Função data atual
@@ -53,7 +54,16 @@ const Home = (props) => {
               experimentar combinações clássicas e inovações surpreendentes!
             </p>
             <div className="button">
-              <button className="btn-primary">Saiba Mais</button>
+              <button className="btn-primary">
+                <Link
+                  to="/"
+                  onClick={() =>
+                    document.getElementById("section-2").scrollIntoView()
+                  }
+                >
+                  Saiba Mais
+                </Link>
+              </button>
             </div>
           </div>
           <img
@@ -62,7 +72,7 @@ const Home = (props) => {
           />
         </section>
 
-        <section className="section-2">
+        <section className="section-2" id="section-2">
           <div className="sobre-container">
             <div className="sobre-img">
               <img src="Imagens/imagem-2-homepage.png" alt="Imagem sobre nós" />
@@ -92,23 +102,25 @@ const Home = (props) => {
           <p className="data">
             <span>{dataAtual}</span>
           </p>
-            <div className="sugestao-content">
-              <div className="sugestao-img">
-                <img
-                  src="Imagens/imagem-3-homepage.png"
-                  alt="Sugestão do Dia - Chocolate Trufado"
-                />
-              </div>
-              <div className="sugestao-text">
-                <h3>Chocolate trufado</h3>
-                <p>
-                  Hoje, nossa dica especial é o irresistível sorvete de
-                  Chocolate Trufado. Com uma combinação perfeita de cremosidade
-                  e sabor intenso. Venha experimentar essa delícia que derrete
-                  na boca e transforma o seu dia em um momento de puro prazer!
-                </p>
-                <button className="btn-experimentar"><a href="/cardapio">Experimentar</a></button>
-              </div>
+          <div className="sugestao-content">
+            <div className="sugestao-img">
+              <img
+                src="Imagens/imagem-3-homepage.png"
+                alt="Sugestão do Dia - Chocolate Trufado"
+              />
+            </div>
+            <div className="sugestao-text">
+              <h3>Chocolate trufado</h3>
+              <p>
+                Hoje, nossa dica especial é o irresistível sorvete de Chocolate
+                Trufado. Com uma combinação perfeita de cremosidade e sabor
+                intenso. Venha experimentar essa delícia que derrete na boca e
+                transforma o seu dia em um momento de puro prazer!
+              </p>
+              <button className="btn-experimentar">
+                <Link to="/cardapio">Experimentar</Link>
+              </button>
+            </div>
           </div>
         </section>
 
@@ -123,7 +135,9 @@ const Home = (props) => {
               sofisticadas de preparo de sorvetes e picolés, desde a escolha dos
               ingredientes até a apresentação final.
             </p>
-            <button className="btn-primary"><a href="/gastronomia">Saiba Mais</a></button>
+            <button className="btn-primary">
+              <Link to="/gastronomia">Saiba Mais</Link>
+            </button>
           </div>
           <div className="more-img">
             <img src="Imagens/imagem-4-homepage.png" alt="Imagem placeholder" />
@@ -132,12 +146,12 @@ const Home = (props) => {
 
         <section className="section-5">
           <div className="notificacoes-text">
-          <h2>Receber notificações</h2>
-          <p>
-            Não perca a chance de ser o primeiro a saber quando novos sabores
-            chegam à nossa sorveteria! Inscreva-se para receber notificações por
-            e-mail e fique por dentro de todas as novidades.
-          </p>
+            <h2>Receber notificações</h2>
+            <p>
+              Não perca a chance de ser o primeiro a saber quando novos sabores
+              chegam à nossa sorveteria! Inscreva-se para receber notificações
+              por e-mail e fique por dentro de todas as novidades.
+            </p>
           </div>
           <form className="newsletter-form" onSubmit={handleSubmit}>
             <input
@@ -153,7 +167,6 @@ const Home = (props) => {
             </button>
           </form>
         </section>
-
       </main>
       <Footer />
     </div>

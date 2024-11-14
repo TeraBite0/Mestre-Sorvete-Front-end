@@ -11,16 +11,21 @@ const Footer = () => {
 
   return (
     <div className="footer">
-      {/* Conteúdo principal do rodapé */}
       <div className="footer-content">
         <div className="logo">
-        {/* <a href="/"> */}
-          <a href="#start">
-          <img
-            src="/Imagens/logo-terabite.png"
-            alt="Logo da empresa TeraBite"
-          />
-          </a>
+          <Link
+            to="/"
+            onClick={() =>
+              document
+                .getElementById("start")
+                .scrollIntoView()
+            }
+          >
+            <img
+              src="/Imagens/logo-terabite.png"
+              alt="Logo da empresa TeraBite"
+            />
+          </Link>
         </div>
 
         <div className="sobre-projeto">
