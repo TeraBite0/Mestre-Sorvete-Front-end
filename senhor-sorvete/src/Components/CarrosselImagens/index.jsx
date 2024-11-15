@@ -1,143 +1,58 @@
-import React, { useEffect, useRef, useState } from "react";
-import { useCallback } from "react";
-import { Link} from 'react-router-dom';
 import "./carrosselImagens.css";
+import React, { useState, useEffect } from "react";
+import { Carousel } from "primereact/carousel";
 
-const CarrosselImagens = () => {
-  const carouselInnerRef = useRef(null);
-  const [currentIndex, setCurrentIndex] = useState(0);
-  const totalCards = 6; // Total de cards no carrossel
-  const visibleCards = 3; // Número de cards visíveis ao mesmo tempo
+export default function BasicDemo() {
+    const [produtos, setProdutos] = useState([]);
+    const [activeIndex, setActiveIndex] = useState(0); 
 
-  // Mover o carrossel
-  const updateCarousel = useCallback(() => {
-    const cardWidth =
-      carouselInnerRef.current.querySelector(".card").offsetWidth;
-    const newTransformValue = -currentIndex * (cardWidth + 20); // margin - 20px
-    carouselInnerRef.current.style.transform = `translateX(${newTransformValue}px)`;
-  }, [currentIndex]);
+    const responsiveOptions = [
+        { breakpoint: "1400px", numVisible: 2, numScroll: 1 },
+        { breakpoint: "1199px", numVisible: 3, numScroll: 1 },
+        { breakpoint: "767px", numVisible: 2, numScroll: 1 },
+        { breakpoint: "575px", numVisible: 1, numScroll: 1 },
+    ];
 
-  // Avançar o carrossel
-  const handleNextClick = () => {
-    if (currentIndex < totalCards - visibleCards) {
-      setCurrentIndex(currentIndex + 1);
-    } else {
-      setCurrentIndex(0); // Volta ao início quando chega no final
-    }
-  };
+    useEffect(() => {
+        fetch("http://localhost:8080/produtos/populares")
+            .then((response) => response.json())
+            .then((data) => setProdutos(data.slice(0, 9)));
+    }, []);
 
-  // Retroceder o carrossel
-  const handlePrevClick = () => {
-    if (currentIndex > 0) {
-      setCurrentIndex(currentIndex - 1);
-    } else {
-      setCurrentIndex(totalCards - visibleCards); // Vai para o final
-    }
-  };
+    useEffect(() => {
+        const interval = setInterval(() => {
+            setActiveIndex((prevIndex) => (prevIndex + 1) % produtos.length);
+        }, 4000);
 
-  useEffect(() => {
-    updateCarousel(); // Atualiza o carrossel sempre que o currentIndex mudar
-  }, [currentIndex, updateCarousel]);
+        return () => clearInterval(interval);
+    }, [produtos.length]);
 
-  useEffect(() => {
-    let autoScroll = setInterval(() => {
-      if (currentIndex < totalCards - visibleCards) {
-        setCurrentIndex(currentIndex + 1);
-      } else {
-        setCurrentIndex(0);
-      }
-    }, 3000);
-
-    const carouselInner = carouselInnerRef.current;
-
-    // Pausando o auto-scroll quando o mouse estiver sobre o carrossel
-    const handleMouseOver = () => clearInterval(autoScroll);
-    const handleMouseOut = () =>
-      (autoScroll = setInterval(() => {
-        if (currentIndex < totalCards - visibleCards) {
-          setCurrentIndex(currentIndex + 1);
-        } else {
-          setCurrentIndex(0);
-        }
-      }, 3000));
-
-    carouselInner.addEventListener("mouseover", handleMouseOver);
-    carouselInner.addEventListener("mouseout", handleMouseOut);
-
-    return () => {
-      clearInterval(autoScroll);
-      carouselInner.removeEventListener("mouseover", handleMouseOver);
-      carouselInner.removeEventListener("mouseout", handleMouseOut);
+    const productTemplate = (produto) => {
+        return (
+            <div className="card-item">
+                <img
+                    src="Imagens/casquinhas-de-chocolate.jpeg"
+                    alt={`${produto.nome} Ice Cream`}
+                />
+                <h3>{produto.nome}</h3>
+                <p>R${produto.preco},00</p>
+            </div>
+        );
     };
-  }, [currentIndex]);
 
-  return (
-    <section className="populares">
-      <h1>Populares!</h1>
-      <div className="carousel">
-        <div className="carousel-inner" ref={carouselInnerRef}>
-          <div className="card">
-            <Link to="/cardapio">
-              <img src="Imagens/sorvete-de-chocolate.png" alt="" />
-              <h3>Banana Soft Cream</h3>
-              <p>R$ 9,99</p>
-            </Link>
-          </div>
-          <div className="card">
-            <Link to="/cardapio">
-              <img src="Imagens/sorvete-de-chocolate.png" alt="" />
-              <h3>Chocolate Soft Cream</h3>
-              <p>R$ 9,99</p>
-            </Link>
-          </div>
-          <div className="card">
-            <Link to="/cardapio">
-              <img src="Imagens/sorvete-de-chocolate.png" alt="" />
-              <h3>Morango Soft Cream</h3>
-              <p>R$ 9,99</p>
-            </Link>
-          </div>
-          <div className="card">
-            <Link to="/cardapio">
-              <img src="Imagens/sorvete-de-chocolate.png" alt="" />
-              <h3>Baunilha Soft Cream</h3>
-              <p>R$ 9,99</p>
-            </Link>
-          </div>
-          <div className="card">
-            <Link to="/cardapio">
-              <img src="Imagens/sorvete-de-chocolate.png" alt="" />
-              <h3>Café Soft Cream</h3>
-              <p>R$ 9,99</p>
-            </Link>
-          </div>
-          <div className="card">
-            <Link to="/cardapio">
-              <img src="Imagens/sorvete-de-chocolate.png" alt="" />
-              <h3>Caramelo Soft Cream</h3>
-              <p>R$ 9,99</p>
-            </Link>
-          </div>
-          <div className="card">
-            <Link to="/cardapio">
-              <img src="Imagens/sorvete-de-chocolate.png" alt="" />
-              <h3>Banana Soft Cream</h3>
-              <p>R$ 9,99</p>
-            </Link>
-          </div>
+    return (
+        <div className="card">
+            <Carousel
+                value={produtos}
+                numVisible={3}
+                numScroll={3}
+                responsiveOptions={responsiveOptions}
+                itemTemplate={productTemplate}
+                showIndicators={false}
+                circular
+                activeIndex={activeIndex}
+                autoplayInterval={3000}
+            />
         </div>
-        <button className="carousel-prev" onClick={handlePrevClick}>
-          &lt;
-        </button>
-        <button className="carousel-next" onClick={handleNextClick}>
-          &gt;
-        </button>
-      </div>
-      <div className="ver-tudo">
-        <Link to="/cardapio">ver tudo</Link>
-      </div>
-    </section>
-  );
-};
-
-export default CarrosselImagens;
+    );
+}

@@ -10,7 +10,6 @@ import { Link } from "react-router-dom";
 const Home = (props) => {
   // Função data atual
   const [dataAtual, setDataAtual] = useState("");
-
   const [email, setEmail] = useState("");
   const [error, setError] = useState("");
   const navigate = useNavigate();
