@@ -1,34 +1,71 @@
+.botao-voltar-recomendacao {
+    padding: 15px;
+    margin: 0 3rem
+}
+
+.tabela-produtos-recomendacao {
+    margin: 40px;
+    padding: 35px;
+}
+
+
+.container-tabela-recomendacao {
+    display: flex;
+    justify-content: center;
+    border: 2px solid #2F615E; 
+    border-radius: 15px !important;
+}
+
+.tabela-head-recomendacao {
+    background-color: #2F615E !important; 
+    color: #fff !important;
+    font-family: "Poppins", system-ui !important;
+    font-size: 16px !important;
+    font-weight: bold !important;
+    padding: 16px !important;
+    border-bottom: none !important;
+}
+
+.tabela-cell-content {
+    font-family: "Poppins", system-ui !important;
+    padding: 16px !important;
+    font-size: 14px !important;
+}
+
 .tabela-cell {
-    padding: 10px;  
-    text-align: center !important;
-    white-space: nowrap; 
+    padding: 16px !important;
+    display: flex !important;
+    justify-content: center !important;
+    align-items: center !important;
 }
 
-.tabela-head-cell {
-    padding: 10px;   
-}
-
-.tabela-row {
-    background-color: #f9f9f9;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-}
-
-.tabela-cell button {
+.edit-button {
     border: none;
     background: none;
     color: inherit;
     transition: all 0.3s ease;
-    padding: 5px;  
+    padding: 5px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
-.tabela-cell button:hover {
+.edit-button:hover {
     cursor: pointer;
     color: #F1C97B;
 }
 
-.container-tabela .MuiTableCell-head {
-    color: white !important;
-    font-weight: bold;
-    font-size: 17px !important;
-    text-align: center !important;
-  }
+.botaoModal{
+    background-color: #2F615E !important;
+    color: #F1C97B !important;
+    font-family: "Poppins", system-ui !important;
+    font-size: 22px;
+    border-radius: 5px;
+}
+
+.botaoModal:hover {
+    cursor: pointer;
+    background-color: #1f4a43; /* Muda a cor de fundo ao passar o mouse */
+    transform: translateY(-2px); /* Levanta o botão levemente */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Adiciona uma sombra ao botão */
+}
