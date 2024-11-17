@@ -16,12 +16,18 @@
     display: flex;
     justify-content: space-around;
     width: 20%;
-    margin-bottom: 25px;
+    padding: 15px;
+    margin: 0 3rem
+}
+
+.barraPesquisa {
+    padding: 15px;
+    margin: 0 3rem
 }
 
 .tabela-produtos {
-    margin: 30px;
-    padding: 15px;
+    margin: 40px;
+    padding: 35px;
 }
 
 .container-tabela {
