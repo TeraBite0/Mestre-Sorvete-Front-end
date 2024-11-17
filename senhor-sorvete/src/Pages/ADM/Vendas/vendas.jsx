@@ -267,7 +267,7 @@ const handleCloseBuscar = () => {
           <Table sx={{ minWidth: 500 }} size="small" aria-label="a dense table">
             <TableHead className="tabela-Head">
               <TableRow>
-                <TableCell className="tabela-Head">ID</TableCell>
+                <TableCell className="tabela-Head">Código</TableCell>
                 <TableCell className="tabela-Head" align="right">Data da Compra</TableCell>
                 <TableCell className="tabela-Head" align="right">Horario</TableCell>
                 <TableCell className="tabela-Head" align="right">Produtos</TableCell>
