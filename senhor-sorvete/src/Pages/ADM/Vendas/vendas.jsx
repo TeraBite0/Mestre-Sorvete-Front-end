@@ -22,12 +22,14 @@ import { toast } from "react-toastify";
 const Vendas = () => {
   const [rows, setRows] = useState([]);
   const [openAdicionar, setOpenAdicionar] = useState(false);
-  const [novasVendas, setNovasVendas] = useState([{
-    produtoId: "",
-    quantidade: 1,
-    precoUnitario: 0,
-    precoTotal: 0
-  }]);
+  const [novasVendas, setNovasVendas] = useState([
+    {
+      produtoId: "",
+      quantidade: 1,
+      precoUnitario: 0,
+      precoTotal: 0,
+    },
+  ]);
   const [precoTotal, setPrecoTotal] = useState(0);
   const [openBuscar, setOpenBuscar] = useState(false);
   const [dataBusca, setDataBusca] = useState("");
@@ -36,77 +38,80 @@ const Vendas = () => {
   const [produtosDisponiveis, setProdutosDisponiveis] = useState([]);
   const [isLoadingProdutos, setIsLoadingProdutos] = useState(false);
 
-
-
   const agruparVendasPorData = (vendas) => {
-    return vendas.reduce((acc, venda) => {
-      const dataCompra = venda.dataCompra ?
-        new Date(venda.dataCompra).toLocaleDateString('pt-BR') :
-        'Data não disponível';
+    return vendas
+      .reduce((acc, venda) => {
+        const dataCompra = venda.dataCompra
+          ? new Date(venda.dataCompra).toLocaleDateString("pt-BR")
+          : "Data não disponível";
 
-      const vendaExistente = acc.find(v =>
-        new Date(v.dataCompra).toLocaleDateString('pt-BR') === dataCompra
-      );
+        const vendaExistente = acc.find(
+          (v) =>
+            new Date(v.dataCompra).toLocaleDateString("pt-BR") === dataCompra
+        );
 
-      if (vendaExistente) {
-        return acc.map(v => {
-          if (new Date(v.dataCompra).toLocaleDateString('pt-BR') === dataCompra) {
-            return {
-              ...v,
-              produtos: [...v.produtos, ...venda.produtos]
-            };
-          }
-          return v;
-        });
-      }
+        if (vendaExistente) {
+          return acc.map((v) => {
+            if (
+              new Date(v.dataCompra).toLocaleDateString("pt-BR") === dataCompra
+            ) {
+              return {
+                ...v,
+                produtos: [...v.produtos, ...venda.produtos],
+              };
+            }
+            return v;
+          });
+        }
 
-      return [...acc, venda];
-    }, []).sort((a, b) => new Date(b.dataCompra) - new Date(a.dataCompra));
+        return [...acc, venda];
+      }, [])
+      .sort((a, b) => new Date(b.dataCompra) - new Date(a.dataCompra));
   };
 
   useEffect(() => {
-    const token = sessionStorage.getItem('token');
+    const token = sessionStorage.getItem("token");
 
     if (!token) {
-      toast.error('Token não encontrado. Faça login novamente.');
+      toast.error("Token não encontrado. Faça login novamente.");
       return;
     }
 
-    axios.get('http://localhost:8080/vendas', {
-      headers: {
-        Authorization: `Bearer ${token}`
-      }
-    })
-      .then(response => {
+    axios
+      .get("http://localhost:8080/vendas", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
+      .then((response) => {
         const vendasAgrupadas = agruparVendasPorData(response.data);
         setRows(vendasAgrupadas);
       })
-      .catch(error => {
+      .catch((error) => {
         console.error("Error loading vendas:", error);
-        toast.error('Erro ao carregar vendas.');
+        toast.error("Erro ao carregar vendas.");
       });
   }, []);
 
   const handleOpenAdicionar = async () => {
     setIsLoadingProdutos(true);
-    const token = sessionStorage.getItem('token');
+    const token = sessionStorage.getItem("token");
 
     try {
-      const response = await axios.get('http://localhost:8080/produtos', {
+      const response = await axios.get("http://localhost:8080/produtos", {
         headers: {
-          Authorization: `Bearer ${token}`
-        }
+          Authorization: `Bearer ${token}`,
+        },
       });
       setProdutosDisponiveis(response.data);
       setOpenAdicionar(true);
     } catch (error) {
       console.error("Erro ao carregar produtos:", error);
-      toast.error('Erro ao carregar lista de produtos.');
+      toast.error("Erro ao carregar lista de produtos.");
     } finally {
       setIsLoadingProdutos(false);
     }
   };
-
 
   const handleOpenBuscar = () => setOpenBuscar(true);
 
@@ -116,18 +121,22 @@ const Vendas = () => {
   //   setResultadoBusca(null);
   // };
 
-
   const calcularPrecoTotal = (produtos) => {
-    return produtos.reduce((total, item) => total + (item.produto.preco * item.qtdVendida), 0);
+    return produtos.reduce(
+      (total, item) => total + item.produto.preco * item.qtdVendida,
+      0
+    );
   };
 
   const handleChangeNovaVenda = (index, field, value) => {
-    setNovasVendas(prevVendas => {
+    setNovasVendas((prevVendas) => {
       const updatedVendas = [...prevVendas];
       const venda = { ...updatedVendas[index] };
 
       if (field === "produtoId") {
-        const produtoSelecionado = produtosDisponiveis.find(p => p.id === parseInt(value));
+        const produtoSelecionado = produtosDisponiveis.find(
+          (p) => p.id === parseInt(value)
+        );
         if (produtoSelecionado) {
           venda.produtoId = parseInt(value);
           venda.precoUnitario = produtoSelecionado.preco;
@@ -142,7 +151,10 @@ const Vendas = () => {
       updatedVendas[index] = venda;
 
       // Atualizar o preço total
-      const novoPrecoTotal = updatedVendas.reduce((total, v) => total + (v.precoTotal || 0), 0);
+      const novoPrecoTotal = updatedVendas.reduce(
+        (total, v) => total + (v.precoTotal || 0),
+        0
+      );
       setPrecoTotal(novoPrecoTotal);
 
       return updatedVendas;
@@ -150,30 +162,34 @@ const Vendas = () => {
   };
 
   const handleAdicionarCampo = () => {
-    setNovasVendas(prev => [...prev, {
-      produtoId: "",
-      quantidade: 1,
-      precoUnitario: 0,
-      precoTotal: 0
-    }]);
+    setNovasVendas((prev) => [
+      ...prev,
+      {
+        produtoId: "",
+        quantidade: 1,
+        precoUnitario: 0,
+        precoTotal: 0,
+      },
+    ]);
   };
 
   const handleCloseAdicionar = () => {
     setOpenAdicionar(false);
-    setNovasVendas([{
-      produtoId: "",
-      quantidade: 1,
-      precoUnitario: 0,
-      precoTotal: 0
-    }]);
+    setNovasVendas([
+      {
+        produtoId: "",
+        quantidade: 1,
+        precoUnitario: 0,
+        precoTotal: 0,
+      },
+    ]);
     setPrecoTotal(0);
   };
-
 
   const handleSubmitAdicionar = async () => {
     const token = sessionStorage.getItem('token');
     if (!token) {
-      toast.error('Token não encontrado. Faça login novamente.');
+      toast.error("Token não encontrado. Faça login novamente.");
       return;
     }
   
@@ -186,13 +202,13 @@ const Vendas = () => {
       }));
   
       const response = await axios.post(
-        'http://localhost:8080/vendas',
+        "http://localhost:8080/vendas",
         { produtos: produtosParaEnviar },
         {
           headers: {
-            'Authorization': `Bearer ${token}`,
-            'Content-Type': 'application/json',
-          }
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
         }
       );
   
@@ -201,11 +217,11 @@ const Vendas = () => {
         const vendasAtualizadas = agruparVendasPorData([...rows, response.data]);
         setRows(vendasAtualizadas);
         handleCloseAdicionar();
-        toast.success('Venda registrada com sucesso!');
+        toast.success("Venda registrada com sucesso!");
       }
     } catch (error) {
-      console.error('Erro ao registrar venda:', error);
-      toast.error('Erro ao registrar venda.');
+      console.error("Erro ao registrar venda:", error);
+      toast.error("Erro ao registrar venda.");
     }
   };
 
@@ -217,31 +233,35 @@ const Vendas = () => {
       return;
     }
 
+
     try {
       const dataFormatada = dataBusca;
-      const response = await axios.get('http://localhost:8080/vendas/data', {
+      const response = await axios.get("http://localhost:8080/vendas/data", {
         params: { data: dataFormatada },
         headers: {
           Authorization: `Bearer ${token}`,
         },
       });
 
+
       if (response.data.length === 0) {
         setResultadoBusca("Nenhuma venda encontrada nesta data.");
         setVendasDoDia([]);
       } else {
-        console.log('Dados da venda:', response.data); // Para debug
+        console.log("Dados da venda:", response.data); // Para debug
         setVendasDoDia(response.data);
         setResultadoBusca("Vendas encontradas!");
       }
     } catch (error) {
-      console.error('Erro ao buscar venda:', error.response || error.message);
-      toast.error('Erro ao buscar venda.');
+      console.error("Erro ao buscar venda:", error.response || error.message);
+      toast.error("Erro ao buscar venda.");
       setVendasDoDia([]);
       setResultadoBusca("Erro ao buscar vendas.");
     }
   };
+  };
 
+  const handleCloseBuscar = () => {
   const handleCloseBuscar = () => {
     setOpenBuscar(false);
     setDataBusca("");
@@ -262,7 +282,10 @@ const Vendas = () => {
         <h1>Vendas</h1>
         <div className="container-botoes">
           <BotaoGerenciamento botao="Buscar" onClick={handleOpenBuscar} />
-          <BotaoGerenciamento botao="+ Nova Venda" onClick={handleOpenAdicionar} />
+          <BotaoGerenciamento
+            botao="+ Nova Venda"
+            onClick={handleOpenAdicionar}
+          />
         </div>
       </div>
 
@@ -301,9 +324,11 @@ const Vendas = () => {
             </TableHead>
             <TableBody>
               {rows
-                .filter(row => row.produtos?.length > 0)
+                .filter((row) => row.produtos?.length > 0)
                 .map((row) => {
-                  const dataCompra = new Date(row.dataCompra).toLocaleDateString('pt-BR');
+                  const dataCompra = new Date(
+                    row.dataCompra
+                  ).toLocaleDateString("pt-BR");
                   const precoTotalVenda = calcularPrecoTotal(row.produtos);
 
                   return (
@@ -347,8 +372,9 @@ const Vendas = () => {
                           <div key={item.produto.id}>
                             <strong>{item.produto.nome}</strong> - {item.qtdVendida} un - <strong>R${ item.produto.preco.toFixed(2)}</strong>
                             <br />
-                            <small style={{ color: 'gray' }}>
-                              {item.produto.subtipo.nome} - {item.produto.marca.nome}
+                            <small style={{ color: "gray" }}>
+                              {item.produto.subtipo.nome} -{" "}
+                              {item.produto.marca.nome}
                             </small>
                           </div>
                         ))}
@@ -377,16 +403,21 @@ const Vendas = () => {
           ) : (
             <>
               {novasVendas.map((venda, index) => (
-                <div key={index} style={{
-                  marginBottom: '20px',
-                  padding: '10px',
-                  border: '1px solid #eee',
-                  borderRadius: '4px'
-                }}>
+                <div
+                  key={index}
+                  style={{
+                    marginBottom: "20px",
+                    padding: "10px",
+                    border: "1px solid #eee",
+                    borderRadius: "4px",
+                  }}
+                >
                   <TextField
                     select
                     value={venda.produtoId}
-                    onChange={(e) => handleChangeNovaVenda(index, "produtoId", e.target.value)}
+                    onChange={(e) =>
+                      handleChangeNovaVenda(index, "produtoId", e.target.value)
+                    }
                     fullWidth
                     margin="dense"
                     SelectProps={{
@@ -396,7 +427,9 @@ const Vendas = () => {
                     <option value="">Selecione o produto</option>
                     {produtosDisponiveis.map((produto) => (
                       <option key={produto.id} value={produto.id}>
-                        {`${produto.nome} - ${produto.marca.nome} (R$ ${produto.preco?.toFixed(2)})`}
+                        {`${produto.nome} - ${
+                          produto.marca.nome
+                        } (R$ ${produto.preco?.toFixed(2)})`}
                       </option>
                     ))}
                   </TextField>
@@ -405,29 +438,31 @@ const Vendas = () => {
                     type="number"
                     label="Quantidade"
                     value={venda.quantidade}
-                    onChange={(e) => handleChangeNovaVenda(index, "quantidade", e.target.value)}
+                    onChange={(e) =>
+                      handleChangeNovaVenda(index, "quantidade", e.target.value)
+                    }
                     fullWidth
                     margin="normal"
                     inputProps={{
-                      min: 1
+                      min: 1,
                     }}
                   />
 
                   {venda.precoTotal > 0 && (
-                    <div style={{ marginTop: '8px', color: '#666' }}>
+                    <div style={{ marginTop: "8px", color: "#666" }}>
                       Subtotal: R$ {venda.precoTotal.toFixed(2)}
                     </div>
                   )}
                 </div>
               ))}
 
-              <div style={{ marginTop: '20px', padding: '15px' }}>
+              <div style={{ marginTop: "20px", padding: "15px" }}>
                 <h3>Total Geral: R$ {precoTotal.toFixed(2)}</h3>
               </div>
 
               <Button
                 onClick={handleAdicionarCampo}
-                style={{ marginTop: '15px' }}
+                style={{ marginTop: "15px" }}
                 variant="outlined"
               >
                 Adicionar produto
@@ -436,16 +471,21 @@ const Vendas = () => {
           )}
         </DialogContent>
         <DialogActions>
-          <Button className="botaoModal" onClick={handleCloseAdicionar}>Cancelar</Button>
-          <Button className="botaoModal"
+          <Button className="botaoModal" onClick={handleCloseAdicionar}>
+            Cancelar
+          </Button>
+          <Button
+            className="botaoModal"
             onClick={handleSubmitAdicionar}
-            disabled={isLoadingProdutos || novasVendas.some(v => !v.produtoId || !v.quantidade)}
+            disabled={
+              isLoadingProdutos ||
+              novasVendas.some((v) => !v.produtoId || !v.quantidade)
+            }
           >
             Confirmar
           </Button>
         </DialogActions>
       </Dialog>
-
 
       <Dialog open={openBuscar} onClose={handleCloseBuscar}>
         <DialogTitle>Buscar Venda</DialogTitle>
@@ -491,6 +531,7 @@ const Vendas = () => {
           <Button className="botaoModal" onClick={handleCloseBuscar}>Fechar</Button>
           <Button className="botaoModal" onClick={handleSubmitBuscar}>Buscar</Button>
         </DialogActions>
+      </Dialog>
       </Dialog>
     </div>
   );

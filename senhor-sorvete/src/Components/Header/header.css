@@ -50,6 +50,7 @@ body {
     color: #772321;
     font-weight: bold;
     text-decoration: underline;
+    transition: all 0.3s ease;
 }
 
 /* Botão hambúrguer */
