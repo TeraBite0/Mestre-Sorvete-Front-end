@@ -302,13 +302,17 @@ button {
     padding-bottom: 0;
   }
 
-  .section-3 .data {
-    margin: 0;
-  }
-
   .sugestao-text {
     max-width: 70%;
     text-align: center;
+  }
+
+  .section-3 .data {
+    margin-bottom: 0;
+  }
+
+  .sugestao-img {
+    margin-bottom: -10px;
   }
 
   .sugestao-content,
@@ -321,6 +325,7 @@ button {
     display: flex;
     flex-direction: column;
     align-items: center;
+    gap: 5vh;
   }
 
   .newsletter-form input {

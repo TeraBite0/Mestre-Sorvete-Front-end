@@ -77,7 +77,7 @@ const Login = () => {
           Bem-vindo ao sistema de gestão!
           <br />
           Para acessar suas funcionalidades de gerenciamento, por favor, insira
-          suas credenciais ao lado.
+          suas credenciais.
         </p>
       </div>
     </div>

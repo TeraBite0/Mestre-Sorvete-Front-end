@@ -1,113 +1,103 @@
-/* Container geral da página de contato */
+:root {
+    --cor-whatsapp: #25d366;
+    --cor-instagram: #E1306C;
+    --cor-fundo: #ffdb94;
+    --cor-secundaria: #deaf54;
+    --cor-borda: #772321;
+}
+
 .contato-container {
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-    height: 100vh; /* Ocupa toda a altura da tela */
+    height: 100vh;
     overflow: hidden;
 }
 
 .contato {
-    margin: 0 auto;
-    margin-bottom: 50px;
+    margin: 0 auto 50px;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
     width: 80vw;
-    height: 70vh; 
+    height: 70vh;
     border-radius: 15px;
     box-shadow: 10px 10px 30px #888888;
     padding: 25px;
-    background: linear-gradient(to bottom right,#deaf54 40%, #ffdb94 50%);
-    overflow: hidden; 
+    background: linear-gradient(to bottom right, var(--cor-secundaria) 40%, var(--cor-fundo) 50%);
 }
 
 .contato img {
-    width: 200px; /* Aumentei o tamanho do logotipo */
+    width: 200px;
     height: 200px;
     border-radius: 50%;
-    border: 2px groove #772321;
+    border: 2px groove var(--cor-borda);
 }
 
 .contato h2 {
-    font-family: "Poppins", system-ui;
+    font-family: "Poppins", sans-serif;
     font-weight: 700;
-    font-style: normal;
-    font-size: 48px; /* Um pouco maior */
+    font-size: 48px;
     text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.5);
     margin-bottom: 10px;
 }
 
-.botao-whatsaap {
+.botao {
     width: 300px;
     height: 60px;
-    margin: 15px 0; /* Aumentei o espaçamento entre os botões */
+    margin: 15px 0;
     border-radius: 18px;
     font-family: "Poppins", sans-serif;
-    font-weight: 400;
-    font-style: normal;
     font-size: 18px;
     color: #fff;
     display: flex;
     align-items: center;
     justify-content: center;
     border: none;
-    background-image: linear-gradient(to bottom right, #25d366, #128c7e); /* Verde WhatsApp */
-}
-
-.botao-instagram {
-    width: 300px;
-    height: 60px;
-    margin: 15px 0; /* Aumentei o espaçamento entre os botões */
-    border-radius: 18px;
-    font-family: "Poppins", sans-serif;
-    font-weight: 400;
-    font-style: normal;
-    font-size: 18px;
-    color: #fff;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border: none;
-    background-image: linear-gradient(to bottom right, #E1306C, #C13584); /* Cores do Instagram */
-}
-
-.botao-whatsaap:hover {
     cursor: pointer;
-    background-image: linear-gradient(to bottom right, #128c7e, #25d366); /* Inverte as cores do WhatsApp */
-    border: 2px solid #128c7e; 
-    transform: scale(1.05); 
-    transition: 0.3s ease; 
+    transition: 0.3s ease;
 }
 
-.botao-instagram:hover {
-    cursor: pointer;
-    background-image: linear-gradient(to bottom right, #C13584, #E1306C); /* Inverte as cores do Instagram */
-    border: 2px solid #C13584; 
-    transform: scale(1.05); 
-    transition: 0.3s ease; 
+.plataforma-whatsapp {
+    background-image: linear-gradient(to bottom right, var(--cor-whatsapp), #128c7e);
 }
 
-/* Ajustes de responsividade */
+.plataforma-instagram {
+    background-image: linear-gradient(to bottom right, var(--cor-instagram), #C13584);
+}
+
+.botao:hover {
+    transform: scale(1.05);
+}
+
+.plataforma-whatsapp:hover {
+    background-image: linear-gradient(to bottom right, #128c7e, var(--cor-whatsapp));
+    border: 2px solid #128c7e;
+}
+
+.plataforma-instagram:hover {
+    background-image: linear-gradient(to bottom right, #C13584, var(--cor-instagram));
+    border: 2px solid #C13584;
+}
+
 @media (max-width: 768px) {
     .contato {
-        width: 80vw;
         max-height: 50vh;
         padding: 20px;
     }
-    
+
     .contato img {
-        width: 150px; /* Reduz o tamanho do logotipo para telas menores */
+        width: 150px;
         height: 150px;
     }
 
     .contato h2 {
-        font-size: 24px; /* Ajusta o tamanho da fonte em telas menores */
+        font-size: 24px;
     }
 
-    .botao-whatsapp, .botao-instagram {
-        width: 200px; /* Botões menores em dispositivos menores */
+    .botao {
+        width: 200px;
         height: 45px;
     }
 }
