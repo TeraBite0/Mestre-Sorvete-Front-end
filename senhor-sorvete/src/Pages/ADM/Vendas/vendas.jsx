@@ -171,19 +171,20 @@ const Vendas = () => {
 
 
   const handleSubmitAdicionar = async () => {
-
     const token = sessionStorage.getItem('token');
     if (!token) {
       toast.error('Token não encontrado. Faça login novamente.');
       return;
     }
-
+  
     try {
+      const horarioAtual = new Date().toISOString();
       const produtosParaEnviar = novasVendas.map(venda => ({
         produtoId: venda.produtoId,
-        qtdVendida: venda.quantidade
+        qtdVendida: venda.quantidade,
+        horarioVenda: horarioAtual // Adiciona o horário aqui
       }));
-
+  
       const response = await axios.post(
         'http://localhost:8080/vendas',
         { produtos: produtosParaEnviar },
@@ -194,9 +195,9 @@ const Vendas = () => {
           }
         }
       );
-
+  
       if (response.data) {
-        console.log("Resposta da requisição:", response.data);  // Verifique aqui a resposta do servidor
+        console.log("Resposta da requisição:", response.data);
         const vendasAtualizadas = agruparVendasPorData([...rows, response.data]);
         setRows(vendasAtualizadas);
         handleCloseAdicionar();
@@ -210,12 +211,12 @@ const Vendas = () => {
 
   const handleSubmitBuscar = async () => {
     const token = sessionStorage.getItem('token');
-    
+
     if (!token) {
       toast.error("Token não encontrado. Faça login novamente.");
       return;
     }
-    
+
     try {
       const dataFormatada = dataBusca;
       const response = await axios.get('http://localhost:8080/vendas/data', {
@@ -224,7 +225,7 @@ const Vendas = () => {
           Authorization: `Bearer ${token}`,
         },
       });
-      
+
       if (response.data.length === 0) {
         setResultadoBusca("Nenhuma venda encontrada nesta data.");
         setVendasDoDia([]);
@@ -239,21 +240,24 @@ const Vendas = () => {
       setVendasDoDia([]);
       setResultadoBusca("Erro ao buscar vendas.");
     }
-};
+  };
 
-const handleCloseBuscar = () => {
+  const handleCloseBuscar = () => {
     setOpenBuscar(false);
     setDataBusca("");
     setResultadoBusca(null);
     setVendasDoDia([]);
-};
+  };
 
 
 
   return (
     <div className="container-vendas">
       <HeaderGerenciamento />
-      <BotaoVoltarGerenciamento />
+
+      <div className="botao-voltar-vendas">
+        <BotaoVoltarGerenciamento />
+      </div>
       <div className="container-informacoes">
         <h1>Vendas</h1>
         <div className="container-botoes">
@@ -263,7 +267,27 @@ const handleCloseBuscar = () => {
       </div>
 
       <div className="tabela-vendas">
-        <TableContainer component={Paper} className="tabela-container">
+        <TableContainer component={Paper} 
+        className="tabela-container"
+        sx={{
+          maxHeight: '80vh',  // altura máxima
+          overflow: 'auto'
+      }}
+  >
+      <Table
+          sx={{
+              width: '100%',
+              '& .MuiTableCell-root': {
+                  padding: '8px', // Reduz o padding das células
+              },
+              '& .MuiTableCell-root:last-child': {
+                  width: '60px', // Ajusta a largura da última coluna (Editar)
+              }
+          }}
+          size="small"
+          aria-label="tabela de vendas"
+      >
+        </Table>
           <Table sx={{ minWidth: 500 }} size="small" aria-label="a dense table">
             <TableHead className="tabela-Head">
               <TableRow>
@@ -271,7 +295,7 @@ const handleCloseBuscar = () => {
                 <TableCell className="tabela-Head" align="right">Data da Compra</TableCell>
                 <TableCell className="tabela-Head" align="right">Horario</TableCell>
                 <TableCell className="tabela-Head" align="right">Produtos</TableCell>
-                <TableCell className="tabela-Head" align="right">Preço Unitário</TableCell>
+                <TableCell className="tabela-Head" align="right">Subtotal</TableCell>
                 <TableCell className="tabela-Head" align="right">Valor Total</TableCell>
               </TableRow>
             </TableHead>
@@ -285,27 +309,43 @@ const handleCloseBuscar = () => {
                   return (
                     <TableRow key={row.id} sx={{ "&:last-child td, &:last-child th": { border: 0 } }}>
                       <TableCell component="th" scope="row">{row.id}</TableCell>
-                      <TableCell align="right">{dataCompra}</TableCell>
-                      <TableCell align="right">
+                      <TableCell className="tabela-row-vendas" align="right">{dataCompra}</TableCell>
+                      <TableCell className="tabela-row-vendas" align="right">
                         {row.produtos.map((item, index) => {
-                          const horarioVenda = new Date(item.horarioVenda);
+                          let horarioVenda;
+
+                          if (item.horarioVenda) {
+                            // Se tem horário definido, mantém o original
+                            horarioVenda = new Date(item.horarioVenda.replace(' ', 'T'));
+                          } else if (!item.horarioVenda && item === row.produtos[row.produtos.length - 1] &&
+                            new Date(row.dataCompra).toDateString() === new Date().toDateString() &&
+                            !sessionStorage.getItem(`venda_${row.id}_${index}_horario`)) {
+                            // Para nova venda, define o horário no momento da criação apenas uma vez
+                            const horaAtual = new Date();
+                            item.horarioVenda = horaAtual.toISOString();
+                            sessionStorage.setItem(`venda_${row.id}_${index}_horario`, horaAtual.toISOString());
+                            horarioVenda = horaAtual;
+                          } else {
+                            // Tenta recuperar o horário salvo no sessionStorage
+                            const horarioSalvo = sessionStorage.getItem(`venda_${row.id}_${index}_horario`);
+                            horarioVenda = horarioSalvo ? new Date(horarioSalvo) : new Date('2000-01-01T00:00:00');
+                          }
+
                           return (
                             <div key={index}>
-                              {!isNaN(horarioVenda)
-                                ? horarioVenda.toLocaleTimeString('pt-BR', {
-                                  hour: '2-digit',
-                                  minute: '2-digit'
-                                })
-                                : 'Horário não disponível'
-                              }
+                              {horarioVenda.toLocaleTimeString('pt-BR', {
+                                hour: '2-digit',
+                                minute: '2-digit',
+                                hour12: false
+                              })}
                             </div>
                           );
                         })}
                       </TableCell>
-                      <TableCell align="right">
+                      <TableCell className="tabela-row-vendas" align="right">
                         {row.produtos.map((item) => (
                           <div key={item.produto.id}>
-                            <strong>{item.produto.nome}</strong> - {item.qtdVendida} un
+                            <strong>{item.produto.nome}</strong> - {item.qtdVendida} un - <strong>R${ item.produto.preco.toFixed(2)}</strong>
                             <br />
                             <small style={{ color: 'gray' }}>
                               {item.produto.subtipo.nome} - {item.produto.marca.nome}
@@ -313,12 +353,14 @@ const handleCloseBuscar = () => {
                           </div>
                         ))}
                       </TableCell>
-                      <TableCell align="right">
+                      <TableCell className="tabela-row-vendas" align="right">
                         {row.produtos.map((item, index) => (
-                          <div key={index}>R$ {item.produto.preco.toFixed(2)}</div>
+                          <div key={index}>
+                            R${(item.produto.preco * item.qtdVendida).toFixed(2)}
+                          </div>
                         ))}
                       </TableCell>
-                      <TableCell align="right">R$ {precoTotalVenda.toFixed(2)}</TableCell>
+                      <TableCell className="tabela-row-vendas" align="right">R$ {precoTotalVenda.toFixed(2)}</TableCell>
                     </TableRow>
                   );
                 })}
@@ -408,48 +450,48 @@ const handleCloseBuscar = () => {
       <Dialog open={openBuscar} onClose={handleCloseBuscar}>
         <DialogTitle>Buscar Venda</DialogTitle>
         <DialogContent>
-            <TextField
-                type="date"
-                value={dataBusca}
-                onChange={(e) => setDataBusca(e.target.value)}
-                fullWidth
-                InputLabelProps={{
-                    shrink: true,
-                }}
-            />
-            {resultadoBusca && (
+          <TextField
+            type="date"
+            value={dataBusca}
+            onChange={(e) => setDataBusca(e.target.value)}
+            fullWidth
+            InputLabelProps={{
+              shrink: true,
+            }}
+          />
+          {resultadoBusca && (
+            <div>
+              <p>{resultadoBusca}</p>
+              {vendasDoDia.length > 0 && (
                 <div>
-                    <p>{resultadoBusca}</p>
-                    {vendasDoDia.length > 0 && (
+                  {vendasDoDia.map((venda) => {
+
+                    return (
+                      <div key={venda.id} className="mb-4 border-b pb-2">
+                        <h3>Venda #{venda.id}</h3>
                         <div>
-                            {vendasDoDia.map((venda) => {
-                                                      
-                                return (
-                                    <div key={venda.id} className="mb-4 border-b pb-2">
-                                        <h3>Venda #{venda.id}</h3>
-                                        <div>
-                                            <strong>Produtos:</strong>
-                                            <ul>
-                                                {venda.produtos?.map((item, index) => (
-                                                    <li key={index}>
-                                                        {item.produto?.nome} - {item.qtdVendida} unidades
-                                                    </li>
-                                                ))}
-                                            </ul>
-                                        </div>
-                                    </div>
-                                );
-                            })}
+                          <strong>Produtos:</strong>
+                          <ul>
+                            {venda.produtos?.map((item, index) => (
+                              <li key={index}>
+                                {item.produto?.nome} - {item.qtdVendida} unidades
+                              </li>
+                            ))}
+                          </ul>
                         </div>
-                    )}
+                      </div>
+                    );
+                  })}
                 </div>
-            )}
+              )}
+            </div>
+          )}
         </DialogContent>
         <DialogActions>
-            <Button className="botaoModal" onClick={handleCloseBuscar}>Fechar</Button>
-            <Button className="botaoModal" onClick={handleSubmitBuscar}>Buscar</Button>
+          <Button className="botaoModal" onClick={handleCloseBuscar}>Fechar</Button>
+          <Button className="botaoModal" onClick={handleSubmitBuscar}>Buscar</Button>
         </DialogActions>
-    </Dialog>
+      </Dialog>
     </div>
   );
 };

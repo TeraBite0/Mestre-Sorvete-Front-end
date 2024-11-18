@@ -80,11 +80,11 @@ const ListarProdutos = () => {
                     'Authorization': `Bearer ${token}`
                 }
             });
-            
+
             if (!resposta.ok) {
                 throw new Error('Erro ao obter token SAS');
             }
-            
+
             const dados = await resposta.json();
             return dados.sasUrl;
         } catch (erro) {
@@ -96,7 +96,7 @@ const ListarProdutos = () => {
     const enviarImagemParaAzure = async (arquivo) => {
         try {
             const sasUrl = await obterTokenSasAzure();
-            
+
             const nomeArquivo = `${Date.now()}-${arquivo.name}`;
             const urlUpload = `${sasUrl}/${nomeArquivo}`;
 
@@ -121,40 +121,40 @@ const ListarProdutos = () => {
     };
 
     const filtroPesquisa = async (termo) => {
-    const token = sessionStorage.getItem('token');
-    setCarregando(true);
-    
-    try {
-        // Normalizar e remover acentos antes de enviar
-        const termoNormalizado = termo.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
-        
-        const response = await fetch(`http://localhost:8080/produtos/filtrar-nome-marca?termo=${termoNormalizado}`, {
-            headers: {
-                Authorization: `Bearer ${token}`
+        const token = sessionStorage.getItem('token');
+        setCarregando(true);
+
+        try {
+            // Normalizar e remover acentos antes de enviar
+            const termoNormalizado = termo.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+
+            const response = await fetch(`http://localhost:8080/produtos/filtrar-nome-marca?termo=${termoNormalizado}`, {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            });
+
+            if (!response.ok) {
+                toast.error("Erro ao pesquisar");
+                return;
             }
-        });
-    
-        if (!response.ok) {
-            toast.error("Erro ao pesquisar");
-            return;
+
+            const dados = await response.json();
+            const produtosFormatados = dados.map(produto => ({
+                id: produto.id?.toString() || Math.random().toString(),
+                nome: produto.nome || '',
+                marca: produto.marca?.nome || '',
+                subtipo: produto.subtipo?.nome || '',
+                preco: typeof produto.preco === 'number' ? produto.preco : 0,
+                imagemUrl: produto.imagemUrl || ''
+            }));
+            setProdutos(produtosFormatados);
+        } catch (erro) {
+            toast.error("Erro ao pesquisar produtos");
+        } finally {
+            setCarregando(false);
         }
-    
-        const dados = await response.json();
-        const produtosFormatados = dados.map(produto => ({
-            id: produto.id?.toString() || Math.random().toString(),
-            nome: produto.nome || '',
-            marca: produto.marca?.nome || '',
-            subtipo: produto.subtipo?.nome || '',
-            preco: typeof produto.preco === 'number' ? produto.preco : 0,
-            imagemUrl: produto.imagemUrl || ''
-        }));
-        setProdutos(produtosFormatados);
-    } catch (erro) {
-        toast.error("Erro ao pesquisar produtos");
-    } finally {
-        setCarregando(false);
-    }
-};
+    };
 
 
     const abrirModal = () => {
@@ -176,8 +176,8 @@ const ListarProdutos = () => {
     };
 
     const handleInputChange = (evento) => { // Gerenciar a mudança dos campos dos formulários
-        const { name, value } = evento.target; 
-        setNovoProduto(anterior => ({ ...anterior, [name]: value })); 
+        const { name, value } = evento.target;
+        setNovoProduto(anterior => ({ ...anterior, [name]: value }));
         if (erros[name]) {
             setErros(anterior => ({ ...anterior, [name]: '' }));
         }
@@ -190,14 +190,14 @@ const ListarProdutos = () => {
                 toast.error("Arquivo muito grande. Máximo 5MB.");
                 return;
             }
-            
+
             if (!arquivo.type.startsWith('image/')) {
                 toast.error("Por favor, selecione apenas arquivos de imagem.");
                 return;
             }
 
             setArquivoImagem(arquivo);
-            
+
             const leitor = new FileReader();
             leitor.onloadend = () => {
                 setImagemPreview(leitor.result);
@@ -228,10 +228,10 @@ const ListarProdutos = () => {
                 imagemUrl: urlImagem
             };
 
-            const url = produtoSelecionado 
+            const url = produtoSelecionado
                 ? `http://localhost:8080/produtos/${produtoSelecionado.id}`
                 : 'http://localhost:8080/produtos';
-            
+
             const metodo = produtoSelecionado ? 'PUT' : 'POST';
 
             const resposta = await fetch(url, {
@@ -248,10 +248,10 @@ const ListarProdutos = () => {
             }
 
             toast.success(produtoSelecionado ? 'Produto atualizado com sucesso!' : 'Produto criado com sucesso!');
-            
+
             const dadosAtualizados = await resposta.json();
             if (produtoSelecionado) {
-                setProdutos(produtos.map(produto => 
+                setProdutos(produtos.map(produto =>
                     produto.id === produtoSelecionado.id ? dadosAtualizados : produto
                 ));
             } else {
@@ -288,16 +288,35 @@ const ListarProdutos = () => {
                     placeholder="Produto, Marca..."
                     value={pesquisa}
                     onChange={(e) => {
-                    setPesquisa(e.target.value);
-                    filtroPesquisa(e.target.value);
-                }}
+                        setPesquisa(e.target.value);
+                        filtroPesquisa(e.target.value);
+                    }}
                 />
                 <BotaoGerenciamento botao="+ Novo Produto" onClick={abrirModal} />
             </div>
 
             <div className='tabela-produtos'>
-                <TableContainer component={Paper} className='container-tabela'>
-                    <Table sx={{ minWidth: 500 }} size="small" aria-label="tabela de produtos">
+                <TableContainer
+                    component={Paper}
+                    className='container-tabela'
+                    sx={{
+                        maxHeight: '60vh',  // altura máxima
+                        overflow: 'auto'
+                    }}
+                >
+                    <Table
+                        sx={{
+                            width: '100%',
+                            '& .MuiTableCell-root': {
+                                padding: '8px', // Reduz o padding das células
+                            },
+                            '& .MuiTableCell-root:last-child': {
+                                width: '60px', // Ajusta a largura da última coluna (Editar)
+                            }
+                        }}
+                        size="small"
+                        aria-label="tabela de produtos"
+                    >
                         <TableHead className='tabela-Head'>
                             <TableRow>
                                 <TableCell className='tabela-head-cell'>Imagem</TableCell>
@@ -309,14 +328,14 @@ const ListarProdutos = () => {
                         </TableHead>
                         <TableBody>
                             {produtos.map(produto => (
-                                <TableRow key={produto.id} className='tabela-row'>
-                                    <TableCell>
+                                <TableRow key={produto.id} className='tabela-row-vendas'>
+                                    <TableCell  className='tabela-row-vendas'>
                                         <img src={produto.imagemUrl} alt={produto.nome} width="35" height="35" />
                                     </TableCell>
-                                    <TableCell>{produto.nome}</TableCell>
-                                    <TableCell>{produto.marca}</TableCell>
-                                    <TableCell>R$ {produto.preco}</TableCell>
-                                    <TableCell className='tabela-cell'>
+                                    <TableCell  className='tabela-row-vendas'>{produto.nome}</TableCell>
+                                    <TableCell  className='tabela-row-vendas'>{produto.marca}</TableCell>
+                                    <TableCell  className='tabela-row-vendas'>R$ {produto.preco}</TableCell>
+                                    <TableCell  className='tabela-row-vendas'>
                                         <button onClick={() => handleEditar(produto)}>
                                             <EditIcon />
                                         </button>
@@ -387,15 +406,15 @@ const ListarProdutos = () => {
                     )}
                 </DialogContent>
                 <DialogActions>
-                    <Button 
-                        className='botaoModal' 
+                    <Button
+                        className='botaoModal'
                         onClick={fecharModal}
                         disabled={carregando}
                     >
                         Cancelar
                     </Button>
-                    <Button 
-                        className='botaoModal' 
+                    <Button
+                        className='botaoModal'
                         onClick={adicionarNovoProduto}
                         disabled={carregando}
                     >

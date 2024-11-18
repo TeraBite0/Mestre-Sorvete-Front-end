@@ -243,6 +243,7 @@ const Dashboard = () => {
       return data && !isNaN(data.getTime())
         ? data.toLocaleDateString("pt-BR", { month: "long" })
         : "Data inválida";
+        console.log("Temperaturas:", dashboardData.resumoDeVendas.map(resumo => resumo.temperaturaMedia));
     }),
     datasets: [
       {
