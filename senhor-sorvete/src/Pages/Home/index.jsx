@@ -12,6 +12,7 @@ const Home = (props) => {
   const [dataAtual, setDataAtual] = useState("");
   const [email, setEmail] = useState("");
   const [error, setError] = useState("");
+  const [recomendacaoDia, setRecomendacaoDia] = useState(null);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -20,7 +21,53 @@ const Home = (props) => {
     const mes = String(data.getMonth() + 1).padStart(2, "0");
     const ano = data.getFullYear();
     setDataAtual(`${dia}/${mes}/${ano}`);
+
+    const fetchRecomendacao = async () => {
+      try {
+        const resposta = await fetch("http://localhost:8080/produtos/recomendacao-do-dia", {
+          method: "GET",
+          headers: {
+            Accept: "*/*",
+          },
+        });
+
+        if (resposta.status !== 200) {
+          // Se o status não for 200, registra o erro
+          console.error("Erro do servidor:", resposta.status);
+        } else {
+          const data = await resposta.json();
+          setRecomendacaoDia(data); // Armazena os dados no estado
+        }
+      } catch (error) {
+        console.error("Erro ao fazer a requisição:", error);
+      }
+    };
+
+    fetchRecomendacao();
   }, []);
+
+  // const fetchRecomendacaoDia = async () => {
+  //   try {
+  //     const resposta = await fetch("http://localhost:8080/produtos/recomendacao-do-dia", {
+  //       method: "GET",
+  //       headers: {
+  //         Accept: "*/*",
+  //       },
+  //     });
+  
+  //     if (resposta.status !== 200) {
+  //       // Se o status não for 200, registra o erro
+  //       console.error("Erro do servidor:", resposta.status);
+  //     } else {
+  //       // Aqui você pode processar a resposta se o status for 200
+  //       const data = await resposta.json(); // Ou outro formato conforme a resposta do servidor
+  //       console.log(data);
+  //     }
+  //   } catch (error) {
+  //     console.error("Erro ao fazer a requisição:", error);
+  //   }
+  // };
+  
 
   const validateEmail = (email) => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -37,6 +84,8 @@ const Home = (props) => {
       setError("Por favor, insira um E-mail válido.");
     }
   };
+
+
 
   return (
     <div className="home">
@@ -103,23 +152,34 @@ const Home = (props) => {
           </p>
           <div className="sugestao-content">
             <div className="sugestao-img">
-              <img
-                src="Imagens/imagem-3-homepage.png"
-                alt="Sugestão do Dia - Chocolate Trufado"
+              {recomendacaoDia ? (
+                <img
+              //   src={recomendacaoDia.imagemUrl} // Aqui você usa a URL da imagem retornada pela API
+              // alt={`Sugestão do Dia - ${recomendacaoDia.nome}`}
+              src="Imagens/imagem-3-homepage.png"
+              alt={`Sugestão do Dia - ${recomendacaoDia.nome}`}
               />
+              ) : (
+              <p>Carregando recomendação...</p>
+              )}
             </div>
             <div className="sugestao-text">
-              <h3>Chocolate trufado</h3>
+              {recomendacaoDia ? (
+                <>
+                <h3>{recomendacaoDia.nome}</h3>
               <p>
-                Hoje, nossa dica especial é o irresistível sorvete de Chocolate
-                Trufado. Com uma combinação perfeita de cremosidade e sabor
+                Hoje, nossa dica especial é o irresistível sorvete de {recomendacaoDia.nome}. Com uma combinação perfeita de cremosidade e sabor
                 intenso. Venha experimentar essa delícia que derrete na boca e
                 transforma o seu dia em um momento de puro prazer!
               </p>
               <button className="btn-experimentar">
                 <Link to="/cardapio">Experimentar</Link>
               </button>
-            </div>
+                </>
+              ) :  (
+                <p>Carregando recomendação...</p>
+              )}
+              </div>
           </div>
         </section>
 
