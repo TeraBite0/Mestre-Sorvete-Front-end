@@ -115,12 +115,6 @@ const Vendas = () => {
 
   const handleOpenBuscar = () => setOpenBuscar(true);
 
-  // const handleCloseBuscar = () => {
-  //   setOpenBuscar(false);
-  //   setDataBusca("");
-  //   setResultadoBusca(null);
-  // };
-
   const calcularPrecoTotal = (produtos) => {
     return produtos.reduce(
       (total, item) => total + item.produto.preco * item.qtdVendida,
@@ -259,15 +253,14 @@ const Vendas = () => {
       setResultadoBusca("Erro ao buscar vendas.");
     }
   };
-  };
-
-  const handleCloseBuscar = () => {
+  
+  
   const handleCloseBuscar = () => {
     setOpenBuscar(false);
     setDataBusca("");
     setResultadoBusca(null);
     setVendasDoDia([]);
-  };
+  }
 
 
 
@@ -531,7 +524,6 @@ const Vendas = () => {
           <Button className="botaoModal" onClick={handleCloseBuscar}>Fechar</Button>
           <Button className="botaoModal" onClick={handleSubmitBuscar}>Buscar</Button>
         </DialogActions>
-      </Dialog>
       </Dialog>
     </div>
   );
