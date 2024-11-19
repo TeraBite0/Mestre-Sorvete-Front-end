@@ -62,7 +62,7 @@ const ListarProdutos = () => {
                 marca: produto.marca?.nome || '',
                 subtipo: produto.subtipo?.nome || '',
                 preco: typeof produto.preco === 'number' ? produto.preco : 0,
-                imagemUrl: produto.imagemUrl || ''
+                imagemUrl: "https://terabite.blob.core.windows.net/terabite-container/" + produto.id || ''
             }));
             setProdutos(produtosFormatados);
         } catch (erro) {
@@ -74,33 +74,27 @@ const ListarProdutos = () => {
 
     const obterTokenSasAzure = async () => {
         const token = sessionStorage.getItem('token');
-        try {
-            const resposta = await fetch('http://localhost:8080/azure', {
-                headers: {
-                    'Authorization': `Bearer ${token}`
-                }
-            });
-            
-            if (!resposta.ok) {
-                throw new Error('Erro ao obter token SAS');
+        const resposta = await fetch('http://localhost:8080/azure', {
+            method: 'GET',
+            headers: {
+                'Authorization': `Bearer ${token}`
             }
-            
+        });
+
+        if (resposta.ok) {
             const dados = await resposta.json();
-            return dados.sasUrl;
-        } catch (erro) {
-            toast.error("Erro ao gerar token para upload de imagem");
-            throw erro;
+            return dados.sasToken;
         }
     };
 
-    const enviarImagemParaAzure = async (arquivo) => {
+    const enviarImagemParaAzure = async (arquivo, produtoId) => {
         try {
-            const sasUrl = await obterTokenSasAzure();
-            
-            const nomeArquivo = `${Date.now()}-${arquivo.name}`;
-            const urlUpload = `${sasUrl}/${nomeArquivo}`;
+            const tokenSaS = await obterTokenSasAzure();
+            const nomeArquivo = `${produtoId}`;
+            const sasUrl = `https://terabite.blob.core.windows.net/terabite-container/${nomeArquivo}?${tokenSaS}`;
+            const urlUpload = `${sasUrl}/`;
 
-            const resposta = await fetch(urlUpload, {
+            const resposta = await fetch(sasUrl, {
                 method: 'PUT',
                 headers: {
                     'x-ms-blob-type': 'BlockBlob',
@@ -115,46 +109,46 @@ const ListarProdutos = () => {
 
             return urlUpload.split('?')[0];
         } catch (erro) {
-            toast.error("Erro ao fazer upload da imagem");
+            toast.error("Tente novamente mais tarde");
             throw erro;
         }
     };
 
     const filtroPesquisa = async (termo) => {
-    const token = sessionStorage.getItem('token');
-    setCarregando(true);
-    
-    try {
-        // Normalizar e remover acentos antes de enviar
-        const termoNormalizado = termo.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
-        
-        const response = await fetch(`http://localhost:8080/produtos/filtrar-nome-marca?termo=${termoNormalizado}`, {
-            headers: {
-                Authorization: `Bearer ${token}`
+        const token = sessionStorage.getItem('token');
+        setCarregando(true);
+
+        try {
+            // Normalizar e remover acentos antes de enviar
+            const termoNormalizado = termo.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+
+            const response = await fetch(`http://localhost:8080/produtos/filtrar-nome-marca?termo=${termoNormalizado}`, {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            });
+
+            if (!response.ok) {
+                toast.error("Erro ao pesquisar");
+                return;
             }
-        });
-    
-        if (!response.ok) {
-            toast.error("Erro ao pesquisar");
-            return;
+
+            const dados = await response.json();
+            const produtosFormatados = dados.map(produto => ({
+                id: produto.id?.toString() || Math.random().toString(),
+                nome: produto.nome || '',
+                marca: produto.marca?.nome || '',
+                subtipo: produto.subtipo?.nome || '',
+                preco: typeof produto.preco === 'number' ? produto.preco : 0,
+                imagemUrl: "https://terabite.blob.core.windows.net/terabite-container/" + produto.id || ''
+            }));
+            setProdutos(produtosFormatados);
+        } catch (erro) {
+            toast.error("Erro ao pesquisar produtos");
+        } finally {
+            setCarregando(false);
         }
-    
-        const dados = await response.json();
-        const produtosFormatados = dados.map(produto => ({
-            id: produto.id?.toString() || Math.random().toString(),
-            nome: produto.nome || '',
-            marca: produto.marca?.nome || '',
-            subtipo: produto.subtipo?.nome || '',
-            preco: typeof produto.preco === 'number' ? produto.preco : 0,
-            imagemUrl: produto.imagemUrl || ''
-        }));
-        setProdutos(produtosFormatados);
-    } catch (erro) {
-        toast.error("Erro ao pesquisar produtos");
-    } finally {
-        setCarregando(false);
-    }
-};
+    };
 
 
     const abrirModal = () => {
@@ -176,8 +170,8 @@ const ListarProdutos = () => {
     };
 
     const handleInputChange = (evento) => { // Gerenciar a mudança dos campos dos formulários
-        const { name, value } = evento.target; 
-        setNovoProduto(anterior => ({ ...anterior, [name]: value })); 
+        const { name, value } = evento.target;
+        setNovoProduto(anterior => ({ ...anterior, [name]: value }));
         if (erros[name]) {
             setErros(anterior => ({ ...anterior, [name]: '' }));
         }
@@ -190,14 +184,14 @@ const ListarProdutos = () => {
                 toast.error("Arquivo muito grande. Máximo 5MB.");
                 return;
             }
-            
+
             if (!arquivo.type.startsWith('image/')) {
                 toast.error("Por favor, selecione apenas arquivos de imagem.");
                 return;
             }
 
             setArquivoImagem(arquivo);
-            
+
             const leitor = new FileReader();
             leitor.onloadend = () => {
                 setImagemPreview(leitor.result);
@@ -219,7 +213,7 @@ const ListarProdutos = () => {
             let urlImagem = novoProduto.imagemUrl;
 
             if (arquivoImagem) {
-                urlImagem = await enviarImagemParaAzure(arquivoImagem);
+                urlImagem = await enviarImagemParaAzure(arquivoImagem, produtoSelecionado.id);
             }
 
             const token = sessionStorage.getItem('token');
@@ -228,10 +222,10 @@ const ListarProdutos = () => {
                 imagemUrl: urlImagem
             };
 
-            const url = produtoSelecionado 
+            const url = produtoSelecionado
                 ? `http://localhost:8080/produtos/${produtoSelecionado.id}`
                 : 'http://localhost:8080/produtos';
-            
+
             const metodo = produtoSelecionado ? 'PUT' : 'POST';
 
             const resposta = await fetch(url, {
@@ -248,10 +242,10 @@ const ListarProdutos = () => {
             }
 
             toast.success(produtoSelecionado ? 'Produto atualizado com sucesso!' : 'Produto criado com sucesso!');
-            
+
             const dadosAtualizados = await resposta.json();
             if (produtoSelecionado) {
-                setProdutos(produtos.map(produto => 
+                setProdutos(produtos.map(produto =>
                     produto.id === produtoSelecionado.id ? dadosAtualizados : produto
                 ));
             } else {
@@ -288,9 +282,9 @@ const ListarProdutos = () => {
                     placeholder="Produto, Marca..."
                     value={pesquisa}
                     onChange={(e) => {
-                    setPesquisa(e.target.value);
-                    filtroPesquisa(e.target.value);
-                }}
+                        setPesquisa(e.target.value);
+                        filtroPesquisa(e.target.value);
+                    }}
                 />
                 <BotaoGerenciamento botao="+ Novo Produto" onClick={abrirModal} />
             </div>
@@ -387,15 +381,15 @@ const ListarProdutos = () => {
                     )}
                 </DialogContent>
                 <DialogActions>
-                    <Button 
-                        className='botaoModal' 
+                    <Button
+                        className='botaoModal'
                         onClick={fecharModal}
                         disabled={carregando}
                     >
                         Cancelar
                     </Button>
-                    <Button 
-                        className='botaoModal' 
+                    <Button
+                        className='botaoModal'
                         onClick={adicionarNovoProduto}
                         disabled={carregando}
                     >
