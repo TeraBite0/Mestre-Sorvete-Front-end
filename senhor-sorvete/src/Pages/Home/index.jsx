@@ -24,12 +24,15 @@ const Home = (props) => {
 
     const fetchRecomendacao = async () => {
       try {
-        const resposta = await fetch("http://localhost:8080/produtos/recomendacao-do-dia", {
-          method: "GET",
-          headers: {
-            Accept: "*/*",
-          },
-        });
+        const resposta = await fetch(
+          "http://localhost:8080/produtos/recomendacao-do-dia",
+          {
+            method: "GET",
+            headers: {
+              Accept: "*/*",
+            },
+          }
+        );
 
         if (resposta.status !== 200) {
           // Se o status não for 200, registra o erro
@@ -54,7 +57,7 @@ const Home = (props) => {
   //         Accept: "*/*",
   //       },
   //     });
-  
+
   //     if (resposta.status !== 200) {
   //       // Se o status não for 200, registra o erro
   //       console.error("Erro do servidor:", resposta.status);
@@ -67,7 +70,6 @@ const Home = (props) => {
   //     console.error("Erro ao fazer a requisição:", error);
   //   }
   // };
-  
 
   const validateEmail = (email) => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -84,8 +86,6 @@ const Home = (props) => {
       setError("Por favor, insira um E-mail válido.");
     }
   };
-
-
 
   return (
     <div className="home">
@@ -154,32 +154,34 @@ const Home = (props) => {
             <div className="sugestao-img">
               {recomendacaoDia ? (
                 <img
-              //   src={recomendacaoDia.imagemUrl} // Aqui você usa a URL da imagem retornada pela API
-              // alt={`Sugestão do Dia - ${recomendacaoDia.nome}`}
-              src="Imagens/imagem-3-homepage.png"
-              alt={`Sugestão do Dia - ${recomendacaoDia.nome}`}
-              />
+                  //   src={recomendacaoDia.imagemUrl} // Aqui você usa a URL da imagem retornada pela API
+                  // alt={`Sugestão do Dia - ${recomendacaoDia.nome}`}
+                  src="Imagens/imagem-3-homepage.png"
+                  alt={`Sugestão do Dia - ${recomendacaoDia.nome}`}
+                />
               ) : (
-              <p>Carregando recomendação...</p>
+                <p>Carregando recomendação...</p>
               )}
             </div>
             <div className="sugestao-text">
               {recomendacaoDia ? (
                 <>
-                <h3>{recomendacaoDia.nome}</h3>
-              <p>
-                Hoje, nossa dica especial é o irresistível sorvete de {recomendacaoDia.nome}. Com uma combinação perfeita de cremosidade e sabor
-                intenso. Venha experimentar essa delícia que derrete na boca e
-                transforma o seu dia em um momento de puro prazer!
-              </p>
-              <button className="btn-experimentar">
-                <Link to="/cardapio">Experimentar</Link>
-              </button>
+                  <h3>{recomendacaoDia.nome}</h3>
+                  <p>
+                    Hoje, nossa dica especial é o irresistível sorvete de{" "}
+                    {recomendacaoDia.nome}. Com uma combinação perfeita de
+                    cremosidade e sabor intenso. Venha experimentar essa delícia
+                    que derrete na boca e transforma o seu dia em um momento de
+                    puro prazer!
+                  </p>
+                  <button className="btn-experimentar">
+                    <Link to="/cardapio">Experimentar</Link>
+                  </button>
                 </>
-              ) :  (
+              ) : (
                 <p>Carregando recomendação...</p>
               )}
-              </div>
+            </div>
           </div>
         </section>
 

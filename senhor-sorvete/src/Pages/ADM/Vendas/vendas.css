@@ -1,52 +1,111 @@
 .container-vendas {
   margin: auto;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
 }
 
-.tabela-container {
+.botao-voltar-vendas {
+  margin: 0 3rem;
+}
+
+.container-informacoes {
   display: flex;
-  width: 95% !important;
-  margin: 0 auto;
+  justify-content: space-between;
+  padding: 15px;
+  margin: 0 2rem;
 }
 
 .container-vendas h1 {
   font-size: 1.9rem;
   padding: 0 35px;
-}
-
-.container-informacoes {
-  display: flex;
-  margin: 30px 0;
-  justify-content: space-between;
- 
+  margin: 0;
 }
 
 .container-botoes {
   display: flex;
   flex-direction: row;
-  padding: 0;
   align-items: center;
-  margin: 15px 0;
   width: 40%;
+  gap: 1rem;
+}
+
+.tabela-vendas {
+  padding: 5px;
+  margin: 0 4rem;
+  flex: 1;
+}
+
+.tabela-container {
+  border: 2px solid #2F615E;
+  border-radius: 10px !important;
+  width: 100%;
+  max-height: calc(100vh - 250px) !important;
+  padding-right: 0; /* Removido o padding */
+  overflow: hidden; /* Adicionado overflow hidden */
+}
+
+.tabela-container > div {
+  max-height: 100%;
+  overflow-y: auto;
+  margin-right: -17px; /* Compensa a largura da scrollbar */
+  padding-right: 17px; /* Adiciona padding para compensar a margem negativa */
+}
+
+/* Scrollbar Styles */
+.tabela-container::-webkit-scrollbar {
+  width: 8px;
+}
+
+.tabela-container::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 10px;
+  margin: 2px;
+}
+
+.tabela-container::-webkit-scrollbar-thumb {
+  background: #2F615E;
+  border-radius: 10px;
+  border: 2px solid #f1f1f1;
+}
+
+.tabela-row-vendas {
+  padding: 5px !important;
+  text-align: left;
+  font-family: "Poppins", system-ui;
+  border-bottom: 1px solid #ddd;
+}
+
+/* Table Header Styles */
+.MuiTableHead-root {
+  position: sticky !important;
+  top: 0 !important;
+  z-index: 2 !important;
+  background-color: #2F615E !important;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 .tabela-vendas .tabela-container .MuiTableCell-head {
   color: white !important;
   font-weight: bold;
   font-size: 17px !important;
+  padding: 12px 16px !important;
 }
 
-.tabela-cont .MuiTableRow-root:nth-of-type(even) {
+/* Table Row Styles */
+.tabela-container .MuiTableRow-root:nth-of-type(even) {
   background-color: #f9f9f9;
 }
 
-.tabela-cont .MuiTableRow-root:hover {
+.tabela-container .MuiTableRow-root:hover {
   background-color: #e0f7fa;
 }
 
-.tabela-cont .MuiPaper-root {
+.tabela-container .MuiPaper-root {
   box-shadow: none !important;
 }
 
+/* Modal Styles */
 .tituloModal {
   font-family: "Poppins", system-ui !important;
   font-size: 22px;
@@ -62,19 +121,19 @@
   margin-bottom: 15px;
 }
 
-
-
-.botaoModal{
+.botaoModal {
   background-color: #2F615E !important;
   color: #F1C97B !important;
   font-family: "Poppins", system-ui !important;
-  font-size: 22px;
+  font-size: 16px !important;
   border-radius: 5px;
+  padding: 8px 16px !important;
+  transition: all 0.2s ease-in-out;
 }
 
 .botaoModal:hover {
   cursor: pointer;
-  background-color: #1f4a43; /* Muda a cor de fundo ao passar o mouse */
-  transform: translateY(-2px); /* Levanta o botão levemente */
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Adiciona uma sombra ao botão */
+  background-color: #1f4a43 !important;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }

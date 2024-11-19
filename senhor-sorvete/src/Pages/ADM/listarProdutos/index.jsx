@@ -82,6 +82,7 @@ const ListarProdutos = () => {
         });
 
         if (resposta.ok) {
+
             const dados = await resposta.json();
             return dados.sasToken;
         }
@@ -93,6 +94,7 @@ const ListarProdutos = () => {
             const nomeArquivo = `${produtoId}`;
             const sasUrl = `https://terabite.blob.core.windows.net/terabite-container/${nomeArquivo}?${tokenSaS}`;
             const urlUpload = `${sasUrl}/`;
+
 
             const resposta = await fetch(sasUrl, {
                 method: 'PUT',
@@ -290,8 +292,27 @@ const ListarProdutos = () => {
             </div>
 
             <div className='tabela-produtos'>
-                <TableContainer component={Paper} className='container-tabela'>
-                    <Table sx={{ minWidth: 500 }} size="small" aria-label="tabela de produtos">
+                <TableContainer
+                    component={Paper}
+                    className='container-tabela'
+                    sx={{
+                        maxHeight: '60vh',  // altura máxima
+                        overflow: 'auto'
+                    }}
+                >
+                    <Table
+                        sx={{
+                            width: '100%',
+                            '& .MuiTableCell-root': {
+                                padding: '8px', // Reduz o padding das células
+                            },
+                            '& .MuiTableCell-root:last-child': {
+                                width: '60px', // Ajusta a largura da última coluna (Editar)
+                            }
+                        }}
+                        size="small"
+                        aria-label="tabela de produtos"
+                    >
                         <TableHead className='tabela-Head'>
                             <TableRow>
                                 <TableCell className='tabela-head-cell'>Imagem</TableCell>
@@ -303,14 +324,14 @@ const ListarProdutos = () => {
                         </TableHead>
                         <TableBody>
                             {produtos.map(produto => (
-                                <TableRow key={produto.id} className='tabela-row'>
-                                    <TableCell>
+                                <TableRow key={produto.id} className='tabela-row-vendas'>
+                                    <TableCell  className='tabela-row-vendas'>
                                         <img src={produto.imagemUrl} alt={produto.nome} width="35" height="35" />
                                     </TableCell>
-                                    <TableCell>{produto.nome}</TableCell>
-                                    <TableCell>{produto.marca}</TableCell>
-                                    <TableCell>R$ {produto.preco}</TableCell>
-                                    <TableCell className='tabela-cell'>
+                                    <TableCell  className='tabela-row-vendas'>{produto.nome}</TableCell>
+                                    <TableCell  className='tabela-row-vendas'>{produto.marca}</TableCell>
+                                    <TableCell  className='tabela-row-vendas'>R$ {produto.preco}</TableCell>
+                                    <TableCell  className='tabela-row-vendas'>
                                         <button onClick={() => handleEditar(produto)}>
                                             <EditIcon />
                                         </button>
