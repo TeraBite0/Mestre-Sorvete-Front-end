@@ -5,13 +5,16 @@ import Header from '../../Components/Header/index.jsx';
 import Footer from '../../Components/Footer/index.jsx';
 import SearchIcon from '@mui/icons-material/Search';
 import axios from 'axios';
+import { toast } from 'react-toastify';
+
 
 const Cardapio = () => {
     const [termo, setTermo] = useState('');
     const [cartItems, setCartItems] = useState([]);
     const [priceRange, setPriceRange] = useState(15);
     const [selectedCategories, setSelectedCategories] = useState([]);
-    const [produtos, setProdutos] = useState([]); // Estado para armazenar os produtos
+    const [produtos, setProdutos] = useState([]);
+    const [email, setEmail] = useState('');
 
     const sidebarRef = useRef(null);
     const mainContentRef = useRef(null);
@@ -39,11 +42,30 @@ const Cardapio = () => {
         setCartItems(cartItems.filter(item => item.id !== produtoId));
     };
 
-    // Filtra os produtos com base no termo de pesquisa e na faixa de preço
     const filteredProdutos = produtos.filter(produto =>
         produto.nome.toLowerCase().includes(termo.toLowerCase()) &&
         produto.preco <= priceRange
     );
+
+    const sendNotification = () => {
+        let processedItems = 0;
+        cartItems.forEach((item, index) => {
+            try {
+                const response = axios.post('http://localhost:8080/notificacoes', {
+                    email: "email@teste.com",
+                    idProduto: item.id
+                });
+
+                if (response.status === 201) {
+                    processedItems++;
+                    toast("Itens processados: " + processedItems + "/" + cartItems);
+                }
+
+            } catch(error) {
+                console.error('Erro ao mandar notificação ', error)
+            }
+        });
+    }
 
     return (
         <div className="containerCardapio">
@@ -106,20 +128,20 @@ const Cardapio = () => {
                                 <p>Total de Notificações</p>
                                 <p>{cartItems.length}</p>
                             </div>
-                            <button className="checkoutButton">Seja Notificado</button>
+                            <button className="checkoutButton" onClick={(sendNotification())}>Seja Notificado</button>
                         </aside>
                     </div>
 
-                    <main className="products grid grid-cols-3 gap-6 justify-center">
+                    <main className="products">
                         {filteredProdutos.map((produto, index) => (
-                            <div key={index} className="product bg-white rounded-3xl p-6 text-center">
+                            <div key={index} className="product">
                                 <img src="Imagens/casquinhas-de-chocolate.jpeg" alt={`${produto.nome} Ice Cream`} className="w-full h-48 object-cover rounded-2xl mb-4" />
                                 <div className="product-name font-bold mb-2" title={produto.nome}>
                                     {produto.nome}
                                 </div>
-                                <p className="font-semibold mb-2">R$ {produto.preco.toFixed(2)}</p>
+                                <p>R$ {produto.preco.toFixed(2)}</p>
                                 <button
-                                    className="notifyMe w-full py-2 bg-white border border-gray-200 rounded-lg"
+                                    className="notifyMe"
                                     onClick={() => addToCart(produto)}
                                     disabled={produto.emEstoque}
                                 >
