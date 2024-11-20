@@ -36,11 +36,11 @@
 }
 
 .loginLeft label {
-    margin-bottom: 0.5rem;
+    margin-bottom: .5rem;
 }
 
 .loginLeft input {
-    padding: 0.8rem;
+    padding: .8rem;
     border: none;
     border-radius: 10px;
     margin-bottom: 1rem;
@@ -48,7 +48,7 @@
 }
 
 .loginLeft button {
-    padding: 0.8rem;
+    padding: .8rem;
     background-color: #ddd;
     border: none;
     border-radius: 10px;
@@ -130,6 +130,15 @@
     .loginLeft,
     .loginRight {
         height: 50vh;
+    }
+
+    .loginLeft label,
+    .loginLeft p {
+        margin-bottom: 0;
+    }
+
+    .loginLeft h1 {
+        margin-bottom: .2rem;
     }
 
     .loginRight p {

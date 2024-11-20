@@ -17,7 +17,8 @@ const Contato = () => {
     const instagramUrl =
       "https://www.instagram.com/mestresorvete?utm_source=ig_web_button_share_sheet&igsh=ZDNlZDc0MzIxNw==";
 
-    window.location.href = platform === "whatsapp" ? whatsappUrl : instagramUrl;
+    const url = platform === "whatsapp" ? whatsappUrl : instagramUrl;
+    window.open(url, "_blank");
   };
 
   return (
