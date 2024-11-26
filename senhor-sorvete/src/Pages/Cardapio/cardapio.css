@@ -74,7 +74,7 @@ body {
 
 .navegacao {
     display: flex;
-    justify-content: space-between;
+    justify-content: space-around;
     align-items: center;
     padding: 1rem 2rem;
     margin-top: -1rem;
@@ -111,16 +111,18 @@ body {
 .barraPesquisa {
     display: flex;
     align-items: center;
+    margin-left: auto;
 }
 
 .inputPesquisa {
     font-family: "Poppins", sans-serif;
-    flex-grow: 1;
     padding: 0.35rem 1rem;
     border: none;
     border-radius: 24px 0 0 24px;
     font-size: 14px;
     background-color: white;
+    width: 25rem;
+    margin-left: auto;
 }
 
 .botaoPesquisa {

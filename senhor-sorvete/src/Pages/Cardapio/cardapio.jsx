@@ -4,9 +4,12 @@ import Filtros from '../../Components/Filtros/Filtro.tsx';
 import Header from '../../Components/Header/index.jsx';
 import Footer from '../../Components/Footer/index.jsx';
 import SearchIcon from '@mui/icons-material/Search';
+import Modal from '@mui/material/Modal';
+import Box from '@mui/material/Box';
+import TextField from '@mui/material/TextField';
+import Button from '@mui/material/Button';
 import axios from 'axios';
 import { toast } from 'react-toastify';
-
 
 const Cardapio = () => {
     const [termo, setTermo] = useState('');
@@ -15,22 +18,41 @@ const Cardapio = () => {
     const [selectedCategories, setSelectedCategories] = useState([]);
     const [produtos, setProdutos] = useState([]);
     const [email, setEmail] = useState('');
+    const [isModalOpen, setIsModalOpen] = useState(false);
 
     const sidebarRef = useRef(null);
     const mainContentRef = useRef(null);
 
     useEffect(() => {
-        // Busca os produtos da API ao carregar o componente
         const fetchProdutos = async () => {
             try {
                 const response = await axios.get('http://localhost:8080/produtos/isAtivos');
-                setProdutos(response.data); // Armazena os produtos no estado
+                setProdutos(response.data);
             } catch (error) {
                 console.error('Erro ao buscar produtos:', error);
             }
         };
         fetchProdutos();
     }, []);
+
+    const sendNotification = () => {
+        let processedItems = 0;
+        cartItems.forEach(async (item, index) => {
+            try {
+                const response = await axios.post('http://localhost:8080/notificacoes', {
+                    email,
+                    idProduto: item.id
+                });
+
+                if (response.status === 201) {
+                    processedItems++;
+                    toast.success("Itens processados: " + processedItems + "/" + cartItems.length);
+                }
+            } catch (error) {
+                console.error('Erro ao mandar notificação ', error);
+            }
+        });
+    };
 
     const addToCart = (produto) => {
         if (!cartItems.some(item => item.id === produto.id)) {
@@ -47,25 +69,8 @@ const Cardapio = () => {
         produto.preco <= priceRange
     );
 
-    const sendNotification = () => {
-        let processedItems = 0;
-        cartItems.forEach((item, index) => {
-            try {
-                const response = axios.post('http://localhost:8080/notificacoes', {
-                    email: "email@teste.com",
-                    idProduto: item.id
-                });
-
-                if (response.status === 201) {
-                    processedItems++;
-                    toast("Itens processados: " + processedItems + "/" + cartItems);
-                }
-
-            } catch(error) {
-                console.error('Erro ao mandar notificação ', error)
-            }
-        });
-    }
+    const openModal = () => setIsModalOpen(true);
+    const closeModal = () => setIsModalOpen(false);
 
     return (
         <div className="containerCardapio">
@@ -79,12 +84,13 @@ const Cardapio = () => {
             </div>
 
             <nav className="navegacao">
-                <ul className="listaNavegacao" style={{
-                }}>
-                    <li className="itemNavegacao">Popular</li>
-                    <li className="itemNavegacao">Sorvetes</li>
-                    <li className="itemNavegacao">Picolés</li>
-                </ul>
+                <div>
+                    <ul className="listaNavegacao">
+                        <li className="itemNavegacao">Popular</li>
+                        <li className="itemNavegacao">Sorvetes</li>
+                        <li className="itemNavegacao">Picolés</li>
+                    </ul>
+                </div>
                 <div className="barraPesquisa">
                     <input
                         type="text"
@@ -101,8 +107,8 @@ const Cardapio = () => {
 
             <div className="mainContentWrapper" ref={mainContentRef}>
                 <div className="mainContent">
-                    <div className={`sidebarWrapper`} ref={sidebarRef}>
-                        <aside className="sidebar" style={{ backgroundColor: 'white', borderRadius: '24px', padding: '1.5rem' }}>
+                    <div className="sidebarWrapper" ref={sidebarRef}>
+                        <aside className="sidebar">
                             <Filtros
                                 priceRange={priceRange}
                                 setPriceRange={setPriceRange}
@@ -110,7 +116,7 @@ const Cardapio = () => {
                                 setSelectedCategories={setSelectedCategories}
                             />
                         </aside>
-                        <aside className="notifications" style={{ backgroundColor: 'white', borderRadius: '24px', padding: '1.5rem', marginTop: '1rem' }}>
+                        <aside className="notifications">
                             <h2>Notificações</h2>
                             <ul>
                                 {cartItems.map((item, index) => (
@@ -128,7 +134,7 @@ const Cardapio = () => {
                                 <p>Total de Notificações</p>
                                 <p>{cartItems.length}</p>
                             </div>
-                            <button className="checkoutButton" onClick={(sendNotification())}>Seja Notificado</button>
+                            <button className="checkoutButton" onClick={openModal}>Seja Notificado</button>
                         </aside>
                     </div>
 
@@ -136,7 +142,7 @@ const Cardapio = () => {
                         {filteredProdutos.map((produto, index) => (
                             <div key={index} className="product">
                                 <img src="Imagens/casquinhas-de-chocolate.jpeg" alt={`${produto.nome} Ice Cream`} className="w-full h-48 object-cover rounded-2xl mb-4" />
-                                <div className="product-name font-bold mb-2" title={produto.nome}>
+                                <div className="product-name" title={produto.nome}>
                                     {produto.nome}
                                 </div>
                                 <p>R$ {produto.preco.toFixed(2)}</p>
@@ -147,14 +153,28 @@ const Cardapio = () => {
                                 >
                                     {produto.emEstoque ? "Em Estoque" : "Notifique-me"}
                                 </button>
-
                             </div>
                         ))}
                     </main>
-
                 </div>
             </div>
             <Footer />
+            <Modal open={isModalOpen} onClose={closeModal}>
+                <Box sx={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', bgcolor: 'background.paper', p: 4, borderRadius: 2, width: 400 }}>
+                    <h2>Insira seu email</h2>
+                    <TextField
+                        fullWidth
+                        label="Email"
+                        variant="outlined"
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
+                        sx={{ mb: 2 }}
+                    />
+                    <Button variant="contained" color="primary" onClick={() => { closeModal(); sendNotification(); }}>
+                        Confirmar
+                    </Button>
+                </Box>
+            </Modal>
         </div>
     );
 };
