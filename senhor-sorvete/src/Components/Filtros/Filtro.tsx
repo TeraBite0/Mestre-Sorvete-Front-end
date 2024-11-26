@@ -1,19 +1,19 @@
-import React from 'react';
+import React, { useState } from 'react';
 
 const categories = ['Chocolate', 'Frutas', 'Creme', 'Especial'];
 
-const Filtros = ({ priceRange, setPriceRange, selectedCategories, setSelectedCategories }) => {
+const Filtros = () => {
+    const [priceRange, setPriceRange] = useState(15);
+    const [selectedCategory, setSelectedCategory] = useState(null);
+
     const handleCategoryChange = (category) => {
-        if (selectedCategories.includes(category)) {
-            setSelectedCategories(selectedCategories.filter(c => c !== category));
-        } else {
-            setSelectedCategories([...selectedCategories, category]);
-        }
+        setSelectedCategory(category);
     };
 
     return (
         <div className="filtros">
             <h3>Filtros</h3>
+            
             <div className="price-range">
                 <label htmlFor="price-range">Preço máximo: R$ {priceRange.toFixed(2)}</label>
                 <input
@@ -35,21 +35,23 @@ const Filtros = ({ priceRange, setPriceRange, selectedCategories, setSelectedCat
                     }}
                 />
             </div>
+            
             <div className="categories">
                 <h4>Categorias</h4>
                 {categories.map(category => (
                     <div key={category} className="category-option">
                         <input
-                            type="checkbox"
+                            type="radio"
                             id={category}
-                            checked={selectedCategories.includes(category)}
+                            name="category"
+                            checked={selectedCategory === category}
                             onChange={() => handleCategoryChange(category)}
                         />
                         <label htmlFor={category}>{category}</label>
                     </div>
                 ))}
             </div>
-
+            
             <style>{`
                 input[type="range"]::-webkit-slider-thumb {
                     -webkit-appearance: none;
@@ -60,7 +62,6 @@ const Filtros = ({ priceRange, setPriceRange, selectedCategories, setSelectedCat
                     background: #772321;
                     cursor: pointer;
                 }
-
                 input[type="range"]::-moz-range-thumb {
                     width: 16px;
                     height: 16px;
