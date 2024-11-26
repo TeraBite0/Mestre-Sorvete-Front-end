@@ -1,200 +1,34 @@
-.populares {
-  padding: 0 0 7%;
-  text-align: center;
-  background-color: #ffffff;
+.card {
+  min-width: 250px;
+  padding: 0 5% 7%;
 }
 
-.populares h1 {
+.card h1 {
   color: #772321;
   font-size: 2.5rem;
-  margin-bottom: 40px;
   text-align: start;
   margin-left: 5%;
 }
 
-.carousel {
-  position: relative;
-  width: 90%;
-  margin: 0 auto;
-  overflow: hidden;
-}
-
-.carousel-inner {
-  display: flex;
-  transition: transform 0.5s ease-in-out;
-}
-
-.card {
-    min-width: 250px;
-    /* min-width: 300px; */
-    background-color: lightgrey;
-  margin: 0 15px;
-  padding: 20px;
-  border-radius: 10px;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-  text-align: center;
-}
-
-.card:hover {
-  cursor: pointer;
-  background-color: #772321;
-  transition: all 0.5s;
-  border-radius: 10px;
-}
-
-.card:hover h3, 
-.card:hover p {
-  color: #fff;
-  transition: color 0.3s;
-}
-
 .card h3 {
-  color: #772321;
-  font-size: 1.5rem;
-  margin-bottom: 10px;
-}
-
-.card img {
-  width: 90%;
-  height: 200px;
-  object-fit: cover;
-  border-radius: 10px;
-}
-
-.card p {
-  color: #333;
-  font-size: 1.5rem;
-  font-weight: 600;
-}
-
-.carousel-prev,
-.carousel-next {
-  position: absolute;
-  top: 50%;
-  transform: translateY(-50%);
-  background-color: #772321;
-  color: white;
-  border: none;
-  padding: 10px;
-  cursor: pointer;
-  border-radius: 50%;
-}
-
-.carousel-prev {
-  left: 20px;
-}
-
-.carousel-next {
-  right: 20px;
-}
-
-.ver-tudo {
-  display: block;
-  margin-top: 20px;
-  text-decoration: none;
   color: #772321;
   font-size: 1.2rem;
-  font-weight: bold;
-  text-decoration: underline;
-}
-
-.ver-tudo a {
-  color: inherit;
-  text-decoration: none;
-}
-
-
-/* .populares {
-  padding: 50px 0;
-  text-align: center;
-  background-color: #ffffff;
-}
-
-.populares h1 {
-  color: #772321;
-  font-size: 2.5rem;
-  margin-bottom: 40px;
-  text-align: start;
-  margin-left: 5%;
-}
-
-.carousel {
-  position: relative;
-  width: 90%;
-  margin: 0 auto;
-  overflow: hidden;
-}
-
-.carousel-inner {
-  display: flex;
-  transition: transform 0.5s ease-in-out;
-}
-
-.card {
-  min-width: 15%;
-  background-color: lightgray;
-  margin: 0 15px;
-  padding: 20px;
-  border-radius: 10px;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-  text-align: center;
-}
-
-.card:hover {
-  transform: scale(1.05);
-  cursor: pointer;
-  background-color: #772321;
-  transition: background-color 0.3s, transform 0.3s;
-  border-radius: 10px;
-}
-
-.card:hover h3, 
-.card:hover p {
-  color: #fff;
-  transition: color 0.3s;
-}
-
-.card h3 {
-  color: #772321;
-  font-size: 1.5rem;
   margin-bottom: 10px;
 }
 
 .card img {
   width: 100%;
-  height: 200px;
   object-fit: cover;
   border-radius: 10px;
 }
 
 .card p {
   color: #333;
-  font-size: 1.5rem;
+  font-size: 1.2rem;
   font-weight: 600;
 }
 
-.carousel-prev,
-.carousel-next {
-  position: absolute;
-  top: 50%;
-  transform: translateY(-50%);
-  background-color: #772321;
-  color: white;
-  border: none;
-  padding: 10px;
-  cursor: pointer;
-  border-radius: 50%;
-}
-
-.carousel-prev {
-  left: 20px;
-}
-
-.carousel-next {
-  right: 20px;
-}
-
-.ver-tudo {
+/* .ver-tudo {
   display: block;
   margin-top: 20px;
   text-decoration: none;
@@ -207,28 +41,71 @@
 .ver-tudo a {
   color: inherit;
   text-decoration: none;
+} */
+
+.p-carousel-content {
+  display: flex;
+  flex-direction: column;
+  overflow: auto;
+  justify-content: center;
+  align-items: center;
 }
 
+.p-carousel-container {
+  display: flex;
+  flex-direction: row;
+  width: 80%;
+}
 
-@media (max-width: 1024px) {
-  .carousel-inner {
-    justify-content: center;
+.card .p-carousel-item {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 1%;
+}
+
+.card-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-direction: column;
+  width: 70%;
+  height: 95%;
+  padding-top: 20px;
+  text-align: center;
+  transition: 0.4s;
+}
+
+.card-item:hover {
+  transform: scale(1.05);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.80);
+  background-color: #772321;
+  border-radius: 18px;
+  cursor: pointer;
+
+  h3,
+  p {
+    color: white;
   }
 
+}
+
+@media screen and (max-width: 768px) {
   .card {
-    min-width: calc(50% - 30px);
-  }
-}
-
-@media (max-width: 768px) {
-  .card {
-    min-width: calc(100% - 30px);
-    margin: 0 auto;
+    min-width: 200px;
   }
 
-  .carousel-prev,
-  .carousel-next {
-    display: none;
+  .card h1 {
+    text-align: center;
+    margin-left: 0;
   }
+
+  .card h3 {
+    font-size: 1.2rem;
+  }
+
+  .card p {
+    font-size: 1rem;
+  }
+
 }
- */

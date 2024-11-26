@@ -24,6 +24,15 @@ const Filtros = ({ priceRange, setPriceRange, selectedCategories, setSelectedCat
                     step="0.50"
                     value={priceRange}
                     onChange={(e) => setPriceRange(parseFloat(e.target.value))}
+                    className="custom-range"
+                    style={{
+                        WebkitAppearance: 'none',
+                        width: '100%',
+                        height: '8px',
+                        borderRadius: '4px',
+                        background: `linear-gradient(to right, #772321 0%, #772321 ${(priceRange/30)*100}%, #f2f2f2 ${(priceRange/30)*100}%, #f2f2f2 100%)`,
+                        outline: 'none',
+                    }}
                 />
             </div>
             <div className="categories">
@@ -40,6 +49,27 @@ const Filtros = ({ priceRange, setPriceRange, selectedCategories, setSelectedCat
                     </div>
                 ))}
             </div>
+
+            <style>{`
+                input[type="range"]::-webkit-slider-thumb {
+                    -webkit-appearance: none;
+                    appearance: none;
+                    width: 16px;
+                    height: 16px;
+                    border-radius: 50%;
+                    background: #772321;
+                    cursor: pointer;
+                }
+
+                input[type="range"]::-moz-range-thumb {
+                    width: 16px;
+                    height: 16px;
+                    border-radius: 50%;
+                    background: #772321;
+                    cursor: pointer;
+                    border: none;
+                }
+            `}</style>
         </div>
     );
 };

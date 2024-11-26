@@ -11,7 +11,7 @@ const Gastronomia = (props) => {
 
       <TextoVideo
         titulo="Conheça a história"
-        texto="O sorvete tem suas origens na China antiga, onde misturavam neve com leite e arroz. Marco Polo trouxe a ideia para a Europa no século XIII. No século XVII, o sorvete se popularizou na França, e no século XVIII, chegou aos Estados Unidos, onde se tornou uma sobremesa amada mundialmente."
+        texto="O sorvete tem suas origens na China antiga, onde se misturavam neve com leite e outros ingredientes, como arroz ou leite de coco. A técnica de congelar e misturar substâncias foi trazida para a Europa por Marco Polo no século XIII, embora a receita em si tenha evoluído com o tempo. No século XVII, o sorvete começou a ganhar popularidade na França, e no século XVIII, espalhou-se pelos Estados Unidos, tornando-se uma das sobremesas mais apreciadas mundialmente."
         video="https://www.youtube-nocookie.com/embed/0O0KUGoEzX8?si=-mzqflFwRtkggv9B"
       />
 
@@ -21,13 +21,13 @@ const Gastronomia = (props) => {
           imagem="/Imagens/casquinhas-de-chocolate.jpeg"
           placeholder="Imagem com dois sorvetes de casquinhas de chocolate"
           titulo="MELHORES SABORES"
-          texto="Sorvetes como baunilha, chocolate e morango, sofisticados como pistache e tiramisu, frutados como manga e limão siciliano, e exóticos como matcha e yuzu"
+          texto="Sorvetes em uma incrível variedade de sabores encantam todos os paladares: desde os clássicos e atemporais como baunilha, chocolate e morango, até opções mais sofisticadas, como pistache e tiramisu, que oferecem uma experiência mais refinada. Para quem busca frescor, sabores frutados como manga e limão siciliano são uma explosão de frescor e leveza."
         />
         <Artigo
           imagem="/Imagens/sorvete-e-rosto.jpeg"
           placeholder="Imagem sobre a história do sorvete"
           titulo="PRIMEIRO SORVETE CRIADO"
-          texto="O primeiro sabor de sorvete criado foi uma mistura simples de neve ou gelo com frutas e mel, desenvolvida pelos chineses há cerca de 3.000 anos."
+          texto="O primeiro sabor de sorvete, uma mistura primitiva e refrescante, foi criado pelos chineses há cerca de 3.000 anos. Essa iguaria consistia em uma combinação simples, mas inovadora, de neve ou gelo triturado, misturado com frutas e mel, proporcionando uma sobremesa gelada que trazia alívio e prazer nos climas quentes."
         />
       </div>
 

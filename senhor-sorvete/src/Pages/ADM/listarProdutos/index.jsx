@@ -8,78 +8,265 @@ import HeaderGerenciamento from '../../../Components/HeaderGerenciamento';
 import Pesquisa from '../../../Components/Pesquisa';
 import BotaoVoltarGerenciamento from '../../../Components/BotaoVoltarGerenciamento';
 import BotaoGerenciamento from '../../../Components/BotaoGerenciamento';
+import { toast } from "react-toastify";
 
 const ListarProdutos = () => {
-    const [produtos, setProdutos] = useState([
-        { id: 1, nome: "Sorvete Limão", marca: "Marca A", preco: "20.00", imagemUrl: "/Imagens/sorvete-baunilha.jpg" },
-        { id: 2, nome: "Sorvete Napolitano", marca: "Marca B", preco: "25.00", imagemUrl: "/Imagens/picoles-napolitanos.png" },
-        { id: 3, nome: "Sorvete Chocolate", marca: "Marca C", preco: "16.00", imagemUrl: "/Imagens/casquinhas-de-chocolate.jpeg" }
-    ]);
-
+    const [produtos, setProdutos] = useState([]);
     const [pesquisa, setPesquisa] = useState('');
-    const [open, setOpen] = useState(false);
+    const [modalAberto, setModalAberto] = useState(false);
     const [novoProduto, setNovoProduto] = useState({ nome: '', marca: '', preco: '', imagemUrl: '' });
     const [produtoSelecionado, setProdutoSelecionado] = useState(null);
     const [imagemPreview, setImagemPreview] = useState(null);
+    const [arquivoImagem, setArquivoImagem] = useState(null);
+    const [carregando, setCarregando] = useState(false);
+    const [erros, setErros] = useState({});
 
-    // Filtro de produtos baseado na pesquisa
-    const buscarProdutos = produtos.filter(produto => {
-        const nomeInclusao = produto.nome.toLowerCase().includes(pesquisa.trim().toLowerCase());
-        const marcaInclusao = produto.marca.toLowerCase().includes(pesquisa.trim().toLowerCase());
-        console.log(`Nome: ${produto.nome}, Marca: ${produto.marca}, Pesquisa: ${pesquisa}, Nome Inclusão: ${nomeInclusao}, Marca Inclusão: ${marcaInclusao}`);
-        return nomeInclusao || marcaInclusao;
-    });
-    
+    useEffect(() => {
+        buscarProdutos();
+    }, []);
 
-    const handleOpen = () => {
-        setNovoProduto({ nome: '', marca: '', preco: '', imagemUrl: '' });
-        setImagemPreview(null);
-        setProdutoSelecionado(null);
-        setOpen(true);
+    const validarFormulario = () => {
+        const novosErros = {};
+        if (!novoProduto.nome.trim()) {
+            novosErros.nome = 'Nome é obrigatório';
+        }
+        if (!novoProduto.marca.trim()) {
+            novosErros.marca = 'Marca é obrigatória';
+        }
+        if (!novoProduto.preco || novoProduto.preco <= 0) {
+            novosErros.preco = 'Preço deve ser maior que zero';
+        }
+        if (!arquivoImagem && !novoProduto.imagemUrl) {
+            novosErros.imagem = 'Imagem é obrigatória';
+        }
+        setErros(novosErros);
+        return Object.keys(novosErros).length === 0;
     };
 
-    const handleClose = () => {
-        setNovoProduto({ nome: '', marca: '', preco: '', imagemUrl: '' });
-        setImagemPreview(null);
-        setProdutoSelecionado(null);
-        setOpen(false);
+    const buscarProdutos = async () => {
+        const token = sessionStorage.getItem('token');
+        setCarregando(true);
+        try {
+            const resposta = await fetch('http://localhost:8080/produtos', {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            });
+
+            if (!resposta.ok) throw new Error('Falha ao carregar produtos');
+
+            const dados = await resposta.json();
+            const produtosFormatados = dados.map(produto => ({
+                id: produto.id?.toString() || Math.random().toString(),
+                nome: produto.nome || '',
+                marca: produto.marca?.nome || '',
+                subtipo: produto.subtipo?.nome || '',
+                preco: typeof produto.preco === 'number' ? produto.preco : 0,
+                imagemUrl: "https://terabite.blob.core.windows.net/terabite-container/" + produto.id || ''
+            }));
+            setProdutos(produtosFormatados);
+        } catch (erro) {
+            toast.error("Erro ao carregar os produtos: " + erro.message);
+        } finally {
+            setCarregando(false);
+        }
     };
 
-    const handleInputChange = (evento) => {
+    const obterTokenSasAzure = async () => {
+        const token = sessionStorage.getItem('token');
+        const resposta = await fetch('http://localhost:8080/azure', {
+            method: 'GET',
+            headers: {
+                'Authorization': `Bearer ${token}`
+            }
+        });
+
+        if (resposta.ok) {
+
+            const dados = await resposta.json();
+            return dados.sasToken;
+        }
+    };
+
+    const enviarImagemParaAzure = async (arquivo, produtoId) => {
+        try {
+            const tokenSaS = await obterTokenSasAzure();
+            const nomeArquivo = `${produtoId}`;
+            const sasUrl = `https://terabite.blob.core.windows.net/terabite-container/${nomeArquivo}?${tokenSaS}`;
+            const urlUpload = `${sasUrl}/`;
+
+
+            const resposta = await fetch(sasUrl, {
+                method: 'PUT',
+                headers: {
+                    'x-ms-blob-type': 'BlockBlob',
+                    'Content-Type': arquivo.type
+                },
+                body: arquivo
+            });
+
+            if (!resposta.ok) {
+                throw new Error('Erro ao fazer upload da imagem');
+            }
+
+            return urlUpload.split('?')[0];
+        } catch (erro) {
+            toast.error("Tente novamente mais tarde");
+            throw erro;
+        }
+    };
+
+    const filtroPesquisa = async (termo) => {
+        const token = sessionStorage.getItem('token');
+        setCarregando(true);
+
+        try {
+            // Normalizar e remover acentos antes de enviar
+            const termoNormalizado = termo.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+
+            const response = await fetch(`http://localhost:8080/produtos/filtrar-nome-marca?termo=${termoNormalizado}`, {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            });
+
+            if (!response.ok) {
+                toast.error("Erro ao pesquisar");
+                return;
+            }
+
+            const dados = await response.json();
+            const produtosFormatados = dados.map(produto => ({
+                id: produto.id?.toString() || Math.random().toString(),
+                nome: produto.nome || '',
+                marca: produto.marca?.nome || '',
+                subtipo: produto.subtipo?.nome || '',
+                preco: typeof produto.preco === 'number' ? produto.preco : 0,
+                imagemUrl: "https://terabite.blob.core.windows.net/terabite-container/" + produto.id || ''
+            }));
+            setProdutos(produtosFormatados);
+        } catch (erro) {
+            toast.error("Erro ao pesquisar produtos");
+        } finally {
+            setCarregando(false);
+        }
+    };
+
+
+    const abrirModal = () => {
+        setNovoProduto({ nome: '', marca: '', preco: '', imagemUrl: '' });
+        setImagemPreview(null);
+        setArquivoImagem(null);
+        setProdutoSelecionado(null);
+        setErros({});
+        setModalAberto(true);
+    };
+
+    const fecharModal = () => {
+        setNovoProduto({ nome: '', marca: '', preco: '', imagemUrl: '' });
+        setImagemPreview(null);
+        setArquivoImagem(null);
+        setProdutoSelecionado(null);
+        setErros({});
+        setModalAberto(false);
+    };
+
+    const handleInputChange = (evento) => { // Gerenciar a mudança dos campos dos formulários
         const { name, value } = evento.target;
-        setNovoProduto(prevState => ({ ...prevState, [name]: value }));
+        setNovoProduto(anterior => ({ ...anterior, [name]: value }));
+        if (erros[name]) {
+            setErros(anterior => ({ ...anterior, [name]: '' }));
+        }
     };
 
-    const handleImageUpload = (evento) => {
-        const file = evento.target.files[0];
-        if (file) {
-            const reader = new FileReader();
-            reader.onloadend = () => {
-                setImagemPreview(reader.result);
-                setNovoProduto(prevState => ({ ...prevState, imagemUrl: reader.result }));
+    const handleImagemUpload = (evento) => {
+        const arquivo = evento.target.files[0];
+        if (arquivo) {
+            if (arquivo.size > 5000000) { // Limite de 5MB
+                toast.error("Arquivo muito grande. Máximo 5MB.");
+                return;
+            }
+
+            if (!arquivo.type.startsWith('image/')) {
+                toast.error("Por favor, selecione apenas arquivos de imagem.");
+                return;
+            }
+
+            setArquivoImagem(arquivo);
+
+            const leitor = new FileReader();
+            leitor.onloadend = () => {
+                setImagemPreview(leitor.result);
             };
-            reader.readAsDataURL(file);
+            leitor.readAsDataURL(arquivo);
+
+            // Limpa erro de imagem se existir
+            if (erros.imagem) {
+                setErros(anterior => ({ ...anterior, imagem: '' }));
+            }
         }
     };
 
-    const handleSubmit = () => {
-        if (produtoSelecionado) {
-            const produtosAtualizados = produtos.map((produto) =>
-                produto.id === produtoSelecionado.id ? { ...produto, ...novoProduto } : produto
-            );
-            setProdutos(produtosAtualizados);
-        } else {
-            const produtoAdicionado = { ...novoProduto, id: produtos.length + 1 };
-            setProdutos(prevState => [...prevState, produtoAdicionado]);
+    const adicionarNovoProduto = async () => {
+        if (!validarFormulario()) return;
+
+        try {
+            setCarregando(true);
+            let urlImagem = novoProduto.imagemUrl;
+
+            if (arquivoImagem) {
+                urlImagem = await enviarImagemParaAzure(arquivoImagem, produtoSelecionado.id);
+            }
+
+            const token = sessionStorage.getItem('token');
+            const dadosProduto = {
+                ...novoProduto,
+                imagemUrl: urlImagem
+            };
+
+            const url = produtoSelecionado
+                ? `http://localhost:8080/produtos/${produtoSelecionado.id}`
+                : 'http://localhost:8080/produtos';
+
+            const metodo = produtoSelecionado ? 'PUT' : 'POST';
+
+            const resposta = await fetch(url, {
+                method: metodo,
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(dadosProduto)
+            });
+
+            if (!resposta.ok) {
+                throw new Error('Erro ao salvar produto');
+            }
+
+            toast.success(produtoSelecionado ? 'Produto atualizado com sucesso!' : 'Produto criado com sucesso!');
+
+            const dadosAtualizados = await resposta.json();
+            if (produtoSelecionado) {
+                setProdutos(produtos.map(produto =>
+                    produto.id === produtoSelecionado.id ? dadosAtualizados : produto
+                ));
+            } else {
+                setProdutos([...produtos, dadosAtualizados]);
+            }
+
+            fecharModal();
+        } catch (erro) {
+            toast.error(erro.message);
+        } finally {
+            setCarregando(false);
         }
-        handleClose();
     };
 
-    const handleEdit = (produto) => {
+    const handleEditar = (produto) => {
         setProdutoSelecionado(produto);
         setNovoProduto(produto);
         setImagemPreview(produto.imagemUrl);
-        setOpen(true);
+        setModalAberto(true);
     };
 
     return (
@@ -93,17 +280,39 @@ const ListarProdutos = () => {
             </div>
 
             <div className='barraPesquisa'>
-                <Pesquisa 
-                    placeholder="Produto, Marca..." 
+                <Pesquisa
+                    placeholder="Produto, Marca..."
                     value={pesquisa}
-                    onChange={(e) => setPesquisa(e.target.value)} 
+                    onChange={(e) => {
+                        setPesquisa(e.target.value);
+                        filtroPesquisa(e.target.value);
+                    }}
                 />
-                <BotaoGerenciamento botao="+ Novo Produto" onClick={handleOpen} />
+                <BotaoGerenciamento botao="+ Novo Produto" onClick={abrirModal} />
             </div>
 
             <div className='tabela-produtos'>
-                <TableContainer component={Paper} className='container-tabela'>
-                    <Table aria-label="Tabela">
+                <TableContainer
+                    component={Paper}
+                    className='container-tabela'
+                    sx={{
+                        maxHeight: '60vh',  // altura máxima
+                        overflow: 'auto'
+                    }}
+                >
+                    <Table
+                        sx={{
+                            width: '100%',
+                            '& .MuiTableCell-root': {
+                                padding: '8px', // Reduz o padding das células
+                            },
+                            '& .MuiTableCell-root:last-child': {
+                                width: '60px', // Ajusta a largura da última coluna (Editar)
+                            }
+                        }}
+                        size="small"
+                        aria-label="tabela de produtos"
+                    >
                         <TableHead className='tabela-Head'>
                             <TableRow>
                                 <TableCell className='tabela-head-cell'>Imagem</TableCell>
@@ -114,16 +323,16 @@ const ListarProdutos = () => {
                             </TableRow>
                         </TableHead>
                         <TableBody>
-                            {buscarProdutos.map(produto => (
-                                <TableRow key={produto.nome} className='tabela-row'>
-                                    <TableCell className='tabela-cell'>
+                            {produtos.map(produto => (
+                                <TableRow key={produto.id} className='tabela-row-vendas'>
+                                    <TableCell  className='tabela-row-vendas'>
                                         <img src={produto.imagemUrl} alt={produto.nome} width="35" height="35" />
                                     </TableCell>
-                                    <TableCell className='tabela-cell'>{produto.nome}</TableCell>
-                                    <TableCell className='tabela-cell'>{produto.marca}</TableCell>
-                                    <TableCell className='tabela-cell'>R$ {produto.preco}</TableCell>
-                                    <TableCell className='tabela-cell'>
-                                        <button onClick={() => handleEdit(produto)}>
+                                    <TableCell  className='tabela-row-vendas'>{produto.nome}</TableCell>
+                                    <TableCell  className='tabela-row-vendas'>{produto.marca}</TableCell>
+                                    <TableCell  className='tabela-row-vendas'>R$ {produto.preco}</TableCell>
+                                    <TableCell  className='tabela-row-vendas'>
+                                        <button onClick={() => handleEditar(produto)}>
                                             <EditIcon />
                                         </button>
                                     </TableCell>
@@ -134,8 +343,10 @@ const ListarProdutos = () => {
                 </TableContainer>
             </div>
 
-            <Dialog open={open} onClose={handleClose}>
-                <DialogTitle className='tituloModal'>{produtoSelecionado ? "Editar Produto" : "Adicionar Produto"}</DialogTitle>
+            <Dialog open={modalAberto} onClose={fecharModal}>
+                <DialogTitle className='tituloModal'>
+                    {produtoSelecionado ? "Editar Produto" : "Adicionar Produto"}
+                </DialogTitle>
                 <DialogContent>
                     <TextField
                         autoFocus
@@ -145,6 +356,8 @@ const ListarProdutos = () => {
                         fullWidth
                         value={novoProduto.nome}
                         onChange={handleInputChange}
+                        error={!!erros.nome}
+                        helperText={erros.nome}
                     />
                     <TextField
                         margin="dense"
@@ -153,6 +366,8 @@ const ListarProdutos = () => {
                         fullWidth
                         value={novoProduto.marca}
                         onChange={handleInputChange}
+                        error={!!erros.marca}
+                        helperText={erros.marca}
                     />
                     <TextField
                         margin="dense"
@@ -162,24 +377,45 @@ const ListarProdutos = () => {
                         fullWidth
                         value={novoProduto.preco}
                         onChange={handleInputChange}
+                        error={!!erros.preco}
+                        helperText={erros.preco}
                     />
                     <input
                         accept="image/*"
                         type="file"
-                        onChange={handleImageUpload}
+                        onChange={handleImagemUpload}
                         style={{ marginTop: '10px' }}
                     />
+                    {erros.imagem && (
+                        <div style={{ color: 'red', fontSize: '0.75rem', marginTop: '3px' }}>
+                            {erros.imagem}
+                        </div>
+                    )}
                     {imagemPreview && (
-                        <img
-                            src={imagemPreview}
-                            alt="Preview"
-                            style={{ width: '35px', height: '35px', marginTop: '10px' }}
-                        />
+                        <div style={{ marginTop: '10px' }}>
+                            <img
+                                src={imagemPreview}
+                                alt="Pré-visualização"
+                                style={{ width: '35px', height: '35px' }}
+                            />
+                        </div>
                     )}
                 </DialogContent>
                 <DialogActions>
-                    <Button className='botaoModal' onClick={handleClose}>Cancelar</Button>
-                    <Button className='botaoModal' onClick={handleSubmit}>{produtoSelecionado ? "Salvar" : "Adicionar"}</Button>
+                    <Button
+                        className='botaoModal'
+                        onClick={fecharModal}
+                        disabled={carregando}
+                    >
+                        Cancelar
+                    </Button>
+                    <Button
+                        className='botaoModal'
+                        onClick={adicionarNovoProduto}
+                        disabled={carregando}
+                    >
+                        {carregando ? 'Salvando...' : (produtoSelecionado ? "Salvar" : "Adicionar")}
+                    </Button>
                 </DialogActions>
             </Dialog>
         </>

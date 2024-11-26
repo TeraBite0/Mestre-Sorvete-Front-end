@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import BotaoGerenciamento from "../../../Components/BotaoGerenciamento";
 import {
   Chart as ChartJS,
@@ -14,8 +14,10 @@ import {
 import { Bar, Line } from "react-chartjs-2";
 import HeaderGerenciamento from "../../../Components/HeaderGerenciamento";
 import BotaoVoltarGerenciamento from "../../../Components/BotaoVoltarGerenciamento";
+import { toast } from "react-toastify";
 import "./dashboard.css";
 
+// Registro dos componentes do Chart.js
 ChartJS.register(
   CategoryScale,
   LinearScale,
@@ -27,6 +29,17 @@ ChartJS.register(
   LineElement
 );
 
+// Função para obter a ordem dinâmica dos meses
+const getDynamicMonthOrder = () => {
+  const allMonths = [
+    "janeiro", "fevereiro", "março", "abril", "maio", "junho",
+    "julho", "agosto", "setembro", "outubro", "novembro", "dezembro"
+  ];
+  const startMonth = 5; // Junho (índice 5)
+  return [...allMonths.slice(startMonth), ...allMonths.slice(0, startMonth)];
+};
+
+// Função para obter a semana atual
 const getCurrentWeek = () => {
   const today = new Date();
   const dayOfWeek = today.getDay();
@@ -46,147 +59,271 @@ const getCurrentWeek = () => {
 };
 
 const Dashboard = () => {
-  const currentWeekLabel = getCurrentWeek();
+  const [dashboardData, setDashboardData] = useState({
+    resumoDeVendas: [],
+    previsaoTemperatura: [],
+    produtosMaisVendidos: [],
+    produtosMenosVendidos: [],
+    produtosBaixoEstoque: []
+  });
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState(null);
 
+  const generateCSVData = (data) => {
+    if (!data || !Array.isArray(data) || data.length === 0) {
+      return '';
+    }
+  
+    const headers = Object.keys(data[0]);
+    const rows = data.map(item => headers.map(header => item[header]));
+  
+    const csvContent = [
+      headers.join(','), // Cabeçalhos
+      ...rows.map(row => row.join(',')), // Dados
+    ].join('\n');
+  
+    return csvContent;
+  };
+  
+  
+  const fetchGerarCsv = async () => {
+    setIsLoading(true);
+    setError(null);
+  
+    try {
+      const response = await fetch("http://localhost:8080/exportcsv", {
+        method: "GET",
+        headers: {
+          Accept: "*/*", // Alterado para * / * conforme esperado pelo back-end
+        },
+      });
+  
+      // Tratamento para erros 500
+      if (response.status === 500) {
+        const errorData = await response.text();
+        console.error("Erro do servidor:", errorData);
+        throw new Error("Erro interno do servidor. Por favor, tente novamente mais tarde.");
+      }
+  
+      // Outros erros (não OK)
+      if (!response.ok) {
+        const errorData = await response.text();
+        console.error("Resposta de erro:", errorData);
+        throw new Error(`Erro ${response.status}: ${errorData || 'Erro desconhecido'}`);
+      }
+  
+      const blob = await response.blob();
+      if (blob.size === 0) {
+        throw new Error("O arquivo CSV está vazio.");
+      }
+  
+      // Criação do link para download
+      const url = window.URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = url;
+      link.setAttribute("download", "dados-dashboard.csv");
+      document.body.appendChild(link);
+      link.click();
+  
+      // Limpeza após o clique
+      window.URL.revokeObjectURL(url);
+      link.remove();
+  
+    } catch (error) {
+      console.error("Erro detalhado:", error);
+  
+      // Definir mensagem de erro amigável
+      let errorMessage = error.message;
+  
+      // Tratamento customizado de erros comuns
+      if (errorMessage.includes("500")) {
+        errorMessage = "Ocorreu um erro no servidor. Por favor, tente novamente mais tarde.";
+      } else if (errorMessage.includes("401")) {
+        errorMessage = "Sessão expirada. Por favor, faça login novamente.";
+      } else if (errorMessage.includes("403")) {
+        errorMessage = "Você não tem permissão para exportar estes dados.";
+      }
+  
+      // Atualiza o estado de erro com a mensagem amigável
+      setError(`Não foi possível exportar os dados: ${errorMessage}`);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+  
+  
+ 
+  // Função para tratar datas em formato DD/MM/YYYY
+  const parseDate = (dateString) => {
+    if (!dateString) return null;
+    const [day, month, year] = dateString.split("/");
+    return new Date(`${year}-${month}-${day}`);
+  };
+
+  // Função para buscar dados do back-end
+  const fetchDashboardData = async () => {
+    const token = sessionStorage.getItem("token");
+    setIsLoading(true);
+    setError(null);
+
+    try {
+      const response = await fetch("http://localhost:8080/dashboard/", {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+          Accept: "application/json",
+        },
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => null);
+        throw new Error(
+          errorData?.message ||
+          `Erro ${response.status}: ${response.statusText}`
+        );
+      }
+
+      const data = await response.json();
+
+      if (!data || typeof data !== "object" || !data.resumoDeVendas) {
+        throw new Error("Dados inválidos ou incompletos recebidos do servidor.");
+      }
+
+      // Ordenar resumoDeVendas com base na ordem dinâmica dos meses
+      const order = getDynamicMonthOrder();
+      data.resumoDeVendas = data.resumoDeVendas.sort((a, b) => {
+        const monthA = new Date(a.data).toLocaleDateString("pt-BR", { month: "long" }).toLowerCase();
+        const monthB = new Date(b.data).toLocaleDateString("pt-BR", { month: "long" }).toLowerCase();
+        return order.indexOf(monthA) - order.indexOf(monthB);
+      });
+
+      setDashboardData(data);
+    } catch (error) {
+      console.error("Erro ao carregar dados:", error);
+      setError(error.message);
+      setDashboardData({
+        resumoDeVendas: [],
+        previsaoTemperatura: [],
+        produtosMaisVendidos: [],
+        produtosMenosVendidos: [],
+        produtosBaixoEstoque: []
+      });
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchDashboardData();
+  }, []);
+
+  // Configurações dos gráficos
   const dashProdutosMaisVendidos = {
-    labels: [
-      "Picolé de Uva",
-      "Sorvete de Chocolate",
-      "Picolé de Limão",
-      "Picolé de Leite Condensado",
-    ],
-    datasets: [
-      {
-        label: "Mais Vendidos",
-        backgroundColor: "rgba(34, 197, 94, 1)", // Verde
-        data: [30, 28, 25, 23],
-      },
-    ],
+    labels: dashboardData.produtosMaisVendidos.map(produto => produto.nome),
+    datasets: [{
+      label: "Mais Vendidos",
+      backgroundColor: "rgba(34, 197, 94, 1)",
+      data: dashboardData.produtosMaisVendidos.map(produto => produto.qtdVendido)
+    }]
   };
 
   const dashProdutosMenosVendidos = {
-    labels: [
-      "Picolé de Groselha",
-      "Sorvete de Beijinho",
-      "Sorvete de Manga",
-      "Paleta de Maracujá",
-    ],
-    datasets: [
-      {
-        label: "Menos Vendidos",
-        backgroundColor: "rgba(255, 0, 0, 0.8)", // Vermelho
-        data: [1, 2, 4, 5],
-      },
-    ],
+    labels: dashboardData.produtosMenosVendidos.map(produto => produto.nome),
+    datasets: [{
+      label: "Menos Vendidos",
+      backgroundColor: "rgba(255, 0, 0, 0.8)",
+      data: dashboardData.produtosMenosVendidos.map(produto => produto.qtdVendido)
+    }]
   };
 
   const dashVendasETemperatura = {
-    labels: [
-      "Janeiro",
-      "Fevereiro",
-      "Março",
-      "Abril",
-      "Maio",
-      "Junho",
-      "Julho",
-    ],
+    labels: dashboardData.resumoDeVendas.map(resumo => {
+      const data = parseDate(resumo.data);
+      return data && !isNaN(data.getTime())
+        ? data.toLocaleDateString("pt-BR", { month: "long" })
+        : "Data inválida";
+        console.log("Temperaturas:", dashboardData.resumoDeVendas.map(resumo => resumo.temperaturaMedia));
+    }),
     datasets: [
       {
         type: "bar",
-        label: "Vendas no mês",
-        backgroundColor: "rgba(54, 162, 235, 0.7)", // Azul
-        data: [290, 225, 210, 204, 140, 153, 160],
+        label: "Faturamento no mês",
+        backgroundColor: "rgba(54, 162, 235, 0.7)",
+        data: dashboardData.resumoDeVendas.map(resumo => resumo.faturamento)
       },
       {
         type: "line",
         label: "Temperatura média (°C)",
         borderColor: "rgba(255, 99, 132, 1)",
-        backgroundColor: "rgba(255, 99, 132, 1)", // Vermelho
+        backgroundColor: "rgba(255, 99, 132, 1)",
         fill: false,
-        data: [25, 27, 25, 23, 24, 22, 19],
-      },
-    ],
+        data: dashboardData.resumoDeVendas.map(resumo => resumo.temperaturaMedia)
+      }
+    ]
   };
-
-  // Lógica de cores conforme previsão de vendas
-  const vendasPrevistas = [25, 28, 30, 42, 50, 40, 80];
-  const mediaDeVendas =
-    vendasPrevistas.reduce((a, b) => a + b, 0) / vendasPrevistas.length;
-  let corLinha = "green";
-
-  if (mediaDeVendas < 30) {
-    corLinha = "red";
-  } else if (mediaDeVendas < 50) {
-    corLinha = "yellow";
-  }
 
   const dashPrevisaoDeVendas = {
-    labels: [
-      "Segunda-Feira",
-      "Terça-Feira",
-      "Quarta-Feira",
-      "Quinta-Feira",
-      "Sexta-Feira",
-      "Sábado",
-      "Domingo",
-    ],
-    datasets: [
-      {
-        label: "Previsão de Vendas",
-        borderColor: corLinha,
-        backgroundColor: corLinha,
-        fill: false,
-        data: vendasPrevistas,
-      },
-    ],
+    labels: dashboardData.previsaoTemperatura.map(prev => {
+      const data = new Date(prev.data);
+      return data.toLocaleDateString("pt-BR", { weekday: "long" });
+    }),
+    datasets: [{
+      label: "Previsão de Vendas",
+      borderColor: "rgba(34, 197, 94, 1)",
+      backgroundColor: "rgba(34, 197, 94, 1)",
+      fill: false,
+      data: dashboardData.previsaoTemperatura.map(prev => prev.porcentagemVenda)
+    }]
   };
+
+  if (isLoading) {
+    return (
+      <div className="loading-container">
+        <div className="spinner"></div>
+        <p>Carregando dados...</p>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="error-container">
+        <p>Erro ao carregar os dados: {error}</p>
+        <button onClick={fetchDashboardData}>Tentar novamente</button>
+      </div>
+    );
+  }
 
   return (
     <>
       <HeaderGerenciamento />
       <div className="secao-recomendacoes">
         <BotaoVoltarGerenciamento />
-      </div>
-      <div className="exportar-dados">
-       <BotaoGerenciamento botao="Exportar Dados" 
-        /*  onClick={} */
-        /> 
-      </div>
-      <div className="main-container">
-        <div className="titulo-cadastrar">
-          <h2>Dashboards</h2>
+        <div className="exportar-dados">
+          <BotaoGerenciamento botao="Exportar CSV" onClick={fetchGerarCsv} />
         </div>
       </div>
 
       <div className="dashboard-container">
-        {/* 1º Dashboard - Produtos mais vendidos */}
         <div className="dashboard-item">
           <h1>Mais Vendidos</h1>
           <Bar data={dashProdutosMaisVendidos} />
         </div>
 
-        {/* 2º Dashboard - Produtos menos vendidos */}
         <div className="dashboard-item">
           <h1>Menos Vendidos</h1>
           <Bar data={dashProdutosMenosVendidos} />
         </div>
 
-        {/* 3º Dashboard - Vendas e Temperatura */}
         <div className="dashboard-item">
-          <h1 id="h1-dash-3">Vendas e Temperatura</h1>
-          <Bar data={dashVendasETemperatura} />
+          <h1>Vendas & Temperatura</h1>
+          <Line data={dashVendasETemperatura} />
         </div>
 
-        {/* 4º Dashboard - Previsão de Vendas */}
         <div className="dashboard-item">
           <h1>Previsão de Vendas</h1>
-          <h5>{currentWeekLabel}</h5>
           <Line data={dashPrevisaoDeVendas} />
-          <p>
-            Legenda: <span style={{ color: "red" }}>Média abaixo de 30</span> |{" "}
-            <span style={{ color: "yellow" }}>Média abaixo de 50</span> |{" "}
-            <span style={{ color: "green" }}>Média maior ou igual à 50</span>
-          </p>
         </div>
       </div>
     </>

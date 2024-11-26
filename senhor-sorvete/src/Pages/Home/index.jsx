@@ -5,13 +5,14 @@ import Header from "../../Components/Header";
 import Footer from "../../Components/Footer";
 import IconeWhatsapp from "../../Components/IconeWhatsapp";
 import CarrosselImagens from "../../Components/CarrosselImagens";
+import { Link } from "react-router-dom";
 
 const Home = (props) => {
   // Função data atual
   const [dataAtual, setDataAtual] = useState("");
-
   const [email, setEmail] = useState("");
   const [error, setError] = useState("");
+  const [recomendacaoDia, setRecomendacaoDia] = useState(null);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -20,7 +21,55 @@ const Home = (props) => {
     const mes = String(data.getMonth() + 1).padStart(2, "0");
     const ano = data.getFullYear();
     setDataAtual(`${dia}/${mes}/${ano}`);
+
+    const fetchRecomendacao = async () => {
+      try {
+        const resposta = await fetch(
+          "http://localhost:8080/produtos/recomendacao-do-dia",
+          {
+            method: "GET",
+            headers: {
+              Accept: "*/*",
+            },
+          }
+        );
+
+        if (resposta.status !== 200) {
+          // Se o status não for 200, registra o erro
+          console.error("Erro do servidor:", resposta.status);
+        } else {
+          const data = await resposta.json();
+          setRecomendacaoDia(data); // Armazena os dados no estado
+        }
+      } catch (error) {
+        console.error("Erro ao fazer a requisição:", error);
+      }
+    };
+
+    fetchRecomendacao();
   }, []);
+
+  // const fetchRecomendacaoDia = async () => {
+  //   try {
+  //     const resposta = await fetch("http://localhost:8080/produtos/recomendacao-do-dia", {
+  //       method: "GET",
+  //       headers: {
+  //         Accept: "*/*",
+  //       },
+  //     });
+
+  //     if (resposta.status !== 200) {
+  //       // Se o status não for 200, registra o erro
+  //       console.error("Erro do servidor:", resposta.status);
+  //     } else {
+  //       // Aqui você pode processar a resposta se o status for 200
+  //       const data = await resposta.json(); // Ou outro formato conforme a resposta do servidor
+  //       console.log(data);
+  //     }
+  //   } catch (error) {
+  //     console.error("Erro ao fazer a requisição:", error);
+  //   }
+  // };
 
   const validateEmail = (email) => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -43,7 +92,7 @@ const Home = (props) => {
       <Header />
       <main>
         <IconeWhatsapp />
-        <section className="section-1" id="section-1">
+        <section className="section-1">
           <div className="content">
             <h4>Bem-vindo ao</h4>
             <h1>MESTRE SORVETE</h1>
@@ -53,7 +102,16 @@ const Home = (props) => {
               experimentar combinações clássicas e inovações surpreendentes!
             </p>
             <div className="button">
-              <button className="btn-primary"><a href="#section-2">Saiba Mais</a></button>
+              <button className="btn-primary">
+                <Link
+                  to="/"
+                  onClick={() =>
+                    document.getElementById("section-2").scrollIntoView()
+                  }
+                >
+                  Saiba Mais
+                </Link>
+              </button>
             </div>
           </div>
           <img
@@ -90,25 +148,40 @@ const Home = (props) => {
         <section className="section-3">
           <h2>SUGESTÃO DO DIA</h2>
           <p className="data">
-            <span id="data-atual">{dataAtual}</span>
+            <span>{dataAtual}</span>
           </p>
-            <div className="sugestao-content">
-              <div className="sugestao-img">
+          <div className="sugestao-content">
+            <div className="sugestao-img">
+              {recomendacaoDia ? (
                 <img
+                  //   src={recomendacaoDia.imagemUrl} // Aqui você usa a URL da imagem retornada pela API
+                  // alt={`Sugestão do Dia - ${recomendacaoDia.nome}`}
                   src="Imagens/imagem-3-homepage.png"
-                  alt="Sugestão do Dia - Chocolate Trufado"
+                  alt={`Sugestão do Dia - ${recomendacaoDia.nome}`}
                 />
-              </div>
-              <div className="sugestao-text">
-                <h3>Chocolate trufado</h3>
-                <p>
-                  Hoje, nossa dica especial é o irresistível sorvete de
-                  Chocolate Trufado. Com uma combinação perfeita de cremosidade
-                  e sabor intenso. Venha experimentar essa delícia que derrete
-                  na boca e transforma o seu dia em um momento de puro prazer!
-                </p>
-                <button className="btn-experimentar"><a href="/cardapio">Experimentar</a></button>
-              </div>
+              ) : (
+                <p>Carregando recomendação...</p>
+              )}
+            </div>
+            <div className="sugestao-text">
+              {recomendacaoDia ? (
+                <>
+                  <h3>{recomendacaoDia.nome}</h3>
+                  <p>
+                    Hoje, nossa dica especial é o irresistível sorvete de{" "}
+                    {recomendacaoDia.nome}. Com uma combinação perfeita de
+                    cremosidade e sabor intenso. Venha experimentar essa delícia
+                    que derrete na boca e transforma o seu dia em um momento de
+                    puro prazer!
+                  </p>
+                  <button className="btn-experimentar">
+                    <Link to="/cardapio">Experimentar</Link>
+                  </button>
+                </>
+              ) : (
+                <p>Carregando recomendação...</p>
+              )}
+            </div>
           </div>
         </section>
 
@@ -123,7 +196,9 @@ const Home = (props) => {
               sofisticadas de preparo de sorvetes e picolés, desde a escolha dos
               ingredientes até a apresentação final.
             </p>
-            <button className="btn-primary"><a href="/gastronomia">Saiba Mais</a></button>
+            <button className="btn-primary">
+              <Link to="/gastronomia">Saiba Mais</Link>
+            </button>
           </div>
           <div className="more-img">
             <img src="Imagens/imagem-4-homepage.png" alt="Imagem placeholder" />
@@ -132,12 +207,12 @@ const Home = (props) => {
 
         <section className="section-5">
           <div className="notificacoes-text">
-          <h2>Receber notificações</h2>
-          <p>
-            Não perca a chance de ser o primeiro a saber quando novos sabores
-            chegam à nossa sorveteria! Inscreva-se para receber notificações por
-            e-mail e fique por dentro de todas as novidades.
-          </p>
+            <h2>Receber notificações</h2>
+            <p>
+              Não perca a chance de ser o primeiro a saber quando novos sabores
+              chegam à nossa sorveteria! Inscreva-se para receber notificações
+              por e-mail e fique por dentro de todas as novidades.
+            </p>
           </div>
           <form className="newsletter-form" onSubmit={handleSubmit}>
             <input
@@ -153,7 +228,6 @@ const Home = (props) => {
             </button>
           </form>
         </section>
-
       </main>
       <Footer />
     </div>
