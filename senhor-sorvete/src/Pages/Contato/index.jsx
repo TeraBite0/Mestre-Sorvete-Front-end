@@ -1,8 +1,8 @@
 import { useState } from "react";
-import "./contato.css";
 import WhatsAppIcon from "@mui/icons-material/WhatsApp";
 import InstagramIcon from "@mui/icons-material/Instagram";
 import Header from "../../Components/Header";
+import "./contato.css";
 
 const Contato = () => {
   const [selecionado, setSelecionado] = useState(null);
@@ -17,26 +17,26 @@ const Contato = () => {
     const instagramUrl =
       "https://www.instagram.com/mestresorvete?utm_source=ig_web_button_share_sheet&igsh=ZDNlZDc0MzIxNw==";
 
-    window.location.href = platform === "whatsapp" ? whatsappUrl : instagramUrl;
+    const url = platform === "whatsapp" ? whatsappUrl : instagramUrl;
+    window.open(url, "_blank");
   };
 
   return (
     <div className="contato-container">
       <Header />
-
       <div className="contato">
         <div>
           <img src="/Imagens/logo-josue.jpg" alt="Logo do mestre sorvete" />
         </div>
         <h2>Mestre Sorvete</h2>
         <button
-          className="botao-whatsaap"
+          className="botao plataforma-whatsapp"
           onClick={() => handleSelect("whatsapp")}
         >
           <WhatsAppIcon /> WhatsApp
         </button>
         <button
-          className="botao-instagram"
+          className="botao plataforma-instagram"
           onClick={() => handleSelect("instagram")}
         >
           <InstagramIcon /> Instagram

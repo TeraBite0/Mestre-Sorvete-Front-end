@@ -31,32 +31,32 @@ export default function BasicDemo() {
   const productTemplate = (produto) => {
     return (
       <div className="card-item">
-        <img
-          src="Imagens/casquinhas-de-chocolate.jpeg"
-          alt={`${produto.nome} Ice Cream`}
-        />
-        <h3>{produto.nome}</h3>
-        <p>R${produto.preco},00</p>
+        <Link to="/cardapio">
+          <img
+            src="Imagens/casquinhas-de-chocolate.jpeg"
+            alt={`${produto.nome} Ice Cream`}
+          />
+          <h3>{produto.nome}</h3>
+          <p>R${produto.preco},00</p>
+        </Link>
       </div>
     );
   };
 
   return (
     <div className="card">
-      <Link to="/cardapio">
-        <h1>Populares!</h1>
-        <Carousel
-          value={produtos}
-          numVisible={3}
-          numScroll={3}
-          responsiveOptions={responsiveOptions}
-          itemTemplate={productTemplate}
-          showIndicators={false}
-          circular
-          activeIndex={activeIndex}
-          autoplayInterval={3000}
-        />
-      </Link>
+      <h1>Populares!</h1>
+      <Carousel
+        value={produtos}
+        numVisible={3}
+        numScroll={3}
+        responsiveOptions={responsiveOptions}
+        itemTemplate={productTemplate}
+        showIndicators={false}
+        circular
+        activeIndex={activeIndex}
+        autoplayInterval={3000}
+      />
     </div>
   );
 }

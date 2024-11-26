@@ -43,10 +43,10 @@
     margin-bottom: 10px;
 }
 
-.botao {
+.contato-container .botao {
     width: 300px;
     height: 60px;
-    margin: 15px 0;
+    margin: 10px 0;
     border-radius: 18px;
     font-family: "Poppins", sans-serif;
     font-size: 18px;
@@ -67,7 +67,7 @@
     background-image: linear-gradient(to bottom right, var(--cor-instagram), #C13584);
 }
 
-.botao:hover {
+.contato-container .botao:hover {
     transform: scale(1.05);
 }
 
@@ -83,7 +83,7 @@
 
 @media (max-width: 768px) {
     .contato {
-        max-height: 50vh;
+        /* max-height: 50vh; */
         padding: 20px;
     }
 
@@ -96,7 +96,7 @@
         font-size: 24px;
     }
 
-    .botao {
+    .contato-container .botao {
         width: 200px;
         height: 45px;
     }
