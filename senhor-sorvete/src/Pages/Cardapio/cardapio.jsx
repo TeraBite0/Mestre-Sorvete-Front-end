@@ -129,26 +129,39 @@ const Cardapio = () => {
                         </aside>
                         <aside className="notifications">
                             <h2>Notificações</h2>
-                            <ul>
-                                {cartItems.map((item, index) => (
-                                    <li key={index}>
-                                        <img
-                                            src="Imagens/sorvete-de-pote-chocolate.png"
-                                            alt={item.nome}
-                                        />
-                                        <div className="cartItemDetails">
-                                            <h4 title={item.nome}>{item.nome}</h4>
-                                            <p>R$ {item.price.toFixed(2)}</p>
-                                        </div>
-                                        <button onClick={() => removeFromCart(item.id)}>
-                                            Remover
-                                        </button>
-                                    </li>
-                                ))}
-                            </ul>
-                            <button className="checkoutButton" onClick={openModal}>
-                                Seja Notificado
-                            </button>
+                            {cartItems.length === 0 ? (
+                                <p style={{
+                                    color: '#888',
+                                    textAlign: 'center',
+                                    fontStyle: 'italic',
+                                    padding: '20px'
+                                }}>
+                                    Nenhum item de notificação adicionado ainda
+                                </p>
+                            ) : (
+                                <>
+                                    <ul>
+                                        {cartItems.map((item, index) => (
+                                            <li key={index}>
+                                                <img
+                                                    src="Imagens/sorvete-de-pote-chocolate.png"
+                                                    alt={item.nome}
+                                                />
+                                                <div className="cartItemDetails">
+                                                    <h4 title={item.nome}>{item.nome}</h4>
+                                                    <p>R$ {item.price.toFixed(2)}</p>
+                                                </div>
+                                                <button onClick={() => removeFromCart(item.id)}>
+                                                    Remover
+                                                </button>
+                                            </li>
+                                        ))}
+                                    </ul>
+                                    <button className="checkoutButton" onClick={openModal}>
+                                        Seja Notificado
+                                    </button>
+                                </>
+                            )}
                         </aside>
                     </div>
 
