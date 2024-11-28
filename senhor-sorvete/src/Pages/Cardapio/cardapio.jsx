@@ -210,10 +210,10 @@ const Cardapio = () => {
                                 alignContent: 'center'
                             }}>
                                 <p style={{
-                                    color: '#8B4513',  // Tom de marrom (saddle brown)
+                                    color: '#8B4513',
                                     textAlign: 'center',
                                     padding: '20px',
-                                    backgroundColor: 'rgba(245, 245, 220, 0.6)',  // Fundo bege claro semi-transparente
+                                    backgroundColor: 'rgba(245, 245, 220, 0.6)',
                                     borderRadius: '10px',
                                     display: 'block',
                                     alignContent: 'center',
