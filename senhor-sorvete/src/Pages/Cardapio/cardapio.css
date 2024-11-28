@@ -5,6 +5,11 @@ body {
     background-color: #e9deb0;
 }
 
+.centered {
+    display: block;
+    align-content: center;
+}
+
 .containerCardapio {
     display: flex;
     flex-direction: column;
@@ -151,7 +156,7 @@ body {
 }
 
 .sidebarWrapper {
-    width: 24%;
+    width: 30%;
     left: 9px;
     transition: all 0.3s ease;
 }
@@ -339,6 +344,10 @@ body {
     width: 100%;
     cursor: pointer;
     transition: all 0.3s;
+}
+
+.notifyMe button {
+    font-family: "Poppins", sans-serif;
 }
 
 .notifyMe:hover {

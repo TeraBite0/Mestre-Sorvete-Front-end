@@ -1,57 +1,60 @@
-import React, { useState } from 'react';
+import React from "react";
 
-const categories = ['Chocolate', 'Frutas', 'Creme', 'Especial'];
+const categories = ["Chocolate", "Frutas", "Creme", "Especial"];
 
-const Filtros = () => {
-    const [priceRange, setPriceRange] = useState(15);
-    const [selectedCategory, setSelectedCategory] = useState(null);
-
+const Filtros = ({ priceRange, setPriceRange, selectedCategories, setSelectedCategories }) => {
     const handleCategoryChange = (category) => {
-        setSelectedCategory(category);
+        if (selectedCategories.includes(category)) {
+            setSelectedCategories(selectedCategories.filter((cat) => cat !== category));
+        } else {
+            setSelectedCategories([...selectedCategories, category]);
+        }
     };
 
     return (
         <div className="filtros">
             <h3>Filtros</h3>
-            
+
             <div className="price-range">
                 <label htmlFor="price-range">Preço máximo: R$ {priceRange.toFixed(2)}</label>
                 <input
                     type="range"
                     id="price-range"
                     min="0"
-                    max="30"
+                    max="50"
                     step="0.50"
                     value={priceRange}
                     onChange={(e) => setPriceRange(parseFloat(e.target.value))}
                     className="custom-range"
                     style={{
-                        WebkitAppearance: 'none',
-                        width: '100%',
-                        height: '8px',
-                        borderRadius: '4px',
-                        background: `linear-gradient(to right, #772321 0%, #772321 ${(priceRange/30)*100}%, #f2f2f2 ${(priceRange/30)*100}%, #f2f2f2 100%)`,
-                        outline: 'none',
+                        WebkitAppearance: "none",
+                        width: "100%",
+                        height: "8px",
+                        borderRadius: "4px",
+                        background: `linear-gradient(to right, #772321 0%, #772321 ${
+                            (priceRange / 50) * 100
+                        }%, #f2f2f2 ${(priceRange / 50) * 100}%, #f2f2f2 100%)`,
+                        outline: "none",
                     }}
                 />
             </div>
-            
+
+            {/* Filtro de Categorias */}
             <div className="categories">
                 <h4>Categorias</h4>
-                {categories.map(category => (
+                {categories.map((category) => (
                     <div key={category} className="category-option">
                         <input
-                            type="radio"
+                            type="checkbox"
                             id={category}
-                            name="category"
-                            checked={selectedCategory === category}
+                            checked={selectedCategories.includes(category)}
                             onChange={() => handleCategoryChange(category)}
                         />
                         <label htmlFor={category}>{category}</label>
                     </div>
                 ))}
             </div>
-            
+
             <style>{`
                 input[type="range"]::-webkit-slider-thumb {
                     -webkit-appearance: none;

@@ -8,6 +8,7 @@ import Modal from "@mui/material/Modal";
 import Box from "@mui/material/Box";
 import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
+import Skeleton from "@mui/material/Skeleton";
 import axios from "axios";
 import { toast } from "react-toastify";
 
@@ -17,14 +18,17 @@ const Cardapio = () => {
     const [priceRange, setPriceRange] = useState(15);
     const [selectedCategories, setSelectedCategories] = useState([]);
     const [produtos, setProdutos] = useState([]);
+    const [isLoading, setIsLoading] = useState(true);
     const [email, setEmail] = useState("");
     const [isModalOpen, setIsModalOpen] = useState(false);
+    const [emailError, setEmailError] = useState("");
 
     const sidebarRef = useRef(null);
     const mainContentRef = useRef(null);
 
     useEffect(() => {
         const fetchProdutos = async () => {
+            setIsLoading(true);
             try {
                 const response = await axios.get(
                     "http://localhost:8080/produtos/isAtivos"
@@ -32,6 +36,8 @@ const Cardapio = () => {
                 setProdutos(response.data);
             } catch (error) {
                 console.error("Erro ao buscar produtos:", error);
+            } finally {
+                setIsLoading(false);
             }
         };
         fetchProdutos();
@@ -71,11 +77,30 @@ const Cardapio = () => {
         setCartItems(cartItems.filter((item) => item.id !== produtoId));
     };
 
-    const filteredProdutos = produtos.filter(
-        (produto) =>
-            produto.nome.toLowerCase().includes(termo.toLowerCase()) &&
-            produto.preco <= priceRange
-    );
+    const filteredProdutos = produtos.filter((produto) => {
+        const matchesTermo = produto.nome.toLowerCase().includes(termo.toLowerCase());
+        const matchesPrice = produto.preco <= priceRange;
+        const matchesCategory =
+            selectedCategories.length === 0 || selectedCategories.includes(produto.categoria);
+
+        return matchesTermo && matchesPrice && matchesCategory;
+    });
+
+
+    const validateEmail = (email) => {
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        return emailRegex.test(email);
+    };
+
+    const handleConfirm = () => {
+        if (!validateEmail(email)) {
+            setEmailError("Por favor, insira um email válido.");
+            return;
+        }
+        setEmailError("");
+        closeModal();
+        sendNotification();
+    };
 
     const openModal = () => setIsModalOpen(true);
     const closeModal = () => setIsModalOpen(false);
@@ -136,7 +161,7 @@ const Cardapio = () => {
                                     fontStyle: 'italic',
                                     padding: '20px'
                                 }}>
-                                    Nenhum item de notificação adicionado ainda
+                                    Nenhum item adicionado ainda
                                 </p>
                             ) : (
                                 <>
@@ -166,26 +191,60 @@ const Cardapio = () => {
                     </div>
 
                     <main className="products">
-                        {filteredProdutos.map((produto, index) => (
-                            <div key={index} className="product">
-                                <img
-                                    src="Imagens/casquinhas-de-chocolate.jpeg"
-                                    alt={`${produto.nome} Ice Cream`}
-                                    className="w-full h-48 object-cover rounded-2xl mb-4"
-                                />
-                                <div className="product-name" title={produto.nome}>
-                                    {produto.nome}
+                        {isLoading ? (
+                            Array.from(new Array(6)).map((_, index) => (
+                                <div key={index} className="product">
+                                    <Skeleton
+                                        variant="rectangular"
+                                        width="100%"
+                                        height={160}
+                                        className="mb-4"
+                                    />
+                                    <Skeleton width="60%" />
+                                    <Skeleton width="40%" />
                                 </div>
-                                <p>R$ {produto.preco.toFixed(2)}</p>
-                                <button
-                                    className="notifyMe"
-                                    onClick={() => addToCart(produto)}
-                                    disabled={produto.emEstoque}
-                                >
-                                    {produto.emEstoque ? "Em Estoque" : "Notifique-me"}
-                                </button>
+                            ))
+                        ) : produtos.length === 0 ? (
+                            <div className="error-message" style={{
+                                display: 'block',
+                                alignContent: 'center'
+                            }}>
+                                <p style={{
+                                    color: '#8B4513',  // Tom de marrom (saddle brown)
+                                    textAlign: 'center',
+                                    padding: '20px',
+                                    backgroundColor: 'rgba(245, 245, 220, 0.6)',  // Fundo bege claro semi-transparente
+                                    borderRadius: '10px',
+                                    display: 'block',
+                                    alignContent: 'center',
+                                    width: '52.2rem'
+                                }}>
+                                    O conteúdo não pôde ser carregado. Tente novamente mais tarde.
+                                </p>
                             </div>
-                        ))}
+                        ) : (
+
+                            filteredProdutos.map((produto, index) => (
+                                <div key={index} className="product">
+                                    <img
+                                        src="Imagens/casquinhas-de-chocolate.jpeg"
+                                        alt={`${produto.nome} Ice Cream`}
+                                        className="w-full h-48 object-cover rounded-2xl mb-4"
+                                    />
+                                    <div className="product-name" title={produto.nome}>
+                                        {produto.nome}
+                                    </div>
+                                    <p>R$ {produto.preco.toFixed(2)}</p>
+                                    <button
+                                        className="notifyMe"
+                                        onClick={() => addToCart(produto)}
+                                        disabled={produto.emEstoque}
+                                    >
+                                        {produto.emEstoque ? "Em Estoque" : "Notifique-me"}
+                                    </button>
+                                </div>
+                            ))
+                        )}
                     </main>
                 </div>
             </div>
@@ -210,15 +269,14 @@ const Cardapio = () => {
                         variant="outlined"
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
+                        error={!!emailError}
+                        helperText={emailError} // Mostra a mensagem de erro
                         sx={{ mb: 2 }}
                     />
                     <Button
                         variant="contained"
                         color="primary"
-                        onClick={() => {
-                            closeModal();
-                            sendNotification();
-                        }}
+                        onClick={handleConfirm}
                     >
                         Confirmar
                     </Button>
