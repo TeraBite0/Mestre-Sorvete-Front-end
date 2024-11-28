@@ -21,6 +21,7 @@ const Cardapio = () => {
     const [isLoading, setIsLoading] = useState(true);
     const [email, setEmail] = useState("");
     const [isModalOpen, setIsModalOpen] = useState(false);
+    const [isMaisModalOpen, setIsMaisModalOpen] = useState(false); 
     const [emailError, setEmailError] = useState("");
 
     const sidebarRef = useRef(null);
@@ -43,6 +44,9 @@ const Cardapio = () => {
         fetchProdutos();
     }, []);
 
+    const openMaisModal = () => setIsMaisModalOpen(true);
+    const closeMaisModal = () => setIsMaisModalOpen(false);
+
     const sendNotification = () => {
         let processedItems = 0;
         cartItems.forEach(async (item, index) => {
@@ -63,6 +67,7 @@ const Cardapio = () => {
                 }
             } catch (error) {
                 console.error("Erro ao mandar notificação ", error);
+                toast.error("Tivemos um erro ao registrar a notficação para o produto " + item.nome)
             }
         });
     };
@@ -81,7 +86,7 @@ const Cardapio = () => {
         const matchesTermo = produto.nome.toLowerCase().includes(termo.toLowerCase());
         const matchesPrice = produto.preco <= priceRange;
         const matchesCategory =
-            selectedCategories.length === 0 || selectedCategories.includes(produto.categoria);
+            selectedCategories.length === 0 || selectedCategories.includes(produto.subtipo.nome);
 
         return matchesTermo && matchesPrice && matchesCategory;
     });
@@ -123,8 +128,9 @@ const Cardapio = () => {
                 <div>
                     <ul className="listaNavegacao">
                         <li className="itemNavegacao">Popular</li>
-                        <li className="itemNavegacao">Sorvetes</li>
                         <li className="itemNavegacao">Picolés</li>
+                        <li className="itemNavegacao" onClick={openMaisModal}>Mais...</li>
+                        
                     </ul>
                 </div>
                 <div className="barraPesquisa">
@@ -205,25 +211,19 @@ const Cardapio = () => {
                                 </div>
                             ))
                         ) : produtos.length === 0 ? (
-                            <div className="error-message" style={{
-                                display: 'block',
-                                alignContent: 'center'
-                            }}>
+                            <div className="error-message">
                                 <p style={{
                                     color: '#8B4513',
                                     textAlign: 'center',
                                     padding: '20px',
                                     backgroundColor: 'rgba(245, 245, 220, 0.6)',
                                     borderRadius: '10px',
-                                    display: 'block',
-                                    alignContent: 'center',
-                                    width: '52.2rem'
+                                    width: '50rem'
                                 }}>
                                     O conteúdo não pôde ser carregado. Tente novamente mais tarde.
                                 </p>
                             </div>
                         ) : (
-
                             filteredProdutos.map((produto, index) => (
                                 <div key={index} className="product">
                                     <img
@@ -249,6 +249,31 @@ const Cardapio = () => {
                 </div>
             </div>
             <Footer />
+            <Modal open={isMaisModalOpen} onClose={closeMaisModal}>
+                <Box
+                    sx={{
+                        position: "absolute",
+                        top: "50%",
+                        left: "50%",
+                        transform: "translate(-50%, -50%)",
+                        bgcolor: "background.paper",
+                        p: 4,
+                        borderRadius: 2,
+                        width: 400,
+                    }}
+                >
+                    <h2>Mais Opções</h2>
+                    <p>Explore mais categorias e produtos disponíveis em nosso catálogo.</p>
+                    <Button
+                        variant="contained"
+                        color="primary"
+                        onClick={closeMaisModal}
+                    >
+                        Fechar
+                    </Button>
+                </Box>
+            </Modal>
+
             <Modal open={isModalOpen} onClose={closeModal}>
                 <Box
                     sx={{

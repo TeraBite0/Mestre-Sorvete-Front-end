@@ -1,6 +1,20 @@
 import React from "react";
 
-const categories = ["Chocolate", "Frutas", "Creme", "Especial"];
+const categories = ['Extrusado',
+    'Ao leite',
+    'Cremosinho',
+    'Especiais',
+    'Palhetas',
+    'Extrusado sem cobertura',
+    'Torpedinhos',
+    'Infantil',
+    'Pote',
+    'Pote Pequenos',
+    'Cone',
+    'Palheta',
+    'Açai',
+    'Açai Pequeno',
+];
 
 const Filtros = ({ priceRange, setPriceRange, selectedCategories, setSelectedCategories }) => {
     const handleCategoryChange = (category) => {
@@ -22,7 +36,7 @@ const Filtros = ({ priceRange, setPriceRange, selectedCategories, setSelectedCat
                     id="price-range"
                     min="0"
                     max="50"
-                    step="0.50"
+                    step="1"
                     value={priceRange}
                     onChange={(e) => setPriceRange(parseFloat(e.target.value))}
                     className="custom-range"
@@ -31,9 +45,8 @@ const Filtros = ({ priceRange, setPriceRange, selectedCategories, setSelectedCat
                         width: "100%",
                         height: "8px",
                         borderRadius: "4px",
-                        background: `linear-gradient(to right, #772321 0%, #772321 ${
-                            (priceRange / 50) * 100
-                        }%, #f2f2f2 ${(priceRange / 50) * 100}%, #f2f2f2 100%)`,
+                        background: `linear-gradient(to right, #772321 0%, #772321 ${(priceRange / 51) * 100
+                            }%, #f2f2f2 ${(priceRange / 51) * 100}%, #f2f2f2 100%)`,
                         outline: "none",
                     }}
                 />
