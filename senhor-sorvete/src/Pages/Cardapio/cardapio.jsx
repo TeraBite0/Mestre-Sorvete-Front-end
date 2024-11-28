@@ -175,7 +175,7 @@ const Cardapio = () => {
                                         {cartItems.map((item, index) => (
                                             <li key={index}>
                                                 <img
-                                                    src="Imagens/sorvete-de-pote-chocolate.png"
+                                                    src={`https://terabite.blob.core.windows.net/terabite-container/${item.id}`}
                                                     alt={item.nome}
                                                 />
                                                 <div className="cartItemDetails">
@@ -227,7 +227,7 @@ const Cardapio = () => {
                             filteredProdutos.map((produto, index) => (
                                 <div key={index} className="product">
                                     <img
-                                        src="Imagens/casquinhas-de-chocolate.jpeg"
+                                        src={`https://terabite.blob.core.windows.net/terabite-container/${produto.id}`}
                                         alt={`${produto.nome} Ice Cream`}
                                         className="w-full h-48 object-cover rounded-2xl mb-4"
                                     />
