@@ -19,7 +19,11 @@ const Filtros = ({ priceRange, setPriceRange, selectedCategories, setSelectedCat
     };
 
     const handleShowMore = () => {
-        setVisibleCategories(prev => prev + 10);
+        setVisibleCategories((prev) => Math.min(prev + 10, categories.length));
+    };
+
+    const handleShowLess = () => {
+        setVisibleCategories((prev) => Math.max(prev - 10, 4));
     };
 
     return (
@@ -63,14 +67,24 @@ const Filtros = ({ priceRange, setPriceRange, selectedCategories, setSelectedCat
                     ))}
                 </div>
 
-                {visibleCategories < categories.length && (
-                    <button 
-                        onClick={handleShowMore}
-                        className="ver-mais-btn"
-                    >
-                        Ver mais categorias
-                    </button>
-                )}
+                <div className="category-buttons">
+                    {visibleCategories < categories.length && (
+                        <button 
+                            onClick={handleShowMore}
+                            className="ver-mais-btn"
+                        >
+                            Ver mais categorias
+                        </button>
+                    )}
+                    {visibleCategories > 4 && (
+                        <button 
+                            onClick={handleShowLess}
+                            className="ver-menos-btn"
+                        >
+                            Ver menos categorias
+                        </button>
+                    )}
+                </div>
             </div>
             <style>{`
                 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500&display=swap');
@@ -92,8 +106,12 @@ const Filtros = ({ priceRange, setPriceRange, selectedCategories, setSelectedCat
                 .category-option input {
                     margin-right: 8px;
                 }
-                .ver-mais-btn {
+                .category-buttons {
+                    display: flex;
+                    gap: 10px;
                     margin-top: 10px;
+                }
+                .ver-mais-btn, .ver-menos-btn {
                     padding: 5px 10px;
                     background-color: #772321;
                     color: white;
@@ -103,7 +121,7 @@ const Filtros = ({ priceRange, setPriceRange, selectedCategories, setSelectedCat
                     font-family: 'Poppins', sans-serif;
                     font-weight: 500;
                 }
-                .ver-mais-btn:hover {
+                .ver-mais-btn:hover, .ver-menos-btn:hover {
                     opacity: 0.9;
                 }
                 input[type="range"]::-webkit-slider-thumb {
