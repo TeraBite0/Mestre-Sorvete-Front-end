@@ -21,7 +21,7 @@ const Cardapio = () => {
     const [isLoading, setIsLoading] = useState(true);
     const [email, setEmail] = useState("");
     const [isModalOpen, setIsModalOpen] = useState(false);
-    const [isMaisModalOpen, setIsMaisModalOpen] = useState(false); 
+    const [isMaisModalOpen, setIsMaisModalOpen] = useState(false);
     const [emailError, setEmailError] = useState("");
 
     const sidebarRef = useRef(null);
@@ -114,7 +114,6 @@ const Cardapio = () => {
         <div className="containerCardapio">
             <Header />
             <div className="banner">
-                <img src="Imagens/sorvete-baunilha.jpg" alt="" />
                 <div className="bannerContent">
                     <h1>Bem-vindo!</h1>
                     <p>
@@ -124,13 +123,14 @@ const Cardapio = () => {
                 </div>
             </div>
 
+
             <nav className="navegacao">
                 <div>
                     <ul className="listaNavegacao">
                         <li className="itemNavegacao">Popular</li>
                         <li className="itemNavegacao">Picolés</li>
                         <li className="itemNavegacao" onClick={openMaisModal}>Mais...</li>
-                        
+
                     </ul>
                 </div>
                 <div className="barraPesquisa">
