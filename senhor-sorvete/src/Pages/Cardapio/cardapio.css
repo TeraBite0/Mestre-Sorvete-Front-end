@@ -88,10 +88,14 @@ body {
     cursor: pointer;
     text-align: center;
     line-height: 1;
+    transition: all 0.3s;
 }
 
 .itemNavegacao:hover {
     cursor: pointer;
+    background-color: #6d0000;
+    color: white;
+    transition: all 0.25s;
 }
 
 .itemNavegacao a {

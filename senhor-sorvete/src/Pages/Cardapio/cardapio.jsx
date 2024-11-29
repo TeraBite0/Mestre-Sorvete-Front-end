@@ -47,29 +47,36 @@ const Cardapio = () => {
     const openMaisModal = () => setIsMaisModalOpen(true);
     const closeMaisModal = () => setIsMaisModalOpen(false);
 
-    const sendNotification = () => {
-        let processedItems = 0;
-        cartItems.forEach(async (item, index) => {
+    const sendNotification = async () => {
+        const processedItems = [];
+        const failedItems = [];
+
+        const notifications = cartItems.map(async (item) => {
             try {
-                const response = await axios.post(
-                    "http://localhost:8080/notificacoes",
-                    {
-                        email,
-                        idProduto: item.id,
-                    }
-                );
+                const response = await axios.post("http://localhost:8080/notificacoes", {
+                    email,
+                    idProduto: item.id,
+                });
 
                 if (response.status === 201) {
-                    processedItems++;
-                    toast.success(
-                        "Itens processados: " + processedItems + "/" + cartItems.length
-                    );
+                    processedItems.push(item);
                 }
             } catch (error) {
-                console.error("Erro ao mandar notificação ", error);
-                toast.error("Tivemos um erro ao registrar a notficação para o produto " + item.nome)
+                console.error(`Erro ao mandar notificação para ${item.nome}`, error);
+                failedItems.push(item);
             }
         });
+
+        await Promise.allSettled(notifications);
+
+        if (processedItems.length > 0) {
+            toast.success(`Itens processados: ${processedItems.length}/${cartItems.length}`);
+        }
+
+        if (failedItems.length > 0) {
+            if (failedItems.length === 1) toast.error(`Falha ao processar ${failedItems.length} item`);
+            else toast.error(`Falha ao processar ${failedItems.length} itens`);
+        }
     };
 
     const addToCart = (produto) => {
@@ -105,6 +112,13 @@ const Cardapio = () => {
         setEmailError("");
         closeModal();
         sendNotification();
+    };
+
+    const handleBlob = async (url) => {
+        const response = await axios.get(url);
+
+        if (response.status === 200) return true;
+        else if (response.status === 404) return false;
     };
 
     const openModal = () => setIsModalOpen(true);
@@ -177,6 +191,10 @@ const Cardapio = () => {
                                                 <img
                                                     src={`https://terabite.blob.core.windows.net/terabite-container/${item.id}`}
                                                     alt={item.nome}
+                                                    onError={(e) => {
+                                                        e.target.src = 'Imagens/sorvete-baunilha.jpg';
+                                                        e.target.alt = 'Imagem genérica do produto';
+                                                    }}
                                                 />
                                                 <div className="cartItemDetails">
                                                     <h4 title={item.nome}>{item.nome}</h4>
@@ -227,7 +245,8 @@ const Cardapio = () => {
                             filteredProdutos.map((produto, index) => (
                                 <div key={index} className="product">
                                     <img
-                                        src={`https://terabite.blob.core.windows.net/terabite-container/${produto.id}`}
+                                        src={handleBlob(`https://terabite.blob.core.windows.net/terabite-container/${produto.id}`)? 
+                                    `https://terabite.blob.core.windows.net/terabite-container/${produto.id}` : 'Imagens/404-icon.webp'}
                                         alt={`${produto.nome} Ice Cream`}
                                         className="w-full h-48 object-cover rounded-2xl mb-4"
                                     />
