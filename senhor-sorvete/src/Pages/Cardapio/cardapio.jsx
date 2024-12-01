@@ -115,10 +115,14 @@ const Cardapio = () => {
     };
 
     const handleBlob = async (url) => {
-        const response = await axios.get(url);
-
-        if (response.status === 200) return true;
-        else if (response.status === 404) return false;
+        try {
+            const response = await axios.get(url);
+            return response.status === 200;
+        } catch (error) {
+            if (error.response && error.response.status === 404) {
+                return false;
+            }
+        }
     };
 
     const openModal = () => setIsModalOpen(true);
@@ -245,11 +249,15 @@ const Cardapio = () => {
                             filteredProdutos.map((produto, index) => (
                                 <div key={index} className="product">
                                     <img
-                                        src={handleBlob(`https://terabite.blob.core.windows.net/terabite-container/${produto.id}`)? 
-                                    `https://terabite.blob.core.windows.net/terabite-container/${produto.id}` : 'Imagens/404-icon.webp'}
+                                        src={`https://terabite.blob.core.windows.net/terabite-container/${produto.id}`}
                                         alt={`${produto.nome} Ice Cream`}
                                         className="w-full h-48 object-cover rounded-2xl mb-4"
+                                        onError={(e) => {
+                                            e.target.src = 'Imagens/404-icon.webp';
+                                            e.target.alt = 'Imagem genérica do produto';
+                                        }}
                                     />
+
                                     <div className="product-name" title={produto.nome}>
                                         {produto.nome}
                                     </div>
