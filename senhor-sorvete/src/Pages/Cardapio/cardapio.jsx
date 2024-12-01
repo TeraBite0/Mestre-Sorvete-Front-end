@@ -23,6 +23,17 @@ const Cardapio = () => {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [isMaisModalOpen, setIsMaisModalOpen] = useState(false);
     const [emailError, setEmailError] = useState("");
+    const [produtosPopulares, setPopular] = useState([]);
+
+    const [tipos, setTipos] = useState([
+        "Potes",
+        "Potes Pequenos",
+        "Cones",
+        "Palhetas",
+        "Açai",
+        "Açai Pequeno",
+    ]);
+
 
     const sidebarRef = useRef(null);
     const mainContentRef = useRef(null);
@@ -43,6 +54,20 @@ const Cardapio = () => {
         };
         fetchProdutos();
     }, []);
+
+    const fetchPopular = async () => {
+        try {
+            const response = await axios.get('http://localhost:8080/produtos/populares');
+            toast.success("Buscando produtos...")
+            if (response.status === 200) {
+                setPopular([]);
+                setPopular(response.data);
+                toast.success("Prontinho! :D")
+            }
+        } catch (error) {
+            toast.error("Erro ao buscar produtos populares, tente novamente mais tarde");
+        }
+    }
 
     const openMaisModal = () => setIsMaisModalOpen(true);
     const closeMaisModal = () => setIsMaisModalOpen(false);
@@ -97,6 +122,7 @@ const Cardapio = () => {
 
         return matchesTermo && matchesPrice && matchesCategory;
     });
+    
 
 
     const validateEmail = (email) => {
@@ -112,17 +138,6 @@ const Cardapio = () => {
         setEmailError("");
         closeModal();
         sendNotification();
-    };
-
-    const handleBlob = async (url) => {
-        try {
-            const response = await axios.get(url);
-            return response.status === 200;
-        } catch (error) {
-            if (error.response && error.response.status === 404) {
-                return false;
-            }
-        }
     };
 
     const openModal = () => setIsModalOpen(true);
@@ -141,11 +156,10 @@ const Cardapio = () => {
                 </div>
             </div>
 
-
             <nav className="navegacao">
                 <div>
                     <ul className="listaNavegacao">
-                        <li className="itemNavegacao">Popular</li>
+                        <li className="itemNavegacao" onClick={fetchPopular}>Popular</li>
                         <li className="itemNavegacao">Picolés</li>
                         <li className="itemNavegacao" onClick={openMaisModal}>Mais...</li>
 
@@ -289,17 +303,29 @@ const Cardapio = () => {
                         width: 400,
                     }}
                 >
-                    <h2>Mais Opções</h2>
-                    <p>Explore mais categorias e produtos disponíveis em nosso catálogo.</p>
-                    <Button
-                        variant="contained"
-                        color="primary"
-                        onClick={closeMaisModal}
-                    >
-                        Fechar
-                    </Button>
+                    <h2>Filtrar por Tipo</h2>
+                    <div>
+                        {tipos.map((tipo, index) => (
+                            <div key={index}>
+                                <label>
+                                    <input
+                                        type="checkbox"
+                                        checked={selectedCategories.includes(tipo)}
+                                        onChange={(e) => {
+                                            const updatedCategories = e.target.checked
+                                                ? [...selectedCategories, tipo]
+                                                : selectedCategories.filter((cat) => cat !== tipo);
+                                            setSelectedCategories(updatedCategories);
+                                        }}
+                                    />
+                                    {tipo}
+                                </label>
+                            </div>
+                        ))}
+                    </div>
                 </Box>
             </Modal>
+
 
             <Modal open={isModalOpen} onClose={closeModal}>
                 <Box
