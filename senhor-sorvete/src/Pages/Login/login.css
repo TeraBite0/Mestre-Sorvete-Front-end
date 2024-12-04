@@ -13,8 +13,6 @@
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    border-top-left-radius: 20px;
-    border-bottom-left-radius: 20px;
 }
 
 .loginLeft h1 {
@@ -67,8 +65,8 @@
 .loginLeft a {
     color: white;
     text-align: center;
-    margin-top: 1rem;
-    text-decoration: none;
+    margin-top: 0.5rem;
+    font-size: 12px;
 }
 
 .loginLeft a:hover {
@@ -86,8 +84,6 @@
     justify-content: center;
     align-items: flex-end;
     padding: 2rem;
-    border-top-right-radius: 20px;
-    border-bottom-right-radius: 20px;
 }
 
 /* Aplicar desfoque somente à imagem */
@@ -113,6 +109,8 @@
     font-size: 1.2rem;
     font-weight: 700;
     text-align: right;
+    text-align-last: right;
+    padding: 10px; 
 }
 
 @media (max-width: 768px) {

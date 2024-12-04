@@ -1,5 +1,5 @@
 import { Paper, Table, TableBody, TableCell, TableHead, TableRow } from '@mui/material';
-import { Dialog, DialogActions, DialogContent, DialogTitle, TextField, Button } from '@mui/material';
+import { Dialog, DialogActions, DialogContent, DialogTitle, TextField, Button, MenuItem, Select, InputAdornment } from '@mui/material';
 import './listarProdutos.css';
 import TableContainer from '@mui/material/TableContainer';
 import EditIcon from '@mui/icons-material/Edit';
@@ -20,6 +20,9 @@ const ListarProdutos = () => {
     const [arquivoImagem, setArquivoImagem] = useState(null);
     const [carregando, setCarregando] = useState(false);
     const [erros, setErros] = useState({});
+    const [marcas, setMarcas] = useState([]);  // Nova linha para armazenar marcas
+    const [modalNovaMarcaAberto, setModalNovaMarcaAberto] = useState(false);
+    const [novaMarca, setNovaMarca] = useState('');
 
     useEffect(() => {
         buscarProdutos();
@@ -56,6 +59,17 @@ const ListarProdutos = () => {
             if (!resposta.ok) throw new Error('Falha ao carregar produtos');
 
             const dados = await resposta.json();
+
+            // Extrair marcas únicas
+            const marcasUnicas = [...new Set(
+                dados
+                    .map(produto => produto.marca?.nome)
+                    .filter(marca => marca) // Remove valores nulos ou undefined
+            )];
+
+            // Transformar marcas únicas em objeto com nome
+            const marcasFormatadas = marcasUnicas.map(nome => ({ nome }));
+
             const produtosFormatados = dados.map(produto => ({
                 id: produto.id?.toString() || Math.random().toString(),
                 nome: produto.nome || '',
@@ -64,12 +78,34 @@ const ListarProdutos = () => {
                 preco: typeof produto.preco === 'number' ? produto.preco : 0,
                 imagemUrl: "https://terabite.blob.core.windows.net/terabite-container/" + produto.id || ''
             }));
+
             setProdutos(produtosFormatados);
+            setMarcas(marcasFormatadas);  // Adiciona as marcas únicas ao estado
         } catch (erro) {
             toast.error("Erro ao carregar os produtos: " + erro.message);
         } finally {
             setCarregando(false);
         }
+    };
+
+    const adicionarNovaMarca = () => {
+        if (!novaMarca.trim()) {
+            toast.error("O nome da marca não pode ser vazio");
+            return;
+        }
+
+        // Verifica se a marca já existe
+        if (marcas.some(marca => marca.nome.toLowerCase() === novaMarca.trim().toLowerCase())) {
+            toast.error("Esta marca já existe");
+            return;
+        }
+
+        const novaMarcaFormatada = { nome: novaMarca.trim() };
+        setMarcas([...marcas, novaMarcaFormatada]);
+        setNovoProduto(prev => ({ ...prev, marca: novaMarca.trim() }));
+        setModalNovaMarcaAberto(false);
+        setNovaMarca('');
+        toast.success('Marca adicionada com sucesso!');
     };
 
     const obterTokenSasAzure = async () => {
@@ -90,11 +126,11 @@ const ListarProdutos = () => {
 
     const enviarImagemParaAzure = async (arquivo, produtoId) => {
         try {
-            const tokenSaS = await obterTokenSasAzure();
+            const tokenSaS = await obterTokenSasAzure();  // Certifique-se de que esta função retorna o token corretamente.
             const nomeArquivo = `${produtoId}`;
             const sasUrl = `https://terabite.blob.core.windows.net/terabite-container/${nomeArquivo}?${tokenSaS}`;
-            const urlUpload = `${sasUrl}/`;
 
+            console.log("URL de upload:", sasUrl);  // Log da URL gerada para depuração.
 
             const resposta = await fetch(sasUrl, {
                 method: 'PUT',
@@ -106,15 +142,19 @@ const ListarProdutos = () => {
             });
 
             if (!resposta.ok) {
-                throw new Error('Erro ao fazer upload da imagem');
+                const textoErro = await resposta.text();  // Captura mensagem detalhada.
+                throw new Error(`Erro ao enviar a imagem: ${resposta.status} - ${textoErro}`);
             }
 
-            return urlUpload.split('?')[0];
+            console.log("Upload realizado com sucesso:", resposta.status);
+            return sasUrl.split('?')[0];  // Retorna a URL sem o token SAS.
         } catch (erro) {
-            toast.error("Tente novamente mais tarde");
+            console.error("Erro ao enviar a imagem:", erro);
+            toast.error("Erro ao enviar a imagem: " + erro.message);
             throw erro;
         }
     };
+
 
     const filtroPesquisa = async (termo) => {
         const token = sessionStorage.getItem('token');
@@ -171,13 +211,40 @@ const ListarProdutos = () => {
         setModalAberto(false);
     };
 
-    const handleInputChange = (evento) => { // Gerenciar a mudança dos campos dos formulários
+    const handleInputChange = (evento) => {
         const { name, value } = evento.target;
-        setNovoProduto(anterior => ({ ...anterior, [name]: value }));
+    
+        // Verifica se o campo é 'preco'
+        if (name === 'preco') {
+            // Remove todos os caracteres não numéricos
+            const numeroLimpo = value.replace(/[^\d]/g, '');
+            
+            // Divide por 100 para considerar casas decimais
+            const valorFormatado = (Number(numeroLimpo) / 100).toLocaleString('pt-BR', {
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2,
+            });
+    
+            setNovoProduto(anterior => ({
+                ...anterior,
+                [name]: valorFormatado
+            }));
+        } else {
+            setNovoProduto(anterior => ({ 
+                ...anterior, 
+                [name]: value 
+            }));
+        }
+    
+        // Limpa erro se existir
         if (erros[name]) {
-            setErros(anterior => ({ ...anterior, [name]: '' }));
+            setErros(anterior => ({
+                ...anterior,
+                [name]: ''
+            }));
         }
     };
+    
 
     const handleImagemUpload = (evento) => {
         const arquivo = evento.target.files[0];
@@ -215,7 +282,12 @@ const ListarProdutos = () => {
             let urlImagem = novoProduto.imagemUrl;
 
             if (arquivoImagem) {
-                urlImagem = await enviarImagemParaAzure(arquivoImagem, produtoSelecionado.id);
+                try {
+                    urlImagem = await enviarImagemParaAzure(arquivoImagem, produtoSelecionado?.id || Math.random().toString());
+                } catch (erro) {
+                    toast.error("Erro no upload da imagem. Operação interrompida.");
+                    return;  // Não continuar se a imagem falhar
+                }
             }
 
             const token = sessionStorage.getItem('token');
@@ -240,7 +312,7 @@ const ListarProdutos = () => {
             });
 
             if (!resposta.ok) {
-                throw new Error('Erro ao salvar produto');
+                throw new Error('Erro ao salvar produto no servidor.');
             }
 
             toast.success(produtoSelecionado ? 'Produto atualizado com sucesso!' : 'Produto criado com sucesso!');
@@ -256,7 +328,7 @@ const ListarProdutos = () => {
 
             fecharModal();
         } catch (erro) {
-            toast.error(erro.message);
+            toast.error(erro.message || 'Erro ao salvar o produto.');
         } finally {
             setCarregando(false);
         }
@@ -264,7 +336,7 @@ const ListarProdutos = () => {
 
     const handleEditar = (produto) => {
         setProdutoSelecionado(produto);
-        setNovoProduto(produto);
+        setNovoProduto({ ...produto, marca: produto.marca });
         setImagemPreview(produto.imagemUrl);
         setModalAberto(true);
     };
@@ -325,13 +397,13 @@ const ListarProdutos = () => {
                         <TableBody>
                             {produtos.map(produto => (
                                 <TableRow key={produto.id} className='tabela-row-vendas'>
-                                    <TableCell  className='tabela-row-vendas'>
+                                    <TableCell className='tabela-row-vendas'>
                                         <img src={produto.imagemUrl} alt={produto.nome} width="35" height="35" />
                                     </TableCell>
-                                    <TableCell  className='tabela-row-vendas'>{produto.nome}</TableCell>
-                                    <TableCell  className='tabela-row-vendas'>{produto.marca}</TableCell>
-                                    <TableCell  className='tabela-row-vendas'>R$ {produto.preco}</TableCell>
-                                    <TableCell  className='tabela-row-vendas'>
+                                    <TableCell className='tabela-row-vendas'>{produto.nome}</TableCell>
+                                    <TableCell className='tabela-row-vendas'>{produto.marca}</TableCell>
+                                    <TableCell className='tabela-row-vendas'>R$ {produto.preco}</TableCell>
+                                    <TableCell className='tabela-row-vendas'>
                                         <button onClick={() => handleEditar(produto)}>
                                             <EditIcon />
                                         </button>
@@ -359,27 +431,53 @@ const ListarProdutos = () => {
                         error={!!erros.nome}
                         helperText={erros.nome}
                     />
-                    <TextField
+                    <Select
+                        autoFocus
                         margin="dense"
                         name="marca"
                         label="Marca"
                         fullWidth
-                        value={novoProduto.marca}
+                        value={novoProduto.marca || ''}
                         onChange={handleInputChange}
                         error={!!erros.marca}
-                        helperText={erros.marca}
-                    />
+                        displayEmpty
+                        renderValue={(selected) => selected || 'Selecione uma marca'}
+                    >
+                        {marcas.map((marca, index) => (
+                            <MenuItem key={index} value={marca.nome}>
+                                {marca.nome}
+                            </MenuItem>
+                        ))}
+                        <MenuItem onClick={() => setModalNovaMarcaAberto(true)}>
+                            + Adicionar Nova Marca
+                        </MenuItem>
+                    </Select>
+                    {erros.marca && (
+                        <div style={{ color: 'red', fontSize: '0.75rem', marginTop: '3px' }}>
+                            {erros.marca}
+                        </div>
+                    )}
                     <TextField
                         margin="dense"
                         name="preco"
                         label="Preço"
-                        type="number"
+                        type="text"
                         fullWidth
                         value={novoProduto.preco}
                         onChange={handleInputChange}
                         error={!!erros.preco}
                         helperText={erros.preco}
+                        inputProps={{
+                            min: "0",
+                            
+                        }}
+                        InputProps={{
+                            startAdornment: (
+                                <InputAdornment position="start">R$</InputAdornment>
+                            ),
+                        }}
                     />
+                    
                     <input
                         accept="image/*"
                         type="file"
@@ -416,6 +514,24 @@ const ListarProdutos = () => {
                     >
                         {carregando ? 'Salvando...' : (produtoSelecionado ? "Salvar" : "Adicionar")}
                     </Button>
+                </DialogActions>
+            </Dialog>
+
+            <Dialog open={modalNovaMarcaAberto} onClose={() => setModalNovaMarcaAberto(false)}>
+                <DialogTitle>Adicionar Nova Marca</DialogTitle>
+                <DialogContent>
+                    <TextField
+                        autoFocus
+                        margin="dense"
+                        label="Nome da Marca"
+                        fullWidth
+                        value={novaMarca}
+                        onChange={(e) => setNovaMarca(e.target.value)}
+                    />
+                </DialogContent>
+                <DialogActions>
+                    <Button   className='botaoModal' onClick={() => setModalNovaMarcaAberto(false)}>Cancelar</Button>
+                    <Button   className='botaoModal' onClick={adicionarNovaMarca}>Adicionar</Button>
                 </DialogActions>
             </Dialog>
         </>

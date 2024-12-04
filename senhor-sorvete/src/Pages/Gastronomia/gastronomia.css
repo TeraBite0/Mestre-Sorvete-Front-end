@@ -1,55 +1,54 @@
-html,
-body {
-    overflow-x: hidden;
-}
-
 .gastronomia {
     min-height: 100vh;
     display: flex;
     flex-direction: column;
     flex: 1;
-}
-
-.gastronomia h4 {
+  }
+  
+  .gastronomia h4 {
     font-family: "Poppins", system-ui;
     font-weight: 700;
     font-size: 2.5rem;
-    margin-left: 9%;
-    margin-bottom: -10px;
-}
-
-.gastronomia .artigos {
+    margin-left: 7%;
+    margin-bottom: -8px;
+  }
+  
+  .gastronomia .artigos {
     display: flex;
     justify-content: space-between;
-    flex-wrap: wrap; 
-    margin: 0 9%;
-    /* width: 90%; */
-}
-
-.gastronomia .artigos > div {
+    flex-wrap: wrap;
+    margin: 0 7%;
+    margin-bottom: -10px;
+  }
+  
+  .gastronomia .artigos > div {
     flex: 1 1 calc(50% - 20px); 
     margin: 10px; 
-}
-
-.gastronomia footer {
+  }
+  
+  .gastronomia footer {
     background: #333;
     color: white;
     text-align: center;
     padding: 1em;
     width: 100%;
-}
-
-@media (max-width: 768px) {
-    .gastronomia {
-        padding: 10px;
-    }
-    
+  }
+  
+  @media (max-width: 768px) {
     .gastronomia .artigos {
-        flex-direction: column;
+      flex-direction: column;
+      margin-bottom: -15px;
     }
 
-    .gastronomia .artigos > div {
-        flex: 1 1 100%;
-        margin: 5px 0;
+    .gastronomia h4 {
+      margin-left: 0;
+      margin-bottom: inherit;
+      text-align: center;
     }
-}
+  
+    .gastronomia .artigos > div {
+      flex: 1 1 100%;
+      margin: 5px 0;
+    }
+  }
+  
