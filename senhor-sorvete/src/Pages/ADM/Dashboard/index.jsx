@@ -69,85 +69,54 @@ const Dashboard = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  const generateCSVData = (data) => {
-    if (!data || !Array.isArray(data) || data.length === 0) {
-      return '';
-    }
+  // const generateCSVData = (data) => {
+  //   if (!data || !Array.isArray(data) || data.length === 0) {
+  //     return '';
+  //   }
   
-    const headers = Object.keys(data[0]);
-    const rows = data.map(item => headers.map(header => item[header]));
+  //   const headers = Object.keys(data[0]);
+  //   const rows = data.map(item => headers.map(header => item[header]));
   
-    const csvContent = [
-      headers.join(','), // Cabeçalhos
-      ...rows.map(row => row.join(',')), // Dados
-    ].join('\n');
+  //   const csvContent = [
+  //     headers.join(','), // Cabeçalhos
+  //     ...rows.map(row => row.join(',')), // Dados
+  //   ].join('\n');
   
-    return csvContent;
-  };
+  //   return csvContent;
+  // };
   
   
   const fetchGerarCsv = async () => {
-    setIsLoading(true);
-    setError(null);
-  
+
+    const token = sessionStorage.getItem('token');
     try {
-      const response = await fetch("http://localhost:8080/exportcsv", {
-        method: "GET",
+      const response = await fetch('http://localhost:8080/csv/download', {
+        method: 'GET',
         headers: {
-          Accept: "*/*", // Alterado para * / * conforme esperado pelo back-end
-        },
+          Authorization: `Bearer ${token}`,
+          'Accept': 'text/csv'
+        }
       });
   
-      // Tratamento para erros 500
-      if (response.status === 500) {
-        const errorData = await response.text();
-        console.error("Erro do servidor:", errorData);
-        throw new Error("Erro interno do servidor. Por favor, tente novamente mais tarde.");
-      }
-  
-      // Outros erros (não OK)
       if (!response.ok) {
-        const errorData = await response.text();
-        console.error("Resposta de erro:", errorData);
-        throw new Error(`Erro ${response.status}: ${errorData || 'Erro desconhecido'}`);
+        throw new Error(`Erro HTTP: ${response.status}`);
       }
   
       const blob = await response.blob();
-      if (blob.size === 0) {
-        throw new Error("O arquivo CSV está vazio.");
-      }
-  
-      // Criação do link para download
       const url = window.URL.createObjectURL(blob);
-      const link = document.createElement("a");
-      link.href = url;
-      link.setAttribute("download", "dados-dashboard.csv");
-      document.body.appendChild(link);
-      link.click();
-  
-      // Limpeza após o clique
+      
+      // Criar elemento para download
+      const downloadLink = document.createElement('a');
+      downloadLink.href = url;
+      downloadLink.download = 'dados-dashboard.csv';
+      
+      // Trigger de download de forma mais moderna
+      downloadLink.click();
+      
+      // Limpar
       window.URL.revokeObjectURL(url);
-      link.remove();
-  
     } catch (error) {
-      console.error("Erro detalhado:", error);
-  
-      // Definir mensagem de erro amigável
-      let errorMessage = error.message;
-  
-      // Tratamento customizado de erros comuns
-      if (errorMessage.includes("500")) {
-        errorMessage = "Ocorreu um erro no servidor. Por favor, tente novamente mais tarde.";
-      } else if (errorMessage.includes("401")) {
-        errorMessage = "Sessão expirada. Por favor, faça login novamente.";
-      } else if (errorMessage.includes("403")) {
-        errorMessage = "Você não tem permissão para exportar estes dados.";
-      }
-  
-      // Atualiza o estado de erro com a mensagem amigável
-      setError(`Não foi possível exportar os dados: ${errorMessage}`);
-    } finally {
-      setIsLoading(false);
+      console.error('Erro ao baixar CSV:', error);
     }
   };
   
@@ -292,8 +261,36 @@ const Dashboard = () => {
         <p>Erro ao carregar os dados: {error}</p>
         <button onClick={fetchDashboardData}>Tentar novamente</button>
       </div>
-    );
+    ); 
   }
+
+  const renderTabelaBaixoEstoque = () => {
+    return (
+      <div className="tabela-baixo-estoque">
+        <h3>Produtos com Baixo Estoque</h3>
+        <table className="w-full">
+          <thead>
+            <tr>
+              <th>Produto</th>
+              <th>Marca</th>
+              <th>Valor Unitário</th>
+              <th>Qtd em Estoque</th>
+            </tr>
+          </thead>
+          <tbody>
+            {dashboardData.produtosBaixoEstoque.map((produto, index) => (
+              <tr key={index}>
+                <td>{produto.nome}</td>
+                <td>{produto.marca}</td>
+                <td>R$ {produto.valorUnitario.toFixed(2)}</td>
+                <td>{produto.qtdEmEstoque}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    );
+  };
 
   return (
     <>
@@ -323,7 +320,17 @@ const Dashboard = () => {
 
         <div className="dashboard-item">
           <h1>Previsão de Vendas</h1>
+          <h5>{getCurrentWeek()}</h5>
           <Line data={dashPrevisaoDeVendas} />
+          <p>
+            Legenda: <span style={{ color: "red" }}>Média abaixo de 30</span> |{" "}
+            <span style={{ color: "yellow" }}>Média abaixo de 50</span> |{" "}
+            <span style={{ color: "green" }}>Média maior ou igual à 50</span>
+          </p>
+        </div>
+
+        <div className="dashboard-item full-width">
+          {renderTabelaBaixoEstoque()}
         </div>
       </div>
     </>
