@@ -1,16 +1,21 @@
 import React, { useState, useEffect, useRef } from "react";
+import axios from "axios";
+import { toast } from "react-toastify";
+
 import "./cardapio.css";
 import Filtros from "../../Components/Filtros/Filtro.tsx";
 import Header from "../../Components/Header/index.jsx";
 import Footer from "../../Components/Footer/index.jsx";
+
 import SearchIcon from "@mui/icons-material/Search";
+import WhatshotIcon from '@mui/icons-material/Whatshot';
+
 import Modal from "@mui/material/Modal";
 import Box from "@mui/material/Box";
 import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
 import Skeleton from "@mui/material/Skeleton";
-import axios from "axios";
-import { toast } from "react-toastify";
+
 
 const Cardapio = () => {
     const [termo, setTermo] = useState("");
@@ -24,15 +29,7 @@ const Cardapio = () => {
     const [isMaisModalOpen, setIsMaisModalOpen] = useState(false);
     const [emailError, setEmailError] = useState("");
     const [produtosPopulares, setPopular] = useState([]);
-
-    const [tipos, setTipos] = useState([
-        "Potes",
-        "Potes Pequenos",
-        "Cones",
-        "Palhetas",
-        "Açai",
-        "Açai Pequeno",
-    ]);
+    const [selectedTypes, setSelectedTypes] = useState([]);
 
 
     const sidebarRef = useRef(null);
@@ -55,19 +52,24 @@ const Cardapio = () => {
         fetchProdutos();
     }, []);
 
+    const [isLoadingPopular, setIsLoadingPopular] = useState(false);
+
     const fetchPopular = async () => {
+        setIsLoadingPopular(true); // Ativa o estado de carregamento
         try {
-            const response = await axios.get('http://localhost:8080/produtos/populares');
-            toast.success("Buscando produtos...")
+            const response = await axios.get("http://localhost:8080/produtos/populares");
             if (response.status === 200) {
-                setPopular([]);
                 setPopular(response.data);
-                toast.success("Prontinho! :D")
+                toast.success("Produtos populares carregados com sucesso!");
             }
         } catch (error) {
-            toast.error("Erro ao buscar produtos populares, tente novamente mais tarde");
+            toast.error("Erro ao buscar produtos populares. Tente novamente mais tarde.");
+            console.error("Erro ao buscar produtos populares:", error);
+        } finally {
+            setIsLoadingPopular(false); // Desativa o estado de carregamento
         }
-    }
+    };
+
 
     const openMaisModal = () => setIsMaisModalOpen(true);
     const closeMaisModal = () => setIsMaisModalOpen(false);
@@ -115,20 +117,31 @@ const Cardapio = () => {
     };
 
     const filteredProdutos = produtos.filter((produto) => {
-        const matchesTermo = produto.nome.toLowerCase().includes(termo.toLowerCase());
+        const matchesTermo = termo
+            ? produto.nome.toLowerCase().includes(termo.toLowerCase())
+            : true;
         const matchesPrice = produto.preco <= priceRange;
         const matchesCategory =
-            selectedCategories.length === 0 || selectedCategories.includes(produto.subtipo.nome);
+            (selectedCategories.length === 0 ||
+                selectedCategories.includes(produto.subtipo.nome) ||
+                selectedCategories.includes(produto.subtipo.tipoPai.nome));
+        const matchesType =
+            selectedTypes.length === 0 ||
+            selectedTypes.includes(produto.subtipo.tipoPai.nome);
 
-        return matchesTermo && matchesPrice && matchesCategory;
+        return matchesTermo && matchesPrice && matchesCategory && matchesType;
     });
-    
 
+    const categorias = [
+        ...new Set(
+            produtos.flatMap((produto) => [
+                produto.subtipo.nome,
+                produto.subtipo.tipoPai.nome,
+            ])
+        ),
+    ];
 
-    const validateEmail = (email) => {
-        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        return emailRegex.test(email);
-    };
+    const validateEmail = (email) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
 
     const handleConfirm = () => {
         if (!validateEmail(email)) {
@@ -141,7 +154,11 @@ const Cardapio = () => {
     };
 
     const openModal = () => setIsModalOpen(true);
-    const closeModal = () => setIsModalOpen(false);
+    const closeModal = () => {
+        setIsModalOpen(false);
+        setEmailError("");
+        setEmail("");
+    };
 
     return (
         <div className="containerCardapio">
@@ -157,15 +174,12 @@ const Cardapio = () => {
             </div>
 
             <nav className="navegacao">
-                <div>
-                    <ul className="listaNavegacao">
-                        <li className="itemNavegacao" onClick={fetchPopular}>Popular</li>
-                        <li className="itemNavegacao">Picolés</li>
-                        <li className="itemNavegacao" onClick={openMaisModal}>Mais...</li>
+                <button className="trendingButton" onClick={fetchPopular} disabled={isLoadingPopular}>
+                    <WhatshotIcon />
+                    <span>{isLoadingPopular ? "Carregando..." : "Popular"}</span>
+                </button>
 
-                    </ul>
-                </div>
-                <div className="barraPesquisa">
+                <div className="barraPesquisaCardapio">
                     <input
                         type="text"
                         placeholder="Pesquisar..."
@@ -177,6 +191,7 @@ const Cardapio = () => {
                         <SearchIcon sx={{ fontSize: 16 }} />
                     </button>
                 </div>
+
             </nav>
 
             <div className="mainContentWrapper" ref={mainContentRef}>
@@ -188,17 +203,21 @@ const Cardapio = () => {
                                 setPriceRange={setPriceRange}
                                 selectedCategories={selectedCategories}
                                 setSelectedCategories={setSelectedCategories}
+                                selectedTypes={selectedTypes}
+                                setSelectedTypes={setSelectedTypes}
                             />
                         </aside>
                         <aside className="notifications">
                             <h2>Notificações</h2>
                             {cartItems.length === 0 ? (
-                                <p style={{
-                                    color: '#888',
-                                    textAlign: 'center',
-                                    fontStyle: 'italic',
-                                    padding: '20px'
-                                }}>
+                                <p
+                                    style={{
+                                        color: '#888',
+                                        textAlign: 'center',
+                                        fontStyle: 'italic',
+                                        padding: '20px',
+                                    }}
+                                >
                                     Nenhum item adicionado ainda
                                 </p>
                             ) : (
@@ -268,7 +287,7 @@ const Cardapio = () => {
                                         className="w-full h-48 object-cover rounded-2xl mb-4"
                                         onError={(e) => {
                                             e.target.src = 'Imagens/404-icon.webp';
-                                            e.target.alt = 'Imagem genérica do produto';
+                                            e.target.alt = 'Erro na imagem';
                                         }}
                                     />
 
@@ -289,7 +308,9 @@ const Cardapio = () => {
                     </main>
                 </div>
             </div>
+
             <Footer />
+
             <Modal open={isMaisModalOpen} onClose={closeMaisModal}>
                 <Box
                     sx={{
@@ -303,29 +324,28 @@ const Cardapio = () => {
                         width: 400,
                     }}
                 >
-                    <h2>Filtrar por Tipo</h2>
+                    <h2>Filtrar por Categoria</h2>
                     <div>
-                        {tipos.map((tipo, index) => (
+                        {categorias.map((categoria, index) => (
                             <div key={index}>
                                 <label>
                                     <input
                                         type="checkbox"
-                                        checked={selectedCategories.includes(tipo)}
+                                        checked={selectedCategories.includes(categoria)}
                                         onChange={(e) => {
                                             const updatedCategories = e.target.checked
-                                                ? [...selectedCategories, tipo]
-                                                : selectedCategories.filter((cat) => cat !== tipo);
+                                                ? [...selectedCategories, categoria]
+                                                : selectedCategories.filter((cat) => cat !== categoria);
                                             setSelectedCategories(updatedCategories);
                                         }}
                                     />
-                                    {tipo}
+                                    {categoria}
                                 </label>
                             </div>
                         ))}
                     </div>
                 </Box>
             </Modal>
-
 
             <Modal open={isModalOpen} onClose={closeModal}>
                 <Box
@@ -340,24 +360,24 @@ const Cardapio = () => {
                         width: 400,
                     }}
                 >
-                    <h2>Insira seu email</h2>
+                    <h2>Seja Notificado!</h2>
                     <TextField
-                        fullWidth
-                        label="Email"
-                        variant="outlined"
+                        label="Digite seu e-mail"
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
-                        error={!!emailError}
-                        helperText={emailError} // Mostra a mensagem de erro
-                        sx={{ mb: 2 }}
+                        error={Boolean(emailError)}
+                        helperText={emailError}
+                        fullWidth
+                        margin="normal"
                     />
-                    <Button
-                        variant="contained"
-                        color="primary"
-                        onClick={handleConfirm}
-                    >
-                        Confirmar
-                    </Button>
+                    <div style={{ display: "flex", justifyContent: "flex-end" }}>
+                        <Button onClick={handleConfirm} variant="contained" color="primary">
+                            Confirmar
+                        </Button>
+                        <Button onClick={closeModal} variant="outlined" color="error">
+                            Cancelar
+                        </Button>
+                    </div>
                 </Box>
             </Modal>
         </div>
