@@ -1,62 +1,73 @@
 <!DOCTYPE html>
 <html lang="pt-br">
+	<head>
+		<meta charset="utf-8" />
+		<link rel="icon" href="Imagens/logo-sorvete.png" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<meta name="theme-color" content="#000000" />
+		<meta
+			name="description"
+			content="Web site created using create-react-app"
+		/>
+		<link rel="preconnect" href="https://fonts.googleapis.com" />
+		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+		<link
+			href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap"
+			rel="stylesheet"
+		/>
+		<title>Mestre Sorvete</title>
 
-<head>
-  <meta charset="utf-8" />
-  <link rel="icon" href="Imagens/logo-sorvete.png" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <meta name="theme-color" content="#000000" />
-  <meta name="description" content="Web site created using create-react-app" />
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link
-    href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap"
-    rel="stylesheet">
-  <title>Mestre Sorvete</title>
+		<script type="text/javascript">
+			(function () {
+				var s = document.createElement("script");
+				s.type = "text/javascript";
+				s.async = true;
+				s.src = "https://acsbapp.com/apps/app/dist/js/app.js";
+				s.onload = function () {
+					acsbJS.init({
+						statementLink: "",
+						footerHtml: "",
+						hideMobile: false,
+						hideTrigger: false,
+						language: "en",
+						position: "left",
+						leadColor: "#146FF8",
+						triggerColor: "#146FF8",
+						triggerRadius: "50%",
+						triggerPositionX: "left",
+						triggerPositionY: "bottom",
+						triggerIcon: "people",
+						triggerSize: "medium",
+						triggerOffsetX: 20,
+						triggerOffsetY: 20,
+						mobile: {
+							triggerSize: "small",
+							triggerPositionX: "left",
+							triggerPositionY: "bottom",
+							triggerOffsetX: 10,
+							triggerOffsetY: 10,
+							triggerRadius: "50%",
+						},
+					});
+				};
+				document.getElementsByTagName("head")[0].appendChild(s);
+			})();
+		</script>
+	</head>
 
-  <script type="text/javascript">
-    (function(){
-      var s = document.createElement("script");
-      s.type = "text/javascript";
-      s.async = true;
-      s.src = "https://acsbapp.com/apps/app/dist/js/app.js";
-      s.onload = function(){
-        acsbJS.init({
-          statementLink: "",
-          footerHtml: "",
-          hideMobile: false,
-          hideTrigger: false,
-          language: "en",
-          position: "left",
-          leadColor: "#146FF8",
-          triggerColor: "#146FF8",
-          triggerRadius: "50%",
-          triggerPositionX: "left",
-          triggerPositionY: "bottom",
-          triggerIcon: "people",
-          triggerSize: "medium",
-          triggerOffsetX: 20,
-          triggerOffsetY: 20,
-          mobile: {
-            triggerSize: "small",
-            triggerPositionX: "left",
-            triggerPositionY: "bottom",
-            triggerOffsetX: 10,
-            triggerOffsetY: 10,
-            triggerRadius: "50%"
-          }
-        });
-      };
-      document.getElementsByTagName("head")[0].appendChild(s);
-    })();
-  </script>
-  
-</head>
+	<body>
+		<noscript>You need to enable JavaScript to run this app.</noscript>
+		<div id="root"></div>
 
-<body>
-  <noscript>You need to enable JavaScript to run this app.</noscript>
-  <div id="root"></div>
-
-</body>
-
+		<div vw class="enabled">
+			<div vw-access-button class="active"></div>
+			<div vw-plugin-wrapper>
+				<div class="vw-plugin-top-wrapper"></div>
+			</div>
+		</div>
+		<script src="https://vlibras.gov.br/app/vlibras-plugin.js"></script>
+		<script>
+			new window.VLibras.Widget("https://vlibras.gov.br/app");
+		</script>
+	</body>
 </html>
