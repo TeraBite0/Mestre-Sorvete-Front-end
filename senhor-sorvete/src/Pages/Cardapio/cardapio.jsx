@@ -30,6 +30,7 @@ const Cardapio = () => {
     const [emailError, setEmailError] = useState("");
     const [produtosPopulares, setPopular] = useState([]);
     const [selectedTypes, setSelectedTypes] = useState([]);
+    const [isPopularToggled, setIsPopularToggled] = useState(false);
 
 
     const sidebarRef = useRef(null);
@@ -54,22 +55,69 @@ const Cardapio = () => {
 
     const [isLoadingPopular, setIsLoadingPopular] = useState(false);
 
+    // Solução provisória ao erro do populares, **REMOVER QUANDO CONCERTADO!!!!**
+    // Basicamente essa função uso os dados dos produtos buscados anteriormente
     const fetchPopular = async () => {
-        setIsLoadingPopular(true); // Ativa o estado de carregamento
+        setIsLoadingPopular(true);
         try {
             const response = await axios.get("http://localhost:8080/produtos/populares");
             if (response.status === 200) {
-                setPopular(response.data);
-                toast.success("Produtos populares carregados com sucesso!");
+                const popularProductsWithFullData = response.data.map(popularProduct => {
+                    const fullProductDetails = produtos.find(
+                        produto => produto.nome.toLowerCase() === popularProduct.nome.toLowerCase()
+                    );
+
+                    return fullProductDetails || {
+                        id: null,
+                        nome: popularProduct.nome,
+                        preco: popularProduct.preco,
+                        subtipo: {
+                            nome: 'Desconhecido',
+                            tipoPai: { nome: 'Desconhecido' }
+                        },
+                        emEstoque: false
+                    };
+                });
+
+                setPopular(popularProductsWithFullData);
+                setIsPopularToggled(!isPopularToggled);
+
+                if (!isPopularToggled) {
+                    toast.success(`${popularProductsWithFullData.length} produtos populares carregados!`);
+                } else {
+                    toast.info("Exibição de produtos populares desativada.");
+                }
             }
         } catch (error) {
             toast.error("Erro ao buscar produtos populares. Tente novamente mais tarde.");
             console.error("Erro ao buscar produtos populares:", error);
         } finally {
-            setIsLoadingPopular(false); // Desativa o estado de carregamento
+            setIsLoadingPopular(false);
         }
     };
 
+
+    //TODO: Quando o popular ser concertado no back, descomentar esse código
+    // const fetchPopular = async () => {
+    //     setIsLoadingPopular(true); // Ativa o estado de carregamento
+    //     try {
+    //         const response = await axios.get("http://localhost:8080/produtos/populares");
+    //         if (response.status === 200) {
+    //             setPopular(response.data);
+    //             setIsPopularToggled(!isPopularToggled);
+    //             if (!isPopularToggled) {
+    //                 toast.success("Produtos populares carregados com sucesso!");
+    //             } else {
+    //                 toast.info("Exibição de produtos populares desativada.");
+    //             }
+    //         }
+    //     } catch (error) {
+    //         toast.error("Erro ao buscar produtos populares. Tente novamente mais tarde.");
+    //         console.error("Erro ao buscar produtos populares:", error);
+    //     } finally {
+    //         setIsLoadingPopular(false);
+    //     }
+    // };
 
     const openMaisModal = () => setIsMaisModalOpen(true);
     const closeMaisModal = () => setIsMaisModalOpen(false);
@@ -129,8 +177,13 @@ const Cardapio = () => {
             selectedTypes.length === 0 ||
             selectedTypes.includes(produto.subtipo.tipoPai.nome);
 
-        return matchesTermo && matchesPrice && matchesCategory && matchesType;
+        const matchesPopular = !isPopularToggled || produtosPopulares.some(
+            (popularProduto) => popularProduto.id === produto.id
+        );
+
+        return matchesTermo && matchesPrice && matchesCategory && matchesType && matchesPopular;
     });
+
 
     const categorias = [
         ...new Set(
@@ -174,8 +227,20 @@ const Cardapio = () => {
             </div>
 
             <nav className="navegacao">
-                <button className="trendingButton" onClick={fetchPopular} disabled={isLoadingPopular}>
-                    <WhatshotIcon />
+                <button
+                    className={`trendingButton ${isPopularToggled ? 'toggled' : ''}`}
+                    onClick={fetchPopular}
+                    disabled={isLoadingPopular}
+                    style={{
+                        backgroundColor: isPopularToggled ? '#772321' : '#FFF',
+                        color: isPopularToggled ? 'white' : 'inherit'
+                    }}
+                >
+                    <WhatshotIcon
+                        style={{
+                            color: isPopularToggled ? 'white' : 'inherit'
+                        }}
+                    />
                     <span>{isLoadingPopular ? "Carregando..." : "Popular"}</span>
                 </button>
 
