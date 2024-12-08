@@ -4,12 +4,12 @@ import "./homeGerenciamento.css";
 
 const HomeGerenciamento = () => {
   let imagens = [
-    <img src="/Imagens/velocimetro.png" />,
-    <img src="/Imagens/list-icon.png" />,
-    <img src="/Imagens/calendario-icon.png" />,
-    <img src="/Imagens/estoque-icon.png" />,
-    <img src="/Imagens/vendas-icon.png" />,
-    <img src="/Imagens/retornar-site.png" />  
+    <img src="/Imagens/velocimetro.png" alt="" />,
+    <img src="/Imagens/list-icon.png" alt=""/>,
+    <img src="/Imagens/calendario-icon.png" alt="" />,
+    <img src="/Imagens/estoque-icon.png" alt=""/>,
+    <img src="/Imagens/vendas-icon.png" alt=""/>,
+    <img src="/Imagens/retornar-site.png" alt=""/>
   ];
 
   return (

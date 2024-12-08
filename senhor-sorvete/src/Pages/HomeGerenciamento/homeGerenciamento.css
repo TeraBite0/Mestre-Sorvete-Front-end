@@ -1,29 +1,20 @@
-.ferramentas {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: space-between; 
-  gap: 9px; 
-  padding: 20px 10px; 
-  width: 100%;
-  margin-top: -20px; 
+.containerFerramentas h2 {
+  font-size: 1.8rem;
+  color: #333;
+  text-align: center;
+  margin-bottom: 50px;
 }
 
 .cards-rumo {
   display: flex;
   flex-wrap: wrap;
   justify-content: space-evenly;
-  gap: 9px; 
   width: 100%;
+  margin-bottom: .5rem;
 }
 
-.containerFerramentas {
-  display: flex;
-  justify-content: flex-start;
-  margin: 7px 1.5%;
-}
-
-.containerFerramentas h2 {
-  font-size: 1.8rem; 
-  color: #333;
-  margin-bottom: 8px; 
+@media (max-width: 768px) {
+  .containerFerramentas h2 {
+    margin-bottom: 30px;
+  }
 }

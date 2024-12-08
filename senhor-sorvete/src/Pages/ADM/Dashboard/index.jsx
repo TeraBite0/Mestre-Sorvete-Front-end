@@ -32,8 +32,18 @@ ChartJS.register(
 // Função para obter a ordem dinâmica dos meses
 const getDynamicMonthOrder = () => {
   const allMonths = [
-    "janeiro", "fevereiro", "março", "abril", "maio", "junho",
-    "julho", "agosto", "setembro", "outubro", "novembro", "dezembro"
+    "janeiro",
+    "fevereiro",
+    "março",
+    "abril",
+    "maio",
+    "junho",
+    "julho",
+    "agosto",
+    "setembro",
+    "outubro",
+    "novembro",
+    "dezembro",
   ];
   const startMonth = 5; // Junho (índice 5)
   return [...allMonths.slice(startMonth), ...allMonths.slice(0, startMonth)];
@@ -64,47 +74,44 @@ const Dashboard = () => {
     previsaoTemperatura: [],
     produtosMaisVendidos: [],
     produtosMenosVendidos: [],
-    produtosBaixoEstoque: []
+    produtosBaixoEstoque: [],
   });
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
-  
-  const fetchGerarCsv = async () => {
 
-    const token = sessionStorage.getItem('token');
+  const fetchGerarCsv = async () => {
+    const token = sessionStorage.getItem("token");
     try {
-      const response = await fetch('http://localhost:8080/csv/download', {
-        method: 'GET',
+      const response = await fetch("http://localhost:8080/csv/download", {
+        method: "GET",
         headers: {
           Authorization: `Bearer ${token}`,
-          'Accept': 'text/csv'
-        }
+          Accept: "text/csv",
+        },
       });
-  
+
       if (!response.ok) {
         throw new Error(`Erro HTTP: ${response.status}`);
       }
-  
+
       const blob = await response.blob();
       const url = window.URL.createObjectURL(blob);
-      
+
       // Criar elemento para download
-      const downloadLink = document.createElement('a');
+      const downloadLink = document.createElement("a");
       downloadLink.href = url;
-      downloadLink.download = 'dados-dashboard.csv';
-      
+      downloadLink.download = "dados-dashboard.csv";
+
       // Trigger de download de forma mais moderna
       downloadLink.click();
-      
+
       // Limpar
       window.URL.revokeObjectURL(url);
     } catch (error) {
-      console.error('Erro ao baixar CSV:', error);
+      console.error("Erro ao baixar CSV:", error);
     }
   };
-  
-  
- 
+
   // Função para tratar datas em formato DD/MM/YYYY
   const parseDate = (dateString) => {
     if (!dateString) return null;
@@ -132,21 +139,27 @@ const Dashboard = () => {
         const errorData = await response.json().catch(() => null);
         throw new Error(
           errorData?.message ||
-          `Erro ${response.status}: ${response.statusText}`
+            `Erro ${response.status}: ${response.statusText}`
         );
       }
 
       const data = await response.json();
 
       if (!data || typeof data !== "object" || !data.resumoDeVendas) {
-        throw new Error("Dados inválidos ou incompletos recebidos do servidor.");
+        throw new Error(
+          "Dados inválidos ou incompletos recebidos do servidor."
+        );
       }
 
       // Ordenar resumoDeVendas com base na ordem dinâmica dos meses
       const order = getDynamicMonthOrder();
       data.resumoDeVendas = data.resumoDeVendas.sort((a, b) => {
-        const monthA = new Date(a.data).toLocaleDateString("pt-BR", { month: "long" }).toLowerCase();
-        const monthB = new Date(b.data).toLocaleDateString("pt-BR", { month: "long" }).toLowerCase();
+        const monthA = new Date(a.data)
+          .toLocaleDateString("pt-BR", { month: "long" })
+          .toLowerCase();
+        const monthB = new Date(b.data)
+          .toLocaleDateString("pt-BR", { month: "long" })
+          .toLowerCase();
         return order.indexOf(monthA) - order.indexOf(monthB);
       });
 
@@ -159,7 +172,7 @@ const Dashboard = () => {
         previsaoTemperatura: [],
         produtosMaisVendidos: [],
         produtosMenosVendidos: [],
-        produtosBaixoEstoque: []
+        produtosBaixoEstoque: [],
       });
     } finally {
       setIsLoading(false);
@@ -172,37 +185,48 @@ const Dashboard = () => {
 
   // Configurações dos gráficos
   const dashProdutosMaisVendidos = {
-    labels: dashboardData.produtosMaisVendidos.map(produto => produto.nome),
-    datasets: [{
-      label: "Mais Vendidos",
-      backgroundColor: "rgba(34, 197, 94, 1)",
-      data: dashboardData.produtosMaisVendidos.map(produto => produto.qtdVendido)
-    }]
+    labels: dashboardData.produtosMaisVendidos.map((produto) => produto.nome),
+    datasets: [
+      {
+        label: "Mais Vendidos",
+        backgroundColor: "rgba(34, 197, 94, 1)",
+        data: dashboardData.produtosMaisVendidos.map(
+          (produto) => produto.qtdVendido
+        ),
+      },
+    ],
   };
 
   const dashProdutosMenosVendidos = {
-    labels: dashboardData.produtosMenosVendidos.map(produto => produto.nome),
-    datasets: [{
-      label: "Menos Vendidos",
-      backgroundColor: "rgba(255, 0, 0, 0.8)",
-      data: dashboardData.produtosMenosVendidos.map(produto => produto.qtdVendido)
-    }]
+    labels: dashboardData.produtosMenosVendidos.map((produto) => produto.nome),
+    datasets: [
+      {
+        label: "Menos Vendidos",
+        backgroundColor: "rgba(255, 0, 0, 0.8)",
+        data: dashboardData.produtosMenosVendidos.map(
+          (produto) => produto.qtdVendido
+        ),
+      },
+    ],
   };
 
   const dashVendasETemperatura = {
-    labels: dashboardData.resumoDeVendas.map(resumo => {
+    labels: dashboardData.resumoDeVendas.map((resumo) => {
       const data = parseDate(resumo.data);
       return data && !isNaN(data.getTime())
         ? data.toLocaleDateString("pt-BR", { month: "long" })
         : "Data inválida";
-        console.log("Temperaturas:", dashboardData.resumoDeVendas.map(resumo => resumo.temperaturaMedia));
+      console.log(
+        "Temperaturas:",
+        dashboardData.resumoDeVendas.map((resumo) => resumo.temperaturaMedia)
+      );
     }),
     datasets: [
       {
         type: "bar",
         label: "Faturamento no mês",
         backgroundColor: "rgba(54, 162, 235, 0.7)",
-        data: dashboardData.resumoDeVendas.map(resumo => resumo.faturamento)
+        data: dashboardData.resumoDeVendas.map((resumo) => resumo.faturamento),
       },
       {
         type: "line",
@@ -210,23 +234,29 @@ const Dashboard = () => {
         borderColor: "rgba(255, 99, 132, 1)",
         backgroundColor: "rgba(255, 99, 132, 1)",
         fill: false,
-        data: dashboardData.resumoDeVendas.map(resumo => resumo.temperaturaMedia)
-      }
-    ]
+        data: dashboardData.resumoDeVendas.map(
+          (resumo) => resumo.temperaturaMedia
+        ),
+      },
+    ],
   };
 
   const dashPrevisaoDeVendas = {
-    labels: dashboardData.previsaoTemperatura.map(prev => {
+    labels: dashboardData.previsaoTemperatura.map((prev) => {
       const data = new Date(prev.data);
       return data.toLocaleDateString("pt-BR", { weekday: "long" });
     }),
-    datasets: [{
-      label: "Previsão de Vendas",
-      borderColor: "rgba(34, 197, 94, 1)",
-      backgroundColor: "rgba(34, 197, 94, 1)",
-      fill: false,
-      data: dashboardData.previsaoTemperatura.map(prev => prev.porcentagemVenda)
-    }]
+    datasets: [
+      {
+        label: "Previsão de Vendas",
+        borderColor: "rgba(34, 197, 94, 1)",
+        backgroundColor: "rgba(34, 197, 94, 1)",
+        fill: false,
+        data: dashboardData.previsaoTemperatura.map(
+          (prev) => prev.porcentagemVenda
+        ),
+      },
+    ],
   };
 
   if (isLoading) {
@@ -244,7 +274,7 @@ const Dashboard = () => {
         <p>Erro ao carregar os dados: {error}</p>
         <button onClick={fetchDashboardData}>Tentar novamente</button>
       </div>
-    ); 
+    );
   }
 
   const renderTabelaBaixoEstoque = () => {
@@ -252,26 +282,26 @@ const Dashboard = () => {
       <div className="tabela-baixo-estoque">
         <h3>Produtos com Baixo Estoque</h3>
         <div className="tabela-scroll">
-        <table className="w-full">
-          <thead>
-            <tr>
-              <th>Produto</th>
-              <th>Marca</th>
-              <th>Valor Unitário</th>
-              <th>Qtd em Estoque</th>
-            </tr>
-          </thead>
-          <tbody>
-            {dashboardData.produtosBaixoEstoque.map((produto, index) => (
-              <tr key={index}>
-                <td>{produto.nome}</td>
-                <td>{produto.marca}</td>
-                <td>R$ {produto.valorUnitario.toFixed(2)}</td>
-                <td>{produto.qtdEmEstoque}</td>
+          <table className="w-full">
+            <thead>
+              <tr>
+                <th>Produto</th>
+                <th>Marca</th>
+                <th>Valor Unitário</th>
+                <th>Qtd em Estoque</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              {dashboardData.produtosBaixoEstoque.map((produto, index) => (
+                <tr key={index}>
+                  <td>{produto.nome}</td>
+                  <td>{produto.marca}</td>
+                  <td>R$ {produto.valorUnitario.toFixed(2)}</td>
+                  <td>{produto.qtdEmEstoque}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
         </div>
       </div>
     );
