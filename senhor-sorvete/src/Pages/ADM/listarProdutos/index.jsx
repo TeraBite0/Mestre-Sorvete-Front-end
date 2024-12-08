@@ -108,88 +108,44 @@ const ListarProdutos = () => {
         toast.success('Marca adicionada com sucesso!');
     };
 
-    const obterTokenSAS = async () => {
-        try {
-            const token = sessionStorage.getItem('token');
-
-            if (!token) {
-                throw new Error('Token não encontrado');
+    const obterTokenSasAzure = async () => {
+        const token = sessionStorage.getItem('token');
+        const resposta = await fetch('http://localhost:8080/azure', {
+            method: 'GET',
+            headers: {
+                'Authorization': `Bearer ${token}`
             }
+        });
 
-            const resposta = await fetch('http://localhost:8080/azure', {
-                method: 'GET',
-                headers: {
-                    'accept': '*/*',
-                    'Authorization': `Bearer ${token}`
-                }
-            });
-
-            if (!resposta.ok) {
-                const errorBody = await resposta.text();
-                throw new Error(`Falha ao obter token SAS: ${resposta.status} ${errorBody}`);
-            }
-
-            // Parse o token SAS como JSON se ele for retornado como JSON
-            const tokenSAS = await resposta.json();
-            return tokenSAS.sasToken; // Acesse o token SAS correto
-        } catch (erro) {
-            console.error('Erro ao obter token SAS:', erro);
-            throw erro;
+        if (resposta.ok) {
+            const dados = await resposta.json();
+            return dados.sasToken;
         }
     };
 
-    const enviarImagemParaAzure = async (arquivo, identificador) => {
+    const enviarImagemParaAzure = async (arquivo, produtoId) => {
         try {
-            console.group('Upload de Imagem');
+            const tokenSaS = await obterTokenSasAzure();
+            const nomeArquivo = `${produtoId}`;
+            const sasUrl = `https://terabite.blob.core.windows.net/terabite-container/${nomeArquivo}?${tokenSaS}`;
+            const urlUpload = `${sasUrl}/`;
 
-            // Obtain SAS token
-            const tokenSAS = await obterTokenSAS();
-
-            // Robust token validation
-            if (!tokenSAS || typeof tokenSAS !== 'string') {
-                throw new Error('Token SAS inválido');
-            }
-
-            // Ensure token starts with '?'
-            const sasToken = tokenSAS.startsWith('?') ? tokenSAS : `?${tokenSAS}`;
-
-            // Generate unique filename
-            const nomeArquivo = `produto-${identificador}-${Date.now()}-${encodeURIComponent(arquivo.name)}`;
-
-            // Construct full upload URL - Note the separation between filename and SAS token
-            const urlUpload = `https://terabite.blob.core.windows.net/terabite-container/${nomeArquivo}${sasToken}`;
-
-            console.log('URL de Upload:', urlUpload);
-            console.log('Tipo de Arquivo:', arquivo.type);
-
-            // Perform upload
-            const uploadResposta = await fetch(urlUpload, {
+            const resposta = await fetch(sasUrl, {
                 method: 'PUT',
                 headers: {
                     'x-ms-blob-type': 'BlockBlob',
-                    'Content-Type': arquivo.type || 'application/octet-stream'
+                    'Content-Type': arquivo.type
                 },
                 body: arquivo
             });
 
-            console.log('Status do Upload:', uploadResposta.status);
-
-            // Check upload response
-            if (!uploadResposta.ok) {
-                const errorText = await uploadResposta.text();
-                throw new Error(`Upload falhou: ${uploadResposta.status} - ${errorText}`);
+            if (!resposta.ok) {
+                throw new Error('Erro ao fazer upload da imagem');
             }
 
-            // Construct and return image URL
-            const urlImagem = `https://terabite.blob.core.windows.net/terabite-container/${encodeURIComponent(nomeArquivo)}`;
-
-            console.log('URL da Imagem:', urlImagem);
-            console.groupEnd();
-
-            return urlImagem;
+            return urlUpload.split('?')[0];
         } catch (erro) {
-            console.error('Erro no Upload:', erro);
-            console.groupEnd();
+            toast.error("Tente novamente mais tarde");
             throw erro;
         }
     };
@@ -222,6 +178,7 @@ const ListarProdutos = () => {
                 preco: typeof produto.preco === 'number' ? produto.preco : 0,
                 imagemUrl: "https://terabite.blob.core.windows.net/terabite-container/" + produto.id || ''
             }));
+
             setProdutos(produtosFormatados);
         } catch (erro) {
             toast.error("Erro ao pesquisar produtos");
@@ -229,7 +186,6 @@ const ListarProdutos = () => {
             setCarregando(false);
         }
     };
-
 
     const abrirModal = () => {
         setNovoProduto({ nome: '', marca: '', preco: '', imagemUrl: '' });
@@ -351,79 +307,67 @@ const ListarProdutos = () => {
     const validarFormulario = () => {
         const novosErros = {};
 
-        if (!novoProduto.nome?.trim()) {
-            novosErros.nome = 'Nome é obrigatório';
-        }
-        if (!novoProduto.marca?.trim()) {
-            novosErros.marca = 'Marca é obrigatória';
-        }
-        if (!novoProduto.subtipo?.trim()) {
-            novosErros.subtipo = 'Subtipo é obrigatório';
+        // Verificando os valores de entrada
+        console.log("Novo produto:", novoProduto);
+        console.log('Arquivo imagem:', arquivoImagem);
+        console.log('Preço do produto:', novoProduto?.preco);
+
+        if (!novoProduto) {
+            novosErros.nome = 'Produto não encontrado';
+        } else {
+            if (!novoProduto?.nome?.trim()) {
+                novosErros.nome = 'Nome é obrigatório';
+            }
+            if (!novoProduto?.marca?.trim()) {
+                novosErros.marca = 'Marca é obrigatória';
+            }
+            if (!novoProduto?.subtipo?.trim()) {
+                novosErros.subtipo = 'Subtipo é obrigatório';
+            }
+
+            // Validar o formato do preço
+            try {
+                formatarPreco(novoProduto?.preco || '');
+            } catch (erro) {
+                novosErros.preco = 'Formato de preço inválido';
+            }
         }
 
-        try {
-            formatarPreco(novoProduto.preco);
-        } catch (erro) {
-            novosErros.preco = 'Formato de preço inválido';
-        }
-
-        if (!arquivoImagem && !novoProduto.imagemUrl) {
+        // Validar imagem obrigatória
+        if (!arquivoImagem && !novoProduto?.imagemUrl) {
             novosErros.imagem = 'Imagem é obrigatória';
         }
 
-        console.log('Erros de validação:', novosErros); // Adicione este log para identificar os erros
+        console.log('Erros de validação:', novosErros); // Log para depuração
         setErros(novosErros);
         return Object.keys(novosErros).length === 0;
     };
 
-
     const adicionarNovoProduto = async () => {
-        console.log('Iniciando processo de adicionar/atualizar produto...');
-        if (!validarFormulario()) {
-            console.log('Validação do formulário falhou');
-            return;
-        }
+        if (!validarFormulario()) return;
 
         try {
             setCarregando(true);
-
             let urlImagem = novoProduto.imagemUrl;
 
             if (arquivoImagem) {
-                try {
-                    console.log('Enviando imagem para Azure...');
-                    urlImagem = await enviarImagemParaAzure(arquivoImagem, produtoSelecionado?.id || Math.random().toString());
-                    console.log('Imagem enviada com sucesso:', urlImagem);
-                } catch (erro) {
-                    console.error('Erro ao enviar imagem para Azure:', erro);
-                    toast.error("Falha no upload da imagem. Usando imagem anterior.");
-                    if (!novoProduto.imagemUrl) {
-                        toast.error("Não há imagem anterior disponível.");
-                        return;
-                    }
-                }
+                const idParaImagem = produtoSelecionado ? produtoSelecionado.id : Math.random().toString();
+                urlImagem = await enviarImagemParaAzure(arquivoImagem, idParaImagem);
             }
 
             const token = sessionStorage.getItem('token');
-            console.log('Token obtido:', token);
-
             const dadosProduto = {
                 nome: novoProduto.nome,
                 nomeSubtipo: novoProduto.subtipo,
                 nomeMarca: novoProduto.marca,
-                preco: formatarPreco(novoProduto.preco),
-                imagemUrl: urlImagem
+                preco: formatarPreco(novoProduto.preco)
             };
-
-            console.log('Dados do produto formatados:', dadosProduto);
 
             const url = produtoSelecionado
                 ? `http://localhost:8080/produtos/${produtoSelecionado.id}`
                 : 'http://localhost:8080/produtos';
 
             const metodo = produtoSelecionado ? 'PUT' : 'POST';
-
-            console.log('Enviando requisição para a API:', { url, metodo });
 
             const resposta = await fetch(url, {
                 method: metodo,
@@ -435,46 +379,23 @@ const ListarProdutos = () => {
             });
 
             if (!resposta.ok) {
-                const errorBody = await resposta.text();
-                console.error('Erro na resposta da API:', errorBody);
-                throw new Error(`Erro ao salvar produto: ${errorBody}`);
-            }
-
-            const dadosAtualizados = await resposta.json();
-            console.log('Resposta da API recebida:', dadosAtualizados);
-
-            if (produtoSelecionado) {
-                // Lógica de atualização existente
-                setProdutos(produtos.map(produto =>
-                    produto.id === produtoSelecionado.id ? {
-                        id: dadosAtualizados.id?.toString() || produto.id,
-                        nome: dadosAtualizados.nome || produto.nome,
-                        marca: dadosAtualizados.marca?.nome || produto.marca,
-                        subtipo: dadosAtualizados.subtipo?.nome || produto.subtipo,
-                        preco: dadosAtualizados.preco || produto.preco,
-                        imagemUrl: dadosAtualizados.id
-                            ? `https://terabite.blob.core.windows.net/terabite-container/${dadosAtualizados.id}`
-                            : produto.imagemUrl
-                    } : produto
-                ));
-            } else {
-                const novoProdutoFormatado = {
-                    id: dadosAtualizados.id?.toString() || Math.random().toString(),
-                    nome: dadosAtualizados.nome || '',
-                    marca: dadosAtualizados.marca?.nome || '',
-                    subtipo: dadosAtualizados.subtipo?.nome || '',
-                    preco: dadosAtualizados.preco || 0,
-                    imagemUrl: urlImagem  // Use a URL completa gerada no upload
-                };
-                // Adiciona o novo produto no início da lista
-                setProdutos([novoProdutoFormatado, ...produtos]);
+                throw new Error('Erro ao salvar produto');
             }
 
             toast.success(produtoSelecionado ? 'Produto atualizado com sucesso!' : 'Produto criado com sucesso!');
+
+            const dadosAtualizados = await resposta.json();
+            if (produtoSelecionado) {
+                setProdutos(produtos.map(produto =>
+                    produto.id === produtoSelecionado.id ? dadosAtualizados : produto
+                ));
+            } else {
+                setProdutos([...produtos, dadosAtualizados]);
+            }
+
             fecharModal();
         } catch (erro) {
-            console.error('Erro ao salvar o produto:', erro);
-            toast.error(erro.message || 'Erro ao salvar o produto.');
+            toast.error(erro.message);
         } finally {
             setCarregando(false);
         }
@@ -482,15 +403,24 @@ const ListarProdutos = () => {
 
 
     const handleEditar = (produto) => {
+        if (!produto || !produto.id) {
+            console.error('Produto inválido', produto);
+            toast.error('Não foi possível editar o produto');
+            return;
+        }
+
         setProdutoSelecionado(produto);
-        setNovoProduto({ 
-            ...produto, 
-            marca: produto.marca 
+        setNovoProduto({
+            nome: produto.nome || '',
+            marca: produto.marca || '',
+            subtipo: produto.subtipo || '',
+            preco: produto.preco || '',
+            imagemUrl: produto.imagemUrl || ''
         });
-        // Use a URL completa da imagem
-        setImagemPreview(produto.imagemUrl);
+        setImagemPreview(produto.imagemUrl || '');
         setModalAberto(true);
     };
+
 
     return (
         <>
@@ -527,7 +457,7 @@ const ListarProdutos = () => {
                         sx={{
                             width: '100%',
                             '& .MuiTableCell-root': {
-                                padding: '8px', // Reduz o padding das células
+                                padding: '8px',
                             },
                             '& .MuiTableCell-root:last-child': {
                                 width: '60px', // Ajusta a largura da última coluna (Editar)
@@ -546,20 +476,17 @@ const ListarProdutos = () => {
                             </TableRow>
                         </TableHead>
                         <TableBody>
-                            {produtos.filter(produto => produto && typeof produto === 'object').map(produto => (
-                                <TableRow key={produto.id} className='tabela-row-vendas'>
-                                    <TableCell className='tabela-row-vendas'>
-                                        <img
-                                            src={produto.imagemUrl}
-                                            alt={produto.nome}
-                                            width="35"
-                                            height="35"
-                                        />
+                            {produtos
+                                .filter(produto => produto && typeof produto === 'object')
+                                .map(produto => (
+                                    <TableRow key={produto.id} className='tabela-row-vendas'>
+                                        <TableCell>
+                                        <img src={produto.imagemUrl} alt={produto.nome} width="35" height="35" />
                                     </TableCell>
-                                    <TableCell className='tabela-row-vendas'>{produto.nome}</TableCell>
-                                    <TableCell className='tabela-row-vendas'>{produto.marca}</TableCell>
-                                    <TableCell className='tabela-row-vendas'>R$ {produto.preco}</TableCell>
-                                    <TableCell className='tabela-row-vendas'>
+                                    <TableCell>{produto.nome}</TableCell>
+                                    <TableCell>{produto.marca}</TableCell>
+                                    <TableCell>R$ {produto.preco}</TableCell>
+                                    <TableCell className='tabela-cell'>
                                         <button onClick={() => handleEditar(produto)}>
                                             <EditIcon />
                                         </button>
