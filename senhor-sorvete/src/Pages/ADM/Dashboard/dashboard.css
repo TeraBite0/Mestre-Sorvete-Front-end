@@ -133,8 +133,14 @@
 }
 
 .tabela-baixo-estoque {
-  margin-top: 2rem;
+  /* margin-top: 1rem; */
   overflow-x: auto;
+}
+
+.tabela-baixo-estoque .tabela-scroll {
+  max-height: 20rem; /* Aproximadamente 256px */
+  width: 80rem;
+  overflow-y: auto;
 }
 
 .tabela-baixo-estoque table {
@@ -145,14 +151,17 @@
 
 .tabela-baixo-estoque th,
 .tabela-baixo-estoque td {
-  padding: 0.75rem;
+  padding: 0.70rem;
   text-align: left;
   border-bottom: 1px solid #e2e8f0;
 }
 
 .tabela-baixo-estoque th {
+  position: sticky; /* Adiciona fixação do cabeçalho */
+  top: 0;
   background-color: #f8fafc;
   font-weight: 600;
+  z-index: 1; 
 }
 
 .tabela-baixo-estoque tr:hover {

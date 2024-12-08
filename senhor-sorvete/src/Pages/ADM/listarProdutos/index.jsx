@@ -9,42 +9,34 @@ import Pesquisa from '../../../Components/Pesquisa';
 import BotaoVoltarGerenciamento from '../../../Components/BotaoVoltarGerenciamento';
 import BotaoGerenciamento from '../../../Components/BotaoGerenciamento';
 import { toast } from "react-toastify";
+import axios from 'axios';
 
 const ListarProdutos = () => {
     const [produtos, setProdutos] = useState([]);
     const [pesquisa, setPesquisa] = useState('');
     const [modalAberto, setModalAberto] = useState(false);
-    const [novoProduto, setNovoProduto] = useState({ nome: '', marca: '', preco: '', imagemUrl: '' });
+    const [novoProduto, setNovoProduto] = useState({
+        nome: '',
+        marca: '',
+        subtipo: '',
+        preco: '',
+        imagemUrl: ''
+    });
     const [produtoSelecionado, setProdutoSelecionado] = useState(null);
     const [imagemPreview, setImagemPreview] = useState(null);
     const [arquivoImagem, setArquivoImagem] = useState(null);
     const [carregando, setCarregando] = useState(false);
     const [erros, setErros] = useState({});
-    const [marcas, setMarcas] = useState([]);  // Nova linha para armazenar marcas
+    const [marcas, setMarcas] = useState([]);
+    const [subtipos, setSubtipos] = useState([]);
     const [modalNovaMarcaAberto, setModalNovaMarcaAberto] = useState(false);
+    const [modalNovoSubtipoAberto, setModalNovoSubtipoAberto] = useState(false);
     const [novaMarca, setNovaMarca] = useState('');
+    const [novoSubtipo, setNovoSubtipo] = useState('');
 
     useEffect(() => {
         buscarProdutos();
     }, []);
-
-    const validarFormulario = () => {
-        const novosErros = {};
-        if (!novoProduto.nome.trim()) {
-            novosErros.nome = 'Nome é obrigatório';
-        }
-        if (!novoProduto.marca.trim()) {
-            novosErros.marca = 'Marca é obrigatória';
-        }
-        if (!novoProduto.preco || novoProduto.preco <= 0) {
-            novosErros.preco = 'Preço deve ser maior que zero';
-        }
-        if (!arquivoImagem && !novoProduto.imagemUrl) {
-            novosErros.imagem = 'Imagem é obrigatória';
-        }
-        setErros(novosErros);
-        return Object.keys(novosErros).length === 0;
-    };
 
     const buscarProdutos = async () => {
         const token = sessionStorage.getItem('token');
@@ -64,11 +56,18 @@ const ListarProdutos = () => {
             const marcasUnicas = [...new Set(
                 dados
                     .map(produto => produto.marca?.nome)
-                    .filter(marca => marca) // Remove valores nulos ou undefined
+                    .filter(marca => marca)
             )];
 
-            // Transformar marcas únicas em objeto com nome
+            // Extrair subtipos únicos
+            const subtiposUnicos = [...new Set(
+                dados
+                    .map(produto => produto.subtipo?.nome)
+                    .filter(subtipo => subtipo)
+            )];
+
             const marcasFormatadas = marcasUnicas.map(nome => ({ nome }));
+            const subtiposFormatados = subtiposUnicos.map(nome => ({ nome }));
 
             const produtosFormatados = dados.map(produto => ({
                 id: produto.id?.toString() || Math.random().toString(),
@@ -80,7 +79,8 @@ const ListarProdutos = () => {
             }));
 
             setProdutos(produtosFormatados);
-            setMarcas(marcasFormatadas);  // Adiciona as marcas únicas ao estado
+            setMarcas(marcasFormatadas);
+            setSubtipos(subtiposFormatados);
         } catch (erro) {
             toast.error("Erro ao carregar os produtos: " + erro.message);
         } finally {
@@ -108,53 +108,91 @@ const ListarProdutos = () => {
         toast.success('Marca adicionada com sucesso!');
     };
 
-    const obterTokenSasAzure = async () => {
-        const token = sessionStorage.getItem('token');
-        const resposta = await fetch('http://localhost:8080/azure', {
-            method: 'GET',
-            headers: {
-                'Authorization': `Bearer ${token}`
-            }
-        });
-
-        if (resposta.ok) {
-
-            const dados = await resposta.json();
-            return dados.sasToken;
-        }
-    };
-
-    const enviarImagemParaAzure = async (arquivo, produtoId) => {
+    const obterTokenSAS = async () => {
         try {
-            const tokenSaS = await obterTokenSasAzure();  // Certifique-se de que esta função retorna o token corretamente.
-            const nomeArquivo = `${produtoId}`;
-            const sasUrl = `https://terabite.blob.core.windows.net/terabite-container/${nomeArquivo}?${tokenSaS}`;
+            const token = sessionStorage.getItem('token');
 
-            console.log("URL de upload:", sasUrl);  // Log da URL gerada para depuração.
+            if (!token) {
+                throw new Error('Token não encontrado');
+            }
 
-            const resposta = await fetch(sasUrl, {
-                method: 'PUT',
+            const resposta = await fetch('http://localhost:8080/azure', {
+                method: 'GET',
                 headers: {
-                    'x-ms-blob-type': 'BlockBlob',
-                    'Content-Type': arquivo.type
-                },
-                body: arquivo
+                    'accept': '*/*',
+                    'Authorization': `Bearer ${token}`
+                }
             });
 
             if (!resposta.ok) {
-                const textoErro = await resposta.text();  // Captura mensagem detalhada.
-                throw new Error(`Erro ao enviar a imagem: ${resposta.status} - ${textoErro}`);
+                const errorBody = await resposta.text();
+                throw new Error(`Falha ao obter token SAS: ${resposta.status} ${errorBody}`);
             }
 
-            console.log("Upload realizado com sucesso:", resposta.status);
-            return sasUrl.split('?')[0];  // Retorna a URL sem o token SAS.
+            // Parse o token SAS como JSON se ele for retornado como JSON
+            const tokenSAS = await resposta.json();
+            return tokenSAS.sasToken; // Acesse o token SAS correto
         } catch (erro) {
-            console.error("Erro ao enviar a imagem:", erro);
-            toast.error("Erro ao enviar a imagem: " + erro.message);
+            console.error('Erro ao obter token SAS:', erro);
             throw erro;
         }
     };
 
+    const enviarImagemParaAzure = async (arquivo, identificador) => {
+        try {
+            console.group('Upload de Imagem');
+
+            // Obtain SAS token
+            const tokenSAS = await obterTokenSAS();
+
+            // Robust token validation
+            if (!tokenSAS || typeof tokenSAS !== 'string') {
+                throw new Error('Token SAS inválido');
+            }
+
+            // Ensure token starts with '?'
+            const sasToken = tokenSAS.startsWith('?') ? tokenSAS : `?${tokenSAS}`;
+
+            // Generate unique filename
+            const nomeArquivo = `produto-${identificador}-${Date.now()}-${encodeURIComponent(arquivo.name)}`;
+
+            // Construct full upload URL - Note the separation between filename and SAS token
+            const urlUpload = `https://terabite.blob.core.windows.net/terabite-container/${nomeArquivo}${sasToken}`;
+
+            console.log('URL de Upload:', urlUpload);
+            console.log('Tipo de Arquivo:', arquivo.type);
+
+            // Perform upload
+            const uploadResposta = await fetch(urlUpload, {
+                method: 'PUT',
+                headers: {
+                    'x-ms-blob-type': 'BlockBlob',
+                    'Content-Type': arquivo.type || 'application/octet-stream'
+                },
+                body: arquivo
+            });
+
+            console.log('Status do Upload:', uploadResposta.status);
+
+            // Check upload response
+            if (!uploadResposta.ok) {
+                const errorText = await uploadResposta.text();
+                throw new Error(`Upload falhou: ${uploadResposta.status} - ${errorText}`);
+            }
+
+            // Construct and return image URL
+            const urlImagem = `https://terabite.blob.core.windows.net/terabite-container/${encodeURIComponent(nomeArquivo)}`;
+
+            console.log('URL da Imagem:', urlImagem);
+            console.groupEnd();
+
+            return urlImagem;
+        } catch (erro) {
+            console.error('Erro no Upload:', erro);
+            console.groupEnd();
+            throw erro;
+        }
+    };
 
     const filtroPesquisa = async (termo) => {
         const token = sessionStorage.getItem('token');
@@ -213,29 +251,29 @@ const ListarProdutos = () => {
 
     const handleInputChange = (evento) => {
         const { name, value } = evento.target;
-    
+
         // Verifica se o campo é 'preco'
         if (name === 'preco') {
             // Remove todos os caracteres não numéricos
             const numeroLimpo = value.replace(/[^\d]/g, '');
-            
+
             // Divide por 100 para considerar casas decimais
             const valorFormatado = (Number(numeroLimpo) / 100).toLocaleString('pt-BR', {
                 minimumFractionDigits: 2,
                 maximumFractionDigits: 2,
             });
-    
+
             setNovoProduto(anterior => ({
                 ...anterior,
                 [name]: valorFormatado
             }));
         } else {
-            setNovoProduto(anterior => ({ 
-                ...anterior, 
-                [name]: value 
+            setNovoProduto(anterior => ({
+                ...anterior,
+                [name]: value
             }));
         }
-    
+
         // Limpa erro se existir
         if (erros[name]) {
             setErros(anterior => ({
@@ -244,12 +282,13 @@ const ListarProdutos = () => {
             }));
         }
     };
-    
+
 
     const handleImagemUpload = (evento) => {
         const arquivo = evento.target.files[0];
         if (arquivo) {
-            if (arquivo.size > 5000000) { // Limite de 5MB
+            // Validações existentes
+            if (arquivo.size > 5000000) {
                 toast.error("Arquivo muito grande. Máximo 5MB.");
                 return;
             }
@@ -259,48 +298,132 @@ const ListarProdutos = () => {
                 return;
             }
 
+            // Definir o arquivo 
             setArquivoImagem(arquivo);
 
-            const leitor = new FileReader();
-            leitor.onloadend = () => {
-                setImagemPreview(leitor.result);
-            };
-            leitor.readAsDataURL(arquivo);
+            // Usar try-catch para lidar com erros de leitura
+            try {
+                const leitor = new FileReader();
 
-            // Limpa erro de imagem se existir
+                leitor.onload = (e) => {
+                    console.log('Imagem carregada:', e.target.result); // Log para debug
+                    setImagemPreview(e.target.result);
+                };
+
+                leitor.onerror = (error) => {
+                    console.error('Erro ao ler arquivo:', error);
+                    toast.error('Erro ao carregar imagem');
+                };
+
+                leitor.readAsDataURL(arquivo);
+            } catch (error) {
+                console.error('Erro inesperado:', error);
+                toast.error('Erro ao processar imagem');
+            }
+
+            // Limpar erros de imagem
             if (erros.imagem) {
                 setErros(anterior => ({ ...anterior, imagem: '' }));
             }
         }
     };
 
+    // Função para formatar o preço de forma segura
+    const formatarPreco = (preco) => {
+        // Remove espaços em branco
+        let precoLimpo = preco.toString().trim();
+
+        // Substitui vírgula por ponto
+        precoLimpo = precoLimpo.replace(',', '.');
+
+        // Converte para número de ponto flutuante
+        const precoFormatado = parseFloat(precoLimpo);
+
+        // Verifica se é um número válido
+        if (isNaN(precoFormatado)) {
+            throw new Error('Preço inválido');
+        }
+
+        // Arredonda para 2 casas decimais
+        return Number(precoFormatado.toFixed(2));
+    };
+
+    const validarFormulario = () => {
+        const novosErros = {};
+
+        if (!novoProduto.nome?.trim()) {
+            novosErros.nome = 'Nome é obrigatório';
+        }
+        if (!novoProduto.marca?.trim()) {
+            novosErros.marca = 'Marca é obrigatória';
+        }
+        if (!novoProduto.subtipo?.trim()) {
+            novosErros.subtipo = 'Subtipo é obrigatório';
+        }
+
+        try {
+            formatarPreco(novoProduto.preco);
+        } catch (erro) {
+            novosErros.preco = 'Formato de preço inválido';
+        }
+
+        if (!arquivoImagem && !novoProduto.imagemUrl) {
+            novosErros.imagem = 'Imagem é obrigatória';
+        }
+
+        console.log('Erros de validação:', novosErros); // Adicione este log para identificar os erros
+        setErros(novosErros);
+        return Object.keys(novosErros).length === 0;
+    };
+
+
     const adicionarNovoProduto = async () => {
-        if (!validarFormulario()) return;
+        console.log('Iniciando processo de adicionar/atualizar produto...');
+        if (!validarFormulario()) {
+            console.log('Validação do formulário falhou');
+            return;
+        }
 
         try {
             setCarregando(true);
+
             let urlImagem = novoProduto.imagemUrl;
 
             if (arquivoImagem) {
                 try {
+                    console.log('Enviando imagem para Azure...');
                     urlImagem = await enviarImagemParaAzure(arquivoImagem, produtoSelecionado?.id || Math.random().toString());
+                    console.log('Imagem enviada com sucesso:', urlImagem);
                 } catch (erro) {
-                    toast.error("Erro no upload da imagem. Operação interrompida.");
-                    return;  // Não continuar se a imagem falhar
+                    console.error('Erro ao enviar imagem para Azure:', erro);
+                    toast.error("Falha no upload da imagem. Usando imagem anterior.");
+                    if (!novoProduto.imagemUrl) {
+                        toast.error("Não há imagem anterior disponível.");
+                        return;
+                    }
                 }
             }
 
             const token = sessionStorage.getItem('token');
+            console.log('Token obtido:', token);
+
             const dadosProduto = {
-                ...novoProduto,
+                nome: novoProduto.nome,
+                nomeSubtipo: novoProduto.subtipo,
+                nomeMarca: novoProduto.marca,
+                preco: formatarPreco(novoProduto.preco),
                 imagemUrl: urlImagem
             };
+
+            console.log('Dados do produto formatados:', dadosProduto);
 
             const url = produtoSelecionado
                 ? `http://localhost:8080/produtos/${produtoSelecionado.id}`
                 : 'http://localhost:8080/produtos';
 
             const metodo = produtoSelecionado ? 'PUT' : 'POST';
+
+            console.log('Enviando requisição para a API:', { url, metodo });
 
             const resposta = await fetch(url, {
                 method: metodo,
@@ -312,31 +435,59 @@ const ListarProdutos = () => {
             });
 
             if (!resposta.ok) {
-                throw new Error('Erro ao salvar produto no servidor.');
+                const errorBody = await resposta.text();
+                console.error('Erro na resposta da API:', errorBody);
+                throw new Error(`Erro ao salvar produto: ${errorBody}`);
+            }
+
+            const dadosAtualizados = await resposta.json();
+            console.log('Resposta da API recebida:', dadosAtualizados);
+
+            if (produtoSelecionado) {
+                // Lógica de atualização existente
+                setProdutos(produtos.map(produto =>
+                    produto.id === produtoSelecionado.id ? {
+                        id: dadosAtualizados.id?.toString() || produto.id,
+                        nome: dadosAtualizados.nome || produto.nome,
+                        marca: dadosAtualizados.marca?.nome || produto.marca,
+                        subtipo: dadosAtualizados.subtipo?.nome || produto.subtipo,
+                        preco: dadosAtualizados.preco || produto.preco,
+                        imagemUrl: dadosAtualizados.id
+                            ? `https://terabite.blob.core.windows.net/terabite-container/${dadosAtualizados.id}`
+                            : produto.imagemUrl
+                    } : produto
+                ));
+            } else {
+                const novoProdutoFormatado = {
+                    id: dadosAtualizados.id?.toString() || Math.random().toString(),
+                    nome: dadosAtualizados.nome || '',
+                    marca: dadosAtualizados.marca?.nome || '',
+                    subtipo: dadosAtualizados.subtipo?.nome || '',
+                    preco: dadosAtualizados.preco || 0,
+                    imagemUrl: urlImagem  // Use a URL completa gerada no upload
+                };
+                // Adiciona o novo produto no início da lista
+                setProdutos([novoProdutoFormatado, ...produtos]);
             }
 
             toast.success(produtoSelecionado ? 'Produto atualizado com sucesso!' : 'Produto criado com sucesso!');
-
-            const dadosAtualizados = await resposta.json();
-            if (produtoSelecionado) {
-                setProdutos(produtos.map(produto =>
-                    produto.id === produtoSelecionado.id ? dadosAtualizados : produto
-                ));
-            } else {
-                setProdutos([...produtos, dadosAtualizados]);
-            }
-
             fecharModal();
         } catch (erro) {
+            console.error('Erro ao salvar o produto:', erro);
             toast.error(erro.message || 'Erro ao salvar o produto.');
         } finally {
             setCarregando(false);
         }
     };
 
+
     const handleEditar = (produto) => {
         setProdutoSelecionado(produto);
-        setNovoProduto({ ...produto, marca: produto.marca });
+        setNovoProduto({ 
+            ...produto, 
+            marca: produto.marca 
+        });
+        // Use a URL completa da imagem
         setImagemPreview(produto.imagemUrl);
         setModalAberto(true);
     };
@@ -395,10 +546,15 @@ const ListarProdutos = () => {
                             </TableRow>
                         </TableHead>
                         <TableBody>
-                            {produtos.map(produto => (
+                            {produtos.filter(produto => produto && typeof produto === 'object').map(produto => (
                                 <TableRow key={produto.id} className='tabela-row-vendas'>
                                     <TableCell className='tabela-row-vendas'>
-                                        <img src={produto.imagemUrl} alt={produto.nome} width="35" height="35" />
+                                        <img
+                                            src={produto.imagemUrl}
+                                            alt={produto.nome}
+                                            width="35"
+                                            height="35"
+                                        />
                                     </TableCell>
                                     <TableCell className='tabela-row-vendas'>{produto.nome}</TableCell>
                                     <TableCell className='tabela-row-vendas'>{produto.marca}</TableCell>
@@ -434,7 +590,7 @@ const ListarProdutos = () => {
                     <Select
                         autoFocus
                         margin="dense"
-                        name="marca"
+                        name='marca'
                         label="Marca"
                         fullWidth
                         value={novoProduto.marca || ''}
@@ -457,6 +613,32 @@ const ListarProdutos = () => {
                             {erros.marca}
                         </div>
                     )}
+                    <Select
+                        autoFocus
+                        margin="dense"
+                        label="Subtipo"
+                        fullWidth
+                        value={novoProduto.subtipo || ''}
+                        onChange={(e) => setNovoProduto(prev => ({ ...prev, subtipo: e.target.value }))}
+                        error={!!erros.subtipo}
+                        displayEmpty
+                        renderValue={(selected) => selected || 'Selecione um subtipo'}
+                    >
+                        {subtipos.map((subtipo, index) => (
+                            <MenuItem key={index} value={subtipo.nome}>
+                                {subtipo.nome}
+                            </MenuItem>
+                        ))}
+                        <MenuItem onClick={() => setModalNovoSubtipoAberto(true)}>
+                            + Adicionar Novo Subtipo
+                        </MenuItem>
+                    </Select>
+                    {erros.subtipo && (
+                        <div style={{ color: 'red', fontSize: '0.75rem', marginTop: '3px' }}>
+                            {erros.subtipo}
+                        </div>
+                    )}
+
                     <TextField
                         margin="dense"
                         name="preco"
@@ -469,7 +651,7 @@ const ListarProdutos = () => {
                         helperText={erros.preco}
                         inputProps={{
                             min: "0",
-                            
+
                         }}
                         InputProps={{
                             startAdornment: (
@@ -477,7 +659,7 @@ const ListarProdutos = () => {
                             ),
                         }}
                     />
-                    
+
                     <input
                         accept="image/*"
                         type="file"
@@ -530,8 +712,8 @@ const ListarProdutos = () => {
                     />
                 </DialogContent>
                 <DialogActions>
-                    <Button   className='botaoModal' onClick={() => setModalNovaMarcaAberto(false)}>Cancelar</Button>
-                    <Button   className='botaoModal' onClick={adicionarNovaMarca}>Adicionar</Button>
+                    <Button className='botaoModal' onClick={() => setModalNovaMarcaAberto(false)}>Cancelar</Button>
+                    <Button className='botaoModal' onClick={adicionarNovaMarca}>Adicionar</Button>
                 </DialogActions>
             </Dialog>
         </>

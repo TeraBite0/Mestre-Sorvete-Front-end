@@ -68,23 +68,6 @@ const Dashboard = () => {
   });
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
-
-  // const generateCSVData = (data) => {
-  //   if (!data || !Array.isArray(data) || data.length === 0) {
-  //     return '';
-  //   }
-  
-  //   const headers = Object.keys(data[0]);
-  //   const rows = data.map(item => headers.map(header => item[header]));
-  
-  //   const csvContent = [
-  //     headers.join(','), // Cabeçalhos
-  //     ...rows.map(row => row.join(',')), // Dados
-  //   ].join('\n');
-  
-  //   return csvContent;
-  // };
-  
   
   const fetchGerarCsv = async () => {
 
@@ -268,6 +251,7 @@ const Dashboard = () => {
     return (
       <div className="tabela-baixo-estoque">
         <h3>Produtos com Baixo Estoque</h3>
+        <div className="tabela-scroll">
         <table className="w-full">
           <thead>
             <tr>
@@ -288,6 +272,7 @@ const Dashboard = () => {
             ))}
           </tbody>
         </table>
+        </div>
       </div>
     );
   };
