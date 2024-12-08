@@ -421,6 +421,10 @@ const ListarProdutos = () => {
         setModalAberto(true);
     };
 
+    // Função renderProdutoCell definida antes de usá-la
+    const renderProdutoCell = (value, defaultValue = '-') => {
+        return value || defaultValue;
+    };
 
     return (
         <>
@@ -443,6 +447,7 @@ const ListarProdutos = () => {
                 />
                 <BotaoGerenciamento botao="+ Novo Produto" onClick={abrirModal} />
             </div>
+
 
             <div className='tabela-produtos'>
                 <TableContainer
@@ -475,25 +480,34 @@ const ListarProdutos = () => {
                                 <TableCell className='tabela-head-cell'>Editar</TableCell>
                             </TableRow>
                         </TableHead>
+
                         <TableBody>
                             {produtos
                                 .filter(produto => produto && typeof produto === 'object')
                                 .map(produto => (
                                     <TableRow key={produto.id} className='tabela-row-vendas'>
                                         <TableCell>
-                                        <img src={produto.imagemUrl} alt={produto.nome} width="35" height="35" />
-                                    </TableCell>
-                                    <TableCell>{produto.nome}</TableCell>
-                                    <TableCell>{produto.marca}</TableCell>
-                                    <TableCell>R$ {produto.preco}</TableCell>
-                                    <TableCell className='tabela-cell'>
-                                        <button onClick={() => handleEditar(produto)}>
-                                            <EditIcon />
-                                        </button>
-                                    </TableCell>
-                                </TableRow>
-                            ))}
+                                            <img
+                                                src={renderProdutoCell(produto.imagemUrl, 'url-placeholder.png')}
+                                                alt={produto.nome || 'Imagem do Produto'}
+                                                width="35"
+                                                height="35"
+                                            />
+                                        </TableCell>
+                                        <TableCell>{renderProdutoCell(produto.nome, 'Produto sem nome')}</TableCell>
+                                        <TableCell>{produto.marca?.nome || 'Marca desconhecida'}</TableCell>
+                                        <TableCell>
+                                            R$ {renderProdutoCell(produto.preco, 0) !== 0 ? renderProdutoCell(produto.preco, 0).toFixed(2) : '0.00'}
+                                        </TableCell>
+                                        <TableCell className='tabela-cell'>
+                                            <button onClick={() => handleEditar(produto)}>
+                                                <EditIcon />
+                                            </button>
+                                        </TableCell>
+                                    </TableRow>
+                                ))}
                         </TableBody>
+
                     </Table>
                 </TableContainer>
             </div>
