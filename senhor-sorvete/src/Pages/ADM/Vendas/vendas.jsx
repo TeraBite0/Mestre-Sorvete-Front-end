@@ -78,7 +78,7 @@ const Vendas = () => {
     }
 
     axios
-      .get("http://localhost:8080/vendas", {
+      .get("http://74.163.64.10:8080/vendas", {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -98,7 +98,7 @@ const Vendas = () => {
     const token = sessionStorage.getItem("token");
 
     try {
-      const response = await axios.get("http://localhost:8080/produtos", {
+      const response = await axios.get("http://74.163.64.10:8080/produtos", {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -196,7 +196,7 @@ const Vendas = () => {
       }));
   
       const response = await axios.post(
-        "http://localhost:8080/vendas",
+        "http://74.163.64.10:8080/vendas",
         { produtos: produtosParaEnviar },
         {
           headers: {
@@ -230,7 +230,7 @@ const Vendas = () => {
 
     try {
       const dataFormatada = dataBusca;
-      const response = await axios.get("http://localhost:8080/vendas/data", {
+      const response = await axios.get("http://74.163.64.10:8080/vendas/data", {
         params: { data: dataFormatada },
         headers: {
           Authorization: `Bearer ${token}`,

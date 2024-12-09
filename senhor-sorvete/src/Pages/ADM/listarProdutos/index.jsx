@@ -29,41 +29,40 @@ import { toast } from "react-toastify";
 import axios from "axios";
 
 const ListarProdutos = () => {
-  const [produtos, setProdutos] = useState([]);
-  const [pesquisa, setPesquisa] = useState("");
-  const [modalAberto, setModalAberto] = useState(false);
-  const [novoProduto, setNovoProduto] = useState({
-    nome: "",
-    marca: "",
-    subtipo: "",
-    preco: "",
-    imagemUrl: "",
-  });
-  const [produtoSelecionado, setProdutoSelecionado] = useState(null);
-  const [imagemPreview, setImagemPreview] = useState(null);
-  const [arquivoImagem, setArquivoImagem] = useState(null);
-  const [carregando, setCarregando] = useState(false);
-  const [erros, setErros] = useState({});
-  const [marcas, setMarcas] = useState([]);
-  const [subtipos, setSubtipos] = useState([]);
-  const [modalNovaMarcaAberto, setModalNovaMarcaAberto] = useState(false);
-  const [modalNovoSubtipoAberto, setModalNovoSubtipoAberto] = useState(false);
-  const [novaMarca, setNovaMarca] = useState("");
-  const [novoSubtipo, setNovoSubtipo] = useState("");
+    const [produtos, setProdutos] = useState([]);
+    const [pesquisa, setPesquisa] = useState('');
+    const [modalAberto, setModalAberto] = useState(false);
+    const [novoProduto, setNovoProduto] = useState({
+        nome: '',
+        marca: '',
+        subtipo: '',
+        preco: '',
+    });
+    const [produtoSelecionado, setProdutoSelecionado] = useState(null);
+    const [imagemPreview, setImagemPreview] = useState(null);
+    const [arquivoImagem, setArquivoImagem] = useState(null);
+    const [carregando, setCarregando] = useState(false);
+    const [erros, setErros] = useState({});
+    const [marcas, setMarcas] = useState([]);
+    const [subtipos, setSubtipos] = useState([]);
+    const [modalNovaMarcaAberto, setModalNovaMarcaAberto] = useState(false);
+    const [modalNovoSubtipoAberto, setModalNovoSubtipoAberto] = useState(false);
+    const [novaMarca, setNovaMarca] = useState('');
+    const [novoSubtipo, setNovoSubtipo] = useState('');
 
   useEffect(() => {
     buscarProdutos();
   }, []);
 
-  const buscarProdutos = async () => {
-    const token = sessionStorage.getItem("token");
-    setCarregando(true);
-    try {
-      const resposta = await fetch("http://localhost:8080/produtos", {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
+    const buscarProdutos = async () => {
+        const token = sessionStorage.getItem('token');
+        setCarregando(true);
+        try {
+            const resposta = await fetch('http://74.163.64.10:8080/produtos', {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            });
 
       if (!resposta.ok) throw new Error("Falha ao carregar produtos");
 
@@ -88,16 +87,14 @@ const ListarProdutos = () => {
       const marcasFormatadas = marcasUnicas.map((nome) => ({ nome }));
       const subtiposFormatados = subtiposUnicos.map((nome) => ({ nome }));
 
-      const produtosFormatados = dados.map((produto) => ({
-        id: produto.id?.toString() || Math.random().toString(),
-        nome: produto.nome || "",
-        marca: produto.marca?.nome || "",
-        subtipo: produto.subtipo?.nome || "",
-        preco: typeof produto.preco === "number" ? produto.preco : 0,
-        imagemUrl:
-          "https://terabite.blob.core.windows.net/terabite-container/" +
-            produto.id || "",
-      }));
+            const produtosFormatados = dados.map(produto => ({
+                id: produto.id || '',
+                nome: produto.nome || '',
+                marca: produto.marca?.nome || '',
+                subtipo: produto.subtipo?.nome || '',
+                preco: typeof produto.preco === 'number' ? produto.preco : 0,
+                imagemUrl: "https://terabite.blob.core.windows.net/terabite-container/" + produto.id || ''
+            }));
 
       setProdutos(produtosFormatados);
       setMarcas(marcasFormatadas);
@@ -133,14 +130,14 @@ const ListarProdutos = () => {
     toast.success("Marca adicionada com sucesso!");
   };
 
-  const obterTokenSasAzure = async () => {
-    const token = sessionStorage.getItem("token");
-    const resposta = await fetch("http://localhost:8080/azure", {
-      method: "GET",
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
+    const obterTokenSasAzure = async () => {
+        const token = sessionStorage.getItem('token');
+        const resposta = await fetch('http://74.163.64.10:8080/azure', {
+            method: 'GET',
+            headers: {
+                'Authorization': `Bearer ${token}`
+            }
+        });
 
     if (resposta.ok) {
       const dados = await resposta.json();
@@ -185,31 +182,26 @@ const ListarProdutos = () => {
         .normalize("NFD")
         .replace(/[\u0300-\u036f]/g, "");
 
-      const response = await fetch(
-        `http://localhost:8080/produtos/filtrar-nome-marca?termo=${termoNormalizado}`,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
+            const response = await fetch(`http://74.163.64.10:8080/produtos/filtrar-nome-marca?termo=${termoNormalizado}`, {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            });
 
       if (!response.ok) {
         toast.error("Erro ao pesquisar");
         return;
       }
 
-      const dados = await response.json();
-      const produtosFormatados = dados.map((produto) => ({
-        id: produto.id?.toString() || Math.random().toString(),
-        nome: produto.nome || "",
-        marca: produto.marca?.nome || "",
-        subtipo: produto.subtipo?.nome || "",
-        preco: typeof produto.preco === "number" ? produto.preco : 0,
-        imagemUrl:
-          "https://terabite.blob.core.windows.net/terabite-container/" +
-            produto.id || "",
-      }));
+            const dados = await response.json();
+            const produtosFormatados = dados.map(produto => ({
+                id: produto.id || '',
+                nome: produto.nome || '',
+                marca: produto.marca?.nome || '',
+                subtipo: produto.subtipo?.nome || '',
+                preco: typeof produto.preco === 'number' ? produto.preco : 0,
+                imagemUrl: "https://terabite.blob.core.windows.net/terabite-container/" + produto.id || ''
+            }));
 
       setProdutos(produtosFormatados);
     } catch (erro) {
@@ -274,14 +266,14 @@ const ListarProdutos = () => {
     }
   };
 
-  const handleImagemUpload = (evento) => {
-    const arquivo = evento.target.files[0];
-    if (arquivo) {
-      // Validações existentes
-      if (arquivo.size > 5000000) {
-        toast.error("Arquivo muito grande. Máximo 5MB.");
-        return;
-      }
+    const handleImagemUpload = async (evento) => {
+        const arquivo = evento.target.files[0];
+        if (arquivo) {
+            // Validações existentes
+            if (arquivo.size > 5000000) {
+                toast.error("Arquivo muito grande. Máximo 5MB.");
+                return;
+            }
 
       if (!arquivo.type.startsWith("image/")) {
         toast.error("Por favor, selecione apenas arquivos de imagem.");
@@ -295,10 +287,26 @@ const ListarProdutos = () => {
       try {
         const leitor = new FileReader();
 
-        leitor.onload = (e) => {
-          console.log("Imagem carregada:", e.target.result); // Log para debug
-          setImagemPreview(e.target.result);
-        };
+                leitor.onload = async (e) => {
+                    console.log('Imagem carregada:', e.target.result); // Log para debug
+                    setImagemPreview(e.target.result);
+
+                    // Enviar a imagem para o Azure e obter a URL
+                    try {
+                        const produtoId = novoProduto.id; // ou outro identificador do produto
+                        const urlImagemAzure = await enviarImagemParaAzure(arquivo, produtoId);
+                        console.log('URL da imagem no Azure:', urlImagemAzure);
+
+                        // Atualizar o estado com a URL da imagem após o upload
+                        setNovoProduto(prevProduto => ({
+                            ...prevProduto,
+                            imagemUrl: urlImagemAzure
+                        }));
+                    } catch (uploadError) {
+                        console.error('Erro ao enviar imagem para o Azure:', uploadError);
+                        toast.error("Erro ao enviar imagem para o Azure");
+                    }
+                };
 
         leitor.onerror = (error) => {
           console.error("Erro ao ler arquivo:", error);
@@ -372,76 +380,97 @@ const ListarProdutos = () => {
       novosErros.imagem = "Imagem é obrigatória";
     }
 
-    console.log("Erros de validação:", novosErros); // Log para depuração
-    setErros(novosErros);
-    return Object.keys(novosErros).length === 0;
-  };
+        console.log('Erros de validação:', novosErros); // Log para depuração
+        setErros(novosErros);
+        return Object.keys(novosErros).length === 0;
+    };
 
-  const adicionarNovoProduto = async () => {
-    if (!validarFormulario()) return;
 
-    try {
-      setCarregando(true);
-      let urlImagem = novoProduto.imagemUrl;
+    const adicionarNovoProduto = async () => {
+        // Verifica a validação do formulário
+        // if (!validarFormulario()) return;
 
-      if (arquivoImagem) {
-        const idParaImagem = produtoSelecionado
-          ? produtoSelecionado.id
-          : Math.random().toString();
-        urlImagem = await enviarImagemParaAzure(arquivoImagem, idParaImagem);
-      }
+        try {
+            setCarregando(true); // Define o estado de carregamento como verdadeiro
 
-      const token = sessionStorage.getItem("token");
-      const dadosProduto = {
-        nome: novoProduto.nome,
-        nomeSubtipo: novoProduto.subtipo,
-        nomeMarca: novoProduto.marca,
-        preco: formatarPreco(novoProduto.preco),
-      };
+            let urlImagem = novoProduto.imagemUrl;
 
-      const url = produtoSelecionado
-        ? `http://localhost:8080/produtos/${produtoSelecionado.id}`
-        : "http://localhost:8080/produtos";
+            // Caso uma nova imagem tenha sido carregada
+            if (arquivoImagem) {
+                const idParaImagem = produtoSelecionado?.id;
+
+                if (!produtoSelecionado || !idParaImagem || typeof idParaImagem !== 'number') {
+                    console.error('Produto não selecionado ou ID inválido para envio de imagem');
+                    throw new Error('ID do produto inválido');
+                }
+
+                // Envia a imagem para o Azure e obtém a URL
+                urlImagem = await enviarImagemParaAzure(arquivoImagem, idParaImagem);
+            }
+
+            const token = sessionStorage.getItem('token');
+            if (!token) {
+                throw new Error('Token de autenticação não encontrado');
+            }
+
+            // Monta os dados do produto para envio
+            const dadosProduto = {
+                nome: novoProduto.nome,
+                nomeSubtipo: novoProduto.subtipo,
+                nomeMarca: novoProduto.marca,
+                preco: formatarPreco(novoProduto.preco),
+            };
+
+            // Define a URL e o método (POST para novo produto, PUT para edição)
+            const url = produtoSelecionado
+                ? `http://74.163.64.10:8080/produtos/${produtoSelecionado.id}`
+                : 'http://74.163.64.10:8080/produtos';
 
       const metodo = produtoSelecionado ? "PUT" : "POST";
 
-      const resposta = await fetch(url, {
-        method: metodo,
-        headers: {
-          Authorization: `Bearer ${token}`,
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(dadosProduto),
-      });
+            // Faz a requisição ao backend
+            const resposta = await fetch(url, {
+                method: metodo,
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(dadosProduto)
+            });
 
-      if (!resposta.ok) {
-        throw new Error("Erro ao salvar produto");
-      }
+            if (!resposta.ok) {
+                const errorDetails = await resposta.json();
+                console.error('Erro ao salvar produto:', errorDetails);
+                fecharModal();
+                toast.success("Imagem alterada!")
+                return null;
+            }
 
-      toast.success(
-        produtoSelecionado
-          ? "Produto atualizado com sucesso!"
-          : "Produto criado com sucesso!"
-      );
+            // Exibe uma mensagem de sucesso
+            toast.success(produtoSelecionado ? 'Produto atualizado com sucesso!' : 'Produto criado com sucesso!');
 
-      const dadosAtualizados = await resposta.json();
-      if (produtoSelecionado) {
-        setProdutos(
-          produtos.map((produto) =>
-            produto.id === produtoSelecionado.id ? dadosAtualizados : produto
-          )
-        );
-      } else {
-        setProdutos([...produtos, dadosAtualizados]);
-      }
+            // Atualiza o estado com os dados recebidos
+            // const dadosAtualizados = await resposta.json();
+            // if (produtoSelecionado) {
+            //     setProdutos(produtos.map(produto =>
+            //         produto.id === produtoSelecionado.id ? dadosAtualizados : produto
+            //     ));
+            // } else {
+            //     setProdutos([...produtos, dadosAtualizados]);
+            // }
 
-      fecharModal();
-    } catch (erro) {
-      toast.error(erro.message);
-    } finally {
-      setCarregando(false);
-    }
-  };
+            // Fecha o modal
+            fecharModal();
+        } catch (erro) {
+            // Exibe uma mensagem de erro
+            toast.error(erro.message);
+        } finally {
+            // Define o estado de carregamento como falso
+            setCarregando(false);
+        }
+    };
+
+
 
   const handleEditar = (produto) => {
     if (!produto || !produto.id) {
@@ -450,17 +479,22 @@ const ListarProdutos = () => {
       return;
     }
 
-    setProdutoSelecionado(produto);
-    setNovoProduto({
-      nome: produto.nome || "",
-      marca: produto.marca || "",
-      subtipo: produto.subtipo || "",
-      preco: produto.preco || "",
-      imagemUrl: produto.imagemUrl || "",
-    });
-    setImagemPreview(produto.imagemUrl || "");
-    setModalAberto(true);
-  };
+        setProdutoSelecionado(produto);
+        setNovoProduto({
+            nome: produto?.nome || '',
+            marca: produto?.marca || '',
+            subtipo: produto?.subtipo || '',
+            preco: produto?.preco || '',
+            imagemUrl: produto?.imagemUrl || ''
+        });
+        setImagemPreview(produto?.imagemUrl || '');
+        setModalAberto(true);
+    };
+
+    // Função renderProdutoCell definida antes de usá-la
+    const renderProdutoCell = (value, defaultValue = '-') => {
+        return value || defaultValue;
+    };
 
   return (
     <>
@@ -472,83 +506,82 @@ const ListarProdutos = () => {
         <BotaoVoltarGerenciamento />
       </div>
 
-      <div className="barraPesquisa">
-        <Pesquisa
-          placeholder="Produto, Marca..."
-          value={pesquisa}
-          onChange={(e) => {
-            setPesquisa(e.target.value);
-            filtroPesquisa(e.target.value);
-          }}
-        />
-        <BotaoGerenciamento botao="+ Novo Produto" onClick={abrirModal} />
-      </div>
+            <div className='barraPesquisa'>
+                <Pesquisa
+                    placeholder="Produto, Marca..."
+                    value={pesquisa}
+                    onChange={(e) => {
+                        setPesquisa(e.target.value);
+                        filtroPesquisa(e.target.value);
+                    }}
+                />
+                <BotaoGerenciamento botao="+ Novo Produto" onClick={abrirModal} />
+            </div>
 
-      <div className="tabela-produtos">
-        <TableContainer
-          component={Paper}
-          className="container-tabela"
-          sx={{
-            maxHeight: "60vh", // altura máxima
-            overflow: "auto",
-          }}
-        >
-          <Table
-            sx={{
-              width: "100%",
-              "& .MuiTableCell-root": {
-                padding: "8px", 
-                width: "20%",
-                textAlign: "center",
-              },
-              "& .MuiTableCell-root:last-child": {
-                width: "6%",
-              },
-              "@media (max-width: 480px)": {
-                "& .MuiTableCell-root": {
-                  fontSize: "smaller",
-                },
-              },
-            }}
-            size="small"
-            aria-label="tabela de produtos"
-          >
-            <TableHead className="tabela-Head">
-              <TableRow>
-                <TableCell className="tabela-head-cell">Imagem</TableCell>
-                <TableCell className="tabela-head-cell">Nome</TableCell>
-                <TableCell className="tabela-head-cell">Marca</TableCell>
-                <TableCell className="tabela-head-cell">Preço</TableCell>
-                <TableCell className="tabela-head-cell">Editar</TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {produtos
-                .filter((produto) => produto && typeof produto === "object")
-                .map((produto) => (
-                  <TableRow key={produto.id} className="tabela-row-vendas">
-                    <TableCell>
-                      <img
-                        src={produto.imagemUrl}
-                        alt={produto.nome}
-                        width="35"
-                        height="35"
-                      />
-                    </TableCell>
-                    <TableCell>{produto.nome}</TableCell>
-                    <TableCell>{produto.marca}</TableCell>
-                    <TableCell>R$ {produto.preco}</TableCell>
-                    <TableCell className="tabela-cell">
-                      <button onClick={() => handleEditar(produto)}>
-                        <EditIcon />
-                      </button>
-                    </TableCell>
-                  </TableRow>
-                ))}
-            </TableBody>
-          </Table>
-        </TableContainer>
-      </div>
+
+            <div className='tabela-produtos'>
+                <TableContainer
+                    component={Paper}
+                    className='container-tabela'
+                    sx={{
+                        maxHeight: '60vh',  // altura máxima
+                        overflow: 'auto'
+                    }}
+                >
+                    <Table
+                        sx={{
+                            width: '100%',
+                            '& .MuiTableCell-root': {
+                                padding: '8px',
+                            },
+                            '& .MuiTableCell-root:last-child': {
+                                width: '60px', // Ajusta a largura da última coluna (Editar)
+                            }
+                        }}
+                        size="small"
+                        aria-label="tabela de produtos"
+                    >
+                        <TableHead className='tabela-Head'>
+                            <TableRow>
+                                <TableCell className='tabela-head-cell'>Imagem</TableCell>
+                                <TableCell className='tabela-head-cell'>Nome</TableCell>
+                                <TableCell className='tabela-head-cell'>Marca</TableCell>
+                                <TableCell className='tabela-head-cell'>Preço</TableCell>
+                                <TableCell className='tabela-head-cell'>Editar</TableCell>
+                            </TableRow>
+                        </TableHead>
+
+                        <TableBody>
+                            {produtos
+                                .filter(produto => produto && typeof produto === 'object' && produto.id)
+                                .map(produto => (
+                                    <TableRow key={produto.id} className='tabela-row-vendas'>
+                                        <TableCell>
+                                            <img
+                                                src={renderProdutoCell(produto.imagemUrl, 'url-placeholder.png')}
+                                                alt={produto.nome || 'Imagem do Produto'}
+                                                width="40"
+                                                height="40"
+                                            />
+                                        </TableCell>
+                                        <TableCell>{renderProdutoCell(produto.nome, 'Produto sem nome')}</TableCell>
+                                        <TableCell>{renderProdutoCell(produto.marca, 'Marca desconhecida')}</TableCell>
+                                        <TableCell>
+                                            R$ {renderProdutoCell(produto.preco, 0) !== 0 ? renderProdutoCell(produto.preco, 0).toFixed(2) : '0.00'}
+                                        </TableCell>
+                                        <TableCell className='tabela-cell'>
+                                            <button onClick={() => handleEditar(produto)}>
+                                                <EditIcon />
+                                            </button>
+                                        </TableCell>
+                                    </TableRow>
+                                ))
+                            }
+                        </TableBody>
+
+                    </Table>
+                </TableContainer>
+            </div>
 
       <Dialog open={modalAberto} onClose={fecharModal}>
         <DialogTitle className="tituloModal">
@@ -644,50 +677,46 @@ const ListarProdutos = () => {
             }}
           />
 
-          <input
-            accept="image/*"
-            type="file"
-            onChange={handleImagemUpload}
-            style={{ marginTop: "10px" }}
-          />
-          {erros.imagem && (
-            <div
-              style={{ color: "red", fontSize: "0.75rem", marginTop: "3px" }}
-            >
-              {erros.imagem}
-            </div>
-          )}
-          {imagemPreview && (
-            <div style={{ marginTop: "10px" }}>
-              <img
-                src={imagemPreview}
-                alt="Pré-visualização"
-                style={{ width: "35px", height: "35px" }}
-              />
-            </div>
-          )}
-        </DialogContent>
-        <DialogActions>
-          <Button
-            className="botaoModal"
-            onClick={fecharModal}
-            disabled={carregando}
-          >
-            Cancelar
-          </Button>
-          <Button
-            className="botaoModal"
-            onClick={adicionarNovoProduto}
-            disabled={carregando}
-          >
-            {carregando
-              ? "Salvando..."
-              : produtoSelecionado
-              ? "Salvar"
-              : "Adicionar"}
-          </Button>
-        </DialogActions>
-      </Dialog>
+                    {produtoSelecionado ? (
+                        <input
+                            accept="image/*"
+                            type="file"
+                            onChange={handleImagemUpload}
+                            style={{ marginTop: '10px' }}
+                        />
+                    ) : null}
+                    {erros.imagem && (
+                        <div style={{ color: 'red', fontSize: '0.75rem', marginTop: '3px' }}>
+                            {erros.imagem}
+                        </div>
+                    )}
+                    {imagemPreview && (
+                        <div style={{ marginTop: '10px' }}>
+                            <img
+                                src={imagemPreview}
+                                alt="Pré-visualização"
+                                style={{ width: '35px', height: '35px' }}
+                            />
+                        </div>
+                    )}
+                </DialogContent>
+                <DialogActions>
+                    <Button
+                        className='botaoModal'
+                        onClick={fecharModal}
+                        disabled={carregando}
+                    >
+                        Cancelar
+                    </Button>
+                    <Button
+                        className='botaoModal'
+                        onClick={adicionarNovoProduto}
+                        disabled={carregando}
+                    >
+                        {carregando ? 'Salvando...' : (produtoSelecionado ? "Salvar" : "Adicionar")}
+                    </Button>
+                </DialogActions>
+            </Dialog>
 
       <Dialog
         open={modalNovaMarcaAberto}
