@@ -1,22 +1,16 @@
-/* Barra de pesquisa */
+/* GLOBAL  */
 .barraPesquisa {
     display: flex;
     flex-direction: row;
     align-items: center;
     justify-content: space-between;
-    margin: 1rem auto; /* Centraliza horizontalmente */
-    width: 90%; 
+    margin: 1rem auto;
+    width: 90%;
 }
 
-/* Container da tabela */
 .container-tabela {
-    display: flex;
-    justify-content: center;
-    border: 2px solid #2F615E; 
+    border: 2px solid #2F615E;
     border-radius: 10px !important;
-    width: 90%;
-    max-height: 250px;
-    min-height: 300px;
     overflow: auto !important;
 }
 
@@ -29,7 +23,7 @@
     background: #f1f1f1;
     border-radius: 10px;
     margin-bottom: 2px;
-    margin-top: 2px; 
+    margin-top: 2px;
 }
 
 .container-tabela::-webkit-scrollbar-thumb {
@@ -38,27 +32,23 @@
     border: 2px solid #f1f1f1;
 }
 
-/* Seção de produtos */
 .secao-produto {
     display: flex;
-    justify-content: space-around;
-    width: 20%;
-    margin: 0 3rem;
+    /* justify-content: space-around; */
+    margin: 0 4rem;
+    padding: 20px;
 }
 
-/* Tabela de produtos */
 .tabela-produtos {
     margin: 0 5rem;
-    
 }
-
 
 .MuiTableHead-root {
     position: sticky !important;
     top: 0 !important;
     z-index: 2 !important;
     background-color: #2F615E !important;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); 
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 .tabela-Head {
@@ -76,16 +66,8 @@
 /* Células da tabela */
 .tabela-row-vendas {
     padding: 5px !important;
-    text-align: left;
     font-family: "Poppins", system-ui;
     border-bottom: 1px solid #ddd;
-}
-
-.tabela-row-vendas preco {
-    font-weight: bold;
-    color: #F1C97B;
-    font-size: 18px;
-    text-align: right; /* Alinha o preço à direita */
 }
 
 /* Botão de edição */
@@ -106,13 +88,11 @@
     border: 1px solid #F1C97B;
 }
 
-/* Título do modal */
 .tituloModal {
     font-family: "Poppins", system-ui !important;
     font-size: 22px;
 }
 
-/* Botão do modal */
 .botaoModal {
     background-color: #2F615E !important;
     color: #F1C97B !important;
@@ -128,19 +108,17 @@
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
 
-/* Responsividade */
 @media (max-width: 768px) {
-    .container-tabela {
-        width: 100%; /* Ocupa todo o espaço disponível */
-        min-height: 200px;
+    .barraPesquisa {
+        gap: 1rem;
+        margin-bottom: 20px;
     }
 
-    .tabela-produtos {
+    .secao-produto {
         margin: 0;
     }
 
-    .barraPesquisa {
-        flex-direction: column; /* Organiza os elementos em coluna */
-        align-items: flex-start;
+    .tabela-produtos {
+        margin: 0 2rem;
     }
 }

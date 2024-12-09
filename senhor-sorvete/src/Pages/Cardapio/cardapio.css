@@ -36,9 +36,10 @@ body {
 .banner::before {
     content: "";
     position: absolute;
-    inset: 0; 
+    inset: 0;
     background: linear-gradient(to bottom, rgba(233, 222, 176, 0.1), rgba(233, 222, 176, 0.7));
     z-index: 1;
+    border-radius: inherit;
 }
 
 .bannerContent {
@@ -60,65 +61,54 @@ body {
     font-size: 1.25rem;
     color: #FFFFFF;
     text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+    font-weight: 500;
 }
-
 
 .navegacao {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 1rem 2rem;
-    margin-top: -1rem;
-    background-color: transparent;
+    margin-top: -.5rem;
+    padding: 1rem 1.5rem;
     box-shadow: none;
     height: 4rem;
+    gap: .6rem;
+    /* Adaptação após ícone do VLibras */
+    margin-right: 2rem;
 }
 
-.listaNavegacao {
+.trendingButton {
     display: flex;
-    list-style-type: none;
-    gap: 1rem;
-    padding: 0;
-    margin: 0;
+    justify-content: space-around;
     align-items: center;
-}
-
-.itemNavegacao {
+    border-radius: 50px;
+    height: 2.5rem;
+    width: auto;
+    border: none;
     background-color: white;
-    padding: 0.5rem 1.5rem;
-    border-radius: 100px;
-    cursor: pointer;
-    text-align: center;
-    line-height: 1;
-    transition: all 0.3s;
+    padding: 0px 15px;
+    transition: all 0.3s ease;
 }
 
-.itemNavegacao:hover {
-    cursor: pointer;
-    background-color: #6d0000;
-    color: white;
-    transition: all 0.25s;
-}
-
-.itemNavegacao a {
-    text-decoration: none;
-    color: #333;
-    font-weight: 500;
-    vertical-align: middle;
+.trendingButton span {
+    font-family: "Poppins", sans-serif;
+    margin-left: 10px;
 }
 
 .barraPesquisaCardapio {
     display: flex;
+    align-items: center;
+    /* width: 90%; */
 }
 
 .inputPesquisa {
     font-family: "Poppins", sans-serif;
+    width: 50vw;
     padding: 0.35rem 1rem;
-    border: none;
     border-radius: 24px 0 0 24px;
     font-size: 14px;
+    border: none;
     background-color: white;
-    width: 25rem;
 }
 
 .botaoPesquisa {
@@ -128,7 +118,6 @@ body {
     padding: 0.43rem 1rem;
     border-radius: 0 24px 24px 0;
     cursor: pointer;
-    font-size: 14px;
 }
 
 .mainContentWrapper {
@@ -140,30 +129,30 @@ body {
 
 .mainContent {
     display: flex;
-    gap: 20px;
+    gap: 0;
     margin-bottom: 40px;
     flex: 1;
     justify-content: space-between;
 }
 
-.sidebar {
-    margin-bottom: 1rem;
+.sidebarWrapper {
+    width: 28%;
     transition: all 0.3s ease;
-    height: 20rem;
+}
+
+.sidebar {
+    transition: all 0.3s ease;
+    height: 30vh;
     overflow-y: scroll;
 }
 
-.sidebarWrapper {
-    width: 29%;
-    left: 9px;
-    transition: all 0.3s ease;
-}
-
-.sidebar, .notifications {
+.sidebar,
+.notifications {
     background-color: white;
-    border-radius: 24px;
     padding: 1.5rem;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    margin-bottom: 1rem;
+    clip-path: inset(0 round 20px);
 }
 
 .sidebar h3 {
@@ -188,7 +177,7 @@ body {
 }
 
 .notifications h2 {
-    font-size: 3vh;
+    font-size: 18px;
     margin-top: 0;
     margin-bottom: 15px;
 }
@@ -281,16 +270,14 @@ body {
     display: grid;
     grid-template-columns: repeat(4, 12rem);
     gap: 1.5rem;
-    padding: 1rem 0rem;
-    padding-left: 1.5rem;
-    padding-right: 1.5rem;
+    padding: 1rem 1.5rem;
     align-content: start;
     max-height: 486px;
     overflow-y: scroll;
     overflow-x: hidden;
     background-color: #d9d0a3;
     box-shadow: 0px 3px 10px 0px #00000067;
-    border-radius: 24px;
+    clip-path: inset(0 round 20px);
     width: fit-content;
     height: min-content;
 }
@@ -299,15 +286,14 @@ body {
     background-color: white;
     border-radius: 24px;
     padding: 1rem;
-    padding-top: 1.3rem;
     text-align: center;
-    width: 10rem;
+    width: 85%;
     transform: scale(0.96);
 }
 
 .product-name {
     white-space: nowrap;
-    overflow: hidden;  
+    overflow: hidden;
     text-overflow: ellipsis;
     max-width: 100%;
     text-align: center;
@@ -399,19 +385,72 @@ body {
     margin-right: 10px;
 }
 
-.trendingButton {
-    display: flex;
-    justify-content: space-around;
-    align-items: center;
-    border-radius: 50px;
-    height: 2.5rem;
-    width: auto;
-    border: none;
-    background-color: white;
-    padding: 0px 15px;
-    transition: all 0.3s ease;
+
+@media (min-width: 980px) and (max-width: 1280px) {
+    .products {
+        grid-template-columns: repeat(3, 12rem);
+    }
 }
-.trendingButton span {
-    font-family: "Poppins", sans-serif;
-    margin-left: 10px;
+
+@media (min-width: 768px) and (max-width: 979px) {
+    .products {
+        grid-template-columns: repeat(2, 12rem);
+    }
+}
+
+@media (max-width: 768px) {
+    .listaNavegacao {
+        gap: .3rem;
+        margin: 0;
+        align-items: center;
+    }
+
+    .mainContent {
+        width: 100%;
+        gap: 1rem;
+    }
+
+    .mainContentWrapper {
+        margin: 5px 15px;
+    }
+
+    .trendingButton {
+        height: 2rem;
+    }
+
+    .trendingButton span {
+        margin-left: 0;
+    }
+
+    .inputPesquisa {
+        width: 30vw;
+    }
+
+    .sidebarWrapper {
+        width: 40%;
+        transition: all 0.3s ease;
+    }
+
+    .products {
+        grid-template-columns: repeat(1, 12rem);
+        gap: .7rem;
+        padding: .5rem;
+    }
+
+    .product {
+        padding: .5rem;
+    }
+
+    .sidebar,
+    .notifications {
+        padding: 1rem;
+    }
+
+    .notifications h2 {
+        font-size: 16px;
+    }
+
+    .notifications ul li {
+        display: inherit;
+    }
 }

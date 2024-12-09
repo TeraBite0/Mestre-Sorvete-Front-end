@@ -1,15 +1,16 @@
 .main-container {
+    height: 70vh;
     display: flex;
     flex-direction: column;
-    width: 100%;
-    overflow: hidden; /* Remove o scroll */
+    justify-content: center;
+    overflow: hidden;
+    padding: 20px;
 }
 
 .titulo-cadastrar {
-    font-size: 22px;
+    text-align: center;
+    font-size: 1.2rem;
     font-weight: 600;
-    padding-left: 50px;
-    margin-bottom: 2%;
 }
 
 .inputs-cadastrar {
@@ -22,27 +23,36 @@
 
 .campo-texto-cadastrar {
     width: 100%;
-    max-width: 500px; /* Limita o tamanho máximo dos inputs */
+    max-width: 400px;
     margin-bottom: 20px;
 }
 
 .campo-texto-cadastrar label {
-    font-size: 16px;
-    font-weight: 400;
     display: block;
+    font-size: 1rem;
+    font-weight: 400;
     margin-bottom: 5px;
 }
 
 .campo-texto-cadastrar input {
-    width: 100%; 
+    width: 100%;
     height: 40px;
     border-radius: 5px;
     border: 1px solid #000;
-    box-sizing: border-box; 
+    box-sizing: border-box;
     padding: 10px;
 }
 
 .botao-atualizar {
-    margin-top: 2%;
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+    width: 100%;
+    max-width: 400px;
 }
 
+@media (max-width: 600px) {
+    .campo-texto-cadastrar {
+        width: 90%;
+    }
+}
