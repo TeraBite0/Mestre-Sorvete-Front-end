@@ -19,7 +19,7 @@ const Recomendacao = () => {
     // Função para buscar o produto recomendado
     const fetchProdutoRecomendado = async (token) => {
         try {
-            const response = await axios.get('http://localhost:8080/produtos/recomendacao-do-dia', {
+            const response = await axios.get('http://74.163.64.10:8080/produtos/recomendacao-do-dia', {
                 headers: { 'Authorization': `Bearer ${token}` }
             });
 
@@ -43,7 +43,7 @@ const Recomendacao = () => {
     // Função para buscar todos os produtos
     const fetchTodosProdutos = async (token) => {
         try {
-            const response = await axios.get('http://localhost:8080/produtos', {
+            const response = await axios.get('http://74.163.64.10:8080/produtos', {
                 headers: { 'Authorization': `Bearer ${token}` }
             });
 
@@ -102,7 +102,7 @@ const Recomendacao = () => {
 
         try {
             const response = await axios.put(
-                `http://localhost:8080/produtos/recomendacao-do-dia/${produtoAtualizado.id}`,
+                `http://74.163.64.10:8080/produtos/recomendacao-do-dia/${produtoAtualizado.id}`,
                 null, // Não precisa enviar body pois o ID já está na URL
                 {
                     headers: {

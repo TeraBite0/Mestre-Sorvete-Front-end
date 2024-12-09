@@ -46,7 +46,7 @@ const Estoque = () => {
         const fetchEstoque = async () => {
             const token = sessionStorage.getItem('token');
             try {
-                const response = await axios.get('http://localhost:8080/estoque', {
+                const response = await axios.get('http://74.163.64.10:8080/estoque', {
                     headers: {
                         Authorization: `Bearer ${token}`
                     }
@@ -141,7 +141,7 @@ const Estoque = () => {
         setLoading(true);
 
         try {
-            await axios.post('http://localhost:8080/estoque', formData, {
+            await axios.post('http://74.163.64.10:8080/estoque', formData, {
                 headers: {
                     'Authorization': `Bearer ${token}`,
                     'Content-Type': 'application/json'
@@ -152,7 +152,7 @@ const Estoque = () => {
             fecharModalAdicionarLote();
 
             // Atualiza a lista de produtos
-            const response = await axios.get('http://localhost:8080/estoque', {
+            const response = await axios.get('http://74.163.64.10:8080/estoque', {
                 headers: {
                     Authorization: `Bearer ${token}`
                 }
@@ -177,7 +177,7 @@ const Estoque = () => {
         };
     
         try {
-            await axios.post('http://localhost:8080/perdas', payload, {
+            await axios.post('http://74.163.64.10:8080/perdas', payload, {
                 headers: {
                     'Authorization': `Bearer ${token}`,
                     'Content-Type': 'application/json',
@@ -188,7 +188,7 @@ const Estoque = () => {
             fecharModalRegistrarPerda();
     
             // Atualiza a lista de produtos
-            const response = await axios.get('http://localhost:8080/estoque', {
+            const response = await axios.get('http://74.163.64.10:8080/estoque', {
                 headers: {
                     Authorization: `Bearer ${token}`,
                 },
