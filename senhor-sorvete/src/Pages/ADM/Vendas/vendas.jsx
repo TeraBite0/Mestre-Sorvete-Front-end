@@ -78,7 +78,7 @@ const Vendas = () => {
     }
 
     axios
-      .get("http://74.163.64.10:8080/vendas", {
+      .get("http://localhost:8080/vendas", {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -98,7 +98,7 @@ const Vendas = () => {
     const token = sessionStorage.getItem("token");
 
     try {
-      const response = await axios.get("http://74.163.64.10:8080/produtos", {
+      const response = await axios.get("http://localhost:8080/produtos", {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -186,7 +186,7 @@ const Vendas = () => {
       toast.error("Token não encontrado. Faça login novamente.");
       return;
     }
-  
+
     try {
       const horarioAtual = new Date().toISOString();
       const produtosParaEnviar = novasVendas.map(venda => ({
@@ -194,9 +194,9 @@ const Vendas = () => {
         qtdVendida: venda.quantidade,
         horarioVenda: horarioAtual // Adiciona o horário aqui
       }));
-  
+
       const response = await axios.post(
-        "http://74.163.64.10:8080/vendas",
+        "http://localhost:8080/vendas",
         { produtos: produtosParaEnviar },
         {
           headers: {
@@ -205,7 +205,7 @@ const Vendas = () => {
           },
         }
       );
-  
+
       if (response.data) {
         console.log("Resposta da requisição:", response.data);
         const vendasAtualizadas = agruparVendasPorData([...rows, response.data]);
@@ -230,7 +230,7 @@ const Vendas = () => {
 
     try {
       const dataFormatada = dataBusca;
-      const response = await axios.get("http://74.163.64.10:8080/vendas/data", {
+      const response = await axios.get("http://localhost:8080/vendas/data", {
         params: { data: dataFormatada },
         headers: {
           Authorization: `Bearer ${token}`,
@@ -253,8 +253,8 @@ const Vendas = () => {
       setResultadoBusca("Erro ao buscar vendas.");
     }
   };
-  
-  
+
+
   const handleCloseBuscar = () => {
     setOpenBuscar(false);
     setDataBusca("");
@@ -283,27 +283,27 @@ const Vendas = () => {
       </div>
 
       <div className="tabela-vendas">
-        <TableContainer component={Paper} 
-        className="tabela-container"
-        sx={{
-          maxHeight: '80vh',  // altura máxima
-          overflow: 'auto'
-      }}
-  >
-      <Table
+        <TableContainer component={Paper}
+          className="tabela-container"
           sx={{
+            maxHeight: '80vh',  // altura máxima
+            overflow: 'auto'
+          }}
+        >
+          <Table
+            sx={{
               width: '100%',
               '& .MuiTableCell-root': {
-                  padding: '8px', // Reduz o padding das células
+                padding: '8px', // Reduz o padding das células
               },
               '& .MuiTableCell-root:last-child': {
-                  width: '60px', // Ajusta a largura da última coluna (Editar)
+                width: '60px', // Ajusta a largura da última coluna (Editar)
               }
-          }}
-          size="small"
-          aria-label="tabela de vendas"
-      >
-        </Table>
+            }}
+            size="small"
+            aria-label="tabela de vendas"
+          >
+          </Table>
           <Table sx={{ minWidth: 500 }} size="small" aria-label="a dense table">
             <TableHead className="tabela-Head">
               <TableRow>
@@ -363,7 +363,7 @@ const Vendas = () => {
                       <TableCell className="tabela-row-vendas" align="right">
                         {row.produtos.map((item) => (
                           <div key={item.produto.id}>
-                            <strong>{item.produto.nome}</strong> - {item.qtdVendida} un - <strong>R${ item.produto.preco.toFixed(2)}</strong>
+                            <strong>{item.produto.nome}</strong> - {item.qtdVendida} un - <strong>R${item.produto.preco.toFixed(2)}</strong>
                             <br />
                             <small style={{ color: "gray" }}>
                               {item.produto.subtipo.nome} -{" "}
@@ -420,9 +420,8 @@ const Vendas = () => {
                     <option value="">Selecione o produto</option>
                     {produtosDisponiveis.map((produto) => (
                       <option key={produto.id} value={produto.id}>
-                        {`${produto.nome} - ${
-                          produto.marca.nome
-                        } (R$ ${produto.preco?.toFixed(2)})`}
+                        {`${produto.nome} - ${produto.marca.nome
+                          } (R$ ${produto.preco?.toFixed(2)})`}
                       </option>
                     ))}
                   </TextField>

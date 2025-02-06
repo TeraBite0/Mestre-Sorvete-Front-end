@@ -15,7 +15,7 @@ export default function BasicDemo() {
   ];
 
   useEffect(() => {
-    fetch("http://74.163.64.10:8080/produtos/populares")
+    fetch("http://localhost:8080/produtos/populares")
       .then((response) => response.json())
       .then((data) => setProdutos(data.slice(0, 9)));
   }, []);

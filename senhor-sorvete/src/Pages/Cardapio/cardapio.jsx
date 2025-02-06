@@ -34,50 +34,50 @@ const Cardapio = () => {
   const sidebarRef = useRef(null);
   const mainContentRef = useRef(null);
 
-    useEffect(() => {
-        const fetchProdutos = async () => {
-            setIsLoading(true);
-            try {
-                const response = await axios.get(
-                    "http://74.163.64.10:8080/produtos/isAtivos"
-                );
-                setProdutos(response.data);
-            } catch (error) {
-                console.error("Erro ao buscar produtos:", error);
-            } finally {
-                setIsLoading(false);
-            }
-        };
-        fetchProdutos();
-    }, []);
+  useEffect(() => {
+    const fetchProdutos = async () => {
+      setIsLoading(true);
+      try {
+        const response = await axios.get(
+          "http://localhost:8080/produtos/isAtivos"
+        );
+        setProdutos(response.data);
+      } catch (error) {
+        console.error("Erro ao buscar produtos:", error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    fetchProdutos();
+  }, []);
 
   const [isLoadingPopular, setIsLoadingPopular] = useState(false);
 
-    // Solução provisória ao erro do populares, **REMOVER QUANDO CONCERTADO!!!!**
-    // Basicamente essa função uso os dados dos produtos buscados anteriormente
-    const fetchPopular = async () => {
-        setIsLoadingPopular(true);
-        try {
-            const response = await axios.get("http://74.163.64.10:8080/produtos/populares");
-            if (response.status === 200) {
-                const popularProductsWithFullData = response.data.map(popularProduct => {
-                    const fullProductDetails = produtos.find(
-                        produto => produto.nome.toLowerCase() === popularProduct.nome.toLowerCase()
-                    );
+  // Solução provisória ao erro do populares, **REMOVER QUANDO CONCERTADO!!!!**
+  // Basicamente essa função uso os dados dos produtos buscados anteriormente
+  const fetchPopular = async () => {
+    setIsLoadingPopular(true);
+    try {
+      const response = await axios.get("http://localhost:8080/produtos/populares");
+      if (response.status === 200) {
+        const popularProductsWithFullData = response.data.map(popularProduct => {
+          const fullProductDetails = produtos.find(
+            produto => produto.nome.toLowerCase() === popularProduct.nome.toLowerCase()
+          );
 
-            return (
-              fullProductDetails || {
-                id: null,
-                nome: popularProduct.nome,
-                preco: popularProduct.preco,
-                subtipo: {
-                  nome: "Desconhecido",
-                  tipoPai: { nome: "Desconhecido" },
-                },
-                emEstoque: false,
-              }
-            );
-          }
+          return (
+            fullProductDetails || {
+              id: null,
+              nome: popularProduct.nome,
+              preco: popularProduct.preco,
+              subtipo: {
+                nome: "Desconhecido",
+                tipoPai: { nome: "Desconhecido" },
+              },
+              emEstoque: false,
+            }
+          );
+        }
         );
 
         setPopular(popularProductsWithFullData);
@@ -101,27 +101,27 @@ const Cardapio = () => {
     }
   };
 
-    //TODO: Quando o popular ser concertado no back, descomentar esse código
-    // const fetchPopular = async () => {
-    //     setIsLoadingPopular(true); // Ativa o estado de carregamento
-    //     try {
-    //         const response = await axios.get("http://74.163.64.10:8080/produtos/populares");
-    //         if (response.status === 200) {
-    //             setPopular(response.data);
-    //             setIsPopularToggled(!isPopularToggled);
-    //             if (!isPopularToggled) {
-    //                 toast.success("Produtos populares carregados com sucesso!");
-    //             } else {
-    //                 toast.info("Exibição de produtos populares desativada.");
-    //             }
-    //         }
-    //     } catch (error) {
-    //         toast.error("Erro ao buscar produtos populares. Tente novamente mais tarde.");
-    //         console.error("Erro ao buscar produtos populares:", error);
-    //     } finally {
-    //         setIsLoadingPopular(false);
-    //     }
-    // };
+  //TODO: Quando o popular ser concertado no back, descomentar esse código
+  // const fetchPopular = async () => {
+  //     setIsLoadingPopular(true); // Ativa o estado de carregamento
+  //     try {
+  //         const response = await axios.get("http://localhost:8080/produtos/populares");
+  //         if (response.status === 200) {
+  //             setPopular(response.data);
+  //             setIsPopularToggled(!isPopularToggled);
+  //             if (!isPopularToggled) {
+  //                 toast.success("Produtos populares carregados com sucesso!");
+  //             } else {
+  //                 toast.info("Exibição de produtos populares desativada.");
+  //             }
+  //         }
+  //     } catch (error) {
+  //         toast.error("Erro ao buscar produtos populares. Tente novamente mais tarde.");
+  //         console.error("Erro ao buscar produtos populares:", error);
+  //     } finally {
+  //         setIsLoadingPopular(false);
+  //     }
+  // };
 
   const openMaisModal = () => setIsMaisModalOpen(true);
   const closeMaisModal = () => setIsMaisModalOpen(false);
@@ -130,12 +130,12 @@ const Cardapio = () => {
     const processedItems = [];
     const failedItems = [];
 
-        const notifications = cartItems.map(async (item) => {
-            try {
-                const response = await axios.post("http://74.163.64.10:8080/notificacoes", {
-                    email,
-                    idProduto: item.id,
-                });
+    const notifications = cartItems.map(async (item) => {
+      try {
+        const response = await axios.post("http://localhost:8080/notificacoes", {
+          email,
+          idProduto: item.id,
+        });
 
         if (response.status === 201) {
           processedItems.push(item);

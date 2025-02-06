@@ -28,12 +28,12 @@ const Recomendacao = () => {
   const [produtoRecomendado, setProdutoRecomendado] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
 
-    // Função para buscar o produto recomendado
-    const fetchProdutoRecomendado = async (token) => {
-        try {
-            const response = await axios.get('http://74.163.64.10:8080/produtos/recomendacao-do-dia', {
-                headers: { 'Authorization': `Bearer ${token}` }
-            });
+  // Função para buscar o produto recomendado
+  const fetchProdutoRecomendado = async (token) => {
+    try {
+      const response = await axios.get('http://localhost:8080/produtos/recomendacao-do-dia', {
+        headers: { 'Authorization': `Bearer ${token}` }
+      });
 
       if (response.data) {
         const produtoFormatado = {
@@ -52,12 +52,12 @@ const Recomendacao = () => {
     }
   };
 
-    // Função para buscar todos os produtos
-    const fetchTodosProdutos = async (token) => {
-        try {
-            const response = await axios.get('http://74.163.64.10:8080/produtos', {
-                headers: { 'Authorization': `Bearer ${token}` }
-            });
+  // Função para buscar todos os produtos
+  const fetchTodosProdutos = async (token) => {
+    try {
+      const response = await axios.get('http://localhost:8080/produtos', {
+        headers: { 'Authorization': `Bearer ${token}` }
+      });
 
       const produtosFormatados = response.data.map((produto) => ({
         id: produto.id,
@@ -112,17 +112,17 @@ const Recomendacao = () => {
       return;
     }
 
-        try {
-            const response = await axios.put(
-                `http://74.163.64.10:8080/produtos/recomendacao-do-dia/${produtoAtualizado.id}`,
-                null, // Não precisa enviar body pois o ID já está na URL
-                {
-                    headers: {
-                        'Authorization': `Bearer ${token}`,
-                        'Content-Type': 'application/json',
-                    }
-                }
-            );
+    try {
+      const response = await axios.put(
+        `http://localhost:8080/produtos/recomendacao-do-dia/${produtoAtualizado.id}`,
+        null, // Não precisa enviar body pois o ID já está na URL
+        {
+          headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json',
+          }
+        }
+      );
 
       if (response.status === 200) {
         toast.success("Produto recomendado atualizado com sucesso!");
@@ -186,9 +186,8 @@ const Recomendacao = () => {
             <option value="">Selecione um produto</option>
             {todosProdutos.map((produto) => (
               <option key={produto.id} value={produto.id}>
-                {`${produto.nome} - ${
-                  produto.marca.nome
-                } (R$ ${produto.preco?.toFixed(2)})`}
+                {`${produto.nome} - ${produto.marca.nome
+                  } (R$ ${produto.preco?.toFixed(2)})`}
               </option>
             ))}
           </TextField>
@@ -278,9 +277,9 @@ const Recomendacao = () => {
                       <TableCell className="tabela-cell-content">
                         {typeof produto.preco === "number"
                           ? produto.preco.toLocaleString("pt-BR", {
-                              style: "currency",
-                              currency: "BRL",
-                            })
+                            style: "currency",
+                            currency: "BRL",
+                          })
                           : "R$ 0,00"}
                       </TableCell>
                       <TableCell className="tabela-cell">

@@ -50,23 +50,23 @@ const Estoque = () => {
   const [produtos, setProdutos] = useState([]);
   const [loading, setLoading] = useState(false);
 
-    useEffect(() => {
-        const fetchEstoque = async () => {
-            const token = sessionStorage.getItem('token');
-            try {
-                const response = await axios.get('http://74.163.64.10:8080/estoque', {
-                    headers: {
-                        Authorization: `Bearer ${token}`
-                    }
-                })
-                setProdutos(response.data);
-            } catch (error) {
-                toast.error('Erro ao buscar estoque');
-                console.log(error);
-            }
-        };
-        fetchEstoque();
-    }, []);
+  useEffect(() => {
+    const fetchEstoque = async () => {
+      const token = sessionStorage.getItem('token');
+      try {
+        const response = await axios.get('http://localhost:8080/estoque', {
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+        })
+        setProdutos(response.data);
+      } catch (error) {
+        toast.error('Erro ao buscar estoque');
+        console.log(error);
+      }
+    };
+    fetchEstoque();
+  }, []);
 
   const abrirModalRegistrarPerda = () => setAbrirRegistrarPerda(true);
   const fecharModalRegistrarPerda = () => setAbrirRegistrarPerda(false);
@@ -148,68 +148,68 @@ const Estoque = () => {
     const token = sessionStorage.getItem("token");
     setLoading(true);
 
-        try {
-            await axios.post('http://74.163.64.10:8080/estoque', formData, {
-                headers: {
-                    'Authorization': `Bearer ${token}`,
-                    'Content-Type': 'application/json'
-                }
-            });
+    try {
+      await axios.post('http://localhost:8080/estoque', formData, {
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        }
+      });
 
       toast.success("Lote adicionado com sucesso!");
       fecharModalAdicionarLote();
 
-            // Atualiza a lista de produtos
-            const response = await axios.get('http://74.163.64.10:8080/estoque', {
-                headers: {
-                    Authorization: `Bearer ${token}`
-                }
-            });
-            setProdutos(response.data);
-
-        } catch (error) {
-            console.error('Erro ao adicionar lote:', error);
-            toast.error(error.response?.data?.message || 'Erro ao adicionar lote');
-        } finally {
-            setLoading(false);
+      // Atualiza a lista de produtos
+      const response = await axios.get('http://localhost:8080/estoque', {
+        headers: {
+          Authorization: `Bearer ${token}`
         }
+      });
+      setProdutos(response.data);
+
+    } catch (error) {
+      console.error('Erro ao adicionar lote:', error);
+      toast.error(error.response?.data?.message || 'Erro ao adicionar lote');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleRegistrarPerda = async (formData) => {
+    const token = sessionStorage.getItem('token');
+    setLoading(true);
+
+    const payload = {
+      produtoId: Number(formData.produtoId),
+      qtdPerda: Number(formData.qtdPerda),
     };
 
-    const handleRegistrarPerda = async (formData) => {
-        const token = sessionStorage.getItem('token');
-        setLoading(true);
-    
-        const payload = {
-            produtoId: Number(formData.produtoId),
-            qtdPerda: Number(formData.qtdPerda),
-        };
-    
-        try {
-            await axios.post('http://74.163.64.10:8080/perdas', payload, {
-                headers: {
-                    'Authorization': `Bearer ${token}`,
-                    'Content-Type': 'application/json',
-                },
-            });
-    
-            toast.success('Perda registrada com sucesso!');
-            fecharModalRegistrarPerda();
-    
-            // Atualiza a lista de produtos
-            const response = await axios.get('http://74.163.64.10:8080/estoque', {
-                headers: {
-                    Authorization: `Bearer ${token}`,
-                },
-            });
-            setProdutos(response.data);
-        } catch (error) {
-            console.error('Erro ao registrar perda:', error);
-            toast.error(error.response?.data?.message || 'Erro ao registrar perda');
-        } finally {
-            setLoading(false);
-        }
-    };
-    
+    try {
+      await axios.post('http://localhost:8080/perdas', payload, {
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        },
+      });
+
+      toast.success('Perda registrada com sucesso!');
+      fecharModalRegistrarPerda();
+
+      // Atualiza a lista de produtos
+      const response = await axios.get('http://localhost:8080/estoque', {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      setProdutos(response.data);
+    } catch (error) {
+      console.error('Erro ao registrar perda:', error);
+      toast.error(error.response?.data?.message || 'Erro ao registrar perda');
+    } finally {
+      setLoading(false);
+    }
+  };
+
 
   const transformBeforeSubmit = (data) => {
     return {
