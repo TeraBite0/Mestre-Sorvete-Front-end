@@ -20,6 +20,7 @@ import {
 import "./listarProdutos.css";
 import TableContainer from "@mui/material/TableContainer";
 import EditIcon from "@mui/icons-material/Edit";
+import DoNotDisturbOnIcon from '@mui/icons-material/DoNotDisturbOn';
 import { useEffect, useState } from "react";
 import HeaderGerenciamento from "../../../Components/HeaderGerenciamento";
 import Pesquisa from "../../../Components/Pesquisa";
@@ -543,11 +544,11 @@ const ListarProdutos = () => {
                     >
                         <TableHead className='tabela-Head'>
                             <TableRow>
-                                <TableCell className='tabela-head-cell'>Imagem</TableCell>
-                                <TableCell className='tabela-head-cell'>Nome</TableCell>
+                                <TableCell className='tabela-head-cell' style={{ width: "25%" }}>Imagem</TableCell>
+                                <TableCell className='tabela-head-cell' style={{ width: "25%" }}>Nome</TableCell>
                                 <TableCell className='tabela-head-cell'>Marca</TableCell>
-                                <TableCell className='tabela-head-cell'>Preço</TableCell>
-                                <TableCell className='tabela-head-cell'>Editar</TableCell>
+                                <TableCell className='tabela-head-cell' style={{ width: "20%" }}>Preço</TableCell>
+                                <TableCell className='tabela-head-cell' style={{ width: "15%" }}>Ações</TableCell>
                             </TableRow>
                         </TableHead>
 
@@ -570,9 +571,14 @@ const ListarProdutos = () => {
                                             R$ {renderProdutoCell(produto.preco, 0) !== 0 ? renderProdutoCell(produto.preco, 0).toFixed(2) : '0.00'}
                                         </TableCell>
                                         <TableCell className='tabela-cell'>
-                                            <button onClick={() => handleEditar(produto)}>
-                                                <EditIcon />
-                                            </button>
+                                            <TableCell style={{display: "flex"}}>
+                                                <button onClick={() => handleEditar(produto)}>
+                                                    <EditIcon />
+                                                </button>
+                                                <button onClick={() => handleEditar(produto)}>
+                                                    <DoNotDisturbOnIcon />
+                                                </button>
+                                            </TableCell>
                                         </TableCell>
                                     </TableRow>
                                 ))

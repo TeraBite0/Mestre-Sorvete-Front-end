@@ -197,13 +197,21 @@ button {
 .section-5 {
   display: flex;
   justify-content: space-around;
-  align-items: end;
   gap: 50px;
-  padding: 0 5% 7%;
+  padding: 0 5% 4%;
+}
+
+.classe-notificacao-e-email{
+  display: flex;
+  height: 100%;
+  width: 100%;
+  flex-direction: column;
+  justify-content: start;
+  
 }
 
 .notificacoes-text {
-  max-width: 50%;
+  width: 80%;
 }
 
 .section-5 h2 {
