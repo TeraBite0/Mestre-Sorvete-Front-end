@@ -5,6 +5,7 @@ import {
     TableCell,
     TableHead,
     TableRow,
+    Tooltip,
 } from "@mui/material";
 import {
     Dialog,
@@ -13,10 +14,14 @@ import {
     DialogTitle,
     TextField,
     Button,
-    MenuItem,
-    Select,
     InputAdornment,
+    Autocomplete,
+    Checkbox,
+
 } from "@mui/material";
+import DoNotDisturbOnIcon from '@mui/icons-material/DoNotDisturbOn';
+import CheckCircleIcon from '@mui/icons-material/CheckCircle';
+import UploadIcon from '@mui/icons-material/Upload';
 import "./listarProdutos.css";
 import TableContainer from "@mui/material/TableContainer";
 import EditIcon from "@mui/icons-material/Edit";
@@ -37,6 +42,8 @@ const ListarProdutos = () => {
         marca: '',
         subtipo: '',
         preco: '',
+        temLactose: false,
+        temGlutem: false,
     });
     const [produtoSelecionado, setProdutoSelecionado] = useState(null);
     const [imagemPreview, setImagemPreview] = useState(null);
@@ -93,7 +100,8 @@ const ListarProdutos = () => {
                 marca: produto.marca?.nome || '',
                 subtipo: produto.subtipo?.nome || '',
                 preco: typeof produto.preco === 'number' ? produto.preco : 0,
-                imagemUrl: "https://terabite.blob.core.windows.net/terabite-container/" + produto.id || ''
+                imagemUrl: "https://terabite.blob.core.windows.net/terabite-container/" + produto.id || '',
+                isAtivo: produto.isAtivo !== undefined ? produto.isAtivo : true // Garantir que isAtivo seja definido
             }));
 
             setProdutos(produtosFormatados);
@@ -104,73 +112,197 @@ const ListarProdutos = () => {
         } finally {
             setCarregando(false);
         }
+
     };
 
-    const adicionarNovaMarca = () => {
+
+    // metodo de adicionar nova marca
+    // metodo de adicionar nova marca
+    const adicionarNovaMarca = async () => {
         if (!novaMarca.trim()) {
             toast.error("O nome da marca não pode ser vazio");
             return;
         }
 
-        // Verifica se a marca já existe
-        if (
-            marcas.some(
-                (marca) => marca.nome.toLowerCase() === novaMarca.trim().toLowerCase()
-            )
-        ) {
+        // Verifica se a marca já existe (case insensitive)
+        if (marcas.some(marca => marca.nome.toLowerCase() === novaMarca.trim().toLowerCase())) {
             toast.error("Esta marca já existe");
             return;
         }
 
-        const novaMarcaFormatada = { nome: novaMarca.trim() };
-        setMarcas([...marcas, novaMarcaFormatada]);
-        setNovoProduto((prev) => ({ ...prev, marca: novaMarca.trim() }));
-        setModalNovaMarcaAberto(false);
-        setNovaMarca("");
-        toast.success("Marca adicionada com sucesso!");
-    };
-
-    const obterTokenSasAzure = async () => {
         const token = sessionStorage.getItem('token');
-        const resposta = await fetch('http://localhost:8080/azure', {
-            method: 'GET',
-            headers: {
-                'Authorization': `Bearer ${token}`
-            }
-        });
-
-        if (resposta.ok) {
-            const dados = await resposta.json();
-            return dados.sasToken;
+        if (!token) {
+            toast.error("Erro de autenticação");
+            return;
         }
-    };
 
-    const enviarImagemParaAzure = async (arquivo, produtoId) => {
+        // Cria um objeto de produto com valores temporários para cadastrar a marca.
+        const novoProdutoParaMarca = {
+            nome: "Produto Temporário",
+            nomeSubtipo: "Subtipo Padrão",
+            nomeMarca: novaMarca.trim(),
+            preco: 0,
+            temLactose: false,
+            temGlutem: false
+        };
+
         try {
-            const tokenSaS = await obterTokenSasAzure();
-            const nomeArquivo = `${produtoId}`;
-            const sasUrl = `https://terabite.blob.core.windows.net/terabite-container/${nomeArquivo}?${tokenSaS}`;
-            const urlUpload = `${sasUrl}/`;
-
-            const resposta = await fetch(sasUrl, {
-                method: "PUT",
+            const response = await fetch('http://localhost:8080/produtos', {
+                method: 'POST',
                 headers: {
-                    "x-ms-blob-type": "BlockBlob",
-                    "Content-Type": arquivo.type,
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
                 },
-                body: arquivo,
+                body: JSON.stringify(novoProdutoParaMarca)
             });
 
-            if (!resposta.ok) {
-                throw new Error("Erro ao fazer upload da imagem");
+            if (!response.ok) {
+                throw new Error('Erro ao adicionar marca');
             }
 
-            return urlUpload.split("?")[0];
-        } catch (erro) {
-            toast.error("Tente novamente mais tarde");
-            throw erro;
+            const data = await response.json();
+
+            // Adiciona a nova marca à lista de marcas
+            const novaMarcaObj = { nome: novaMarca.trim() };
+            setMarcas(prev => [...prev, novaMarcaObj]);
+
+            // Atualiza diretamente o novoProduto com a nova marca
+            setNovoProduto(prev => ({
+                ...prev,
+                marca: novaMarca.trim()
+            }));
+
+            setModalNovaMarcaAberto(false);
+            setNovaMarca("");
+
+            toast.success("Marca adicionada com sucesso!");
+        } catch (error) {
+            console.error(error);
+            toast.error("Erro ao adicionar marca. Tente novamente.");
         }
     };
+
+
+
+    const adicionarNovoSubtipo = async () => {
+        if (!novoSubtipo.trim()) {
+            toast.error("O nome do subtipo não pode ser vazio");
+            return;
+        }
+
+        // Verifica se o subtipo já existe localmente
+        if (subtipos.some(
+            (subtipo) => subtipo.nome.toLowerCase() === novoSubtipo.trim().toLowerCase()
+        )) {
+            toast.error("Este subtipo já existe");
+            return;
+        }
+
+        const token = sessionStorage.getItem('token');
+        if (!token) {
+            toast.error("Erro de autenticação");
+            return;
+        }
+
+        const novoProdutoParaSubtipo = {
+            nome: "Produto Temporário", // Nome temporário para criar o subtipo
+            nomeSubtipo: novoSubtipo.trim(),
+            nomeMarca: "Marca Temporária", // Marca temporária para criar o subtipo
+            preco: 0,
+            temLactose: false,
+            temGlutem: false
+        };
+
+        try {
+            const response = await fetch('http://localhost:8080/produtos', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                },
+                body: JSON.stringify(novoProdutoParaSubtipo)
+            });
+
+            if (!response.ok) {
+                const errorData = await response.text();
+                console.error('Erro da API:', errorData);
+                throw new Error('Erro ao adicionar subtipo');
+            }
+
+            const data = await response.json();
+
+            // Verifica se o subtipo foi criado corretamente
+            if (!data || !data.subtipo) {
+                throw new Error('Resposta inválida do servidor');
+            }
+
+            // Cria o novo objeto subtipo com o nome correto
+            const novoSubtipoObj = {
+                nome: novoSubtipo.trim(),
+                // Adicione outros campos se necessário
+            };
+
+            // Atualiza a lista de subtipos
+            setSubtipos(prevSubtipos => [...prevSubtipos, novoSubtipoObj]);
+
+            // Atualiza o formulário atual com o novo subtipo
+            setNovoProduto(prevProduto => ({
+                ...prevProduto,
+                subtipo: novoSubtipoObj.nome
+            }));
+
+            // Fecha o modal e limpa o campo
+            setModalNovoSubtipoAberto(false);
+            setNovoSubtipo("");
+
+            toast.success("Subtipo adicionado com sucesso!");
+        } catch (error) {
+            console.error("Erro detalhado:", error);
+            toast.error(`Erro ao adicionar subtipo: ${error.message}`);
+        }
+    };
+    // const obterTokenSasAzure = async () => {
+    //     const token = sessionStorage.getItem('token');
+    //     const resposta = await fetch('http://localhost:8080/azure', {
+    //         method: 'GET',
+    //         headers: {
+    //             'Authorization': `Bearer ${token}`
+    //         }
+    //     });
+
+    //     if (resposta.ok) {
+    //         const dados = await resposta.json();
+    //         return dados.sasToken;
+    //     }
+    // };
+
+    // const enviarImagemParaAzure = async (arquivo, produtoId) => {
+    //     try {
+    //         const tokenSaS = await obterTokenSasAzure();
+    //         const nomeArquivo = `${produtoId}`;
+    //         const sasUrl = `https://terabite.blob.core.windows.net/terabite-container/${nomeArquivo}?${tokenSaS}`;
+    //         const urlUpload = `${sasUrl}/`;
+
+    //         const resposta = await fetch(sasUrl, {
+    //             method: "PUT",
+    //             headers: {
+    //                 "x-ms-blob-type": "BlockBlob",
+    //                 "Content-Type": arquivo.type,
+    //             },
+    //             body: arquivo,
+    //         });
+
+    //         if (!resposta.ok) {
+    //             throw new Error("Erro ao fazer upload da imagem");
+    //         }
+
+    //         return urlUpload.split("?")[0];
+    //     } catch (erro) {
+    //         toast.error("Tente novamente mais tarde");
+    //         throw erro;
+    //     }
+    // };
+
 
     const filtroPesquisa = async (termo) => {
         const token = sessionStorage.getItem("token");
@@ -200,7 +332,9 @@ const ListarProdutos = () => {
                 marca: produto.marca?.nome || '',
                 subtipo: produto.subtipo?.nome || '',
                 preco: typeof produto.preco === 'number' ? produto.preco : 0,
-                imagemUrl: "https://terabite.blob.core.windows.net/terabite-container/" + produto.id || ''
+                imagemUrl: "https://terabite.blob.core.windows.net/terabite-container/" + produto.id || '',
+                isAtivo: produto.isAtivo !== undefined ? produto.isAtivo : true  // Define true como padrão
+
             }));
 
             setProdutos(produtosFormatados);
@@ -211,6 +345,8 @@ const ListarProdutos = () => {
         }
     };
 
+
+    // metodo para abrir um modal
     const abrirModal = () => {
         setNovoProduto({ nome: "", marca: "", preco: "", imagemUrl: "" });
         setImagemPreview(null);
@@ -220,6 +356,8 @@ const ListarProdutos = () => {
         setModalAberto(true);
     };
 
+
+    // metodo para fechar modal
     const fecharModal = () => {
         setNovoProduto({ nome: "", marca: "", preco: "", imagemUrl: "" });
         setImagemPreview(null);
@@ -269,7 +407,7 @@ const ListarProdutos = () => {
     const handleImagemUpload = async (evento) => {
         const arquivo = evento.target.files[0];
         if (arquivo) {
-            // Validações existentes
+            // Validações
             if (arquivo.size > 5000000) {
                 toast.error("Arquivo muito grande. Máximo 5MB.");
                 return;
@@ -280,32 +418,14 @@ const ListarProdutos = () => {
                 return;
             }
 
-            // Definir o arquivo
             setArquivoImagem(arquivo);
 
-            // Usar try-catch para lidar com erros de leitura
             try {
                 const leitor = new FileReader();
 
-                leitor.onload = async (e) => {
-                    console.log('Imagem carregada:', e.target.result); // Log para debug
+                leitor.onload = (e) => {
+                    console.log('Imagem carregada:', e.target.result);
                     setImagemPreview(e.target.result);
-
-                    // Enviar a imagem para o Azure e obter a URL
-                    try {
-                        const produtoId = novoProduto.id; // ou outro identificador do produto
-                        const urlImagemAzure = await enviarImagemParaAzure(arquivo, produtoId);
-                        console.log('URL da imagem no Azure:', urlImagemAzure);
-
-                        // Atualizar o estado com a URL da imagem após o upload
-                        setNovoProduto(prevProduto => ({
-                            ...prevProduto,
-                            imagemUrl: urlImagemAzure
-                        }));
-                    } catch (uploadError) {
-                        console.error('Erro ao enviar imagem para o Azure:', uploadError);
-                        toast.error("Erro ao enviar imagem para o Azure");
-                    }
                 };
 
                 leitor.onerror = (error) => {
@@ -325,6 +445,69 @@ const ListarProdutos = () => {
             }
         }
     };
+
+    const ImagemPreviewComponent = ({
+        handleImagemUpload,
+        erros,
+        imagemPreview
+    }) => (
+        <>
+            <div style={{ marginTop: '10px', display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                <input
+                    id="upload-imagem"
+                    accept="image/*"
+                    type="file"
+                    onChange={handleImagemUpload}
+                    style={{ display: 'none' }}
+                />
+                <label htmlFor="upload-imagem">
+                    <Button className="botaoModal"
+                        variant="contained"
+                        component="span"
+                        size="medium"
+                        startIcon={<UploadIcon />}
+                        sx={{
+                            textTransform: 'none',
+                            backgroundColor: '#1976d2',
+                            '&:hover': {
+                                backgroundColor: '#1565c0'
+                            }
+                        }}
+                    >
+                        {imagemPreview ? 'Alterar Imagem' : 'Upload de Imagem'}
+                    </Button>
+                </label>
+
+                {imagemPreview && (
+                    <div style={{ marginTop: '5px', display: 'flex', alignItems: 'center', gap: '10px' }}>
+                        <img
+                            src={imagemPreview}
+                            alt="Pré-visualização"
+                            style={{
+                                width: '35px',
+                                height: '35px',
+                                objectFit: 'cover',
+                                borderRadius: '4px'
+                            }}
+                        />
+                        <span style={{ fontSize: '14px', color: '#666' }}>
+                            Imagem selecionada
+                        </span>
+                    </div>
+                )}
+            </div>
+            {erros.imagem && (
+                <div style={{
+                    color: '#d32f2f',
+                    fontSize: '0.75rem',
+                    marginTop: '3px',
+                    fontFamily: '"Roboto","Helvetica","Arial",sans-serif'
+                }}>
+                    {erros.imagem}
+                </div>
+            )}
+        </>
+    );
 
     // Função para formatar o preço de forma segura
     const formatarPreco = (preco) => {
@@ -346,6 +529,8 @@ const ListarProdutos = () => {
         return Number(precoFormatado.toFixed(2));
     };
 
+
+    // função para validação dos campos
     const validarFormulario = () => {
         const novosErros = {};
 
@@ -376,41 +561,37 @@ const ListarProdutos = () => {
         }
 
         // Validar imagem obrigatória
-        if (!arquivoImagem && !novoProduto?.imagemUrl) {
-            novosErros.imagem = "Imagem é obrigatória";
-        }
+        // if (!arquivoImagem && !novoProduto?.imagemUrl) {
+        //     novosErros.imagem = "Imagem é obrigatória";
+        // }
 
         console.log('Erros de validação:', novosErros); // Log para depuração
         setErros(novosErros);
         return Object.keys(novosErros).length === 0;
     };
 
-
+    // Método para adicionar novo produto (somente POST)
     const adicionarNovoProduto = async () => {
-        // Verifica a validação do formulário
-        // if (!validarFormulario()) return;
-
         try {
-            setCarregando(true); // Define o estado de carregamento como verdadeiro
-
-            let urlImagem = novoProduto.imagemUrl;
-
-            // Caso uma nova imagem tenha sido carregada
-            if (arquivoImagem) {
-                const idParaImagem = produtoSelecionado?.id;
-
-                if (!produtoSelecionado || !idParaImagem || typeof idParaImagem !== 'number') {
-                    console.error('Produto não selecionado ou ID inválido para envio de imagem');
-                    throw new Error('ID do produto inválido');
-                }
-
-                // Envia a imagem para o Azure e obtém a URL
-                urlImagem = await enviarImagemParaAzure(arquivoImagem, idParaImagem);
-            }
+            setCarregando(true);
 
             const token = sessionStorage.getItem('token');
             if (!token) {
                 throw new Error('Token de autenticação não encontrado');
+            }
+
+            let urlImagem = novoProduto.imagemUrl;
+
+            // Se houver uma nova imagem, faz o upload
+            if (arquivoImagem) {
+                try {
+                    const produtoId = novoProduto.id;
+                    // urlImagem = await enviarImagemParaAzure(arquivoImagem, produtoId);
+                    // Descomentar quando a função de upload estiver pronta
+                } catch (erroUpload) {
+                    console.error('Erro no upload da imagem:', erroUpload);
+                    throw new Error('Falha ao enviar imagem');
+                }
             }
 
             // Monta os dados do produto para envio
@@ -418,19 +599,14 @@ const ListarProdutos = () => {
                 nome: novoProduto.nome,
                 nomeSubtipo: novoProduto.subtipo,
                 nomeMarca: novoProduto.marca,
+                imagemUrl: urlImagem,
                 preco: formatarPreco(novoProduto.preco),
+                temLactose: typeof novoProduto.temLactose === "boolean" ? novoProduto.temLactose : false,
+                temGlutem: typeof novoProduto.temGlutem === "boolean" ? novoProduto.temGlutem : false
             };
 
-            // Define a URL e o método (POST para novo produto, PUT para edição)
-            const url = produtoSelecionado
-                ? `http://localhost:8080/produtos/${produtoSelecionado.id}`
-                : 'http://localhost:8080/produtos';
-
-            const metodo = produtoSelecionado ? "PUT" : "POST";
-
-            // Faz a requisição ao backend
-            const resposta = await fetch(url, {
-                method: metodo,
+            const resposta = await fetch('http://localhost:8080/produtos', {
+                method: 'POST',
                 headers: {
                     'Authorization': `Bearer ${token}`,
                     'Content-Type': 'application/json'
@@ -440,61 +616,261 @@ const ListarProdutos = () => {
 
             if (!resposta.ok) {
                 const errorDetails = await resposta.json();
-                console.error('Erro ao salvar produto:', errorDetails);
-                fecharModal();
-                toast.success("Imagem alterada!")
-                return null;
+                console.error('Erro ao criar produto:', errorDetails);
+                throw new Error('Erro ao criar produto');
             }
 
-            // Exibe uma mensagem de sucesso
-            toast.success(produtoSelecionado ? 'Produto atualizado com sucesso!' : 'Produto criado com sucesso!');
+            const dadosNovoProduto = await resposta.json();
 
-            // Atualiza o estado com os dados recebidos
-            // const dadosAtualizados = await resposta.json();
-            // if (produtoSelecionado) {
-            //     setProdutos(produtos.map(produto =>
-            //         produto.id === produtoSelecionado.id ? dadosAtualizados : produto
-            //     ));
-            // } else {
-            //     setProdutos([...produtos, dadosAtualizados]);
-            // }
+            // Formata o novo produto antes de adicionar ao estado
+            const produtoFormatado = {
+                id: dadosNovoProduto.id || '',
+                nome: dadosNovoProduto.nome || '',
+                marca: dadosNovoProduto.marca?.nome || '',
+                subtipo: dadosNovoProduto.subtipo?.nome || '',
+                preco: typeof dadosNovoProduto.preco === 'number' ? dadosNovoProduto.preco : 0,
+                imagemUrl: "https://terabite.blob.core.windows.net/terabite-container/" + dadosNovoProduto.id || '',
+                isAtivo: dadosNovoProduto.isAtivo !== undefined ? dadosNovoProduto.isAtivo : true,
+                temLactose: dadosNovoProduto.temLactose || false,
+                temGlutem: dadosNovoProduto.temGlutem || false
+            };
 
-            // Fecha o modal
+            setProdutos(produtos => [...produtos, produtoFormatado]);
+
+            toast.success('Produto criado com sucesso!');
             fecharModal();
+            limparImagemPreview();
+
         } catch (erro) {
-            // Exibe uma mensagem de erro
             toast.error(erro.message);
+            console.error('Erro:', erro);
         } finally {
-            // Define o estado de carregamento como falso
             setCarregando(false);
         }
     };
+    // Método para atualizar produto (PUT) com imagem
+    const atualizarProduto = async (produto, dadosAtualizados) => {
+        try {
+            setCarregando(true);
 
+            const token = sessionStorage.getItem('token');
+            if (!token) {
+                throw new Error('Token de autenticação não encontrado');
+            }
 
+            let urlImagem = dadosAtualizados.imagemUrl;
 
-    const handleEditar = (produto) => {
-        if (!produto || !produto.id) {
-            console.error("Produto inválido", produto);
-            toast.error("Não foi possível editar o produto");
-            return;
+            // Se houver uma nova imagem, faz o upload
+            if (arquivoImagem) {
+                try {
+                    // urlImagem = await enviarImagemParaAzure(arquivoImagem, produto.id);
+                    // Descomentar quando a função de upload estiver pronta
+                } catch (erroUpload) {
+                    console.error('Erro no upload da imagem:', erroUpload);
+                    throw new Error('Falha ao enviar imagem');
+                }
+            }
+
+            const dadosParaAtualizar = {
+                id: produto.id, // Importante incluir o ID
+                nome: dadosAtualizados.nome,
+                preco: formatarPreco(dadosAtualizados.preco),
+                isAtivo: produto.isAtivo,
+                nomeSubtipo: dadosAtualizados.subtipo,
+                nomeMarca: dadosAtualizados.marca,
+                temLactose: dadosAtualizados.temLactose,
+                temGlutem: dadosAtualizados.temGlutem,
+                imagemUrl: urlImagem
+            };
+
+            const resposta = await fetch(`http://localhost:8080/produtos/${produto.id}`, {
+                method: "PUT",
+                headers: {
+                    'Content-Type': 'application/json',
+                    Authorization: `Bearer ${token}`
+                },
+                body: JSON.stringify(dadosParaAtualizar)
+            });
+
+            if (!resposta.ok) {
+                const errorText = await resposta.text();
+                console.error("Resposta do erro:", errorText);
+                throw new Error("Erro ao atualizar produto");
+            }
+
+            const dadosAtualizadosResponse = await resposta.json();
+
+            // Atualizar o estado local com o produto atualizado
+            setProdutos(produtosAntigos =>
+                produtosAntigos.map(p =>
+                    p.id === produto.id
+                        ? {
+                            ...p,
+                            nome: dadosAtualizadosResponse.nome || p.nome,
+                            marca: dadosAtualizadosResponse.marca?.nome || dadosAtualizadosResponse.marca || p.marca,
+                            subtipo: dadosAtualizadosResponse.subtipo?.nome || dadosAtualizadosResponse.subtipo || p.subtipo,
+                            preco: typeof dadosAtualizadosResponse.preco === 'number' ?
+                                dadosAtualizadosResponse.preco :
+                                parseFloat(dadosAtualizadosResponse.preco) || p.preco,
+                            imagemUrl: dadosAtualizadosResponse.imagemUrl || p.imagemUrl,
+                            isAtivo: dadosAtualizadosResponse.isAtivo !== undefined ?
+                                dadosAtualizadosResponse.isAtivo :
+                                p.isAtivo,
+                            temLactose: dadosAtualizadosResponse.temLactose ?? p.temLactose,
+                            temGlutem: dadosAtualizadosResponse.temGlutem ?? p.temGlutem
+                        }
+                        : p
+                )
+            );
+
+            toast.success("Produto atualizado com sucesso!");
+            fecharModal();
+            limparImagemPreview();
+
+        } catch (erro) {
+            toast.error(erro.message);
+            console.error("Erro ao atualizar produto:", erro);
+        } finally {
+            setCarregando(false);
         }
+    };
+    // Função auxiliar para limpar a imagem
+    const limparImagemPreview = () => {
+        setImagemPreview(null);
+        setArquivoImagem(null);
+    };
 
+    // Método para preparar a edição
+    const handleEditar = (produto) => {
         setProdutoSelecionado(produto);
         setNovoProduto({
-            nome: produto?.nome || '',
-            marca: produto?.marca || '',
-            subtipo: produto?.subtipo || '',
-            preco: produto?.preco || '',
-            imagemUrl: produto?.imagemUrl || ''
+            id: produto.id,
+            nome: produto.nome || '',
+            marca: typeof produto.marca === 'object' ? produto.marca.nome : produto.marca || '',
+            subtipo: typeof produto.subtipo === 'object' ? produto.subtipo.nome : produto.subtipo || '',
+            preco: produto.preco ? produto.preco.toFixed(2) : '0.00',
+            imagemUrl: produto.imagemUrl || '',
+            temLactose: produto.temLactose ?? false,
+            temGlutem: produto.temGlutem ?? false,
+            isAtivo: produto.isAtivo
         });
-        setImagemPreview(produto?.imagemUrl || '');
         setModalAberto(true);
     };
+
+
+    // metodo de desativar produto
+    const handlerDesativar = async (produto) => {
+        const token = sessionStorage.getItem('token');
+
+        const desativarProduto = {
+            nome: produto.nome || "",
+            preco: produto.preco || 0,
+            isAtivo: false,
+            nomeSubtipo: produto.nomeSubtipo || produto.subtipo || "DefaultSubtipo",
+            nomeMarca: produto.nomeMarca || produto.marca || "DefaultMarca",
+            temLactose: typeof produto.temLactose === "boolean" ? produto.temLactose : false,
+            temGlutem: typeof produto.temGlutem === "boolean" ? produto.temGlutem : false
+        };
+
+        console.log("Objeto enviado:", JSON.stringify(desativarProduto));
+
+        try {
+            const response = await fetch(`http://localhost:8080/produtos/${produto.id}`, {
+                method: "PUT",
+                headers: {
+                    'Content-Type': 'application/json',
+                    Authorization: `Bearer ${token}`
+                },
+                body: JSON.stringify(desativarProduto)
+            });
+
+            if (!response.ok) {
+                const errorText = await response.text();
+                console.error("Resposta do erro:", errorText);
+                throw new Error("Erro ao desativar produto");
+            }
+
+            const dados = await response.json();
+            console.log("Produto desativado com sucesso: ", dados);
+
+            // Atualiza apenas o produto desativado
+            setProdutos(prev =>
+                prev.map(p => p.id === produto.id ? { ...p, isAtivo: false } : p)
+            );
+
+            toast.success("Produto Desativado!");
+        } catch (erro) {
+            console.error("Erro ao desativar produto: ", erro);
+        }
+    };
+
+
+    // metodo de ativar produto
+    const handlerAtivar = async (produto) => {
+        const token = sessionStorage.getItem('token');
+
+        const ativarProduto = {
+            nome: produto.nome || "",
+            preco: produto.preco || 0,
+            isAtivo: true,
+            nomeSubtipo: produto.nomeSubtipo || produto.subtipo || "Senhor Sorvete",
+            nomeMarca: produto.nomeMarca || produto.marca || "Senhor Sorvete",
+            temLactose: typeof produto.temLactose === "boolean" ? produto.temLactose : false,
+            temGlutem: typeof produto.temGlutem === "boolean" ? produto.temGlutem : false
+        };
+
+        try {
+            const response = await fetch(`http://localhost:8080/produtos/${produto.id}`, {
+                method: "PUT",
+                headers: {
+                    'Content-Type': 'application/json',
+                    Authorization: `Bearer ${token}`
+                },
+                body: JSON.stringify(ativarProduto)
+            });
+
+            if (!response.ok) {
+                throw new Error("Erro ao ativar produto");
+            }
+
+            const dados = await response.json();
+            setProdutos(prev =>
+                prev.map(p => p.id === produto.id ? { ...p, isAtivo: true } : p)
+            );
+
+            toast.success("Produto ativado com sucesso!");
+        } catch (erro) {
+            console.error("Erro ao ativar produto: ", erro);
+            toast.error("Erro ao ativar produto");
+        }
+    };
+
+
+    // metodo para saber se o produto tem lactose
+    const handlePossuiLactose = (event) => {
+
+        setNovoProduto((prev) => ({
+            ...prev,
+            temLactose: event.target.checked,
+        }));
+
+    };
+
+    // metodo para saber se o produto tem gluten
+    const handlePossuiGluten = async (event) => {
+
+        setNovoProduto((prev) => ({
+            ...prev,
+            temGlutem: event.target.checked,
+        }));
+    };
+
 
     // Função renderProdutoCell definida antes de usá-la
     const renderProdutoCell = (value, defaultValue = '-') => {
         return value || defaultValue;
     };
+
 
     return (
         <>
@@ -547,7 +923,7 @@ const ListarProdutos = () => {
                                 <TableCell className='tabela-head-cell'>Nome</TableCell>
                                 <TableCell className='tabela-head-cell'>Marca</TableCell>
                                 <TableCell className='tabela-head-cell'>Preço</TableCell>
-                                <TableCell className='tabela-head-cell'>Editar</TableCell>
+                                <TableCell className='tabela-head-cell'>Ações</TableCell>
                             </TableRow>
                         </TableHead>
 
@@ -555,7 +931,7 @@ const ListarProdutos = () => {
                             {produtos
                                 .filter(produto => produto && typeof produto === 'object' && produto.id)
                                 .map(produto => (
-                                    <TableRow key={produto.id} className='tabela-row-vendas'>
+                                    <TableRow key={produto.id} className={`tabela-row-vendas ${!produto.isAtivo ? 'desativado' : ''}`}>
                                         <TableCell>
                                             <img
                                                 src={renderProdutoCell(produto.imagemUrl, 'url-placeholder.png')}
@@ -567,12 +943,55 @@ const ListarProdutos = () => {
                                         <TableCell>{renderProdutoCell(produto.nome, 'Produto sem nome')}</TableCell>
                                         <TableCell>{renderProdutoCell(produto.marca, 'Marca desconhecida')}</TableCell>
                                         <TableCell>
-                                            R$ {renderProdutoCell(produto.preco, 0) !== 0 ? renderProdutoCell(produto.preco, 0).toFixed(2) : '0.00'}
+                                            R${" "}
+                                            {(() => {
+                                                const preco = parseFloat(produto.preco);
+                                                return !isNaN(preco) ? preco.toFixed(2) : '0.00';
+                                            })()}
                                         </TableCell>
                                         <TableCell className='tabela-cell'>
-                                            <button onClick={() => handleEditar(produto)}>
-                                                <EditIcon />
-                                            </button>
+                                            {produto.isAtivo ? (
+                                                <Tooltip
+                                                    title="Desativar produto"
+                                                    placement="bottom"
+                                                    arrow
+                                                    enterDelay={200}
+                                                    leaveDelay={200}
+                                                >
+                                                    <button
+                                                        className="desativar"
+                                                        onClick={() => handlerDesativar(produto)}
+                                                    >
+                                                        <DoNotDisturbOnIcon />
+                                                    </button>
+                                                </Tooltip>
+                                            ) : (
+                                                <Tooltip
+                                                    title="Ativar produto"
+                                                    placement="bottom"
+                                                    arrow
+                                                    enterDelay={200}
+                                                    leaveDelay={200}
+                                                >
+                                                    <button
+                                                        className="ativar"
+                                                        onClick={() => handlerAtivar(produto)}
+                                                    >
+                                                        <CheckCircleIcon />
+                                                    </button>
+                                                </Tooltip>
+                                            )}
+                                            <Tooltip
+                                                title="Editar produto"
+                                                placement="bottom"
+                                                arrow
+                                                enterDelay={200}
+                                                leaveDelay={200}
+                                            >
+                                                <button onClick={() => handleEditar(produto)}>
+                                                    <EditIcon />
+                                                </button>
+                                            </Tooltip>
                                         </TableCell>
                                     </TableRow>
                                 ))
@@ -599,56 +1018,65 @@ const ListarProdutos = () => {
                         error={!!erros.nome}
                         helperText={erros.nome}
                     />
-                    <Select
+                    <Autocomplete
                         autoFocus
-                        margin="dense"
-                        name="marca"
-                        label="Marca"
                         fullWidth
-                        value={novoProduto.marca || ""}
-                        onChange={handleInputChange}
-                        error={!!erros.marca}
-                        displayEmpty
-                        renderValue={(selected) => selected || "Selecione uma marca"}
-                    >
-                        {marcas.map((marca, index) => (
-                            <MenuItem key={index} value={marca.nome}>
-                                {marca.nome}
-                            </MenuItem>
-                        ))}
-                        <MenuItem onClick={() => setModalNovaMarcaAberto(true)}>
-                            + Adicionar Nova Marca
-                        </MenuItem>
-                    </Select>
-                    {erros.marca && (
-                        <div
-                            style={{ color: "red", fontSize: "0.75rem", marginTop: "3px" }}
-                        >
-                            {erros.marca}
-                        </div>
-                    )}
-                    <Select
+                        options={[...marcas, { nome: '+ Adicionar Nova Marca', isAddNew: true }]}
+                        value={novoProduto.marca ? { nome: novoProduto.marca } : null}
+                        noOptionsText="Nenhuma opção encontrada"
+                        onChange={(event, newValue) => {
+                            if (newValue?.isAddNew) {
+                                setModalNovaMarcaAberto(true);
+                                return;
+                            }
+                            handleInputChange({
+                                target: {
+                                    name: 'marca',
+                                    value: newValue?.nome || ''
+                                }
+                            });
+                        }}
+                        getOptionLabel={(option) => option.nome || ''}
+                        renderInput={(params) => (
+                            <TextField
+                                {...params}
+                                margin="dense"
+                                name="marca"
+                                label="Marca"
+                                error={!!erros.marca}
+                                placeholder="Selecione uma marca"
+                            />
+                        )}
+                    />
+
+                    <Autocomplete
                         autoFocus
-                        margin="dense"
-                        label="Subtipo"
                         fullWidth
-                        value={novoProduto.subtipo || ""}
-                        onChange={(e) =>
-                            setNovoProduto((prev) => ({ ...prev, subtipo: e.target.value }))
-                        }
-                        error={!!erros.subtipo}
-                        displayEmpty
-                        renderValue={(selected) => selected || "Selecione um subtipo"}
-                    >
-                        {subtipos.map((subtipo, index) => (
-                            <MenuItem key={index} value={subtipo.nome}>
-                                {subtipo.nome}
-                            </MenuItem>
-                        ))}
-                        <MenuItem onClick={() => setModalNovoSubtipoAberto(true)}>
-                            + Adicionar Novo Subtipo
-                        </MenuItem>
-                    </Select>
+                        options={[...subtipos, { nome: '+ Adicionar Novo Subtipo', isAddNew: true }]}
+                        value={novoProduto.subtipo ? { nome: novoProduto.subtipo } : null}
+                        noOptionsText="Nenhuma opção encontrada"
+                        onChange={(event, newValue) => {
+                            if (newValue?.isAddNew) {
+                                setModalNovoSubtipoAberto(true);
+                                return;
+                            }
+                            setNovoProduto((prev) => ({
+                                ...prev,
+                                subtipo: newValue?.nome || ''
+                            }));
+                        }}
+                        getOptionLabel={(option) => option.nome || ''}
+                        renderInput={(params) => (
+                            <TextField
+                                {...params}
+                                margin="dense"
+                                name="subtipo"
+                                label="Subtipo"
+                                error={!!erros.subtipo}
+                                placeholder="Selecione um subtipo"
+                            />
+                        )}
+                    />
                     {erros.subtipo && (
                         <div
                             style={{ color: "red", fontSize: "0.75rem", marginTop: "3px" }}
@@ -677,28 +1105,30 @@ const ListarProdutos = () => {
                         }}
                     />
 
-                    {produtoSelecionado ? (
-                        <input
-                            accept="image/*"
-                            type="file"
-                            onChange={handleImagemUpload}
-                            style={{ marginTop: '10px' }}
+                    <label style={{ alignItems: 'center', gap: '0px' }}>
+                        <Checkbox
+                            checked={novoProduto.temLactose}
+                            onChange={handlePossuiLactose}
+                            inputProps={{ "Poppins": 'Produto tem lactose?' }}
                         />
-                    ) : null}
-                    {erros.imagem && (
-                        <div style={{ color: 'red', fontSize: '0.75rem', marginTop: '3px' }}>
-                            {erros.imagem}
-                        </div>
-                    )}
-                    {imagemPreview && (
-                        <div style={{ marginTop: '10px' }}>
-                            <img
-                                src={imagemPreview}
-                                alt="Pré-visualização"
-                                style={{ width: '35px', height: '35px' }}
-                            />
-                        </div>
-                    )}
+                        Possui Lactose?
+                    </label>
+
+                    <label style={{ alignItems: 'center', gap: '0px' }}>
+                        <Checkbox
+                            checked={novoProduto.temGlutem}
+                            onChange={handlePossuiGluten}
+                            inputProps={{ "Poppins": 'Produto tem Gluten?' }}
+                        />
+                        Possui Glúten?
+                    </label>
+
+                    <ImagemPreviewComponent
+                        produtoSelecionado={produtoSelecionado}
+                        handleImagemUpload={handleImagemUpload}
+                        erros={erros}
+                        imagemPreview={imagemPreview}
+                    />
                 </DialogContent>
                 <DialogActions>
                     <Button
@@ -710,7 +1140,15 @@ const ListarProdutos = () => {
                     </Button>
                     <Button
                         className='botaoModal'
-                        onClick={adicionarNovoProduto}
+                        onClick={() => {
+                            if (validarFormulario()) {
+                                if (produtoSelecionado) {
+                                    atualizarProduto(produtoSelecionado, novoProduto);
+                                } else {
+                                    adicionarNovoProduto();
+                                }
+                            }
+                        }}
                         disabled={carregando}
                     >
                         {carregando ? 'Salvando...' : (produtoSelecionado ? "Salvar" : "Adicionar")}
@@ -741,6 +1179,34 @@ const ListarProdutos = () => {
                         Cancelar
                     </Button>
                     <Button className="botaoModal" onClick={adicionarNovaMarca}>
+                        Adicionar
+                    </Button>
+                </DialogActions>
+            </Dialog>
+
+            <Dialog
+                open={modalNovoSubtipoAberto}
+                onClose={() => setModalNovoSubtipoAberto(false)}
+            >
+                <DialogTitle>Adicionar Novo Subtipo</DialogTitle>
+                <DialogContent>
+                    <TextField
+                        autoFocus
+                        margin="dense"
+                        label="Subtipo"
+                        fullWidth
+                        value={novoSubtipo}
+                        onChange={(e) => setNovoSubtipo(e.target.value)}
+                    />
+                </DialogContent>
+                <DialogActions>
+                    <Button
+                        className="botaoModal"
+                        onClick={() => setModalNovoSubtipoAberto(false)}
+                    >
+                        Cancelar
+                    </Button>
+                    <Button className="botaoModal" onClick={adicionarNovoSubtipo}>
                         Adicionar
                     </Button>
                 </DialogActions>

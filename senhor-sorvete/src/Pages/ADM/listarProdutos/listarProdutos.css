@@ -81,12 +81,63 @@
     border-radius: 5px;
 }
 
-.tabela-cell button:hover {
-    cursor: pointer;
-    color: #F1C97B;
-    background-color: #2F615E;
-    border: 1px solid #F1C97B;
+/* Estilo para produtos desativados */
+.tabela-row-vendas.desativado {
+    background-color: #f2f2f2;
+    opacity: 0.7;
+    position: relative;
 }
+
+.tabela-row-vendas.desativado td {
+    color: #666;
+}
+
+.tabela-row-vendas.desativado img {
+    filter: grayscale(100%);
+}
+
+/* Estilização dos botões de ação */
+.tabela-cell {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+}
+
+.tabela-cell button {
+    padding: 6px;
+    border-radius: 4px;
+    transition: all 0.3s ease;
+}
+
+/* Botão de ativar (verde) */
+.tabela-cell button.ativar {
+    color: #F1C97B;
+}
+
+.tabela-cell button.ativar:hover:not(:disabled) {
+    background-color: #2F615E;
+    color: #F1C97B;
+}
+
+/* Botão de desativar (vermelho) */
+.tabela-cell button.desativar {
+    color: #2F615E;
+}
+
+/* .tabela-cell button.desativar:hover:not(:disabled) {
+    background-color: #d32f2f;
+    color: #fff;
+} */
+
+/* Estilo para botões desabilitados */
+.tabela-cell button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    background-color: transparent !important;
+    color: #999 !important;
+    border: 1px solid #ddd;
+}
+
 
 .tituloModal {
     font-family: "Poppins", system-ui !important;
@@ -105,7 +156,7 @@
     cursor: pointer;
     background-color: #1f4a43;
     transform: translateY(-2px);
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
 }
 
 @media (max-width: 768px) {
