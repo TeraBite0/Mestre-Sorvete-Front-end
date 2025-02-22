@@ -25,6 +25,7 @@ import UploadIcon from '@mui/icons-material/Upload';
 import "./listarProdutos.css";
 import TableContainer from "@mui/material/TableContainer";
 import EditIcon from "@mui/icons-material/Edit";
+import DoNotDisturbOnIcon from '@mui/icons-material/DoNotDisturbOn';
 import { useEffect, useState } from "react";
 import HeaderGerenciamento from "../../../Components/HeaderGerenciamento";
 import Pesquisa from "../../../Components/Pesquisa";
@@ -919,8 +920,8 @@ const ListarProdutos = () => {
                     >
                         <TableHead className='tabela-Head'>
                             <TableRow>
-                                <TableCell className='tabela-head-cell'>Imagem</TableCell>
-                                <TableCell className='tabela-head-cell'>Nome</TableCell>
+                                <TableCell className='tabela-head-cell' style={{ width: "25%" }}>Imagem</TableCell>
+                                <TableCell className='tabela-head-cell' style={{ width: "25%" }}>Nome</TableCell>
                                 <TableCell className='tabela-head-cell'>Marca</TableCell>
                                 <TableCell className='tabela-head-cell'>Preço</TableCell>
                                 <TableCell className='tabela-head-cell'>Ações</TableCell>
