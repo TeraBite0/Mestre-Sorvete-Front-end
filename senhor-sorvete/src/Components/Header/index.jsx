@@ -19,7 +19,7 @@ const Header = () => {
     return (
         <div className="containerHeader" id="start">
             <div className="containerImgLogo">
-                <Link to="/"><img src="/Imagens/logo-sorvete.png" alt="logo sorvete" /></Link>
+                <Link to="/"><img src="/Imagens/logo-mestre-sorvete.png" alt="logo sorvete" /></Link>
             </div>
             <div className={`containerListItem ${menuOpen ? 'open' : ''}`}>
                 <ul>
