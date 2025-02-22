@@ -206,7 +206,10 @@ button {
   height: 100%;
   width: 100%;
   flex-direction: column;
-  justify-content: start;
+  align-items: flex-start;
+  padding-bottom: 8%;
+
+  
   
 }
 

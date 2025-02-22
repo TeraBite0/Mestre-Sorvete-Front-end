@@ -45,7 +45,7 @@ export default function BasicDemo() {
 
   return (
     <div className="card">
-      <h1>Populares!</h1>
+      <h1>Eu Quero!</h1>
       <Carousel
         value={produtos}
         numVisible={3}
