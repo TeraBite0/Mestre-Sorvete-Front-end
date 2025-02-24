@@ -133,6 +133,7 @@ const Home = (props) => {
                 compromisso com a qualidade, trazemos para você uma variedade de
                 sabores irresistíveis.
               </p>
+              <h2>Vissão</h2>
               <p>
                 Nosso objetivo é proporcionar uma experiência refrescante e
                 deliciosa em cada visita, oferecendo sorvetes que conquistam
@@ -157,7 +158,7 @@ const Home = (props) => {
                   //   src={recomendacaoDia.imagemUrl} // Aqui você usa a URL da imagem retornada pela API
                   // alt={`Sugestão do Dia - ${recomendacaoDia.nome}`}
                   src="Imagens/imagem-3-homepage.png"
-                  alt={`Sugestão do Dia - ${recomendacaoDia.nome}`}
+                  alt={`Sugestão do Dia - ${recomendacaoDia.id}`}
                 />
               ) : (
                 <p>Carregando recomendação...</p>
@@ -166,13 +167,9 @@ const Home = (props) => {
             <div className="sugestao-text">
               {recomendacaoDia ? (
                 <>
-                  <h3>{recomendacaoDia.nome}</h3>
+                  <h3>{recomendacaoDia.produto.nome} - R${recomendacaoDia.produto.preco.toFixed(2).replace('.', ',')}</h3>
                   <p>
-                    Hoje, nossa dica especial é o irresistível sorvete de{" "}
-                    {recomendacaoDia.nome}. Com uma combinação perfeita de
-                    cremosidade e sabor intenso. Venha experimentar essa delícia
-                    que derrete na boca e transforma o seu dia em um momento de
-                    puro prazer!
+                    {recomendacaoDia.texto}
                   </p>
                   <button className="btn-experimentar">
                     <Link to="/cardapio">Experimentar</Link>
