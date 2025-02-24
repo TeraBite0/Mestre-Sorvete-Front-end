@@ -19,6 +19,7 @@ import HeaderGerenciamento from "../../../Components/HeaderGerenciamento";
 import BotaoVoltarGerenciamento from "../../../Components/BotaoVoltarGerenciamento";
 import { toast } from "react-toastify";
 import axios from "axios";
+import BotaoGerenciamento from "../../../Components/BotaoGerenciamento";
 
 const Recomendacao = () => {
   const [produtos, setProdutos] = useState([]);
@@ -38,9 +39,10 @@ const Recomendacao = () => {
       if (response.data) {
         const produtoFormatado = {
           id: response.data.id,
-          nome: response.data.nome || "Nome não informado",
-          preco: response.data.preco || 0,
-          marca: response.data.marca || { nome: "Marca não informada" },
+          nome: response.data.produto.nome || "Nome não informado",
+          preco: response.data.produto.preco || 0,
+          marca: response.data.produto.marca || { nome: "Marca não informada" },
+          texto: response.data.texto || ""
         };
         setProdutos([produtoFormatado]);
         setProdutoRecomendado(produtoFormatado);
@@ -296,7 +298,27 @@ const Recomendacao = () => {
               </TableBody>
             </Table>
           </TableContainer>
+
         )}
+
+        <div class="informativo-descricao-recomendacao-do-dia">
+          <h3>Descrição Atual: </h3>
+          <h3>Nova Descrição: </h3>
+        </div>
+        <div className="campo-texto-recomendacao-do-dia">
+          <textarea 
+            class="input-texto-recomendacao-do-dia" 
+            type="text" 
+            readOnly="true" 
+            disabled="true"
+            placeholder="Descrição atual sobre o produto, para sugestão do dia..." 
+            value={produtos.map((produto) => (produto.texto))}  />
+          <textarea 
+            class="input-texto-recomendacao-do-dia" 
+            type="text" 
+            placeholder="Coloque uma descrição sobre o produto, para sugestão do dia..." />
+        </div>
+          <BotaoGerenciamento botao="Atualizar Sugestão"/>  
       </div>
 
       <ModalEditarProduto
