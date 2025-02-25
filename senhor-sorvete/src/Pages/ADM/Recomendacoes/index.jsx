@@ -28,6 +28,7 @@ const Recomendacao = () => {
   const [modalOpen, setModalOpen] = useState(false);
   const [produtoRecomendado, setProdutoRecomendado] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [valor, setValor] = useState('');
 
   // Função para buscar o produto recomendado
   const fetchProdutoRecomendado = async (token) => {
@@ -102,8 +103,12 @@ const Recomendacao = () => {
     setModalOpen(true);
   };
 
-  const atualizarProduto = async (produtoAtualizado) => {
-    if (!produtoAtualizado) {
+  const handleChange = (event) => {
+    setValor(event.target.value);
+  };
+
+  const atualizarProduto = async () => {
+    if (produtoRecomendado.id == null) {
       toast.error("Nenhum produto selecionado.");
       return;
     }
@@ -115,16 +120,17 @@ const Recomendacao = () => {
     }
 
     try {
-      const response = await axios.put(
-        `http://localhost:8080/produtos/recomendacao-do-dia/${produtoAtualizado.id}`,
-        null, // Não precisa enviar body pois o ID já está na URL
-        {
+      const response = await fetch(`http://localhost:8080/produtos/recomendacao-do-dia/`, {
+          method: "PUT",
           headers: {
-            'Authorization': `Bearer ${token}`,
-            'Content-Type': 'application/json',
-          }
-        }
-      );
+              'Content-Type': 'application/json',
+              Authorization: `Bearer ${token}`
+          },
+          body: JSON.stringify({
+            produtoId: produtoRecomendado.id,
+            texto: valor
+          })
+      });
 
       if (response.status === 200) {
         toast.success("Produto recomendado atualizado com sucesso!");
@@ -164,7 +170,8 @@ const Recomendacao = () => {
 
     const handleSave = () => {
       if (selectedProduto) {
-        onSave(selectedProduto);
+        setProdutoRecomendado(selectedProduto);
+        setModalOpen(false);
       } else {
         toast.error("Selecione um produto");
       }
@@ -316,9 +323,11 @@ const Recomendacao = () => {
           <textarea 
             class="input-texto-recomendacao-do-dia" 
             type="text" 
+            value={valor}  // Vincula o valor do input ao estado
+            onChange={handleChange}
             placeholder="Coloque uma descrição sobre o produto, para sugestão do dia..." />
         </div>
-          <BotaoGerenciamento botao="Atualizar Sugestão"/>  
+          <BotaoGerenciamento botao="Atualizar Sugestão" onClick={atualizarProduto}/>  
       </div>
 
       <ModalEditarProduto
