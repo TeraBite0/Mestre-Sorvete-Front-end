@@ -256,7 +256,11 @@ const Estoque = () => {
           </div>
         </div>
         <span>Atualmente {produtos.length} produtos cadastrados</span>
-        <TableContainer component={Paper}>
+        <TableContainer component={Paper}
+        sx={{
+          maxHeight: '55vh',  // altura máxima
+          overflow: 'auto'
+      }}>
           <Table size="small" aria-label="tabela de estoque">
             <TableHead>
               <TableRow>

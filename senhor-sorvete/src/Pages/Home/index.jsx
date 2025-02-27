@@ -133,7 +133,7 @@ const Home = (props) => {
                 compromisso com a qualidade, trazemos para você uma variedade de
                 sabores irresistíveis.
               </p>
-              <h2>Vissão</h2>
+              <h2>Visão</h2>
               <p>
                 Nosso objetivo é proporcionar uma experiência refrescante e
                 deliciosa em cada visita, oferecendo sorvetes que conquistam
@@ -203,7 +203,7 @@ const Home = (props) => {
         </section>
 
         <section className="section-5">
-          <div class="section-5"><iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3655.090514945892!2d-46.492801125018104!3d-23.63692926437218!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x94ce69769e05f995%3A0xa5657f81c68e3102!2sMestre%20Sorvete!5e0!3m2!1spt-BR!2sbr!4v1740097443188!5m2!1spt-BR!2sbr" width="620" height="350" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe></div>
+          <div class="section-5"><iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3655.090514945892!2d-46.492801125018104!3d-23.63692926437218!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x94ce69769e05f995%3A0xa5657f81c68e3102!2sMestre%20Sorvete!5e0!3m2!1spt-BR!2sbr!4v1740097443188!5m2!1spt-BR!2sbr" width="620" height="350" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe></div> 
           <div class="classe-notificacao-e-email">
             <div className="notificacoes-text">
               <h2>Receber notificações</h2>
