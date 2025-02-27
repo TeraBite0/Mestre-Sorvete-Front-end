@@ -44,7 +44,7 @@ const ListarProdutos = () => {
         subtipo: '',
         preco: '',
         temLactose: false,
-        temGlutem: false,
+        temGluten: false,
     });
     const [produtoSelecionado, setProdutoSelecionado] = useState(null);
     const [imagemPreview, setImagemPreview] = useState(null);
@@ -118,70 +118,54 @@ const ListarProdutos = () => {
 
 
     // metodo de adicionar nova marca
-    // metodo de adicionar nova marca
     const adicionarNovaMarca = async () => {
         if (!novaMarca.trim()) {
             toast.error("O nome da marca não pode ser vazio");
             return;
         }
-
-        // Verifica se a marca já existe (case insensitive)
-        if (marcas.some(marca => marca.nome.toLowerCase() === novaMarca.trim().toLowerCase())) {
-            toast.error("Esta marca já existe");
-            return;
-        }
-
+    
+        console.log("Objeto enviado para API:", novaMarca.trim());
+    
+        const novaMarcaObj = JSON.parse(JSON.stringify({ nome: novaMarca.trim() }));;
+        console.log("JSON final enviado:", JSON.stringify(novaMarcaObj));
+    
         const token = sessionStorage.getItem('token');
         if (!token) {
             toast.error("Erro de autenticação");
             return;
         }
-
-        // Cria um objeto de produto com valores temporários para cadastrar a marca.
-        const novoProdutoParaMarca = {
-            nome: "Produto Temporário",
-            nomeSubtipo: "Subtipo Padrão",
-            nomeMarca: novaMarca.trim(),
-            preco: 0,
-            temLactose: false,
-            temGlutem: false
-        };
-
+    
         try {
-            const response = await fetch('http://localhost:8080/produtos', {
+            const response = await fetch('http://localhost:8080/marcas', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                     'Authorization': `Bearer ${token}`
                 },
-                body: JSON.stringify(novoProdutoParaMarca)
+                body: JSON.stringify(novaMarcaObj)
             });
-
+    
             if (!response.ok) {
-                throw new Error('Erro ao adicionar marca');
+                const errorData = await response.json();
+                console.error("Erro do servidor:", errorData);
+                throw new Error(`Erro ao adicionar marca: ${errorData.message || 'Erro desconhecido'}`);
             }
-
+    
             const data = await response.json();
-
-            // Adiciona a nova marca à lista de marcas
-            const novaMarcaObj = { nome: novaMarca.trim() };
-            setMarcas(prev => [...prev, novaMarcaObj]);
-
-            // Atualiza diretamente o novoProduto com a nova marca
-            setNovoProduto(prev => ({
-                ...prev,
-                marca: novaMarca.trim()
-            }));
-
+            setMarcas(prev => [...prev, data]);
+    
             setModalNovaMarcaAberto(false);
             setNovaMarca("");
-
+    
             toast.success("Marca adicionada com sucesso!");
         } catch (error) {
-            console.error(error);
+            console.error("Erro na requisição:", error);
             toast.error("Erro ao adicionar marca. Tente novamente.");
         }
     };
+    
+    
+    
 
 
 
@@ -211,7 +195,7 @@ const ListarProdutos = () => {
             nomeMarca: "Marca Temporária", // Marca temporária para criar o subtipo
             preco: 0,
             temLactose: false,
-            temGlutem: false
+            temGluten: false
         };
 
         try {
@@ -603,7 +587,7 @@ const ListarProdutos = () => {
                 imagemUrl: urlImagem,
                 preco: formatarPreco(novoProduto.preco),
                 temLactose: typeof novoProduto.temLactose === "boolean" ? novoProduto.temLactose : false,
-                temGlutem: typeof novoProduto.temGlutem === "boolean" ? novoProduto.temGlutem : false
+                temGluten: typeof novoProduto.temGluten === "boolean" ? novoProduto.temGluten : false
             };
 
             const resposta = await fetch('http://localhost:8080/produtos', {
@@ -633,7 +617,7 @@ const ListarProdutos = () => {
                 imagemUrl: "https://terabite.blob.core.windows.net/terabite-container/" + dadosNovoProduto.id || '',
                 isAtivo: dadosNovoProduto.isAtivo !== undefined ? dadosNovoProduto.isAtivo : true,
                 temLactose: dadosNovoProduto.temLactose || false,
-                temGlutem: dadosNovoProduto.temGlutem || false
+                temGluten: dadosNovoProduto.temGluten || false
             };
 
             setProdutos(produtos => [...produtos, produtoFormatado]);
@@ -680,7 +664,7 @@ const ListarProdutos = () => {
                 nomeSubtipo: dadosAtualizados.subtipo,
                 nomeMarca: dadosAtualizados.marca,
                 temLactose: dadosAtualizados.temLactose,
-                temGlutem: dadosAtualizados.temGlutem,
+                temGluten: dadosAtualizados.temGluten,
                 imagemUrl: urlImagem
             };
 
@@ -718,7 +702,7 @@ const ListarProdutos = () => {
                                 dadosAtualizadosResponse.isAtivo :
                                 p.isAtivo,
                             temLactose: dadosAtualizadosResponse.temLactose ?? p.temLactose,
-                            temGlutem: dadosAtualizadosResponse.temGlutem ?? p.temGlutem
+                            temGluten: dadosAtualizadosResponse.temGluten ?? p.temGluten
                         }
                         : p
                 )
@@ -752,7 +736,7 @@ const ListarProdutos = () => {
             preco: produto.preco ? produto.preco.toFixed(2) : '0.00',
             imagemUrl: produto.imagemUrl || '',
             temLactose: produto.temLactose ?? false,
-            temGlutem: produto.temGlutem ?? false,
+            temGluten: produto.temGluten ?? false,
             isAtivo: produto.isAtivo
         });
         setModalAberto(true);
@@ -770,7 +754,7 @@ const ListarProdutos = () => {
             nomeSubtipo: produto.nomeSubtipo || produto.subtipo || "DefaultSubtipo",
             nomeMarca: produto.nomeMarca || produto.marca || "DefaultMarca",
             temLactose: typeof produto.temLactose === "boolean" ? produto.temLactose : false,
-            temGlutem: typeof produto.temGlutem === "boolean" ? produto.temGlutem : false
+            temGluten: typeof produto.temGluten === "boolean" ? produto.temGluten : false
         };
 
         console.log("Objeto enviado:", JSON.stringify(desativarProduto));
@@ -817,7 +801,7 @@ const ListarProdutos = () => {
             nomeSubtipo: produto.nomeSubtipo || produto.subtipo || "Senhor Sorvete",
             nomeMarca: produto.nomeMarca || produto.marca || "Senhor Sorvete",
             temLactose: typeof produto.temLactose === "boolean" ? produto.temLactose : false,
-            temGlutem: typeof produto.temGlutem === "boolean" ? produto.temGlutem : false
+            temGluten: typeof produto.temGluten === "boolean" ? produto.temGluten : false
         };
 
         try {
@@ -862,7 +846,7 @@ const ListarProdutos = () => {
 
         setNovoProduto((prev) => ({
             ...prev,
-            temGlutem: event.target.checked,
+            temGluten: event.target.checked,
         }));
     };
 
@@ -1117,7 +1101,7 @@ const ListarProdutos = () => {
 
                     <label style={{ alignItems: 'center', gap: '0px' }}>
                         <Checkbox
-                            checked={novoProduto.temGlutem}
+                            checked={novoProduto.temGluten}
                             onChange={handlePossuiGluten}
                             inputProps={{ "Poppins": 'Produto tem Gluten?' }}
                         />
