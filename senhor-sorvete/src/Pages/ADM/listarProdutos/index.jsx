@@ -25,6 +25,7 @@ import UploadIcon from '@mui/icons-material/Upload';
 import "./listarProdutos.css";
 import TableContainer from "@mui/material/TableContainer";
 import EditIcon from "@mui/icons-material/Edit";
+import VisibilityIcon from '@mui/icons-material/Visibility';
 //import DoNotDisturbOnIcon from '@mui/icons-material/DoNotDisturbOn';
 import { useEffect, useState } from "react";
 import HeaderGerenciamento from "../../../Components/HeaderGerenciamento";
@@ -100,6 +101,7 @@ const ListarProdutos = () => {
                 nome: produto.nome || '',
                 marca: produto.marca?.nome || '',
                 subtipo: produto.subtipo?.nome || '',
+                tipo: produto.subtipo.tipo?.nome || '',
                 preco: typeof produto.preco === 'number' ? produto.preco : 0,
                 imagemUrl: "https://terabite.blob.core.windows.net/terabite-container/" + produto.id || '',
                 isAtivo: produto.isAtivo !== undefined ? produto.isAtivo : true // Garantir que isAtivo seja definido
@@ -904,9 +906,10 @@ const ListarProdutos = () => {
                     >
                         <TableHead className='tabela-Head'>
                             <TableRow>
-                                <TableCell className='tabela-head-cell' style={{ width: "25%" }}>Imagem</TableCell>
-                                <TableCell className='tabela-head-cell' style={{ width: "25%" }}>Nome</TableCell>
+                                <TableCell className='tabela-head-cell'>Imagem</TableCell>
+                                <TableCell className='tabela-head-cell'>Nome</TableCell>
                                 <TableCell className='tabela-head-cell'>Marca</TableCell>
+                                <TableCell className='tabela-head-cell'>Tipo</TableCell>
                                 <TableCell className='tabela-head-cell'>Preço</TableCell>
                                 <TableCell className='tabela-head-cell'>Ações</TableCell>
                             </TableRow>
@@ -927,6 +930,7 @@ const ListarProdutos = () => {
                                         </TableCell>
                                         <TableCell>{renderProdutoCell(produto.nome, 'Produto sem nome')}</TableCell>
                                         <TableCell>{renderProdutoCell(produto.marca, 'Marca desconhecida')}</TableCell>
+                                        <TableCell>{renderProdutoCell(produto.tipo, 'Tipo desconhecida')}</TableCell>
                                         <TableCell>
                                             R${" "}
                                             {(() => {
@@ -975,6 +979,17 @@ const ListarProdutos = () => {
                                             >
                                                 <button onClick={() => handleEditar(produto)}>
                                                     <EditIcon />
+                                                </button>
+                                            </Tooltip>
+                                            <Tooltip
+                                                title="Visualizar produto"
+                                                placement="bottom"
+                                                arrow
+                                                enterDelay={200}
+                                                leaveDelay={200}
+                                            >
+                                                <button >
+                                                    <VisibilityIcon />
                                                 </button>
                                             </Tooltip>
                                         </TableCell>
