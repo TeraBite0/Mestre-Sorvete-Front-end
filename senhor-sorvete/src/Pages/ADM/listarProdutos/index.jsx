@@ -55,6 +55,7 @@ const ListarProdutos = () => {
     const [erros, setErros] = useState({});
     const [marcas, setMarcas] = useState([]);
     const [subtipos, setSubtipos] = useState([]);
+    const [modalVisualizarProdutoAberto, setModalVisualizarProdutoAberto] = useState(false);
     const [modalNovaMarcaAberto, setModalNovaMarcaAberto] = useState(false);
     const [modalNovoSubtipoAberto, setModalNovoSubtipoAberto] = useState(false);
     const [novaMarca, setNovaMarca] = useState('');
@@ -105,7 +106,8 @@ const ListarProdutos = () => {
                 subtipo: produto.subtipo?.nome || '',
                 tipo: produto.subtipo.tipo?.nome || '',
                 preco: typeof produto.preco === 'number' ? produto.preco : 0,
-                qtdPorCaixas: typeof produto.qtdPorCaixas === 'number' ? produto.qtdPorCaixas : 0,
+                qtdCaixasEstoque: typeof produto.qtdCaixasEstoque === 'number' ? produto.qtdCaixasEstoque : 0,
+                qtdDeCaixas: typeof produto.qtdDeCaixas === 'number' ? produto.qtdDeCaixas : 0,
                 imagemUrl: "https://terabite.blob.core.windows.net/terabite-container/" + produto.id || '',
                 isAtivo: produto.isAtivo !== undefined ? produto.isAtivo : true // Garantir que isAtivo seja definido
             }));
@@ -357,6 +359,7 @@ const ListarProdutos = () => {
         setProdutoSelecionado(null);
         setErros({});
         setModalAberto(false);
+        setModalVisualizarProdutoAberto(false);
     };
 
     const handleInputChange = (evento) => {
@@ -756,6 +759,25 @@ const ListarProdutos = () => {
         setModalAberto(true);
     };
 
+    // Método para preparar a visualização
+    const handleVisualizacao = (produto) => {
+        setProdutoSelecionado(produto);
+        setNovoProduto({
+            id: produto.id,
+            nome: produto.nome || '',
+            marca: typeof produto.marca === 'object' ? produto.marca.nome : produto.marca || '',
+            subtipo: typeof produto.subtipo === 'object' ? produto.subtipo.nome : produto.subtipo || '',
+            preco: produto.preco ? produto.preco.toFixed(2) : '0.00',
+            qtdCaixasEstoque: produto.qtdCaixasEstoque ? produto.qtdCaixasEstoque : '0',
+            qtdPorCaixas: produto.qtdPorCaixas ? produto.qtdPorCaixas : '0',
+            imagemUrl: produto.imagemUrl || '',
+            temLactose: produto.temLactose ?? false,
+            temGluten: produto.temGluten ?? false,
+            isAtivo: produto.isAtivo
+        });
+        setModalVisualizarProdutoAberto(true);
+    };
+
 
     // metodo de desativar produto
     const handlerDesativar = async (produto) => {
@@ -846,6 +868,15 @@ const ListarProdutos = () => {
         }
     };
 
+    // metodo para saber se o produto está ativo
+    const handleEstaAtivo = (event) => {
+
+        setNovoProduto((prev) => ({
+            ...prev,
+            isAtivo: event.target.checked,
+        }));
+
+    };
 
     // metodo para saber se o produto tem lactose
     const handlePossuiLactose = (event) => {
@@ -1002,7 +1033,7 @@ const ListarProdutos = () => {
                                                 enterDelay={200}
                                                 leaveDelay={200}
                                             >
-                                                <button >
+                                                <button  onClick={() => handleVisualizacao(produto)}>
                                                     <VisibilityIcon />
                                                 </button>
                                             </Tooltip>
@@ -1176,6 +1207,209 @@ const ListarProdutos = () => {
                         disabled={carregando}
                     >
                         {carregando ? 'Salvando...' : (produtoSelecionado ? "Salvar" : "Adicionar")}
+                    </Button>
+                </DialogActions>
+            </Dialog>
+
+            <Dialog open={modalVisualizarProdutoAberto} onClose={fecharModal}>
+                <DialogTitle className="tituloModal">
+                    {produtoSelecionado ? "Visualizar Produto" : "Adicionar Produto"}
+                </DialogTitle>
+                <DialogContent>
+                    <TextField
+                        disabled="true"
+                        autoFocus
+                        margin="dense"
+                        name="nome"
+                        label="Nome do Produto"
+                        fullWidth
+                        value={novoProduto.nome}
+                        onChange={handleInputChange}
+                        error={!!erros.nome}
+                        helperText={erros.nome}
+                    />
+                    <Autocomplete
+                        disabled="true"
+                        autoFocus
+                        fullWidth
+                        options={[...marcas, { nome: '+ Adicionar Nova Marca', isAddNew: true }]}
+                        value={novoProduto.marca ? { nome: novoProduto.marca } : null}
+                        noOptionsText="Nenhuma opção encontrada"
+                        onChange={(event, newValue) => {
+                            if (newValue?.isAddNew) {
+                                setModalNovaMarcaAberto(true);
+                                return;
+                            }
+                            handleInputChange({
+                                target: {
+                                    name: 'marca',
+                                    value: newValue?.nome || ''
+                                }
+                            });
+                        }}
+                        getOptionLabel={(option) => option.nome || ''}
+                        renderInput={(params) => (
+                            <TextField
+                                {...params}
+                                disabled="true"
+                                margin="dense"
+                                name="marca"
+                                label="Marca"
+                                error={!!erros.marca}
+                                placeholder="Selecione uma marca"
+                            />
+                        )}
+                    />
+
+                    <Autocomplete
+                        disabled="true"
+                        autoFocus
+                        fullWidth
+                        options={[...subtipos, { nome: '+ Adicionar Novo Subtipo', isAddNew: true }]}
+                        value={novoProduto.subtipo ? { nome: novoProduto.subtipo } : null}
+                        noOptionsText="Nenhuma opção encontrada"
+                        onChange={(event, newValue) => {
+                            if (newValue?.isAddNew) {
+                                setModalNovoSubtipoAberto(true);
+                                return;
+                            }
+                            setNovoProduto((prev) => ({
+                                ...prev,
+                                subtipo: newValue?.nome || ''
+                            }));
+                        }}
+                        getOptionLabel={(option) => option.nome || ''}
+                        renderInput={(params) => (
+                            <TextField
+                                disabled="true"
+                                {...params}
+                                margin="dense"
+                                name="subtipo"
+                                label="Subtipo"
+                                error={!!erros.subtipo}
+                                placeholder="Selecione um subtipo"
+                            />
+                        )}
+                    />
+
+                    <Autocomplete
+                        disabled="true"
+                        autoFocus
+                        fullWidth
+                        options={[...subtipos, { nome: '+ Adicionar Novo Subtipo', isAddNew: true }]}
+                        value={novoProduto.subtipo.tipo ? { nome: novoProduto.subtipo.tipo } : null}
+                        noOptionsText="Nenhuma opção encontrada"
+                        onChange={(event, newValue) => {
+                            if (newValue?.isAddNew) {
+                                setModalNovoSubtipoAberto(true);
+                                return;
+                            }
+                            setNovoProduto((prev) => ({
+                                ...prev,
+                                subtipo: newValue?.nome || ''
+                            }));
+                        }}
+                        getOptionLabel={(option) => option.nome || ''}
+                        renderInput={(params) => (
+                            <TextField
+                                disabled="true"
+                                {...params}
+                                margin="dense"
+                                name="subtipo"
+                                label="Subtipo"
+                                error={!!erros.subtipo}
+                                placeholder="Selecione um subtipo"
+                            />
+                        )}
+                    />
+                    {erros.subtipo && (
+                        <div
+                            style={{ color: "red", fontSize: "0.75rem", marginTop: "3px" }}
+                        >
+                            {erros.subtipo}
+                        </div>
+                    )}
+
+                    <TextField
+                        disabled="true"
+                        margin="dense"
+                        name="preco"
+                        label="Preço"
+                        type="text"
+                        fullWidth
+                        value={novoProduto.preco}
+                        onChange={handleInputChange}
+                        error={!!erros.preco}
+                        helperText={erros.preco}
+                        inputProps={{
+                            min: "0",
+                        }}
+                        InputProps={{
+                            startAdornment: (
+                                <InputAdornment disabled="true" position="start">R$</InputAdornment>
+                            ),
+                        }}
+                    />
+
+                    <TextField
+                        disabled="true"
+                        margin="dense"
+                        name="qtdCaixasEstoque"
+                        label="Quantidade de Caixa"
+                        type="number"
+                        fullWidth
+                        value={novoProduto.qtdCaixasEstoque}
+                        onChange={handleInputChange}
+                    />
+
+                    <TextField
+                        disabled="true"
+                        margin="dense"
+                        name="qtdPorCaixas"
+                        label="Quantidade por Caixa"
+                        type="number"
+                        fullWidth
+                        value={novoProduto.qtdPorCaixas}
+                        onChange={handleInputChange}
+                    />
+
+                    <label style={{ alignItems: 'center', gap: '0px' }}>
+                        <Checkbox
+                            disabled="true"
+                            checked={novoProduto.isAtivo}
+                            onChange={handleEstaAtivo}
+                            inputProps={{ "Poppins": 'Produto está Ativo?' }}
+                        />
+                        Produto Ativo?
+                    </label>
+
+                    <label style={{ alignItems: 'center', gap: '0px' }}>
+                        <Checkbox
+                            disabled="true"
+                            checked={novoProduto.temLactose}
+                            onChange={handlePossuiLactose}
+                            inputProps={{ "Poppins": 'Produto tem lactose?' }}
+                        />
+                        Possui Lactose?
+                    </label>
+
+                    <label style={{ alignItems: 'center', gap: '0px' }}>
+                        <Checkbox
+                            disabled="true"
+                            checked={novoProduto.temGluten}
+                            onChange={handlePossuiGluten}
+                            inputProps={{ "Poppins": 'Produto tem Gluten?' }}
+                        />
+                        Possui Glúten?
+                    </label>
+                </DialogContent>
+                <DialogActions>
+                    <Button
+                        className='botaoModal'
+                        onClick={fecharModal}
+                        disabled={carregando}
+                    >
+                        Fechar
                     </Button>
                 </DialogActions>
             </Dialog>
