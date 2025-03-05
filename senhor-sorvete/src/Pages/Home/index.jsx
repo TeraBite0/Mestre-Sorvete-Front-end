@@ -25,7 +25,7 @@ const Home = (props) => {
     const fetchRecomendacao = async () => {
       try {
         const resposta = await fetch(
-          "http://localhost:8080/produtos/recomendacao-do-dia",
+          "http://localhost:8080/produtos/destaque",
           {
             method: "GET",
             headers: {
@@ -152,7 +152,7 @@ const Home = (props) => {
             <span>{dataAtual}</span>
           </p>
           <div className="sugestao-content">
-            <div className="sugestao-img">
+            <div className="sugestao-img sugestao-div">
               {recomendacaoDia ? (
                 <img
                   //   src={recomendacaoDia.imagemUrl} // Aqui você usa a URL da imagem retornada pela API

@@ -33,7 +33,7 @@ const Recomendacao = () => {
   // Função para buscar o produto recomendado
   const fetchProdutoRecomendado = async (token) => {
     try {
-      const response = await axios.get('http://localhost:8080/produtos/recomendacao-do-dia', {
+      const response = await axios.get('http://localhost:8080/produtos/destaque', {
         headers: { 'Authorization': `Bearer ${token}` }
       });
 
@@ -120,7 +120,7 @@ const Recomendacao = () => {
     }
 
     try {
-      const response = await fetch(`http://localhost:8080/produtos/recomendacao-do-dia/`, {
+      const response = await fetch(`http://localhost:8080/produtos/destaque`, {
           method: "PUT",
           headers: {
               'Content-Type': 'application/json',
