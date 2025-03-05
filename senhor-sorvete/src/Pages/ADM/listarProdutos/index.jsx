@@ -44,6 +44,7 @@ const ListarProdutos = () => {
         marca: '',
         subtipo: '',
         preco: '',
+        qtdPorCaixas: '',
         temLactose: false,
         temGluten: false,
     });
@@ -58,6 +59,7 @@ const ListarProdutos = () => {
     const [modalNovoSubtipoAberto, setModalNovoSubtipoAberto] = useState(false);
     const [novaMarca, setNovaMarca] = useState('');
     const [novoSubtipo, setNovoSubtipo] = useState('');
+    const [qtdPorCaixas, setQtdPorCaiax] = useState('');
 
     useEffect(() => {
         buscarProdutos();
@@ -103,6 +105,7 @@ const ListarProdutos = () => {
                 subtipo: produto.subtipo?.nome || '',
                 tipo: produto.subtipo.tipo?.nome || '',
                 preco: typeof produto.preco === 'number' ? produto.preco : 0,
+                qtdPorCaixas: typeof produto.qtdPorCaixas === 'number' ? produto.qtdPorCaixas : 0,
                 imagemUrl: "https://terabite.blob.core.windows.net/terabite-container/" + produto.id || '',
                 isAtivo: produto.isAtivo !== undefined ? produto.isAtivo : true // Garantir que isAtivo seja definido
             }));
@@ -196,6 +199,7 @@ const ListarProdutos = () => {
             nomeSubtipo: novoSubtipo.trim(),
             nomeMarca: "Marca Temporária", // Marca temporária para criar o subtipo
             preco: 0,
+            qtdPorCaixas: 0,
             temLactose: false,
             temGluten: false
         };
@@ -319,6 +323,7 @@ const ListarProdutos = () => {
                 marca: produto.marca?.nome || '',
                 subtipo: produto.subtipo?.nome || '',
                 preco: typeof produto.preco === 'number' ? produto.preco : 0,
+                qtdPorCaixas: typeof produto.qtdPorCaixas === 'number' ? produto.qtdPorCaixas : 0,
                 imagemUrl: "https://terabite.blob.core.windows.net/terabite-container/" + produto.id || '',
                 isAtivo: produto.isAtivo !== undefined ? produto.isAtivo : true  // Define true como padrão
 
@@ -588,10 +593,11 @@ const ListarProdutos = () => {
                 nomeMarca: novoProduto.marca,
                 imagemUrl: urlImagem,
                 preco: formatarPreco(novoProduto.preco),
+                qtdPorCaixas: Number(novoProduto.qtdPorCaixas),
                 temLactose: typeof novoProduto.temLactose === "boolean" ? novoProduto.temLactose : false,
                 temGluten: typeof novoProduto.temGluten === "boolean" ? novoProduto.temGluten : false
             };
-
+            debugger
             const resposta = await fetch('http://localhost:8080/produtos', {
                 method: 'POST',
                 headers: {
@@ -616,6 +622,7 @@ const ListarProdutos = () => {
                 marca: dadosNovoProduto.marca?.nome || '',
                 subtipo: dadosNovoProduto.subtipo?.nome || '',
                 preco: typeof dadosNovoProduto.preco === 'number' ? dadosNovoProduto.preco : 0,
+                qtdPorCaixas: typeof dadosNovoProduto.qtdPorCaixas === 'number' ? dadosNovoProduto.qtdPorCaixas : 0,
                 imagemUrl: "https://terabite.blob.core.windows.net/terabite-container/" + dadosNovoProduto.id || '',
                 isAtivo: dadosNovoProduto.isAtivo !== undefined ? dadosNovoProduto.isAtivo : true,
                 temLactose: dadosNovoProduto.temLactose || false,
@@ -662,6 +669,7 @@ const ListarProdutos = () => {
                 id: produto.id, // Importante incluir o ID
                 nome: dadosAtualizados.nome,
                 preco: formatarPreco(dadosAtualizados.preco),
+                qtdPorCaixas: dadosAtualizados.qtdPorCaixas,
                 isAtivo: produto.isAtivo,
                 nomeSubtipo: dadosAtualizados.subtipo,
                 nomeMarca: dadosAtualizados.marca,
@@ -699,6 +707,9 @@ const ListarProdutos = () => {
                             preco: typeof dadosAtualizadosResponse.preco === 'number' ?
                                 dadosAtualizadosResponse.preco :
                                 parseFloat(dadosAtualizadosResponse.preco) || p.preco,
+                            qtdPorCaixas: typeof dadosAtualizadosResponse.qtdPorCaixas === 'number' ?
+                                dadosAtualizadosResponse.qtdPorCaixas :
+                                parseInt(dadosAtualizadosResponse.qtdPorCaixas) || p.qtdPorCaixas,
                             imagemUrl: dadosAtualizadosResponse.imagemUrl || p.imagemUrl,
                             isAtivo: dadosAtualizadosResponse.isAtivo !== undefined ?
                                 dadosAtualizadosResponse.isAtivo :
@@ -736,6 +747,7 @@ const ListarProdutos = () => {
             marca: typeof produto.marca === 'object' ? produto.marca.nome : produto.marca || '',
             subtipo: typeof produto.subtipo === 'object' ? produto.subtipo.nome : produto.subtipo || '',
             preco: produto.preco ? produto.preco.toFixed(2) : '0.00',
+            qtdPorCaixas: produto.qtdPorCaixas ? produto.qtdPorCaixas : '0',
             imagemUrl: produto.imagemUrl || '',
             temLactose: produto.temLactose ?? false,
             temGluten: produto.temGluten ?? false,
@@ -752,6 +764,7 @@ const ListarProdutos = () => {
         const desativarProduto = {
             nome: produto.nome || "",
             preco: produto.preco || 0,
+            qtdPorCaixas: produto.qtdPorCaixas || 0,
             isAtivo: false,
             nomeSubtipo: produto.nomeSubtipo || produto.subtipo || "DefaultSubtipo",
             nomeMarca: produto.nomeMarca || produto.marca || "DefaultMarca",
@@ -799,6 +812,7 @@ const ListarProdutos = () => {
         const ativarProduto = {
             nome: produto.nome || "",
             preco: produto.preco || 0,
+            qtdPorCaixas: produto.qtdPorCaixas || 0,
             isAtivo: true,
             nomeSubtipo: produto.nomeSubtipo || produto.subtipo || "Senhor Sorvete",
             nomeMarca: produto.nomeMarca || produto.marca || "Senhor Sorvete",
@@ -1103,6 +1117,16 @@ const ListarProdutos = () => {
                                 <InputAdornment position="start">R$</InputAdornment>
                             ),
                         }}
+                    />
+
+                    <TextField
+                        margin="dense"
+                        name="qtdPorCaixas"
+                        label="Quantidade por Caixa"
+                        type="number"
+                        fullWidth
+                        value={novoProduto.qtdPorCaixas}
+                        onChange={handleInputChange}
                     />
 
                     <label style={{ alignItems: 'center', gap: '0px' }}>
