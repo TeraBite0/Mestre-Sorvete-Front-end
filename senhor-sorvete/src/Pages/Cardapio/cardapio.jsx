@@ -55,51 +55,51 @@ const Cardapio = () => {
 
   // Solução provisória ao erro do populares, **REMOVER QUANDO CONCERTADO!!!!**
   // Basicamente essa função uso os dados dos produtos buscados anteriormente
-  const fetchPopular = async () => {
-    setIsLoadingPopular(true);
-    try {
-      const response = await axios.get("http://localhost:8080/produtos/populares");
-      if (response.status === 200) {
-        const popularProductsWithFullData = response.data.map(popularProduct => {
-          const fullProductDetails = produtos.find(
-            produto => produto.nome.toLowerCase() === popularProduct.nome.toLowerCase()
-          );
+    // const fetchPopular = async () => {
+    //   setIsLoadingPopular(true);
+    //   try {
+    //     const response = await axios.get("http://localhost:8080/produtos/populares");
+    //     if (response.status === 200) {
+    //       const popularProductsWithFullData = response.data.map(popularProduct => {
+    //         const fullProductDetails = produtos.find(
+    //           produto => produto.nome.toLowerCase() === popularProduct.nome.toLowerCase()
+    //         );
 
-          return (
-            fullProductDetails || {
-              id: null,
-              nome: popularProduct.nome,
-              preco: popularProduct.preco,
-              subtipo: {
-                nome: "Desconhecido",
-                tipoPai: { nome: "Desconhecido" },
-              },
-              emEstoque: false,
-            }
-          );
-        }
-        );
+    //         return (
+    //           fullProductDetails || {
+    //             id: null,
+    //             nome: popularProduct.nome,
+    //             preco: popularProduct.preco,
+    //             subtipo: {
+    //               nome: "Desconhecido",
+    //               tipoPai: { nome: "Desconhecido" },
+    //             },
+    //             emEstoque: false,
+    //           }
+    //         );
+    //       }
+    //       );
 
-        setPopular(popularProductsWithFullData);
-        setIsPopularToggled(!isPopularToggled);
+  //       setPopular(popularProductsWithFullData);
+  //       setIsPopularToggled(!isPopularToggled);
 
-        if (!isPopularToggled) {
-          toast.success(
-            `${popularProductsWithFullData.length} produtos populares carregados!`
-          );
-        } else {
-          toast.info("Exibição de produtos populares desativada.");
-        }
-      }
-    } catch (error) {
-      toast.error(
-        "Erro ao buscar produtos populares. Tente novamente mais tarde."
-      );
-      console.error("Erro ao buscar produtos populares:", error);
-    } finally {
-      setIsLoadingPopular(false);
-    }
-  };
+  //       if (!isPopularToggled) {
+  //         toast.success(
+  //           `${popularProductsWithFullData.length} produtos populares carregados!`
+  //         );
+  //       } else {
+  //         toast.info("Exibição de produtos populares desativada.");
+  //       }
+  //     }
+  //   } catch (error) {
+  //     toast.error(
+  //       "Erro ao buscar produtos populares. Tente novamente mais tarde."
+  //     );
+  //     console.error("Erro ao buscar produtos populares:", error);
+  //   } finally {
+  //     setIsLoadingPopular(false);
+  //   }
+  // };
 
   //TODO: Quando o popular ser concertado no back, descomentar esse código
   // const fetchPopular = async () => {
@@ -199,14 +199,14 @@ const Cardapio = () => {
     );
   });
 
-  const categorias = [
-    ...new Set(
-      produtos.flatMap((produto) => [
-        produto.subtipo.nome,
-        produto.subtipo.tipoPai.nome,
-      ])
-    ),
-  ];
+  // const categorias = [
+  //   ...new Set(
+  //     produtos.flatMap((produto) => [
+  //       produto.subtipo.nome,
+  //       produto.subtipo.tipoPai.nome,
+  //     ])
+  //   ),
+  // ];
 
   const validateEmail = (email) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
 
@@ -243,7 +243,7 @@ const Cardapio = () => {
       <nav className="navegacao">
         <button
           className={`trendingButton ${isPopularToggled ? "toggled" : ""}`}
-          onClick={fetchPopular}
+          // onClick={fetchPopular}
           disabled={isLoadingPopular}
           style={{
             backgroundColor: isPopularToggled ? "#772321" : "#FFF",
@@ -406,7 +406,7 @@ const Cardapio = () => {
         >
           <h2>Filtrar por Categoria</h2>
           <div>
-            {categorias.map((categoria, index) => (
+            {/* {categorias.map((categoria, index) => (
               <div key={index}>
                 <label>
                   <input
@@ -422,7 +422,7 @@ const Cardapio = () => {
                   {categoria}
                 </label>
               </div>
-            ))}
+            ))} */}
           </div>
         </Box>
       </Modal>
