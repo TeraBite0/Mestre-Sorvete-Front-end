@@ -42,7 +42,7 @@ const ListarProdutos = () => {
     const [novoProduto, setNovoProduto] = useState({
         nome: '',
         marca: '',
-        subtipo: '',
+        subtipo: { tipo: '' }, // Inicializar o subtipo, sabendo que ele possui um objeto TIPO
         preco: '',
         qtdPorCaixas: '',
         temLactose: false,
@@ -59,7 +59,9 @@ const ListarProdutos = () => {
     const [modalNovaMarcaAberto, setModalNovaMarcaAberto] = useState(false);
     const [modalNovoSubtipoAberto, setModalNovoSubtipoAberto] = useState(false);
     const [novaMarca, setNovaMarca] = useState('');
+    const [tipos, setTipos] = useState([]);
     const [novoSubtipo, setNovoSubtipo] = useState('');
+    const [tipoSelecionadoId, setTipoSelecionadoId] = useState('');
     const [qtdPorCaixas, setQtdPorCaiax] = useState('');
 
     useEffect(() => {
@@ -130,18 +132,18 @@ const ListarProdutos = () => {
             toast.error("O nome da marca não pode ser vazio");
             return;
         }
-    
+
         console.log("Objeto enviado para API:", novaMarca.trim());
-    
-        const novaMarcaObj = JSON.parse(JSON.stringify({ nome: novaMarca.trim() }));;
+
+        const novaMarcaObj = JSON.parse(JSON.stringify({ nome: novaMarca.trim() }));
         console.log("JSON final enviado:", JSON.stringify(novaMarcaObj));
-    
+
         const token = sessionStorage.getItem('token');
         if (!token) {
             toast.error("Erro de autenticação");
             return;
         }
-    
+
         try {
             const response = await fetch('http://localhost:8080/marcas', {
                 method: 'POST',
@@ -151,28 +153,28 @@ const ListarProdutos = () => {
                 },
                 body: JSON.stringify(novaMarcaObj)
             });
-    
+
             if (!response.ok) {
                 const errorData = await response.json();
                 console.error("Erro do servidor:", errorData);
                 throw new Error(`Erro ao adicionar marca: ${errorData.message || 'Erro desconhecido'}`);
             }
-    
+
             const data = await response.json();
             setMarcas(prev => [...prev, data]);
-    
+
             setModalNovaMarcaAberto(false);
             setNovaMarca("");
-    
+
             toast.success("Marca adicionada com sucesso!");
         } catch (error) {
             console.error("Erro na requisição:", error);
             toast.error("Erro ao adicionar marca. Tente novamente.");
         }
     };
-    
-    
-    
+
+
+
 
 
 
@@ -190,30 +192,27 @@ const ListarProdutos = () => {
             return;
         }
 
+        //const novoSubTipoObj = JSON.parse(JSON.stringify({ nome: novoSubtipo.trim() }));
+        const novoSubTipoObj = {
+            nomeSubtipo: novoSubtipo.trim(),
+            idTipo: tipoSelecionadoId  // Supondo que 'tipoSelecionadoId' seja o valor do tipo relacionado ao subtipo
+        };
+        console.log("JSON final enviado:", JSON.stringify(novoSubTipoObj));
+
         const token = sessionStorage.getItem('token');
         if (!token) {
             toast.error("Erro de autenticação");
             return;
         }
 
-        const novoProdutoParaSubtipo = {
-            nome: "Produto Temporário", // Nome temporário para criar o subtipo
-            nomeSubtipo: novoSubtipo.trim(),
-            nomeMarca: "Marca Temporária", // Marca temporária para criar o subtipo
-            preco: 0,
-            qtdPorCaixas: 0,
-            temLactose: false,
-            temGluten: false
-        };
-
         try {
-            const response = await fetch('http://localhost:8080/produtos', {
+            const response = await fetch('http://localhost:8080/subtipo', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                     'Authorization': `Bearer ${token}`
                 },
-                body: JSON.stringify(novoProdutoParaSubtipo)
+                body: JSON.stringify(novoSubTipoObj)
             });
 
             if (!response.ok) {
@@ -223,28 +222,8 @@ const ListarProdutos = () => {
             }
 
             const data = await response.json();
+            setSubtipos(prev => [...prev, data]);
 
-            // Verifica se o subtipo foi criado corretamente
-            if (!data || !data.subtipo) {
-                throw new Error('Resposta inválida do servidor');
-            }
-
-            // Cria o novo objeto subtipo com o nome correto
-            const novoSubtipoObj = {
-                nome: novoSubtipo.trim(),
-                // Adicione outros campos se necessário
-            };
-
-            // Atualiza a lista de subtipos
-            setSubtipos(prevSubtipos => [...prevSubtipos, novoSubtipoObj]);
-
-            // Atualiza o formulário atual com o novo subtipo
-            setNovoProduto(prevProduto => ({
-                ...prevProduto,
-                subtipo: novoSubtipoObj.nome
-            }));
-
-            // Fecha o modal e limpa o campo
             setModalNovoSubtipoAberto(false);
             setNovoSubtipo("");
 
@@ -1033,7 +1012,7 @@ const ListarProdutos = () => {
                                                 enterDelay={200}
                                                 leaveDelay={200}
                                             >
-                                                <button  onClick={() => handleVisualizacao(produto)}>
+                                                <button onClick={() => handleVisualizacao(produto)}>
                                                     <VisibilityIcon />
                                                 </button>
                                             </Tooltip>
@@ -1092,6 +1071,16 @@ const ListarProdutos = () => {
                                 placeholder="Selecione uma marca"
                             />
                         )}
+                    />
+                    <Autocomplete
+                        options={tipos} // A lista de tipos agora vem da API
+                        getOptionLabel={(option) => option.nome} // A propriedade 'nome' de cada tipo
+                        onChange={(event, newValue) => {
+                            if (newValue) {
+                                setTipoSelecionadoId(newValue.id); // Atualiza o estado com o ID do tipo selecionado
+                            }
+                        }}
+                        renderInput={(params) => <TextField {...params} label="Selecione um Tipo" />}
                     />
 
                     <Autocomplete
@@ -1217,7 +1206,7 @@ const ListarProdutos = () => {
                 </DialogTitle>
                 <DialogContent>
                     <TextField
-                        disabled="true"
+                        disabled={true}
                         autoFocus
                         margin="dense"
                         name="nome"
@@ -1229,7 +1218,7 @@ const ListarProdutos = () => {
                         helperText={erros.nome}
                     />
                     <Autocomplete
-                        disabled="true"
+                        disabled={true}
                         autoFocus
                         fullWidth
                         options={[...marcas, { nome: '+ Adicionar Nova Marca', isAddNew: true }]}
@@ -1262,7 +1251,7 @@ const ListarProdutos = () => {
                     />
 
                     <Autocomplete
-                        disabled="true"
+                        disabled={true}
                         autoFocus
                         fullWidth
                         options={[...subtipos, { nome: '+ Adicionar Novo Subtipo', isAddNew: true }]}
@@ -1293,11 +1282,11 @@ const ListarProdutos = () => {
                     />
 
                     <Autocomplete
-                        disabled="true"
+                        disabled={true} // NÃO PODE SER DO TIPO STRING
                         autoFocus
                         fullWidth
                         options={[...subtipos, { nome: '+ Adicionar Novo Subtipo', isAddNew: true }]}
-                        value={novoProduto.subtipo.tipo ? { nome: novoProduto.subtipo.tipo } : null}
+                        value={novoProduto.subtipo?.tipo ? { nome: novoProduto.subtipo.tipo } : null}
                         noOptionsText="Nenhuma opção encontrada"
                         onChange={(event, newValue) => {
                             if (newValue?.isAddNew) {
@@ -1331,7 +1320,7 @@ const ListarProdutos = () => {
                     )}
 
                     <TextField
-                        disabled="true"
+                        disabled={true}
                         margin="dense"
                         name="preco"
                         label="Preço"
@@ -1352,7 +1341,7 @@ const ListarProdutos = () => {
                     />
 
                     <TextField
-                        disabled="true"
+                        disabled={true}
                         margin="dense"
                         name="qtdCaixasEstoque"
                         label="Quantidade de Caixa"
@@ -1363,7 +1352,7 @@ const ListarProdutos = () => {
                     />
 
                     <TextField
-                        disabled="true"
+                        disabled={true}
                         margin="dense"
                         name="qtdPorCaixas"
                         label="Quantidade por Caixa"
@@ -1375,7 +1364,7 @@ const ListarProdutos = () => {
 
                     <label style={{ alignItems: 'center', gap: '0px' }}>
                         <Checkbox
-                            disabled="true"
+                            disabled={true}
                             checked={novoProduto.isAtivo}
                             onChange={handleEstaAtivo}
                             inputProps={{ "Poppins": 'Produto está Ativo?' }}
@@ -1385,7 +1374,7 @@ const ListarProdutos = () => {
 
                     <label style={{ alignItems: 'center', gap: '0px' }}>
                         <Checkbox
-                            disabled="true"
+                            disabled={true}
                             checked={novoProduto.temLactose}
                             onChange={handlePossuiLactose}
                             inputProps={{ "Poppins": 'Produto tem lactose?' }}
@@ -1395,7 +1384,7 @@ const ListarProdutos = () => {
 
                     <label style={{ alignItems: 'center', gap: '0px' }}>
                         <Checkbox
-                            disabled="true"
+                            disabled={true}
                             checked={novoProduto.temGluten}
                             onChange={handlePossuiGluten}
                             inputProps={{ "Poppins": 'Produto tem Gluten?' }}
