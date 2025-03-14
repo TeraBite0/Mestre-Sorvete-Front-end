@@ -54,11 +54,12 @@ const Estoque = () => {
     const fetchEstoque = async () => {
       const token = sessionStorage.getItem('token');
       try {
-        const response = await axios.get('http://localhost:8080/estoque', {
+        const response = await axios.get('http://localhost:8080/produtos', {
           headers: {
             Authorization: `Bearer ${token}`
           }
         })
+        debugger
         setProdutos(response.data);
       } catch (error) {
         toast.error('Erro ao buscar estoque');
@@ -72,6 +73,10 @@ const Estoque = () => {
   const fecharModalRegistrarPerda = () => setAbrirRegistrarPerda(false);
   const abrirModalAdicionarLote = () => setAbrirAdicionarLote(true);
   const fecharModalAdicionarLote = () => setAbrirAdicionarLote(false);
+
+  const renderProdutoCell = (value, defaultValue = '-') => {
+    return value || defaultValue;
+  };
 
   const camposRegistrarPerda = [
     {
@@ -221,7 +226,7 @@ const Estoque = () => {
   };
 
   const buscarProdutos = produtos.filter((produto) => {
-    const nomeInclusao = produto.produto
+    const nomeInclusao = produto.nome
       .toLowerCase()
       .includes(pesquisa.trim().toLowerCase());
     const marcaInclusao = produto.marca
@@ -256,50 +261,81 @@ const Estoque = () => {
           </div>
         </div>
         <span>Atualmente {produtos.length} produtos cadastrados</span>
-        <TableContainer component={Paper}
-        sx={{
-          maxHeight: '55vh',  // altura máxima
-          overflow: 'auto'
-      }}>
-          <Table size="small" aria-label="tabela de estoque">
-            <TableHead>
-              <TableRow>
-                <TableCell style={estiloCabecalhoTabela}>Código</TableCell>
-                <TableCell style={estiloCabecalhoTabela}>Nome</TableCell>
-                <TableCell style={estiloCabecalhoTabela}>Marca</TableCell>
-                <TableCell
-                  style={{ ...estiloCabecalhoTabela, ...estiloQuantidade }}
-                >
-                  Quantidade
-                </TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {buscarProdutos.map((produto) => (
-                <TableRow key={produto.codigo}>
-                  <TableCell style={estiloCelulaTabela}>
-                    {produto.codigo}
-                  </TableCell>
-                  <TableCell style={estiloCelulaTabela}>
-                    {produto.produto}
-                  </TableCell>
-                  <TableCell style={estiloCelulaTabela}>
-                    {produto.marca}
-                  </TableCell>
-                  <TableCell
-                    style={{
-                      ...estiloQuantidade,
-                      backgroundColor: obterCorQuantidade(produto.qtdEstoque),
+        
+        <div className='tabela-produtos'>
+          <TableContainer
+                    component={Paper}
+                    className='container-tabela'
+                    sx={{
+                        maxHeight: '60vh',  // altura máxima
+                        overflow: 'auto'
                     }}
-                    align="center"
-                  >
-                    {produto.qtdEstoque}
-                  </TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </TableContainer>
+                >
+                  <Table
+                        sx={{
+                            width: '100%',
+                            '& .MuiTableCell-root': {
+                                padding: '0px',
+                            },
+                            '& .MuiTableCell-root:last-child': {
+                                width: '60px', // Ajusta a largura da última coluna (Editar)
+                            }
+                        }}
+                        size="small"
+                        aria-label="tabela de produtos"
+                    >
+
+                    <TableHead className='tabela-Head'>
+                      <TableRow >
+                        <TableCell className='tabela-head-cell'>Código</TableCell>
+                        <TableCell className='tabela-head-cell'>Nome</TableCell>
+                        <TableCell className='tabela-head-cell'>Marca</TableCell>
+                        <TableCell className='tabela-head-cell'>Qtd Por Caixa</TableCell>
+                        <TableCell className='tabela-head-cell'>Qtd De Caixa</TableCell>
+                        <TableCell className='tabela-head-cell'>Qtd Produtos Caixa</TableCell>
+                        {/* <TableCell
+                          style={{ ...estiloCabecalhoTabela, ...estiloQuantidade }}
+                        >
+                          Quantidade
+                        </TableCell> */}
+                      </TableRow>
+                    </TableHead>
+
+                    <TableBody>
+                      {/* {produtos
+                            .filter(produto => produto && typeof produto === 'object' && produto.id)
+                            .map(produto => (
+                                <TableRow key={produto.id} className={`tabela-row-vendas ${!produto.isAtivo ? 'desativado' : ''}`}>
+                                    <TableCell>{renderProdutoCell(produto.nome, 'Produto sem nome')}</TableCell>
+                                    <TableCell>{renderProdutoCell(produto.marca, 'Marca desconhecida')}</TableCell>
+                                    <TableCell>{renderProdutoCell(produto.tipo, 'Tipo desconhecida')}</TableCell>
+                                </TableRow>
+                            ))
+                            } */}
+                      {produtos.map((produto) => (
+                        <TableRow key={produto.codigo} className={`tabela-row-vendas ${!produto.isAtivo ? 'desativado' : ''}`}>
+                          <TableCell >{produto.id}</TableCell>
+                          <TableCell >{produto.nome}</TableCell>
+                          <TableCell >{produto.marca}</TableCell>
+                          <TableCell >{produto.qtdPorCaixas}</TableCell>
+                          <TableCell >{produto.qtdCaixasEstoque}</TableCell>
+                          <TableCell >{produto.marca}</TableCell>
+                          {/* <TableCell
+                            // style={{
+                            //   ...estiloQuantidade,
+                            //   backgroundColor: obterCorQuantidade(produto.qtdEstoque),
+                            // }}
+                            align="center"
+                          >
+                            {produto.qtdEstoque}
+                          </TableCell> */}
+                        </TableRow>
+                      ))}
+                    </TableBody>
+            </Table>
+          </TableContainer>
+        </div>
+
       </div>
 
       <ModalGerenciamento
