@@ -59,7 +59,6 @@ const Estoque = () => {
             Authorization: `Bearer ${token}`
           }
         })
-        debugger
         setProdutos(response.data);
       } catch (error) {
         toast.error('Erro ao buscar estoque');
@@ -77,6 +76,10 @@ const Estoque = () => {
   const renderProdutoCell = (value, defaultValue = '-') => {
     return value || defaultValue;
   };
+
+  const calcularQuantidadeProduto = (produto) => {
+    return produto.qtdCaixasEstoque * produto.qtdPorCaixas;
+  }
 
   const camposRegistrarPerda = [
     {
@@ -261,7 +264,8 @@ const Estoque = () => {
           </div>
         </div>
         <span>Atualmente {produtos.length} produtos cadastrados</span>
-        
+      </div>
+
         <div className='tabela-produtos'>
           <TableContainer
                     component={Paper}
@@ -287,12 +291,12 @@ const Estoque = () => {
 
                     <TableHead className='tabela-Head'>
                       <TableRow >
-                        <TableCell className='tabela-head-cell'>Código</TableCell>
-                        <TableCell className='tabela-head-cell'>Nome</TableCell>
-                        <TableCell className='tabela-head-cell'>Marca</TableCell>
-                        <TableCell className='tabela-head-cell'>Qtd Por Caixa</TableCell>
-                        <TableCell className='tabela-head-cell'>Qtd De Caixa</TableCell>
-                        <TableCell className='tabela-head-cell'>Qtd Produtos Caixa</TableCell>
+                        <TableCell className='tabela-head-cell' style={{paddingLeft: '10px'}}>Código</TableCell>
+                        <TableCell className='tabela-head-cell' style={{paddingLeft: '10px'}}>Nome</TableCell>
+                        <TableCell className='tabela-head-cell' style={{paddingLeft: '10px'}}>Marca</TableCell>
+                        <TableCell className='tabela-head-cell' style={{paddingLeft: '10px'}}>Qtd Por Caixa</TableCell>
+                        <TableCell className='tabela-head-cell' style={{paddingLeft: '10px'}}>Qtd De Caixa</TableCell>
+                        <TableCell className='tabela-head-cell' style={{paddingLeft: '10px'}}>Total de produtos</TableCell>
                         {/* <TableCell
                           style={{ ...estiloCabecalhoTabela, ...estiloQuantidade }}
                         >
@@ -314,12 +318,12 @@ const Estoque = () => {
                             } */}
                       {produtos.map((produto) => (
                         <TableRow key={produto.codigo} className={`tabela-row-vendas ${!produto.isAtivo ? 'desativado' : ''}`}>
-                          <TableCell >{produto.id}</TableCell>
-                          <TableCell >{produto.nome}</TableCell>
-                          <TableCell >{produto.marca}</TableCell>
-                          <TableCell >{produto.qtdPorCaixas}</TableCell>
-                          <TableCell >{produto.qtdCaixasEstoque}</TableCell>
-                          <TableCell >{produto.marca}</TableCell>
+                          <TableCell style={{padding: '10px'}}>{produto.id}</TableCell>
+                          <TableCell style={{padding: '10px'}}>{produto.nome}</TableCell>
+                          <TableCell style={{padding: '10px'}}>{produto.marca}</TableCell>
+                          <TableCell style={{padding: '10px'}}>{produto.qtdPorCaixas}</TableCell>
+                          <TableCell style={{padding: '10px'}}>{produto.qtdCaixasEstoque}</TableCell>
+                          <TableCell style={{padding: '10px'}}>{calcularQuantidadeProduto(produto)}</TableCell>
                           {/* <TableCell
                             // style={{
                             //   ...estiloQuantidade,
@@ -336,7 +340,7 @@ const Estoque = () => {
           </TableContainer>
         </div>
 
-      </div>
+      
 
       <ModalGerenciamento
         open={abrirRegistrarPerda}
