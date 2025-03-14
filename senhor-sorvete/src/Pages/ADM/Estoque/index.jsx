@@ -17,10 +17,17 @@ import {
 import axios from "axios";
 import { toast } from "react-toastify";
 
-const obterCorQuantidade = (quantidade) => {
-  if (quantidade === 0) return "#818d91";
-  if (quantidade <= 10) return "#fc8886";
-  if (quantidade <= 30) return "#fafa9d";
+const obterCorQtdCaixaEstoque = (qtdCaixasEstoque) => {
+  if (qtdCaixasEstoque === 0) return "#818d91";
+  if (qtdCaixasEstoque <= 10) return "#fc8886";
+  if (qtdCaixasEstoque <= 30) return "#fafa9d";
+  return "#90EE90";
+};
+
+const obterCorQtdPorCaixa = (qtdPorCaixas) => {
+  if (qtdPorCaixas === 0) return "#818d91";
+  if (qtdPorCaixas<= 10) return "#fc8886";
+  if (qtdPorCaixas <= 30) return "#fafa9d";
   return "#90EE90";
 };
 
@@ -38,9 +45,9 @@ const estiloCelulaTabela = {
 
 const estiloQuantidade = {
   ...estiloCelulaTabela,
-  width: "8px",
-  maxWidth: "80px",
-  minWidth: "80px",
+  width: "12px",
+  maxWidth: "90px",
+  minWidth: "90px",
 };
 
 const Estoque = () => {
@@ -54,10 +61,11 @@ const Estoque = () => {
     const fetchEstoque = async () => {
       const token = sessionStorage.getItem('token');
       try {
-        const response = await axios.get('http://localhost:8080/estoque', {
+        const response = await axios.get('http://localhost:8080/produtos', {
           headers: {
             Authorization: `Bearer ${token}`
           }
+          
         })
         setProdutos(response.data);
       } catch (error) {
@@ -149,7 +157,7 @@ const Estoque = () => {
     setLoading(true);
 
     try {
-      await axios.post('http://localhost:8080/estoque', formData, {
+      await axios.post('http://localhost:8080/produtos', formData, {
         headers: {
           'Authorization': `Bearer ${token}`,
           'Content-Type': 'application/json'
@@ -160,7 +168,7 @@ const Estoque = () => {
       fecharModalAdicionarLote();
 
       // Atualiza a lista de produtos
-      const response = await axios.get('http://localhost:8080/estoque', {
+      const response = await axios.get('http://localhost:8080/produtos', {
         headers: {
           Authorization: `Bearer ${token}`
         }
@@ -221,30 +229,28 @@ const Estoque = () => {
   };
 
   const buscarProdutos = produtos.filter((produto) => {
-    const nomeInclusao = produto.produto
-      .toLowerCase()
-      .includes(pesquisa.trim().toLowerCase());
-    const marcaInclusao = produto.marca
-      .toLowerCase()
-      .includes(pesquisa.trim().toLowerCase());
-    console.log(
-      `Nome: ${produto.produto}, Marca: ${produto.marca}, Pesquisa: ${pesquisa}, Nome Inclusão: ${nomeInclusao}, Marca Inclusão: ${marcaInclusao}`
-    );
-    return nomeInclusao || marcaInclusao;
-  });
+   if (!pesquisa.trim()) return true;
 
+   const termoBusca = pesquisa.trim().toLowerCase();
+   return(
+    (produto.nome && produto.nome.toLowerCase().includes(termoBusca)) || 
+    (produto.marca && produto.marca.toLowerCase().includes(termoBusca))
+   );
+  });
   return (
     <>
       <HeaderGerenciamento />
       <div className="estoqueContainer">
         <BotaoVoltarGerenciamento pagina="/home/gerenciamento" />
         <div className="controlesWrapper">
+        <div className="pesquisa-container">
           <Pesquisa
             placeholder="Nome"
             value={pesquisa}
             onChange={(e) => setPesquisa(e.target.value)}
           />
-          <div className="wopperWrapper">
+            </div>
+            <div className="botoes-container">
             <BotaoGerenciamento
               botao="Registrar Perda"
               onClick={abrirModalRegistrarPerda}
@@ -267,33 +273,35 @@ const Estoque = () => {
                 <TableCell style={estiloCabecalhoTabela}>Código</TableCell>
                 <TableCell style={estiloCabecalhoTabela}>Nome</TableCell>
                 <TableCell style={estiloCabecalhoTabela}>Marca</TableCell>
-                <TableCell
-                  style={{ ...estiloCabecalhoTabela, ...estiloQuantidade }}
-                >
-                  Quantidade
-                </TableCell>
+                <TableCell style={{ ...estiloCabecalhoTabela, ...estiloQuantidade }}>Qtd Caixas</TableCell>
+                <TableCell style={{ ...estiloCabecalhoTabela, ...estiloQuantidade }}>Qtd por Caixas</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
               {buscarProdutos.map((produto) => (
                 <TableRow key={produto.codigo}>
                   <TableCell style={estiloCelulaTabela}>
-                    {produto.codigo}
+                    {produto.id}
                   </TableCell>
                   <TableCell style={estiloCelulaTabela}>
-                    {produto.produto}
+                    {produto.nome}
                   </TableCell>
                   <TableCell style={estiloCelulaTabela}>
                     {produto.marca}
                   </TableCell>
-                  <TableCell
-                    style={{
+                  <TableCell style={{
                       ...estiloQuantidade,
-                      backgroundColor: obterCorQuantidade(produto.qtdEstoque),
+                      backgroundColor: obterCorQtdCaixaEstoque(produto.qtdCaixasEstoque),
                     }}
-                    align="center"
-                  >
-                    {produto.qtdEstoque}
+                    align="center">
+                    {produto.qtdCaixasEstoque}
+                  </TableCell>
+                  <TableCell style={{
+                      ...estiloQuantidade,
+                      backgroundColor: obterCorQtdPorCaixa(produto.qtdPorCaixas),
+                    }}
+                    align="center">
+                    {produto.qtdPorCaixas}
                   </TableCell>
                 </TableRow>
               ))}
