@@ -26,7 +26,6 @@ import "./listarProdutos.css";
 import TableContainer from "@mui/material/TableContainer";
 import EditIcon from "@mui/icons-material/Edit";
 import VisibilityIcon from '@mui/icons-material/Visibility';
-//import DoNotDisturbOnIcon from '@mui/icons-material/DoNotDisturbOn';
 import { useEffect, useState } from "react";
 import HeaderGerenciamento from "../../../Components/HeaderGerenciamento";
 import Pesquisa from "../../../Components/Pesquisa";
@@ -42,8 +41,9 @@ const ListarProdutos = () => {
     const [novoProduto, setNovoProduto] = useState({
         nome: '',
         marca: '',
-        subtipo: { tipo: '' }, // Inicializar o subtipo, sabendo que ele possui um objeto TIPO
+        subtipo: '', // Inicializar o subtipo, sabendo que ele possui um objeto TIPO
         preco: '',
+        tipo: '',
         qtdPorCaixas: '',
         temLactose: false,
         temGluten: false,
@@ -58,10 +58,11 @@ const ListarProdutos = () => {
     const [modalVisualizarProdutoAberto, setModalVisualizarProdutoAberto] = useState(false);
     const [modalNovaMarcaAberto, setModalNovaMarcaAberto] = useState(false);
     const [modalNovoSubtipoAberto, setModalNovoSubtipoAberto] = useState(false);
+    const [modalNovoTipoAberto, setModalNovoTipoAberto] = useState(false);
     const [novaMarca, setNovaMarca] = useState('');
     const [tipos, setTipos] = useState([]);
-    const [novoSubtipo, setNovoSubtipo] = useState('');
-    const [tipoSelecionadoId, setTipoSelecionadoId] = useState('');
+    const [novoSubtipo, setNovoSubtipo] = useState({subtipo: '', tipo: ''});
+    const [novoTipo, setNovoTipo] = useState('');
     const [qtdPorCaixas, setQtdPorCaiax] = useState('');
 
     useEffect(() => {
@@ -72,6 +73,7 @@ const ListarProdutos = () => {
         const token = sessionStorage.getItem('token');
         setCarregando(true);
         try {
+            // Buscar todos os Produtos
             const resposta = await fetch('http://localhost:8080/produtos', {
                 headers: {
                     Authorization: `Bearer ${token}`
@@ -82,41 +84,20 @@ const ListarProdutos = () => {
 
             const dados = await resposta.json();
 
-            // Extrair marcas únicas
-            const marcasUnicas = [
-                ...new Set(
-                    dados.map((produto) => produto.marca?.nome).filter((marca) => marca)
-                ),
-            ];
-
-            // Extrair subtipos únicos
-            const subtiposUnicos = [
-                ...new Set(
-                    dados
-                        .map((produto) => produto.subtipo?.nome)
-                        .filter((subtipo) => subtipo)
-                ),
-            ];
-
-            const marcasFormatadas = marcasUnicas.map((nome) => ({ nome }));
-            const subtiposFormatados = subtiposUnicos.map((nome) => ({ nome }));
-
             const produtosFormatados = dados.map(produto => ({
                 id: produto.id || '',
                 nome: produto.nome || '',
-                marca: produto.marca?.nome || '',
-                subtipo: produto.subtipo?.nome || '',
-                tipo: produto.subtipo.tipo?.nome || '',
+                marca: produto.marca || '',
+                subtipo: produto.subtipo || '',
+                tipo: produto.tipo || '',
                 preco: typeof produto.preco === 'number' ? produto.preco : 0,
-                qtdCaixasEstoque: typeof produto.qtdCaixasEstoque === 'number' ? produto.qtdCaixasEstoque : 0,
-                qtdDeCaixas: typeof produto.qtdDeCaixas === 'number' ? produto.qtdDeCaixas : 0,
+                qtdCaixasEstoque: produto.qtdCaixasEstoque,
+                qtdPorCaixas: produto.qtdPorCaixas,
                 imagemUrl: "https://terabite.blob.core.windows.net/terabite-container/" + produto.id || '',
-                isAtivo: produto.isAtivo !== undefined ? produto.isAtivo : true // Garantir que isAtivo seja definido
+                isAtivo: produto.isAtivo !== null ? produto.isAtivo : true // Garantir que isAtivo seja definido
             }));
 
             setProdutos(produtosFormatados);
-            setMarcas(marcasFormatadas);
-            setSubtipos(subtiposFormatados);
         } catch (erro) {
             toast.error("Erro ao carregar os produtos: " + erro.message);
         } finally {
@@ -173,20 +154,69 @@ const ListarProdutos = () => {
         }
     };
 
+    const adicionarNovoTipo = async () => {
+        if (!novoTipo.trim()) {
+            toast.error("O nome do tipo não pode ser vazio");
+            return;
+        }
 
+        if(tipos.some(
+            (tipo) => tipo.toLowerCase() === novoTipo.trim().toLowerCase()
+        )) {
+            toast.error("Este tipo já existe");
+            return;
+        }
 
+        const novoTipoObj = {
+            nome: novoTipo.trim(),
+        }
 
+        const token = sessionStorage.getItem('token');
+        if (!token) {
+            toast.error("Erro de autenticação");
+            return;
+        }
+
+        try {
+            const response = await fetch('http://localhost:8080/tipos', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                },
+                body: JSON.stringify(novoTipoObj)
+            });
+
+            if (!response.ok) {
+                const errorData = await response.text();
+                console.error('Erro da API:', errorData);
+                throw new Error('Erro ao adicionar tipo');
+            }
+
+            const data = await response.json();
+            setTipos(prev => [...prev, data]);
+
+            setModalNovoTipoAberto(false);
+            setNovoTipo("");
+
+            toast.success("Tipo adicionado com sucesso!");
+        } catch (error) {
+            console.error("Erro detalhado:", error);
+            toast.error(`Erro ao adicionar tipo: ${error.message}`);
+        }
+    }
 
 
     const adicionarNovoSubtipo = async () => {
-        if (!novoSubtipo.trim()) {
+        debugger
+        if (!novoSubtipo) {
             toast.error("O nome do subtipo não pode ser vazio");
             return;
         }
 
         // Verifica se o subtipo já existe localmente
         if (subtipos.some(
-            (subtipo) => subtipo.nome.toLowerCase() === novoSubtipo.trim().toLowerCase()
+            (subtipo) => subtipo.toLowerCase() === novoSubtipo.subtipo.toLowerCase()
         )) {
             toast.error("Este subtipo já existe");
             return;
@@ -194,8 +224,8 @@ const ListarProdutos = () => {
 
         //const novoSubTipoObj = JSON.parse(JSON.stringify({ nome: novoSubtipo.trim() }));
         const novoSubTipoObj = {
-            nomeSubtipo: novoSubtipo.trim(),
-            idTipo: tipoSelecionadoId  // Supondo que 'tipoSelecionadoId' seja o valor do tipo relacionado ao subtipo
+            nome: novoSubtipo.subtipo,
+            nomeTipo: novoSubtipo.tipo  // Supondo que 'tipoSelecionadoId' seja o valor do tipo relacionado ao subtipo
         };
         console.log("JSON final enviado:", JSON.stringify(novoSubTipoObj));
 
@@ -206,7 +236,7 @@ const ListarProdutos = () => {
         }
 
         try {
-            const response = await fetch('http://localhost:8080/subtipo', {
+            const response = await fetch('http://localhost:8080/subtipos', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -301,8 +331,9 @@ const ListarProdutos = () => {
             const produtosFormatados = dados.map(produto => ({
                 id: produto.id || '',
                 nome: produto.nome || '',
-                marca: produto.marca?.nome || '',
-                subtipo: produto.subtipo?.nome || '',
+                marca: produto.marca || '',
+                subtipo: produto.subtipo || '',
+                tipo: produto.tipo || '',
                 preco: typeof produto.preco === 'number' ? produto.preco : 0,
                 qtdPorCaixas: typeof produto.qtdPorCaixas === 'number' ? produto.qtdPorCaixas : 0,
                 imagemUrl: "https://terabite.blob.core.windows.net/terabite-container/" + produto.id || '',
@@ -320,13 +351,48 @@ const ListarProdutos = () => {
 
 
     // metodo para abrir um modal
-    const abrirModal = () => {
+    const abrirModal = async () => {
+        
         setNovoProduto({ nome: "", marca: "", preco: "", imagemUrl: "" });
         setImagemPreview(null);
         setArquivoImagem(null);
         setProdutoSelecionado(null);
         setErros({});
         setModalAberto(true);
+
+        const token = sessionStorage.getItem('token');
+        setCarregando(true);
+        try {
+            const urls = [
+                { key: "marcas", url: "http://localhost:8080/marcas" },
+                { key: "subtipos", url: "http://localhost:8080/subtipos" },
+                { key: "tipos", url: "http://localhost:8080/tipos" }
+            ];
+
+            const respostas = await Promise.all(
+                urls.map(({ url }) =>
+                    fetch(url, {
+                        headers: { Authorization: `Bearer ${token}` }
+                    })
+                )
+            );
+
+            respostas.forEach((res, index) => {
+                if (!res.ok) {
+                    throw new Error(`Erro ao carregar ${urls[index].key}: ${res.statusText}`);
+                }
+            });
+
+            const [dadosMarcas, dadosSubtipos, dadosTipos] = await Promise.all(respostas.map(res => res.json()));
+            setMarcas(dadosMarcas);
+            setSubtipos(dadosSubtipos);
+            setTipos(dadosTipos)
+
+        } catch (erro) {
+            toast.error("Erro ao carregar os produtos: " + erro.message);
+        } finally {
+            setCarregando(false);
+        }
     };
 
 
@@ -340,6 +406,15 @@ const ListarProdutos = () => {
         setModalAberto(false);
         setModalVisualizarProdutoAberto(false);
     };
+
+    const handleInputChangeSubtipo = (evento) => {
+        const {name, value} = evento.target;
+
+        setNovoSubtipo((anterior) => ({
+            ...anterior,
+            [name]: value,
+        }))
+    }
 
     const handleInputChange = (evento) => {
         const { name, value } = evento.target;
@@ -572,6 +647,7 @@ const ListarProdutos = () => {
             const dadosProduto = {
                 nome: novoProduto.nome,
                 nomeSubtipo: novoProduto.subtipo,
+                nomeTipo: novoProduto.tipo,
                 nomeMarca: novoProduto.marca,
                 imagemUrl: urlImagem,
                 preco: formatarPreco(novoProduto.preco),
@@ -579,7 +655,6 @@ const ListarProdutos = () => {
                 temLactose: typeof novoProduto.temLactose === "boolean" ? novoProduto.temLactose : false,
                 temGluten: typeof novoProduto.temGluten === "boolean" ? novoProduto.temGluten : false
             };
-            debugger
             const resposta = await fetch('http://localhost:8080/produtos', {
                 method: 'POST',
                 headers: {
@@ -603,6 +678,7 @@ const ListarProdutos = () => {
                 nome: dadosNovoProduto.nome || '',
                 marca: dadosNovoProduto.marca?.nome || '',
                 subtipo: dadosNovoProduto.subtipo?.nome || '',
+                tipo: dadosNovoProduto.tipo?.nome || '',
                 preco: typeof dadosNovoProduto.preco === 'number' ? dadosNovoProduto.preco : 0,
                 qtdPorCaixas: typeof dadosNovoProduto.qtdPorCaixas === 'number' ? dadosNovoProduto.qtdPorCaixas : 0,
                 imagemUrl: "https://terabite.blob.core.windows.net/terabite-container/" + dadosNovoProduto.id || '',
@@ -616,6 +692,7 @@ const ListarProdutos = () => {
             toast.success('Produto criado com sucesso!');
             fecharModal();
             limparImagemPreview();
+            buscarProdutos();
 
         } catch (erro) {
             toast.error(erro.message);
@@ -693,9 +770,6 @@ const ListarProdutos = () => {
                                 dadosAtualizadosResponse.qtdPorCaixas :
                                 parseInt(dadosAtualizadosResponse.qtdPorCaixas) || p.qtdPorCaixas,
                             imagemUrl: dadosAtualizadosResponse.imagemUrl || p.imagemUrl,
-                            isAtivo: dadosAtualizadosResponse.isAtivo !== undefined ?
-                                dadosAtualizadosResponse.isAtivo :
-                                p.isAtivo,
                             temLactose: dadosAtualizadosResponse.temLactose ?? p.temLactose,
                             temGluten: dadosAtualizadosResponse.temGluten ?? p.temGluten
                         }
@@ -706,6 +780,7 @@ const ListarProdutos = () => {
             toast.success("Produto atualizado com sucesso!");
             fecharModal();
             limparImagemPreview();
+            buscarProdutos();
 
         } catch (erro) {
             toast.error(erro.message);
@@ -721,13 +796,14 @@ const ListarProdutos = () => {
     };
 
     // Método para preparar a edição
-    const handleEditar = (produto) => {
+    const handleEditar = async (produto) => {
         setProdutoSelecionado(produto);
         setNovoProduto({
             id: produto.id,
             nome: produto.nome || '',
             marca: typeof produto.marca === 'object' ? produto.marca.nome : produto.marca || '',
-            subtipo: typeof produto.subtipo === 'object' ? produto.subtipo.nome : produto.subtipo || '',
+            subtipo: typeof produto.subtipo === 'object' ? produto.subtipo : produto.subtipo || '',
+            tipo: typeof produto.tipo === 'object' ? produto.tipo : produto.tipo || '',
             preco: produto.preco ? produto.preco.toFixed(2) : '0.00',
             qtdPorCaixas: produto.qtdPorCaixas ? produto.qtdPorCaixas : '0',
             imagemUrl: produto.imagemUrl || '',
@@ -735,6 +811,39 @@ const ListarProdutos = () => {
             temGluten: produto.temGluten ?? false,
             isAtivo: produto.isAtivo
         });
+        const token = sessionStorage.getItem('token');
+        setCarregando(true);
+        try {
+            const urls = [
+                { key: "marcas", url: "http://localhost:8080/marcas" },
+                { key: "subtipos", url: "http://localhost:8080/subtipos" },
+                { key: "tipos", url: "http://localhost:8080/tipos" }
+            ];
+
+            const respostas = await Promise.all(
+                urls.map(({ url }) =>
+                    fetch(url, {
+                        headers: { Authorization: `Bearer ${token}` }
+                    })
+                )
+            );
+
+            respostas.forEach((res, index) => {
+                if (!res.ok) {
+                    throw new Error(`Erro ao carregar ${urls[index].key}: ${res.statusText}`);
+                }
+            });
+
+            const [dadosMarcas, dadosSubtipos, dadosTipos] = await Promise.all(respostas.map(res => res.json()));
+            setMarcas(dadosMarcas);
+            setSubtipos(dadosSubtipos);
+            setTipos(dadosTipos)
+
+        } catch (erro) {
+            toast.error("Erro ao carregar os produtos: " + erro.message);
+        } finally {
+            setCarregando(false);
+        }
         setModalAberto(true);
     };
 
@@ -744,8 +853,9 @@ const ListarProdutos = () => {
         setNovoProduto({
             id: produto.id,
             nome: produto.nome || '',
-            marca: typeof produto.marca === 'object' ? produto.marca.nome : produto.marca || '',
-            subtipo: typeof produto.subtipo === 'object' ? produto.subtipo.nome : produto.subtipo || '',
+            marca: typeof produto.marca === 'object' ? produto.marca : produto || '',
+            subtipo: typeof produto.subtipo === 'object' ? produto.subtipo : produto.subtipo || '',
+            tipo: typeof produto.tipo === 'object' ? produto.tipo : produto.tipo || '',
             preco: produto.preco ? produto.preco.toFixed(2) : '0.00',
             qtdCaixasEstoque: produto.qtdCaixasEstoque ? produto.qtdCaixasEstoque : '0',
             qtdPorCaixas: produto.qtdPorCaixas ? produto.qtdPorCaixas : '0',
@@ -757,95 +867,35 @@ const ListarProdutos = () => {
         setModalVisualizarProdutoAberto(true);
     };
 
-
-    // metodo de desativar produto
-    const handlerDesativar = async (produto) => {
+    const handleToggleAtivo = async (produto) => {
         const token = sessionStorage.getItem('token');
-
-        const desativarProduto = {
-            nome: produto.nome || "",
-            preco: produto.preco || 0,
-            qtdPorCaixas: produto.qtdPorCaixas || 0,
-            isAtivo: false,
-            nomeSubtipo: produto.nomeSubtipo || produto.subtipo || "DefaultSubtipo",
-            nomeMarca: produto.nomeMarca || produto.marca || "DefaultMarca",
-            temLactose: typeof produto.temLactose === "boolean" ? produto.temLactose : false,
-            temGluten: typeof produto.temGluten === "boolean" ? produto.temGluten : false
-        };
-
-        console.log("Objeto enviado:", JSON.stringify(desativarProduto));
-
+        const isAtivoGenerico = !produto.isAtivo; // Inverte o status atual
+    
         try {
-            const response = await fetch(`http://localhost:8080/produtos/${produto.id}`, {
-                method: "PUT",
+            const response = await fetch(`http://localhost:8080/produtos/${produto.id}?isAtivo=${isAtivoGenerico}`, {
+                method: "PATCH",
                 headers: {
                     'Content-Type': 'application/json',
                     Authorization: `Bearer ${token}`
-                },
-                body: JSON.stringify(desativarProduto)
+                }
             });
-
+    
             if (!response.ok) {
-                const errorText = await response.text();
-                console.error("Resposta do erro:", errorText);
-                throw new Error("Erro ao desativar produto");
+                throw new Error(`Erro ao ${isAtivoGenerico ? "ativar" : "desativar"} produto`);
             }
-
-            const dados = await response.json();
-            console.log("Produto desativado com sucesso: ", dados);
-
-            // Atualiza apenas o produto desativado
-            setProdutos(prev =>
-                prev.map(p => p.id === produto.id ? { ...p, isAtivo: false } : p)
-            );
-
-            toast.success("Produto Desativado!");
-        } catch (erro) {
-            console.error("Erro ao desativar produto: ", erro);
-        }
-    };
-
-
-    // metodo de ativar produto
-    const handlerAtivar = async (produto) => {
-        const token = sessionStorage.getItem('token');
-
-        const ativarProduto = {
-            nome: produto.nome || "",
-            preco: produto.preco || 0,
-            qtdPorCaixas: produto.qtdPorCaixas || 0,
-            isAtivo: true,
-            nomeSubtipo: produto.nomeSubtipo || produto.subtipo || "Senhor Sorvete",
-            nomeMarca: produto.nomeMarca || produto.marca || "Senhor Sorvete",
-            temLactose: typeof produto.temLactose === "boolean" ? produto.temLactose : false,
-            temGluten: typeof produto.temGluten === "boolean" ? produto.temGluten : false
-        };
-
-        try {
-            const response = await fetch(`http://localhost:8080/produtos/${produto.id}`, {
-                method: "PUT",
-                headers: {
-                    'Content-Type': 'application/json',
-                    Authorization: `Bearer ${token}`
-                },
-                body: JSON.stringify(ativarProduto)
-            });
-
-            if (!response.ok) {
-                throw new Error("Erro ao ativar produto");
-            }
-
+    
             const dados = await response.json();
             setProdutos(prev =>
-                prev.map(p => p.id === produto.id ? { ...p, isAtivo: true } : p)
+                prev.map(p => p.id === produto.id ? { ...p, isAtivo: isAtivoGenerico } : p)
             );
-
-            toast.success("Produto ativado com sucesso!");
+    
+            toast.success(`Produto ${isAtivoGenerico ? "ativado" : "desativado"} com sucesso!`);
         } catch (erro) {
-            console.error("Erro ao ativar produto: ", erro);
-            toast.error("Erro ao ativar produto");
+            console.error(`Erro ao ${isAtivoGenerico ? "ativar" : "desativar"} produto: `, erro);
+            toast.error(`Erro ao ${isAtivoGenerico ? "ativar" : "desativar"} produto`);
         }
     };
+    
 
     // metodo para saber se o produto está ativo
     const handleEstaAtivo = (event) => {
@@ -973,7 +1023,7 @@ const ListarProdutos = () => {
                                                 >
                                                     <button
                                                         className="desativar"
-                                                        onClick={() => handlerDesativar(produto)}
+                                                        onClick={() => handleToggleAtivo(produto)}
                                                     >
                                                         <DoNotDisturbOnIcon />
                                                     </button>
@@ -988,7 +1038,7 @@ const ListarProdutos = () => {
                                                 >
                                                     <button
                                                         className="ativar"
-                                                        onClick={() => handlerAtivar(produto)}
+                                                        onClick={() => handleToggleAtivo(produto)}
                                                     >
                                                         <CheckCircleIcon />
                                                     </button>
@@ -1071,16 +1121,6 @@ const ListarProdutos = () => {
                                 placeholder="Selecione uma marca"
                             />
                         )}
-                    />
-                    <Autocomplete
-                        options={tipos} // A lista de tipos agora vem da API
-                        getOptionLabel={(option) => option.nome} // A propriedade 'nome' de cada tipo
-                        onChange={(event, newValue) => {
-                            if (newValue) {
-                                setTipoSelecionadoId(newValue.id); // Atualiza o estado com o ID do tipo selecionado
-                            }
-                        }}
-                        renderInput={(params) => <TextField {...params} label="Selecione um Tipo" />}
                     />
 
                     <Autocomplete
@@ -1254,8 +1294,8 @@ const ListarProdutos = () => {
                         disabled={true}
                         autoFocus
                         fullWidth
-                        options={[...subtipos, { nome: '+ Adicionar Novo Subtipo', isAddNew: true }]}
-                        value={novoProduto.subtipo ? { nome: novoProduto.subtipo } : null}
+                        options={[...tipos, { nome: '+ Adicionar Novo Tipo', isAddNew: true }]}
+                        value={novoProduto.tipo ? { nome: novoProduto.tipo } : null}
                         noOptionsText="Nenhuma opção encontrada"
                         onChange={(event, newValue) => {
                             if (newValue?.isAddNew) {
@@ -1273,8 +1313,8 @@ const ListarProdutos = () => {
                                 disabled="true"
                                 {...params}
                                 margin="dense"
-                                name="subtipo"
-                                label="Subtipo"
+                                name="tipo"
+                                label="Tipo"
                                 error={!!erros.subtipo}
                                 placeholder="Selecione um subtipo"
                             />
@@ -1286,7 +1326,7 @@ const ListarProdutos = () => {
                         autoFocus
                         fullWidth
                         options={[...subtipos, { nome: '+ Adicionar Novo Subtipo', isAddNew: true }]}
-                        value={novoProduto.subtipo?.tipo ? { nome: novoProduto.subtipo.tipo } : null}
+                        value={novoProduto.subtipo ? { nome: novoProduto.subtipo } : null}
                         noOptionsText="Nenhuma opção encontrada"
                         onChange={(event, newValue) => {
                             if (newValue?.isAddNew) {
@@ -1405,8 +1445,7 @@ const ListarProdutos = () => {
 
             <Dialog
                 open={modalNovaMarcaAberto}
-                onClose={() => setModalNovaMarcaAberto(false)}
-            >
+                onClose={() => setModalNovaMarcaAberto(false)}>
                 <DialogTitle>Adicionar Nova Marca</DialogTitle>
                 <DialogContent>
                     <TextField
@@ -1433,17 +1472,47 @@ const ListarProdutos = () => {
 
             <Dialog
                 open={modalNovoSubtipoAberto}
-                onClose={() => setModalNovoSubtipoAberto(false)}
-            >
+                onClose={() => setModalNovoSubtipoAberto(false)}>
                 <DialogTitle>Adicionar Novo Subtipo</DialogTitle>
                 <DialogContent>
                     <TextField
                         autoFocus
                         margin="dense"
                         label="Subtipo"
+                        name="subtipo"
                         fullWidth
-                        value={novoSubtipo}
-                        onChange={(e) => setNovoSubtipo(e.target.value)}
+                        value={novoSubtipo.subtipo || ""}
+                        onChange={handleInputChangeSubtipo}
+                    />
+                    
+                    <Autocomplete
+                        autoFocus
+                        fullWidth
+                        options={[...tipos, { nome: '+ Adicionar Novo Tipo', isAddNew: true }]}
+                        value={novoSubtipo.tipo ? { nome: novoSubtipo.tipo } : null}
+                        noOptionsText="Nenhuma opção encontrada"
+                        onChange={(event, newValue) => {
+                            if (newValue?.isAddNew) {
+                                setModalNovoTipoAberto(true);
+                                return;
+                            }
+                            setNovoSubtipo((prev) => ({
+                                ...prev,
+                                tipo: newValue?.nome || ''
+                            }));
+                        }}
+                        getOptionLabel={(option) => option.nome || ''}
+                        renderInput={(params) => (
+                            <TextField
+                                disabled="true"
+                                {...params}
+                                margin="dense"
+                                name="tipo"
+                                label="Tipo"
+                                error={!!erros.tipo}
+                                placeholder="Selecione um tipo"
+                            />
+                        )}
                     />
                 </DialogContent>
                 <DialogActions>
@@ -1458,7 +1527,36 @@ const ListarProdutos = () => {
                     </Button>
                 </DialogActions>
             </Dialog>
+
+            <Dialog
+                open={modalNovoTipoAberto}
+                onClose={() => setModalNovoTipoAberto(false)}>
+                <DialogTitle>Adicionar Novo Tipo</DialogTitle>
+                <DialogContent>
+                    <TextField
+                        autoFocus
+                        margin="dense"
+                        label="Tipo"
+                        fullWidth
+                        value={novoTipo}
+                        onChange={(e) => setNovoTipo(e.target.value)}
+                    />
+                </DialogContent>
+                <DialogActions>
+                    <Button
+                        className="botaoModal"
+                        onClick={() => setModalNovoTipoAberto(false)}
+                    >
+                        Cancelar
+                    </Button>
+                    <Button className="botaoModal" onClick={adicionarNovoTipo}>
+                        Adicionar
+                    </Button>
+                </DialogActions>
+            </Dialog>
         </>
+
+        
     );
 };
 

@@ -39,7 +39,7 @@ const Cardapio = () => {
       setIsLoading(true);
       try {
         const response = await axios.get(
-          "http://localhost:8080/produtos/isAtivos"
+          "http://localhost:8080/produtos/ativos"
         );
         setProdutos(response.data);
       } catch (error) {

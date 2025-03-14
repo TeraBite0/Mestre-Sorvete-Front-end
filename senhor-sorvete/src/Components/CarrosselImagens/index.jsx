@@ -2,6 +2,7 @@ import "./carrosselImagens.css";
 import React, { useState, useEffect } from "react";
 import { Carousel } from "primereact/carousel";
 import { Link } from "react-router-dom";
+import axios from "axios";
 
 export default function BasicDemo() {
   const [produtos, setProdutos] = useState([]);
@@ -15,12 +16,15 @@ export default function BasicDemo() {
   ];
 
   useEffect(() => {
-    fetch("http://localhost:8080/produtos/populares")
-      .then((response) => response.json())
-      .then((data) => setProdutos(data.slice(0, 9)));
-  }, []);
-
-  useEffect(() => {
+    const fetchProdutos = async () => {
+      try {
+        const response = await axios.get("http://localhost:8080/produtos/recomendacao")
+        setProdutos(response.data);
+      } catch (error) {
+        console.error("Erro ao buscar produtos:", error);
+      } 
+    };
+    fetchProdutos();
     const interval = setInterval(() => {
       setActiveIndex((prevIndex) => (prevIndex + 1) % produtos.length);
     }, 4000);
