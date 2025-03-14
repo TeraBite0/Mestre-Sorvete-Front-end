@@ -23,6 +23,7 @@ import BotaoGerenciamento from "../../../Components/BotaoGerenciamento";
 
 const Recomendacao = () => {
   const [produtos, setProdutos] = useState([]);
+  const [produtosInicio, setProdutosInicio] = useState([]);
   const [todosProdutos, setTodosProdutos] = useState([]);
   const [erro, setErro] = useState(null);
   const [modalOpen, setModalOpen] = useState(false);
@@ -46,6 +47,7 @@ const Recomendacao = () => {
           texto: response.data.texto || ""
         };
         setProdutos([produtoFormatado]);
+        setProdutosInicio([produtoFormatado]);
         setProdutoRecomendado(produtoFormatado);
       }
     } catch (error) {
@@ -136,6 +138,7 @@ const Recomendacao = () => {
         toast.success("Produto recomendado atualizado com sucesso!");
         await fetchProdutoRecomendado(token); // Atualiza a lista após sucesso
         setModalOpen(false);
+        setValor("");
       }
     } catch (error) {
       const errorMessage =
@@ -171,6 +174,7 @@ const Recomendacao = () => {
     const handleSave = () => {
       if (selectedProduto) {
         setProdutoRecomendado(selectedProduto);
+        setProdutosInicio([selectedProduto]);
         setModalOpen(false);
       } else {
         toast.error("Selecione um produto");
@@ -275,13 +279,13 @@ const Recomendacao = () => {
                     </TableCell>
                   </TableRow>
                 ) : (
-                  produtos.map((produto) => (
+                  produtosInicio.map((produto) => (
                     <TableRow key={produto.id} className="tabela-row">
                       <TableCell className="tabela-cell-content">
                         {produto.nome}
                       </TableCell>
                       <TableCell className="tabela-cell-content">
-                        {produto.marca?.nome || "N/A"}
+                        {produto.marca || "N/A"}
                       </TableCell>
                       <TableCell className="tabela-cell-content">
                         {typeof produto.preco === "number"
