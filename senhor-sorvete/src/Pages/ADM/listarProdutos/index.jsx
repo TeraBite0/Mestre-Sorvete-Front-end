@@ -94,6 +94,8 @@ const ListarProdutos = () => {
                 qtdCaixasEstoque: produto.qtdCaixasEstoque,
                 qtdPorCaixas: produto.qtdPorCaixas,
                 imagemUrl: "https://terabite.blob.core.windows.net/terabite-container/" + produto.id || '',
+                temGluten: produto.temGluten !== null ? produto.temGluten : true,
+                temLactose: produto.temLactose !== null ? produto.temLactose : true,
                 isAtivo: produto.isAtivo !== null ? produto.isAtivo : true // Garantir que isAtivo seja definido
             }));
 
@@ -155,13 +157,14 @@ const ListarProdutos = () => {
     };
 
     const adicionarNovoTipo = async () => {
+        debugger
         if (!novoTipo.trim()) {
             toast.error("O nome do tipo não pode ser vazio");
             return;
         }
 
         if(tipos.some(
-            (tipo) => tipo.toLowerCase() === novoTipo.trim().toLowerCase()
+            (tipo) => tipo.nome.toLowerCase() === novoTipo.trim().toLowerCase()
         )) {
             toast.error("Este tipo já existe");
             return;
@@ -208,7 +211,6 @@ const ListarProdutos = () => {
 
 
     const adicionarNovoSubtipo = async () => {
-        debugger
         if (!novoSubtipo) {
             toast.error("O nome do subtipo não pode ser vazio");
             return;
@@ -216,7 +218,7 @@ const ListarProdutos = () => {
 
         // Verifica se o subtipo já existe localmente
         if (subtipos.some(
-            (subtipo) => subtipo.toLowerCase() === novoSubtipo.subtipo.toLowerCase()
+            (subtipo) => subtipo.nome.toLowerCase() === novoSubtipo.subtipo.toLowerCase()
         )) {
             toast.error("Este subtipo já existe");
             return;
@@ -337,7 +339,7 @@ const ListarProdutos = () => {
                 preco: typeof produto.preco === 'number' ? produto.preco : 0,
                 qtdPorCaixas: typeof produto.qtdPorCaixas === 'number' ? produto.qtdPorCaixas : 0,
                 imagemUrl: "https://terabite.blob.core.windows.net/terabite-container/" + produto.id || '',
-                isAtivo: produto.isAtivo !== undefined ? produto.isAtivo : true  // Define true como padrão
+                 // Define true como padrão
 
             }));
 
@@ -647,7 +649,6 @@ const ListarProdutos = () => {
             const dadosProduto = {
                 nome: novoProduto.nome,
                 nomeSubtipo: novoProduto.subtipo,
-                nomeTipo: novoProduto.tipo,
                 nomeMarca: novoProduto.marca,
                 imagemUrl: urlImagem,
                 preco: formatarPreco(novoProduto.preco),
@@ -682,9 +683,8 @@ const ListarProdutos = () => {
                 preco: typeof dadosNovoProduto.preco === 'number' ? dadosNovoProduto.preco : 0,
                 qtdPorCaixas: typeof dadosNovoProduto.qtdPorCaixas === 'number' ? dadosNovoProduto.qtdPorCaixas : 0,
                 imagemUrl: "https://terabite.blob.core.windows.net/terabite-container/" + dadosNovoProduto.id || '',
-                isAtivo: dadosNovoProduto.isAtivo !== undefined ? dadosNovoProduto.isAtivo : true,
-                temLactose: dadosNovoProduto.temLactose || false,
-                temGluten: dadosNovoProduto.temGluten || false
+                temLactose: dadosNovoProduto.temLactose,
+                temGluten: dadosNovoProduto.temGluten
             };
 
             setProdutos(produtos => [...produtos, produtoFormatado]);
@@ -704,6 +704,7 @@ const ListarProdutos = () => {
     // Método para atualizar produto (PUT) com imagem
     const atualizarProduto = async (produto, dadosAtualizados) => {
         try {
+            debugger
             setCarregando(true);
 
             const token = sessionStorage.getItem('token');
@@ -729,7 +730,6 @@ const ListarProdutos = () => {
                 nome: dadosAtualizados.nome,
                 preco: formatarPreco(dadosAtualizados.preco),
                 qtdPorCaixas: dadosAtualizados.qtdPorCaixas,
-                isAtivo: produto.isAtivo,
                 nomeSubtipo: dadosAtualizados.subtipo,
                 nomeMarca: dadosAtualizados.marca,
                 temLactose: dadosAtualizados.temLactose,
@@ -807,8 +807,8 @@ const ListarProdutos = () => {
             preco: produto.preco ? produto.preco.toFixed(2) : '0.00',
             qtdPorCaixas: produto.qtdPorCaixas ? produto.qtdPorCaixas : '0',
             imagemUrl: produto.imagemUrl || '',
-            temLactose: produto.temLactose ?? false,
-            temGluten: produto.temGluten ?? false,
+            temLactose: produto.temLactose,
+            temGluten: produto.temGluten,
             isAtivo: produto.isAtivo
         });
         const token = sessionStorage.getItem('token');
@@ -860,8 +860,8 @@ const ListarProdutos = () => {
             qtdCaixasEstoque: produto.qtdCaixasEstoque ? produto.qtdCaixasEstoque : '0',
             qtdPorCaixas: produto.qtdPorCaixas ? produto.qtdPorCaixas : '0',
             imagemUrl: produto.imagemUrl || '',
-            temLactose: produto.temLactose ?? false,
-            temGluten: produto.temGluten ?? false,
+            temLactose: produto.temLactose,
+            temGluten: produto.temGluten,
             isAtivo: produto.isAtivo
         });
         setModalVisualizarProdutoAberto(true);
@@ -904,7 +904,6 @@ const ListarProdutos = () => {
             ...prev,
             isAtivo: event.target.checked,
         }));
-
     };
 
     // metodo para saber se o produto tem lactose

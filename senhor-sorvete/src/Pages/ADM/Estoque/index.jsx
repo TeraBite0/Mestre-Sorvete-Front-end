@@ -62,6 +62,7 @@ const Estoque = () => {
       const token = sessionStorage.getItem('token');
       try {
         const response = await axios.get('http://localhost:8080/produtos', {
+        const response = await axios.get('http://localhost:8080/produtos', {
           headers: {
             Authorization: `Bearer ${token}`
           }
@@ -80,6 +81,14 @@ const Estoque = () => {
   const fecharModalRegistrarPerda = () => setAbrirRegistrarPerda(false);
   const abrirModalAdicionarLote = () => setAbrirAdicionarLote(true);
   const fecharModalAdicionarLote = () => setAbrirAdicionarLote(false);
+
+  const renderProdutoCell = (value, defaultValue = '-') => {
+    return value || defaultValue;
+  };
+
+  const calcularQuantidadeProduto = (produto) => {
+    return produto.qtdCaixasEstoque * produto.qtdPorCaixas;
+  }
 
   const camposRegistrarPerda = [
     {
@@ -229,6 +238,18 @@ const Estoque = () => {
   };
 
   const buscarProdutos = produtos.filter((produto) => {
+    const nomeInclusao = produto.nome
+      .toLowerCase()
+      .includes(pesquisa.trim().toLowerCase());
+    const marcaInclusao = produto.marca
+      .toLowerCase()
+      .includes(pesquisa.trim().toLowerCase());
+    console.log(
+      `Nome: ${produto.produto}, Marca: ${produto.marca}, Pesquisa: ${pesquisa}, Nome Inclusão: ${nomeInclusao}, Marca Inclusão: ${marcaInclusao}`
+    );
+    return nomeInclusao || marcaInclusao;
+  });
+
    if (!pesquisa.trim()) return true;
 
    const termoBusca = pesquisa.trim().toLowerCase();
@@ -262,6 +283,81 @@ const Estoque = () => {
           </div>
         </div>
         <span>Atualmente {produtos.length} produtos cadastrados</span>
+      </div>
+
+        <div className='tabela-produtos'>
+          <TableContainer
+                    component={Paper}
+                    className='container-tabela'
+                    sx={{
+                        maxHeight: '60vh',  // altura máxima
+                        overflow: 'auto'
+                    }}
+                >
+                  <Table
+                        sx={{
+                            width: '100%',
+                            '& .MuiTableCell-root': {
+                                padding: '0px',
+                            },
+                            '& .MuiTableCell-root:last-child': {
+                                width: '60px', // Ajusta a largura da última coluna (Editar)
+                            }
+                        }}
+                        size="small"
+                        aria-label="tabela de produtos"
+                    >
+
+                    <TableHead className='tabela-Head'>
+                      <TableRow >
+                        <TableCell className='tabela-head-cell' style={{paddingLeft: '10px'}}>Código</TableCell>
+                        <TableCell className='tabela-head-cell' style={{paddingLeft: '10px'}}>Nome</TableCell>
+                        <TableCell className='tabela-head-cell' style={{paddingLeft: '10px'}}>Marca</TableCell>
+                        <TableCell className='tabela-head-cell' style={{paddingLeft: '10px'}}>Qtd Por Caixa</TableCell>
+                        <TableCell className='tabela-head-cell' style={{paddingLeft: '10px'}}>Qtd De Caixa</TableCell>
+                        <TableCell className='tabela-head-cell' style={{paddingLeft: '10px'}}>Total de produtos</TableCell>
+                        {/* <TableCell
+                          style={{ ...estiloCabecalhoTabela, ...estiloQuantidade }}
+                        >
+                          Quantidade
+                        </TableCell> */}
+                      </TableRow>
+                    </TableHead>
+
+                    <TableBody>
+                      {/* {produtos
+                            .filter(produto => produto && typeof produto === 'object' && produto.id)
+                            .map(produto => (
+                                <TableRow key={produto.id} className={`tabela-row-vendas ${!produto.isAtivo ? 'desativado' : ''}`}>
+                                    <TableCell>{renderProdutoCell(produto.nome, 'Produto sem nome')}</TableCell>
+                                    <TableCell>{renderProdutoCell(produto.marca, 'Marca desconhecida')}</TableCell>
+                                    <TableCell>{renderProdutoCell(produto.tipo, 'Tipo desconhecida')}</TableCell>
+                                </TableRow>
+                            ))
+                            } */}
+                      {produtos.map((produto) => (
+                        <TableRow key={produto.codigo} className={`tabela-row-vendas ${!produto.isAtivo ? 'desativado' : ''}`}>
+                          <TableCell style={{padding: '10px'}}>{produto.id}</TableCell>
+                          <TableCell style={{padding: '10px'}}>{produto.nome}</TableCell>
+                          <TableCell style={{padding: '10px'}}>{produto.marca}</TableCell>
+                          <TableCell style={{padding: '10px'}}>{produto.qtdPorCaixas}</TableCell>
+                          <TableCell style={{padding: '10px'}}>{produto.qtdCaixasEstoque}</TableCell>
+                          <TableCell style={{padding: '10px'}}>{calcularQuantidadeProduto(produto)}</TableCell>
+                          {/* <TableCell
+                            // style={{
+                            //   ...estiloQuantidade,
+                            //   backgroundColor: obterCorQuantidade(produto.qtdEstoque),
+                            // }}
+                            align="center"
+                          >
+                            {produto.qtdEstoque}
+                          </TableCell> */}
+                        </TableRow>
+                      ))}
+                    </TableBody>
+            </Table>
+          </TableContainer>
+        </div>
         <TableContainer component={Paper}
         sx={{
           maxHeight: '55vh',  // altura máxima
@@ -309,6 +405,8 @@ const Estoque = () => {
           </Table>
         </TableContainer>
       </div>
+
+      
 
       <ModalGerenciamento
         open={abrirRegistrarPerda}
