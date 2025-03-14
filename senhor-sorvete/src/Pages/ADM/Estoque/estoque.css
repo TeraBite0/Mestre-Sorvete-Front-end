@@ -1,39 +1,51 @@
 .estoqueContainer {
-    margin: 0 5rem;
-  }
-  
-  .estoqueContainer .header-home {
-    margin-bottom: 1px;
-  }
-  
-  .controlesWrapper {
-    margin-top: 30px;
-    margin-bottom: 15px;
-    display: flex;
-    width: 100%;
-    justify-content: space-between;
-    align-items: center;
-  }
-  
-  .pesquisa-container {
-    width: 40%;
-    max-width: 300px;
-  }
-  
-  .botoes-container {
-    display: flex;
-    gap: 10px; 
-  }
-
-.modal-button-container {
-    display: flex;
-    justify-content: center;
-    gap: 50px;
-    margin-top: 15px;
-    margin: 0 10px;
+  width: 90%;
+  margin: 0 auto;
 }
 
-.modal-button-container button {
-    width: 11rem;
-    font-size: 16px;
+.estoqueContainer .header-home {
+  margin-bottom: 1px;
+}
+
+.controlesWrapper {
+  margin-top: 30px;
+  margin-bottom: 15px;
+  display: flex;
+  width: 100%;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.pesquisa-container {
+  width: 40%;
+  max-width: 300px;
+  margin-right: 28%;
+  margin-top: 15px;
+}
+
+.botoes-container {
+  display: flex;
+  gap: 10px;
+}
+
+.container-tabela {
+  border: 2px solid #2F615E;
+  border-radius: 10px !important;
+  width: 100%;
+}
+
+.container-tabela::-webkit-scrollbar {
+  width: 6px;
+}
+
+.texto-produtos {
+  display: flex;
+  margin-left: 6%;
+  width: 100%;
+  margin-bottom: 10px;
+}
+
+.produtos-contagem {
+  font-size: 14px;
+  color: #555;
 }

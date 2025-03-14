@@ -26,25 +26,22 @@ const obterCorQtdCaixaEstoque = (qtdCaixasEstoque) => {
 
 const obterCorQtdPorCaixa = (qtdPorCaixas) => {
   if (qtdPorCaixas === 0) return "#818d91";
-  if (qtdPorCaixas<= 10) return "#fc8886";
+  if (qtdPorCaixas <= 10) return "#fc8886";
   if (qtdPorCaixas <= 30) return "#fafa9d";
   return "#90EE90";
 };
 
-const estiloCabecalhoTabela = {
-  fontWeight: "bold",
-  backgroundColor: "#f5f5f5",
-  textAlign: "center",
-  borderRight: "1px solid #ddd",
-};
+// const estiloCabecalhoTabela = {
+//   fontWeight: "bold",
+//   paddingLeft: "10px"
+// };
 
-const estiloCelulaTabela = {
-  borderRight: "1px solid #ddd",
-  whiteSpace: "nowrap",
-};
+// const estiloCelulaTabela = {
+//   borderRight: "1px solid #ddd",
+//   whiteSpace: "nowrap",
+// };
 
 const estiloQuantidade = {
-  ...estiloCelulaTabela,
   width: "12px",
   maxWidth: "90px",
   minWidth: "90px",
@@ -65,8 +62,8 @@ const Estoque = () => {
           headers: {
             Authorization: `Bearer ${token}`
           }
-          
-        })
+
+        });
         setProdutos(response.data);
       } catch (error) {
         toast.error('Erro ao buscar estoque');
@@ -87,7 +84,7 @@ const Estoque = () => {
 
   const calcularQuantidadeProduto = (produto) => {
     return produto.qtdCaixasEstoque * produto.qtdPorCaixas;
-  }
+  };
 
   const camposRegistrarPerda = [
     {
@@ -95,8 +92,8 @@ const Estoque = () => {
       label: "Produto",
       type: "select",
       options: produtos.map((p) => ({
-        value: p.codigo,
-        label: `${p.produto} - ${p.marca}`,
+        value: p.codigo || p.id,
+        label: `${p.nome || p.produto} - ${p.marca}`,
       })),
     },
     {
@@ -112,8 +109,8 @@ const Estoque = () => {
       label: "Produto",
       type: "select",
       options: produtos.map((p) => ({
-        value: p.codigo,
-        label: `${p.produto} - ${p.marca}`,
+        value: p.codigo || p.id,
+        label: `${p.nome || p.produto} - ${p.marca}`,
       })),
     },
     {
@@ -165,7 +162,7 @@ const Estoque = () => {
     setLoading(true);
 
     try {
-      await axios.post('http://localhost:8080/produtos', formData, {
+      await axios.post('http://localhost:8080/estoque', formData, {
         headers: {
           'Authorization': `Bearer ${token}`,
           'Content-Type': 'application/json'
@@ -212,7 +209,7 @@ const Estoque = () => {
       fecharModalRegistrarPerda();
 
       // Atualiza a lista de produtos
-      const response = await axios.get('http://localhost:8080/estoque', {
+      const response = await axios.get('http://localhost:8080/produtos', {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -226,7 +223,6 @@ const Estoque = () => {
     }
   };
 
-
   const transformBeforeSubmit = (data) => {
     return {
       ...data,
@@ -236,28 +232,31 @@ const Estoque = () => {
     };
   };
 
-  const buscarProdutos = produtos.filter((produto) => {
+  const produtosFiltrados = produtos.filter((produto) => {
+    const nomeProduto = produto.nome || produto.produto || "";
+    const marcaProduto = produto.marca || "";
+    const termoPesquisa = pesquisa.trim().toLowerCase();
 
-   const termoBusca = pesquisa.trim().toLowerCase();
-   return(
-    (produto.nome && produto.nome.toLowerCase().includes(termoBusca)) || 
-    (produto.marca && produto.marca.toLowerCase().includes(termoBusca))
-   );
+    const nomeInclusao = nomeProduto.toLowerCase().includes(termoPesquisa);
+    const marcaInclusao = marcaProduto.toLowerCase().includes(termoPesquisa);
+
+    return nomeInclusao || marcaInclusao;
   });
+
   return (
     <>
       <HeaderGerenciamento />
       <div className="estoqueContainer">
         <BotaoVoltarGerenciamento pagina="/home/gerenciamento" />
         <div className="controlesWrapper">
-        <div className="pesquisa-container">
-          <Pesquisa
-            placeholder="Nome"
-            value={pesquisa}
-            onChange={(e) => setPesquisa(e.target.value)}
-          />
-            </div>
-            <div className="botoes-container">
+          <div className="pesquisa-container">
+            <Pesquisa
+              placeholder="Nome"
+              value={pesquisa}
+              onChange={(e) => setPesquisa(e.target.value)}
+            />
+          </div>
+          <div className="botoes-container">
             <BotaoGerenciamento
               botao="Registrar Perda"
               onClick={abrirModalRegistrarPerda}
@@ -268,46 +267,80 @@ const Estoque = () => {
             />
           </div>
         </div>
+
+        <div className="texto-produtos">
         <span>Atualmente {produtos.length} produtos cadastrados</span>
-            <TableHead>
-              <TableRow>
-                <TableCell style={estiloCabecalhoTabela}>Código</TableCell>
-                <TableCell style={estiloCabecalhoTabela}>Nome</TableCell>
-                <TableCell style={estiloCabecalhoTabela}>Marca</TableCell>
-                <TableCell style={{ ...estiloCabecalhoTabela, ...estiloQuantidade }}>Qtd Caixas</TableCell>
-                <TableCell style={{ ...estiloCabecalhoTabela, ...estiloQuantidade }}>Qtd por Caixas</TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {buscarProdutos.map((produto) => (
-                <TableRow key={produto.codigo}>
-                  <TableCell style={estiloCelulaTabela}>
-                    {produto.id}
-                  </TableCell>
-                  <TableCell style={estiloCelulaTabela}>
-                    {produto.nome}
-                  </TableCell>
-                  <TableCell style={estiloCelulaTabela}>
-                    {produto.marca}
-                  </TableCell>
-                  <TableCell style={{
+        </div>
+       
+        <div className='tabela-produtos'>
+          <TableContainer
+            component={Paper}
+            className='container-tabela'
+            sx={{
+              maxHeight: '60vh',  // altura máxima
+              overflow: 'auto'
+            }}
+          >
+            <Table
+              sx={{
+                width: '100%',
+                '& .MuiTableCell-root': {
+                  padding: '5px',
+                },
+                '& .MuiTableCell-root:last-child': {
+                  width: '60px', // Ajusta a largura da última coluna (Editar)
+                }
+              }}
+              size="small"
+              aria-label="tabela de produtos"
+            >
+              
+              <TableHead className='tabela-Head'>
+                <TableRow>
+                  <TableCell className='tabela-head-cell' style={{ paddingLeft: '10px' }}>Código</TableCell>
+                  <TableCell className='tabela-head-cell' style={{ paddingLeft: '10px' }}>Nome</TableCell>
+                  <TableCell className='tabela-head-cell' style={{ paddingLeft: '10px' }}>Marca</TableCell>
+                  <TableCell className='tabela-head-cell' style={{estiloQuantidade }}align="center">Qtd Caixas</TableCell>
+                  <TableCell className='tabela-head-cell' style={{estiloQuantidade }}align="center">Qtd por Caixas</TableCell>
+                  <TableCell className='tabela-head-cell' style={{estiloQuantidade }}align="center">Total de Produtos</TableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {produtosFiltrados.map((produto) => (
+                  <TableRow key={produto.id || produto.codigo} className={`tabela-row-vendas ${!produto.isAtivo ? 'desativado' : ''}`}>
+                    <TableCell style={{ padding: '10px' }}>
+                      {produto.id || produto.codigo}
+                    </TableCell>
+                    <TableCell style={{ padding: '10px' }}>
+                      {produto.nome || produto.produto}
+                    </TableCell>
+                    <TableCell style={{ padding: '10px' }}>
+                      {produto.marca}
+                    </TableCell>
+                    <TableCell style={{
                       ...estiloQuantidade,
                       backgroundColor: obterCorQtdCaixaEstoque(produto.qtdCaixasEstoque),
                     }}
-                    align="center">
-                    {produto.qtdCaixasEstoque}
-                  </TableCell>
-                  <TableCell style={{
+                      align="center">
+                      {produto.qtdCaixasEstoque}
+                    </TableCell>
+                    <TableCell style={{
                       ...estiloQuantidade,
                       backgroundColor: obterCorQtdPorCaixa(produto.qtdPorCaixas),
                     }}
-                    align="center">
-                    {produto.qtdPorCaixas}
-                  </TableCell>
-                </TableRow>
-              ))}
-            </TableBody>                     
+                      align="center">
+                      {produto.qtdPorCaixas}
+                    </TableCell>
+                    <TableCell align="center">
+                      {calcularQuantidadeProduto(produto)}
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </TableContainer>
         </div>
+      </div>
 
       <ModalGerenciamento
         open={abrirRegistrarPerda}
