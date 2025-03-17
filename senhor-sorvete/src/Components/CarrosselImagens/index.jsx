@@ -5,7 +5,7 @@ import { Link } from "react-router-dom";
 import axios from "axios";
 
 export default function BasicDemo() {
-  const [produtos, setProdutos] = useState([]);
+  const [recomendacoes, setRecomendacoes] = useState([]);
   const [activeIndex, setActiveIndex] = useState(0);
 
   const responsiveOptions = [
@@ -16,32 +16,32 @@ export default function BasicDemo() {
   ];
 
   useEffect(() => {
-    const fetchProdutos = async () => {
+    const fetchRecomendacoes = async () => {
       try {
         const response = await axios.get("http://localhost:8080/produtos/recomendacao")
-        setProdutos(response.data);
+        setRecomendacoes(response.data);
       } catch (error) {
-        console.error("Erro ao buscar produtos:", error);
+        console.error("Erro ao buscar recomendacoes:", error);
       } 
     };
-    fetchProdutos();
+    fetchRecomendacoes();
     const interval = setInterval(() => {
-      setActiveIndex((prevIndex) => (prevIndex + 1) % produtos.length);
+      setActiveIndex((prevIndex) => (prevIndex + 1) % recomendacoes.length);
     }, 4000);
 
     return () => clearInterval(interval);
-  }, [produtos.length]);
+  }, [recomendacoes.length]);
 
-  const productTemplate = (produto) => {
+  const productTemplate = (recomendacao) => {
     return (
       <div className="card-item">
         <Link to="/cardapio">
           <img
             src="Imagens/casquinhas-de-chocolate.jpeg"
-            alt={`${produto.nome} Ice Cream`}
+            alt={`${recomendacao.nome} Ice Cream`}
           />
-          <h3>{produto.nome}</h3>
-          <p>R${produto.preco},00</p>
+          <h3>{recomendacao.produto.nome}</h3>
+          <p>R${recomendacao.produto.preco},00</p>
         </Link>
       </div>
     );
@@ -51,7 +51,7 @@ export default function BasicDemo() {
     <div className="card">
       <h1>Eu Quero!</h1>
       <Carousel
-        value={produtos}
+        value={recomendacoes}
         numVisible={3}
         numScroll={3}
         responsiveOptions={responsiveOptions}
@@ -59,7 +59,7 @@ export default function BasicDemo() {
         showIndicators={false}
         circular
         activeIndex={activeIndex}
-        autoplayInterval={3000}
+        autoplayInterval={3500}
       />
     </div>
   );

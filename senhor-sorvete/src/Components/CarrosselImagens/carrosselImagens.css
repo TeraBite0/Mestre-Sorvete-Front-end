@@ -76,6 +76,11 @@
   transition: 0.4s;
 }
 
+.card-item img{
+  width: 180px;
+  height: 180px;
+}
+
 .card-item:hover {
   transform: scale(1.05);
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.80);

@@ -849,11 +849,12 @@ const ListarProdutos = () => {
 
     // Método para preparar a visualização
     const handleVisualizacao = (produto) => {
+        debugger
         setProdutoSelecionado(produto);
         setNovoProduto({
             id: produto.id,
             nome: produto.nome || '',
-            marca: typeof produto.marca === 'object' ? produto.marca : produto || '',
+            marca: produto.marca || '',
             subtipo: typeof produto.subtipo === 'object' ? produto.subtipo : produto.subtipo || '',
             tipo: typeof produto.tipo === 'object' ? produto.tipo : produto.tipo || '',
             preco: produto.preco ? produto.preco.toFixed(2) : '0.00',
