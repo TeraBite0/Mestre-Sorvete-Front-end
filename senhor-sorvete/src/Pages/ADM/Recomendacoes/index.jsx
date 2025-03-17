@@ -78,17 +78,11 @@ const Recomendacoes = () => {
 
             const produtosFormatados = dados.map(produto => ({
                 id: produto.id || '',
-                nome: produto.nome || '',
-                marca: produto.marca || '',
-                subtipo: produto.subtipo || '',
-                tipo: produto.tipo || '',
-                preco: typeof produto.preco === 'number' ? produto.preco : 0,
-                qtdCaixasEstoque: produto.qtdCaixasEstoque,
-                qtdPorCaixas: produto.qtdPorCaixas,
+                nome: produto.produto.nome || '',
+                marca: produto.produto.marca || '',
+                tipo: produto.produto.tipo || '',
+                preco: typeof produto.produto.preco === 'number' ? produto.produto.preco : 0,
                 imagemUrl: "https://terabite.blob.core.windows.net/terabite-container/" + produto.id || '',
-                temGluten: produto.temGluten !== null ? produto.temGluten : true,
-                temLactose: produto.temLactose !== null ? produto.temLactose : true,
-                isAtivo: produto.isAtivo !== null ? produto.isAtivo : true // Garantir que isAtivo seja definido
             }));
 
             setProdutos(produtosFormatados);
@@ -149,7 +143,6 @@ const Recomendacoes = () => {
     };
 
     const adicionarNovoTipo = async () => {
-        debugger
         if (!novoTipo.trim()) {
             toast.error("O nome do tipo não pode ser vazio");
             return;
@@ -408,7 +401,6 @@ const Recomendacoes = () => {
     // Método para atualizar produto (PUT) com imagem
     const atualizarProduto = async (produto, dadosAtualizados) => {
         try {
-            debugger
             setCarregando(true);
 
             const token = sessionStorage.getItem('token');
@@ -553,7 +545,6 @@ const Recomendacoes = () => {
 
     // Método para preparar a visualização
     const handleVisualizacao = (produto) => {
-        debugger
         setProdutoSelecionado(produto);
         setNovoProduto({
             id: produto.id,
