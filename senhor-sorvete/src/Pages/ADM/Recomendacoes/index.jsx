@@ -77,12 +77,18 @@ const Recomendacoes = () => {
             const dados = await resposta.json();
 
             const produtosFormatados = dados.map(produto => ({
-                id: produto.id || '',
+                id: produto.produto.id || '',
                 nome: produto.produto.nome || '',
                 marca: produto.produto.marca || '',
+                subtipo: produto.produto.subtipo || '',
                 tipo: produto.produto.tipo || '',
                 preco: typeof produto.produto.preco === 'number' ? produto.produto.preco : 0,
-                imagemUrl: "https://terabite.blob.core.windows.net/terabite-container/" + produto.id || '',
+                qtdCaixasEstoque: produto.produto.qtdCaixasEstoque,
+                qtdPorCaixas: produto.produto.qtdPorCaixas,
+                imagemUrl: "https://terabite.blob.core.windows.net/terabite-container/" + produto.produto.id || '',
+                temGluten: produto.produto.temGluten !== null ? produto.produto.temGluten : true,
+                temLactose: produto.produto.temLactose !== null ? produto.produto.temLactose : true,
+                isAtivo: produto.produto.isAtivo !== null ? produto.produto.isAtivo : true // Garantir que isAtivo seja definido
             }));
 
             setProdutos(produtosFormatados);
