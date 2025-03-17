@@ -183,7 +183,7 @@ const Destaque = () => {
 
     return (
       <Dialog open={open} onClose={onClose}>
-        <DialogTitle>Editar Recomendação do Dia</DialogTitle>
+        <DialogTitle>Editar Destaque do Dia</DialogTitle>
         <DialogContent>
           <TextField
             select
@@ -212,7 +212,7 @@ const Destaque = () => {
             disabled={!selectedProduto}
             style={{ marginTop: "10px" }}
           >
-            Atualizar Recomendação
+            Atualizar Destaque
           </Button>
         </DialogContent>
       </Dialog>

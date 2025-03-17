@@ -51,11 +51,7 @@ const Recomendacoes = () => {
     const [modalVisualizarProdutoAberto, setModalVisualizarProdutoAberto] = useState(false);
     const [ setModalNovaMarcaAberto] = useState(false);
     const [ setModalNovoSubtipoAberto] = useState(false);
-    const [ setModalNovoTipoAberto] = useState(false);
-    const [novaMarca, setNovaMarca] = useState('');
     const [tipos, setTipos] = useState([]);
-    const [novoSubtipo, setNovoSubtipo] = useState({subtipo: '', tipo: ''});
-    const [novoTipo, setNovoTipo] = useState('');
 
     useEffect(() => {
         buscarProdutos();
@@ -99,176 +95,6 @@ const Recomendacoes = () => {
         }
 
     };
-
-
-    // metodo de adicionar nova marca
-    const adicionarNovaMarca = async () => {
-        if (!novaMarca.trim()) {
-            toast.error("O nome da marca não pode ser vazio");
-            return;
-        }
-
-        console.log("Objeto enviado para API:", novaMarca.trim());
-
-        const novaMarcaObj = JSON.parse(JSON.stringify({ nome: novaMarca.trim() }));
-        console.log("JSON final enviado:", JSON.stringify(novaMarcaObj));
-
-        const token = sessionStorage.getItem('token');
-        if (!token) {
-            toast.error("Erro de autenticação");
-            return;
-        }
-
-        try {
-            const response = await fetch('http://localhost:8080/marcas', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${token}`
-                },
-                body: JSON.stringify(novaMarcaObj)
-            });
-
-            if (!response.ok) {
-                const errorData = await response.json();
-                console.error("Erro do servidor:", errorData);
-                throw new Error(`Erro ao adicionar marca: ${errorData.message || 'Erro desconhecido'}`);
-            }
-
-            const data = await response.json();
-            setMarcas(prev => [...prev, data]);
-
-            setModalNovaMarcaAberto(false);
-            setNovaMarca("");
-
-            toast.success("Marca adicionada com sucesso!");
-        } catch (error) {
-            console.error("Erro na requisição:", error);
-            toast.error("Erro ao adicionar marca. Tente novamente.");
-        }
-    };
-
-    const adicionarNovoTipo = async () => {
-        if (!novoTipo.trim()) {
-            toast.error("O nome do tipo não pode ser vazio");
-            return;
-        }
-
-        if(tipos.some(
-            (tipo) => tipo.nome.toLowerCase() === novoTipo.trim().toLowerCase()
-        )) {
-            toast.error("Este tipo já existe");
-            return;
-        }
-
-        const novoTipoObj = {
-            nome: novoTipo.trim(),
-        }
-
-        const token = sessionStorage.getItem('token');
-        if (!token) {
-            toast.error("Erro de autenticação");
-            return;
-        }
-
-        try {
-            const response = await fetch('http://localhost:8080/tipos', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${token}`
-                },
-                body: JSON.stringify(novoTipoObj)
-            });
-
-            if (!response.ok) {
-                const errorData = await response.text();
-                console.error('Erro da API:', errorData);
-                throw new Error('Erro ao adicionar tipo');
-            }
-
-            const data = await response.json();
-            setTipos(prev => [...prev, data]);
-
-            setModalNovoTipoAberto(false);
-            setNovoTipo("");
-
-            toast.success("Tipo adicionado com sucesso!");
-        } catch (error) {
-            console.error("Erro detalhado:", error);
-            toast.error(`Erro ao adicionar tipo: ${error.message}`);
-        }
-    }
-
-
-    const adicionarNovoSubtipo = async () => {
-        if (!novoSubtipo) {
-            toast.error("O nome do subtipo não pode ser vazio");
-            return;
-        }
-
-        // Verifica se o subtipo já existe localmente
-        if (subtipos.some(
-            (subtipo) => subtipo.nome.toLowerCase() === novoSubtipo.subtipo.toLowerCase()
-        )) {
-            toast.error("Este subtipo já existe");
-            return;
-        }
-
-        //const novoSubTipoObj = JSON.parse(JSON.stringify({ nome: novoSubtipo.trim() }));
-        const novoSubTipoObj = {
-            nome: novoSubtipo.subtipo,
-            nomeTipo: novoSubtipo.tipo  // Supondo que 'tipoSelecionadoId' seja o valor do tipo relacionado ao subtipo
-        };
-        console.log("JSON final enviado:", JSON.stringify(novoSubTipoObj));
-
-        const token = sessionStorage.getItem('token');
-        if (!token) {
-            toast.error("Erro de autenticação");
-            return;
-        }
-
-        try {
-            const response = await fetch('http://localhost:8080/subtipos', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${token}`
-                },
-                body: JSON.stringify(novoSubTipoObj)
-            });
-
-            if (!response.ok) {
-                const errorData = await response.text();
-                console.error('Erro da API:', errorData);
-                throw new Error('Erro ao adicionar subtipo');
-            }
-
-            const data = await response.json();
-            setSubtipos(prev => [...prev, data]);
-
-            setModalNovoSubtipoAberto(false);
-            setNovoSubtipo("");
-
-            toast.success("Subtipo adicionado com sucesso!");
-        } catch (error) {
-            console.error("Erro detalhado:", error);
-            toast.error(`Erro ao adicionar subtipo: ${error.message}`);
-        }
-    };
-
-    // metodo para abrir um modal
-    const abrirModal = async () => {    
-        setNovoProduto({ nome: "", marca: "", preco: "", imagemUrl: "" });
-        setArquivoImagem(null);
-        setProdutoSelecionado(null);
-        setErros({});
-        setModalAberto(true);
-
-        const token = sessionStorage.getItem('token');
-        setCarregando(true);
-    };
-
 
     // metodo para fechar modal
     const fecharModal = () => {
@@ -663,7 +489,7 @@ const Recomendacoes = () => {
                                         </TableCell>
                                         <TableCell className='tabela-cell'>
                                             <Tooltip
-                                                title="Editar produto"
+                                                title="Editar recomendação"
                                                 placement="bottom"
                                                 arrow
                                                 enterDelay={200}
@@ -674,7 +500,7 @@ const Recomendacoes = () => {
                                                 </button>
                                             </Tooltip>
                                             <Tooltip
-                                                title="Visualizar produto"
+                                                title="Visualizar recomendação"
                                                 placement="bottom"
                                                 arrow
                                                 enterDelay={200}
@@ -696,7 +522,7 @@ const Recomendacoes = () => {
 
             <Dialog open={modalAberto} onClose={fecharModal}>
                 <DialogTitle className="tituloModal">
-                    {produtoSelecionado ? "Editar Produto" : "Adicionar Produto"}
+                    {produtoSelecionado ? "Editar Recomendação" : "Adicionar Produto"}
                 </DialogTitle>
                 <DialogContent>
                     <TextField
@@ -729,7 +555,7 @@ const Recomendacoes = () => {
 
             <Dialog open={modalVisualizarProdutoAberto} onClose={fecharModal}>
                 <DialogTitle className="tituloModal">
-                    {produtoSelecionado ? "Visualizar Produto" : "Adicionar Produto"}
+                    {produtoSelecionado ? "Visualizar Recomendação" : "Adicionar Produto"}
                 </DialogTitle>
                 <DialogContent>
                     <TextField
