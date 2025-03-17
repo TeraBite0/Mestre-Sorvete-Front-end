@@ -35,10 +35,10 @@ const HomeGerenciamento = () => {
             href="/adm/listarProdutos"
           />
           <CardsGerenciamento
-            titulo="Recomendação"
+            titulo="Destaque"
             subtitulo="Altere a recomendação do dia"
             imagem={imagens[2]}
-            href="/adm/recomendacao"
+            href="/adm/destaque"
           />
         </div>
 

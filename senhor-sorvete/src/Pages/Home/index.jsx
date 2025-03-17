@@ -12,7 +12,7 @@ const Home = (props) => {
   const [dataAtual, setDataAtual] = useState("");
   const [email, setEmail] = useState("");
   const [error, setError] = useState("");
-  const [recomendacaoDia, setRecomendacaoDia] = useState(null);
+  const [destaqueDia, setDestaqueDia] = useState(null);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -22,7 +22,7 @@ const Home = (props) => {
     const ano = data.getFullYear();
     setDataAtual(`${dia}/${mes}/${ano}`);
 
-    const fetchRecomendacao = async () => {
+    const fetchDestaque = async () => {
       try {
         const resposta = await fetch(
           "http://localhost:8080/produtos/destaque",
@@ -39,19 +39,19 @@ const Home = (props) => {
           console.error("Erro do servidor:", resposta.status);
         } else {
           const data = await resposta.json();
-          setRecomendacaoDia(data); // Armazena os dados no estado
+          setDestaqueDia(data); // Armazena os dados no estado
         }
       } catch (error) {
         console.error("Erro ao fazer a requisição:", error);
       }
     };
 
-    fetchRecomendacao();
+    fetchDestaque();
   }, []);
 
-  // const fetchRecomendacaoDia = async () => {
+  // const fetchDestaqueDia = async () => {
   //   try {
-  //     const resposta = await fetch("http://localhost:8080/produtos/recomendacao-do-dia", {
+  //     const resposta = await fetch("http://localhost:8080/produtos/destaque", {
   //       method: "GET",
   //       headers: {
   //         Accept: "*/*",
@@ -153,23 +153,23 @@ const Home = (props) => {
           </p>
           <div className="sugestao-content">
             <div className="sugestao-img sugestao-div">
-              {recomendacaoDia ? (
+              {destaqueDia ? (
                 <img
-                  //   src={recomendacaoDia.imagemUrl} // Aqui você usa a URL da imagem retornada pela API
-                  // alt={`Sugestão do Dia - ${recomendacaoDia.nome}`}
+                  //   src={destaqueDia.imagemUrl} // Aqui você usa a URL da imagem retornada pela API
+                  // alt={`Sugestão do Dia - ${destaqueDia.nome}`}
                   src="Imagens/imagem-3-homepage.png"
-                  alt={`Sugestão do Dia - ${recomendacaoDia.id}`}
+                  alt={`Sugestão do Dia - ${destaqueDia.id}`}
                 />
               ) : (
                 <p>Carregando recomendação...</p>
               )}
             </div>
             <div className="sugestao-text">
-              {recomendacaoDia ? (
+              {destaqueDia ? (
                 <>
-                  <h3>{recomendacaoDia.produto.nome} - R${recomendacaoDia.produto.preco.toFixed(2).replace('.', ',')}</h3>
+                  <h3>{destaqueDia.produto.nome} - R${destaqueDia.produto.preco.toFixed(2).replace('.', ',')}</h3>
                   <p>
-                    {recomendacaoDia.texto}
+                    {destaqueDia.texto}
                   </p>
                   <button className="btn-experimentar">
                     <Link to="/cardapio">Experimentar</Link>

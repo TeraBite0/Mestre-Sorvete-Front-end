@@ -18,7 +18,7 @@ export default function BasicDemo() {
   useEffect(() => {
     const fetchRecomendacoes = async () => {
       try {
-        const response = await axios.get("http://localhost:8080/produtos/recomendacao")
+        const response = await axios.get("http://localhost:8080/produtos/destaque")
         setRecomendacoes(response.data);
       } catch (error) {
         console.error("Erro ao buscar recomendacoes:", error);
@@ -32,16 +32,16 @@ export default function BasicDemo() {
     return () => clearInterval(interval);
   }, [recomendacoes.length]);
 
-  const productTemplate = (recomendacao) => {
+  const productTemplate = (destaque) => {
     return (
       <div className="card-item">
         <Link to="/cardapio">
           <img
             src="Imagens/casquinhas-de-chocolate.jpeg"
-            alt={`${recomendacao.nome} Ice Cream`}
+            alt={`${destaque.nome} Ice Cream`}
           />
-          <h3>{recomendacao.produto.nome}</h3>
-          <p>R${recomendacao.produto.preco},00</p>
+          <h3>{destaque.produto.nome}</h3>
+          <p>R${destaque.produto.preco},00</p>
         </Link>
       </div>
     );

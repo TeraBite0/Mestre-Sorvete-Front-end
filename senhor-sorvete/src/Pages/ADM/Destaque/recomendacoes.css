@@ -1,17 +1,17 @@
-.botao-voltar-recomendacao {
+.botao-voltar-destaque {
     margin: 0 4rem;
 }
 
-.tabela-produtos-recomendacao {
+.tabela-produtos-destaque {
     margin: 2rem 5rem;
 }
 
-.container-tabela-recomendacao {
+.container-tabela-destaque {
     border: 2px solid #2F615E;
     border-radius: 15px !important;
 }
 
-.tabela-head-recomendacao {
+.tabela-head-destaque {
     background-color: #2F615E !important;
     color: #fff !important;
     font-family: "Poppins", system-ui !important;
@@ -65,15 +65,15 @@
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
 
-.informativo-descricao-recomendacao-do-dia{
+.informativo-descricao-destaque-do-dia{
     width: 80%;
     display: flex;
-    justify-content: stretch;
+    justify-content: space-around;
     font-family: Poppins, sans-serif;
     font-size: 1.2rem;
 }
 
-.campo-texto-recomendacao-do-dia{
+.campo-texto-destaque-do-dia{
     width: 100%;
     display: flex;
     align-items: end;
@@ -81,7 +81,7 @@
     font-size: 1.3rem;
 }
 
-.input-texto-recomendacao-do-dia{
+.input-texto-destaque-do-dia{
     width: 35%;
     height: 190px; 
     border-radius: 20px;
@@ -92,11 +92,11 @@
 }
 
 @media screen and (max-width: 768px) {
-    .botao-voltar-recomendacao {
+    .botao-voltar-destaque {
         margin: 0;
     }    
 
-    .tabela-produtos-recomendacao {
+    .tabela-produtos-destaque {
         margin: 1rem;
     }
 }

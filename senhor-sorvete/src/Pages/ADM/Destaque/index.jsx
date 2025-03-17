@@ -21,7 +21,7 @@ import { toast } from "react-toastify";
 import axios from "axios";
 import BotaoGerenciamento from "../../../Components/BotaoGerenciamento";
 
-const Recomendacao = () => {
+const Destaque = () => {
   const [produtos, setProdutos] = useState([]);
   const [produtosInicio, setProdutosInicio] = useState([]);
   const [todosProdutos, setTodosProdutos] = useState([]);
@@ -223,17 +223,17 @@ const Recomendacao = () => {
     <>
       <HeaderGerenciamento />
 
-      <div className="botao-voltar-recomendacao">
+      <div className="botao-voltar-destaque">
         <BotaoVoltarGerenciamento />
       </div>
 
-      <div className="tabela-produtos-recomendacao">
+      <div className="tabela-produtos-destaque">
         {erro ? (
           <p style={{ color: "red" }}>{erro}</p>
         ) : (
           <TableContainer
             component={Paper}
-            className="container-tabela-recomendacao"
+            className="container-tabela-destaque"
           >
             <Table
               sx={{
@@ -251,16 +251,16 @@ const Recomendacao = () => {
             >
               <TableHead>
                 <TableRow>
-                  <TableCell className="tabela-head-recomendacao">
+                  <TableCell className="tabela-head-destaque">
                     Nome
                   </TableCell>
-                  <TableCell className="tabela-head-recomendacao">
+                  <TableCell className="tabela-head-destaque">
                     Marca
                   </TableCell>
-                  <TableCell className="tabela-head-recomendacao">
+                  <TableCell className="tabela-head-destaque">
                     Preço
                   </TableCell>
-                  <TableCell className="tabela-head-recomendacao">
+                  <TableCell className="tabela-head-destaque">
                     Editar
                   </TableCell>
                 </TableRow>
@@ -312,20 +312,20 @@ const Recomendacao = () => {
 
         )}
 
-        <div class="informativo-descricao-recomendacao-do-dia">
+        <div class="informativo-descricao-destaque-do-dia">
           <h3>Descrição Atual: </h3>
           <h3>Nova Descrição: </h3>
         </div>
-        <div className="campo-texto-recomendacao-do-dia">
+        <div className="campo-texto-destaque-do-dia">
           <textarea 
-            class="input-texto-recomendacao-do-dia" 
+            class="input-texto-destaque-do-dia" 
             type="text" 
             readOnly="true" 
             disabled="true"
             placeholder="Descrição atual sobre o produto, para sugestão do dia..." 
             value={produtos.map((produto) => (produto.texto))}  />
           <textarea 
-            class="input-texto-recomendacao-do-dia" 
+            class="input-texto-destaque-do-dia" 
             type="text" 
             value={valor}  // Vincula o valor do input ao estado
             onChange={handleChange}
@@ -345,4 +345,4 @@ const Recomendacao = () => {
   );
 };
 
-export default Recomendacao;
+export default Destaque;
