@@ -13,6 +13,14 @@
   margin-bottom: .5rem;
 }
 
+.cards-rumo image{
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-evenly;
+  width: 100%;
+  margin-bottom: .5rem;
+}
+
 @media (max-width: 768px) {
   .containerFerramentas h2 {
     margin-bottom: 30px;

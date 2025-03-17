@@ -6,9 +6,10 @@ const HomeGerenciamento = () => {
   let imagens = [
     <img src="/Imagens/velocimetro.png" alt="" />,
     <img src="/Imagens/list-icon.png" alt=""/>,
-    <img src="/Imagens/calendario-icon.png" alt="" />,
+    <img src="/Imagens/destaque-icon.png" alt="" />,
     <img src="/Imagens/estoque-icon.png" alt=""/>,
     <img src="/Imagens/vendas-icon.png" alt=""/>,
+    <img src="/Imagens/calendario-icon.png" alt=""/>,
     <img src="/Imagens/retornar-site.png" alt=""/>
   ];
 
@@ -36,7 +37,7 @@ const HomeGerenciamento = () => {
           />
           <CardsGerenciamento
             titulo="Destaque"
-            subtitulo="Altere a recomendação do dia"
+            subtitulo="Altere o produto em destaque do dia "
             imagem={imagens[2]}
             href="/adm/destaque"
           />
@@ -56,11 +57,15 @@ const HomeGerenciamento = () => {
             href="/adm/vendas"
           />
           <CardsGerenciamento
-            titulo="Retornar ao Site"
-            subtitulo="Voltar para o site principal"
+            titulo="Recomendação"
+            subtitulo="Altere a recomendação do dia"
             imagem={imagens[5]}
-            href="/"
+            href="/adm/recomendacoes"
           />
+        </div>
+
+        <div className="cards-rumo">
+            <a href="/">{imagens[6]}</a>
         </div>
       </div>
     </div>

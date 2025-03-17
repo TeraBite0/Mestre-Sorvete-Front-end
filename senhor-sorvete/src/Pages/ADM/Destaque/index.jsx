@@ -11,7 +11,7 @@ import {
   DialogContent,
   Button,
 } from "@mui/material";
-import "./recomendacoes.css";
+import "./destaque.css";
 import TableContainer from "@mui/material/TableContainer";
 import EditIcon from "@mui/icons-material/Edit";
 import { useEffect, useState } from "react";
