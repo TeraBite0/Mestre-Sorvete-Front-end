@@ -19,7 +19,6 @@ import {
     Checkbox,
 
 } from "@mui/material";
-import UploadIcon from '@mui/icons-material/Upload';
 import "./recomendacoes.css";
 import TableContainer from "@mui/material/TableContainer";
 import EditIcon from "@mui/icons-material/Edit";
@@ -43,7 +42,6 @@ const Recomendacoes = () => {
         temGluten: false,
     });
     const [produtoSelecionado, setProdutoSelecionado] = useState(null);
-    const [arquivoImagem, setArquivoImagem] = useState(null);
     const [carregando, setCarregando] = useState(false);
     const [erros, setErros] = useState({});
     const [marcas, setMarcas] = useState([]);
@@ -52,10 +50,49 @@ const Recomendacoes = () => {
     const [ setModalNovaMarcaAberto] = useState(false);
     const [ setModalNovoSubtipoAberto] = useState(false);
     const [tipos, setTipos] = useState([]);
+    const [todosProdutos, setTodosProdutos] = useState([]);
 
     useEffect(() => {
         buscarProdutos();
+        buscarTodosProdutos();
     }, []);
+
+    const buscarTodosProdutos = async () => {
+        const token = sessionStorage.getItem('token');
+        try{
+            // Buscar todos os Produtos
+            const resposta = await fetch('http://localhost:8080/produtos/ativos', {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            });
+
+            if (!resposta.ok) throw new Error("Falha ao carregar lista de produtos");
+
+            const dados = await resposta.json();
+
+            const produtosFormatados = dados.map(produto => ({
+                id: produto.id || '',
+                nome: produto.nome || '',
+                marca: produto.marca || '',
+                subtipo: produto.subtipo || '',
+                tipo: produto.tipo || '',
+                preco: typeof produto.preco === 'number' ? produto.preco : 0,
+                qtdCaixasEstoque: produto.qtdCaixasEstoque,
+                qtdPorCaixas: produto.qtdPorCaixas,
+                imagemUrl: "https://terabite.blob.core.windows.net/terabite-container/" + produto.id || '',
+                temGluten: produto.temGluten !== null ? produto.temGluten : true,
+                temLactose: produto.temLactose !== null ? produto.temLactose : true,
+                isAtivo: produto.isAtivo !== null ? produto.isAtivo : true
+            }));
+
+            setTodosProdutos(produtosFormatados);
+        } catch (erro) {
+            toast.error("Erro ao carregar lista de todos os produtos: " + erro.message);
+        } finally {
+            setCarregando(false);
+        }
+    }
 
     const buscarProdutos = async () => {
         const token = sessionStorage.getItem('token');
@@ -99,139 +136,17 @@ const Recomendacoes = () => {
     // metodo para fechar modal
     const fecharModal = () => {
         setNovoProduto({ nome: "", marca: "", preco: "", imagemUrl: "" }); 
-        setArquivoImagem(null);
         setProdutoSelecionado(null);
         setErros({});
         setModalAberto(false);
         setModalVisualizarProdutoAberto(false);
     };
 
-    const handleImagemUpload = async (evento) => {
-        const arquivo = evento.target.files[0];
-        if (arquivo) {
-            // Validações
-            if (arquivo.size > 5000000) {
-                toast.error("Arquivo muito grande. Máximo 5MB.");
-                return;
-            }
-
-            if (!arquivo.type.startsWith("image/")) {
-                toast.error("Por favor, selecione apenas arquivos de imagem.");
-                return;
-            }
-
-            setArquivoImagem(arquivo);
-
-            try {
-                const leitor = new FileReader();
-
-                leitor.onload = (e) => {
-                    console.log('Imagem carregada:', e.target.result);
-                };
-
-                leitor.onerror = (error) => {
-                    console.error("Erro ao ler arquivo:", error);
-                    toast.error("Erro ao carregar imagem");
-                };
-
-                leitor.readAsDataURL(arquivo);
-            } catch (error) {
-                console.error("Erro inesperado:", error);
-                toast.error("Erro ao processar imagem");
-            }
-
-            // Limpar erros de imagem
-            if (erros.imagem) {
-                setErros((anterior) => ({ ...anterior, imagem: "" }));
-            }
-        }
-    };
-
-    const ImagemPreviewComponent = ({
-        handleImagemUpload,
-        erros,
-        imagemPreview
-    }) => (
-        <>
-            <div style={{ marginTop: '10px', display: 'flex', flexDirection: 'column', gap: '10px' }}>
-                <input
-                    id="upload-imagem"
-                    accept="image/*"
-                    type="file"
-                    onChange={handleImagemUpload}
-                    style={{ display: 'none' }}
-                />
-                <label htmlFor="upload-imagem">
-                    <Button className="botaoModal"
-                        variant="contained"
-                        component="span"
-                        size="medium"
-                        startIcon={<UploadIcon />}
-                        sx={{
-                            textTransform: 'none',
-                            backgroundColor: '#1976d2',
-                            '&:hover': {
-                                backgroundColor: '#1565c0'
-                            }
-                        }}
-                    >
-                        {imagemPreview ? 'Alterar Imagem' : 'Upload de Imagem'}
-                    </Button>
-                </label>
-
-                {imagemPreview && (
-                    <div style={{ marginTop: '5px', display: 'flex', alignItems: 'center', gap: '10px' }}>
-                        <img
-                            src={imagemPreview}
-                            alt="Pré-visualização"
-                            style={{
-                                width: '35px',
-                                height: '35px',
-                                objectFit: 'cover',
-                                borderRadius: '4px'
-                            }}
-                        />
-                        <span style={{ fontSize: '14px', color: '#666' }}>
-                            Imagem selecionada
-                        </span>
-                    </div>
-                )}
-            </div>
-            {erros.imagem && (
-                <div style={{
-                    color: '#d32f2f',
-                    fontSize: '0.75rem',
-                    marginTop: '3px',
-                    fontFamily: '"Roboto","Helvetica","Arial",sans-serif'
-                }}>
-                    {erros.imagem}
-                </div>
-            )}
-        </>
-    );
-
-    // Função para formatar o preço de forma segura
-    const formatarPreco = (preco) => {
-        // Remove espaços em branco
-        let precoLimpo = preco.toString().trim();
-
-        // Substitui vírgula por ponto
-        precoLimpo = precoLimpo.replace(",", ".");
-
-        // Converte para número de ponto flutuante
-        const precoFormatado = parseFloat(precoLimpo);
-
-        // Verifica se é um número válido
-        if (isNaN(precoFormatado)) {
-            throw new Error("Preço inválido");
-        }
-
-        // Arredonda para 2 casas decimais
-        return Number(precoFormatado.toFixed(2));
-    };
+    
 
     // Método para atualizar produto (PUT) com imagem
-    const atualizarProduto = async (produto, dadosAtualizados) => {
+    const atualizarRecomendacao = async (produto, idRecomendacao) => {
+        
         try {
             setCarregando(true);
 
@@ -240,87 +155,32 @@ const Recomendacoes = () => {
                 throw new Error('Token de autenticação não encontrado');
             }
 
-            let urlImagem = dadosAtualizados.imagemUrl;
+            const atualizarRecomendacao = JSON.parse(JSON.stringify({ produtoId: produto.id }));
 
-            // Se houver uma nova imagem, faz o upload
-            if (arquivoImagem) {
-                try {
-                    // urlImagem = await enviarImagemParaAzure(arquivoImagem, produto.id);
-                    // Descomentar quando a função de upload estiver pronta
-                } catch (erroUpload) {
-                    console.error('Erro no upload da imagem:', erroUpload);
-                    throw new Error('Falha ao enviar imagem');
-                }
-            }
-
-            const dadosParaAtualizar = {
-                id: produto.id, // Importante incluir o ID
-                nome: dadosAtualizados.nome,
-                preco: formatarPreco(dadosAtualizados.preco),
-                qtdPorCaixas: dadosAtualizados.qtdPorCaixas,
-                nomeSubtipo: dadosAtualizados.subtipo,
-                nomeMarca: dadosAtualizados.marca,
-                temLactose: dadosAtualizados.temLactose,
-                temGluten: dadosAtualizados.temGluten,
-                imagemUrl: urlImagem
-            };
-
-            const resposta = await fetch(`http://localhost:8080/produtos/${produto.id}`, {
+            const resposta = await fetch(`http://localhost:8080/produtos/recomendacao/${idRecomendacao}`, {
                 method: "PUT",
                 headers: {
                     'Content-Type': 'application/json',
                     Authorization: `Bearer ${token}`
                 },
-                body: JSON.stringify(dadosParaAtualizar)
+                body: JSON.stringify(atualizarRecomendacao)
             });
 
             if (!resposta.ok) {
                 const errorText = await resposta.text();
                 console.error("Resposta do erro:", errorText);
-                throw new Error("Erro ao atualizar produto");
+                throw new Error("Erro ao atualizar recomendação");
             }
-
-            const dadosAtualizadosResponse = await resposta.json();
-
-            // Atualizar o estado local com o produto atualizado
-            setProdutos(produtosAntigos =>
-                produtosAntigos.map(p =>
-                    p.id === produto.id
-                        ? {
-                            ...p,
-                            nome: dadosAtualizadosResponse.nome || p.nome,
-                            marca: dadosAtualizadosResponse.marca?.nome || dadosAtualizadosResponse.marca || p.marca,
-                            subtipo: dadosAtualizadosResponse.subtipo?.nome || dadosAtualizadosResponse.subtipo || p.subtipo,
-                            preco: typeof dadosAtualizadosResponse.preco === 'number' ?
-                                dadosAtualizadosResponse.preco :
-                                parseFloat(dadosAtualizadosResponse.preco) || p.preco,
-                            qtdPorCaixas: typeof dadosAtualizadosResponse.qtdPorCaixas === 'number' ?
-                                dadosAtualizadosResponse.qtdPorCaixas :
-                                parseInt(dadosAtualizadosResponse.qtdPorCaixas) || p.qtdPorCaixas,
-                            imagemUrl: dadosAtualizadosResponse.imagemUrl || p.imagemUrl,
-                            temLactose: dadosAtualizadosResponse.temLactose ?? p.temLactose,
-                            temGluten: dadosAtualizadosResponse.temGluten ?? p.temGluten
-                        }
-                        : p
-                )
-            );
 
             toast.success("Produto atualizado com sucesso!");
             fecharModal();
-            limparImagemPreview();
             buscarProdutos();
-
         } catch (erro) {
             toast.error(erro.message);
             console.error("Erro ao atualizar produto:", erro);
         } finally {
             setCarregando(false);
         }
-    };
-    
-    // Função auxiliar para limpar a imagem
-    const limparImagemPreview = () => {
-        setArquivoImagem(null);
     };
 
     // Método para preparar a edição
@@ -413,6 +273,16 @@ const Recomendacoes = () => {
             temGluten: event.target.checked,
         }));
     };
+
+    const [selectedProduto, setSelectedProduto] = useState();
+
+    // metodo para pegar o produto selecionado
+    const handleChangeProduto = (event) => {
+        const produtoSelecionado = todosProdutos.find(
+          (produto) => produto.id === parseInt(event.target.value)
+        );
+        setSelectedProduto(produtoSelecionado);
+      };
 
 
     // Função renderProdutoCell definida antes de usá-la
@@ -526,15 +396,25 @@ const Recomendacoes = () => {
                 </DialogTitle>
                 <DialogContent>
                     <TextField
-                        autoFocus
-                        margin="dense"
-                        name="nome"
-                        label="Nome do Produto"
+                        select
+                        // value={selectedProduto?.id || ""} Assim, o valor reseta a cada modal que abrir
+                        onChange={handleChangeProduto}
                         fullWidth
-                        value={novoProduto.nome}
-                        error={!!erros.nome}
-                        helperText={erros.nome}
-                    />
+                        margin="dense"
+                        label="Selecione um produto"
+                        buscarTodosProdutos
+                        SelectProps={{
+                            native: true,
+                          }}
+                    >
+                        <option value="">Selecione um produto</option>
+                            {todosProdutos.map((produto) => (
+                            <option key={produto.id} value={produto.id}>
+                                {`${produto.nome} - ${produto.marca.nome
+                                } (R$ ${produto.preco?.toFixed(2)})`}
+                            </option>
+                            ))}
+                    </TextField>
                 </DialogContent>
                 <DialogActions>
                     <Button
@@ -546,6 +426,7 @@ const Recomendacoes = () => {
                     </Button>
                     <Button
                         className='botaoModal'
+                        onClick={() => atualizarRecomendacao(selectedProduto, novoProduto.id)}
                         disabled={carregando}
                     >
                         {carregando ? 'Salvando...' : (produtoSelecionado ? "Salvar" : "Adicionar")}
