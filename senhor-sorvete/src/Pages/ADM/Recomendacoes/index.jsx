@@ -27,6 +27,7 @@ import { useEffect, useState } from "react";
 import HeaderGerenciamento from "../../../Components/HeaderGerenciamento";
 import BotaoVoltarGerenciamento from "../../../Components/BotaoVoltarGerenciamento";
 import { toast } from "react-toastify";
+import Pesquisa from "../../../Components/Pesquisa";
 
 const Recomendacoes = () => {
     const [produtos, setProdutos] = useState([]);
@@ -41,6 +42,8 @@ const Recomendacoes = () => {
         temLactose: false,
         temGluten: false,
     });
+    
+    const [pesquisa, setPesquisa] = useState('');
     const [produtoSelecionado, setProdutoSelecionado] = useState(null);
     const [carregando, setCarregando] = useState(false);
     const [erros, setErros] = useState({});
@@ -110,6 +113,7 @@ const Recomendacoes = () => {
             const dados = await resposta.json();
 
             const produtosFormatados = dados.map(produto => ({
+                idRecomendacao: produto.id || '',
                 id: produto.produto.id || '',
                 nome: produto.produto.nome || '',
                 marca: produto.produto.marca || '',
@@ -154,6 +158,7 @@ const Recomendacoes = () => {
             if (!token) {
                 throw new Error('Token de autenticação não encontrado');
             }
+            debugger
 
             const atualizarRecomendacao = JSON.parse(JSON.stringify({ produtoId: produto.id }));
 
@@ -187,6 +192,7 @@ const Recomendacoes = () => {
     const handleEditar = async (produto) => {
         setProdutoSelecionado(produto);
         setNovoProduto({
+            idRecomendacao: produto.idRecomendacao,
             id: produto.id,
             nome: produto.nome || '',
             marca: typeof produto.marca === 'object' ? produto.marca.nome : produto.marca || '',
@@ -290,6 +296,49 @@ const Recomendacoes = () => {
         return value || defaultValue;
     };
 
+    const filtroPesquisa = async (termo) => {
+        const token = sessionStorage.getItem("token");
+        setCarregando(true);
+
+        try {
+            // Normalizar e remover acentos antes de enviar
+            const termoNormalizado = termo
+                .normalize("NFD")
+                .replace(/[\u0300-\u036f]/g, "");
+
+            const response = await fetch(`http://localhost:8080/produtos/filtrar-nome-marca?termo=${termoNormalizado}`, {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            });
+
+            if (!response.ok) {
+                toast.error("Erro ao pesquisar");
+                return;
+            }
+
+            const dados = await response.json();
+            const produtosFormatados = dados.map(produto => ({
+                id: produto.id || '',
+                nome: produto.nome || '',
+                marca: produto.marca || '',
+                subtipo: produto.subtipo || '',
+                tipo: produto.tipo || '',
+                preco: typeof produto.preco === 'number' ? produto.preco : 0,
+                qtdPorCaixas: typeof produto.qtdPorCaixas === 'number' ? produto.qtdPorCaixas : 0,
+                imagemUrl: "https://terabite.blob.core.windows.net/terabite-container/" + produto.id || '',
+                 // Define true como padrão
+
+            }));
+
+            setProdutos(produtosFormatados);
+        } catch (erro) {
+            toast.error("Erro ao pesquisar produtos");
+        } finally {
+            setCarregando(false);
+        }
+    };
+
 
     return (
         <>
@@ -299,6 +348,17 @@ const Recomendacoes = () => {
 
             <div className="secao-produto">
                 <BotaoVoltarGerenciamento />
+            </div>
+
+            <div className='barraPesquisa'>
+                <Pesquisa
+                    placeholder="Produto, Marca..."
+                    value={pesquisa}
+                    onChange={(e) => {
+                        setPesquisa(e.target.value);
+                        filtroPesquisa(e.target.value);
+                    }}
+                />
             </div>
             
             <div className='tabela-produtos'>
@@ -426,7 +486,7 @@ const Recomendacoes = () => {
                     </Button>
                     <Button
                         className='botaoModal'
-                        onClick={() => atualizarRecomendacao(selectedProduto, novoProduto.id)}
+                        onClick={() => atualizarRecomendacao(selectedProduto, novoProduto.idRecomendacao)}
                         disabled={carregando}
                     >
                         {carregando ? 'Salvando...' : (produtoSelecionado ? "Salvar" : "Adicionar")}
