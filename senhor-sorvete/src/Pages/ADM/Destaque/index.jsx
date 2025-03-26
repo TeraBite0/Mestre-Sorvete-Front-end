@@ -199,7 +199,7 @@ const Destaque = () => {
             <option value="">Selecione um produto</option>
             {todosProdutos.map((produto) => (
               <option key={produto.id} value={produto.id}>
-                {`${produto.nome} - ${produto.marca.nome
+                {`${produto.nome} - ${produto.marca
                   } (R$ ${produto.preco?.toFixed(2)})`}
               </option>
             ))}
