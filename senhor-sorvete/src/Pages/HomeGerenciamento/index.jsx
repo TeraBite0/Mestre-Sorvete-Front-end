@@ -24,12 +24,6 @@ const HomeGerenciamento = () => {
       <div className="ferramentas">
         <div className="cards-rumo">
           <CardsGerenciamento
-            titulo="Dashboard"
-            subtitulo="Visualize seus dados mensais"
-            imagem={imagens[0]}
-            href="/adm/dashboard"
-          />
-          <CardsGerenciamento
             titulo="Cardápio"
             subtitulo="Modifique os produtos à mostra"
             imagem={imagens[1]}
@@ -41,15 +35,15 @@ const HomeGerenciamento = () => {
             imagem={imagens[2]}
             href="/adm/destaque"
           />
-        </div>
-
-        <div className="cards-rumo">
           <CardsGerenciamento
             titulo="Estoque"
             subtitulo="Registre e rastreie seus produtos"
             imagem={imagens[3]}
             href="/adm/estoque"
           />
+        </div>
+
+        <div className="cards-rumo">
           <CardsGerenciamento
             titulo="Vendas"
             subtitulo="Registre as saidas de estoque"
@@ -62,10 +56,18 @@ const HomeGerenciamento = () => {
             imagem={imagens[5]}
             href="/adm/recomendacoes"
           />
-        </div>
-
-        <div className="cards-rumo">
-            <a href="/">{imagens[6]}</a>
+          {/* <CardsGerenciamento
+            titulo="Dashboard"
+            subtitulo="Visualize seus dados mensais"
+            imagem={imagens[0]}
+            href="/adm/dashboard"
+          /> */}
+          <CardsGerenciamento
+            titulo="Página inicial"
+            subtitulo="Retornar ao site"
+            imagem={imagens[6]}
+            href="/"
+          />
         </div>
       </div>
     </div>

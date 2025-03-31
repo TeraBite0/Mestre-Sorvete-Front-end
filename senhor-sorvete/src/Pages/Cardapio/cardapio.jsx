@@ -451,11 +451,11 @@ const Cardapio = () => {
             margin="normal"
           />
           <div style={{ display: "flex", justifyContent: "flex-end" }}>
-            <Button onClick={handleConfirm} variant="contained" color="primary">
-              Confirmar
-            </Button>
             <Button onClick={closeModal} variant="outlined" color="error">
               Cancelar
+            </Button>
+            <Button onClick={handleConfirm} variant="contained" color="primary">
+              Confirmar
             </Button>
           </div>
         </Box>
