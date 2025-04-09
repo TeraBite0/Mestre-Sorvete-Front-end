@@ -32,7 +32,6 @@ import Pesquisa from "../../../Components/Pesquisa";
 import BotaoVoltarGerenciamento from "../../../Components/BotaoVoltarGerenciamento";
 import BotaoGerenciamento from "../../../Components/BotaoGerenciamento";
 import { toast } from "react-toastify";
-import axios from "axios";
 
 const ListarProdutos = () => {
     const [produtos, setProdutos] = useState([]);

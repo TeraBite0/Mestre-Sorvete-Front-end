@@ -78,14 +78,16 @@ const Vendas = () => {
     }
 
     axios
-      .get("http://localhost:8080/vendas", {
+      .get("http://localhost:8080/saidas-estoque", {
         headers: {
           Authorization: `Bearer ${token}`,
         },
       })
       .then((response) => {
-        const vendasAgrupadas = agruparVendasPorData(response.data);
-        setRows(vendasAgrupadas);
+        if(response.data.length != 0){
+          const vendasAgrupadas = agruparVendasPorData(response.data);
+          setRows(vendasAgrupadas);
+        }
       })
       .catch((error) => {
         console.error("Error loading vendas:", error);
@@ -115,12 +117,12 @@ const Vendas = () => {
 
   const handleOpenBuscar = () => setOpenBuscar(true);
 
-  const calcularPrecoTotal = (produtos) => {
-    return produtos.reduce(
-      (total, item) => total + item.produto.preco * item.qtdVendida,
-      0
-    );
-  };
+  // const calcularPrecoTotal = (produtos) => {
+  //   return produtos.reduce(
+  //     (total, item) => total + item.produto.preco * item.qtdVendida,
+  //     0
+  //   );
+  // };
 
   const handleChangeNovaVenda = (index, field, value) => {
     setNovasVendas((prevVendas) => {
@@ -180,42 +182,51 @@ const Vendas = () => {
     setPrecoTotal(0);
   };
 
-  const handleSubmitAdicionar = async () => {
+  const handleConfirmarSaida = async () => {
+    debugger
     const token = sessionStorage.getItem('token');
+
     if (!token) {
       toast.error("Token não encontrado. Faça login novamente.");
       return;
     }
 
     try {
-      const horarioAtual = new Date().toISOString();
-      const produtosParaEnviar = novasVendas.map(venda => ({
-        produtoId: venda.produtoId,
-        qtdVendida: venda.quantidade,
-        horarioVenda: horarioAtual // Adiciona o horário aqui
-      }));
-
-      const response = await axios.post(
-        "http://localhost:8080/vendas",
-        { produtos: produtosParaEnviar },
+      const saida = [
         {
-          headers: {
-            Authorization: `Bearer ${token}`,
-            "Content-Type": "application/json",
-          },
-        }
-      );
+          produtoId: 10,
+          qtdCaixasSaida: 4,
+        },
+      ];
 
-      if (response.data) {
-        console.log("Resposta da requisição:", response.data);
-        const vendasAtualizadas = agruparVendasPorData([...rows, response.data]);
-        setRows(vendasAtualizadas);
-        handleCloseAdicionar();
-        toast.success("Venda registrada com sucesso!");
-      }
+      const payload = {
+        dtSaida: dataBusca,
+        saidaEstoques: saida,
+      };
+
+      const response = await axios.post("http://localhost:8080/saidas-estoque", payload, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+      });
+      
+      setOpenAdicionar(false);
+      window.location.reload();
+
+      // if (response.data.length === 0) {
+      //   setResultadoBusca("Nenhuma venda encontrada nesta data.");
+      //   setVendasDoDia([]);
+      // } else {
+      //   console.log("Dados da venda:", response.data); 
+      //   setVendasDoDia(response.data);
+      //   setResultadoBusca("Vendas encontradas!");
+      // }
     } catch (error) {
-      console.error("Erro ao registrar venda:", error);
-      toast.error("Erro ao registrar venda.");
+      console.error("Erro ao buscar venda:", error.response || error.message);
+      toast.error("Erro ao buscar venda.");
+      setVendasDoDia([]);
+      setResultadoBusca("Erro ao buscar vendas.");
     }
   };
 
@@ -226,7 +237,6 @@ const Vendas = () => {
       toast.error("Token não encontrado. Faça login novamente.");
       return;
     }
-
 
     try {
       const dataFormatada = dataBusca;
@@ -254,7 +264,6 @@ const Vendas = () => {
     }
   };
 
-
   const handleCloseBuscar = () => {
     setOpenBuscar(false);
     setDataBusca("");
@@ -262,7 +271,7 @@ const Vendas = () => {
     setVendasDoDia([]);
   }
 
-
+  const subtotal = 20*4
 
   return (
     <div className="container-vendas">
@@ -307,82 +316,31 @@ const Vendas = () => {
           <Table sx={{ minWidth: 500 }} size="small" aria-label="a dense table">
             <TableHead className="tabela-Head">
               <TableRow>
-                <TableCell className="tabela-Head">Código</TableCell>
-                <TableCell className="tabela-Head" align="right">Data da Compra</TableCell>
-                <TableCell className="tabela-Head" align="right">Horario</TableCell>
-                <TableCell className="tabela-Head" align="right">Produtos</TableCell>
-                <TableCell className="tabela-Head" align="right">Subtotal</TableCell>
+                <TableCell className="tabela-Head">Data da Compra</TableCell>
+                <TableCell className="tabela-Head">Produtos</TableCell>
+                <TableCell className="tabela-Head">Qtd de Caixas Saídas</TableCell>
+                <TableCell className="tabela-Head">Subtotal</TableCell>
                 <TableCell className="tabela-Head" align="right">Valor Total</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
               {rows
-                .filter((row) => row.produtos?.length > 0)
-                .map((row) => {
-                  const dataCompra = new Date(
-                    row.dataCompra
-                  ).toLocaleDateString("pt-BR");
-                  const precoTotalVenda = calcularPrecoTotal(row.produtos);
-
-                  return (
-                    <TableRow key={row.id} sx={{ "&:last-child td, &:last-child th": { border: 0 } }}>
-                      <TableCell component="th" scope="row">{row.id}</TableCell>
-                      <TableCell className="tabela-row-vendas" align="right">{dataCompra}</TableCell>
-                      <TableCell className="tabela-row-vendas" align="right">
-                        {row.produtos.map((item, index) => {
-                          let horarioVenda;
-
-                          if (item.horarioVenda) {
-                            // Se tem horário definido, mantém o original
-                            horarioVenda = new Date(item.horarioVenda.replace(' ', 'T'));
-                          } else if (!item.horarioVenda && item === row.produtos[row.produtos.length - 1] &&
-                            new Date(row.dataCompra).toDateString() === new Date().toDateString() &&
-                            !sessionStorage.getItem(`venda_${row.id}_${index}_horario`)) {
-                            // Para nova venda, define o horário no momento da criação apenas uma vez
-                            const horaAtual = new Date();
-                            item.horarioVenda = horaAtual.toISOString();
-                            sessionStorage.setItem(`venda_${row.id}_${index}_horario`, horaAtual.toISOString());
-                            horarioVenda = horaAtual;
-                          } else {
-                            // Tenta recuperar o horário salvo no sessionStorage
-                            const horarioSalvo = sessionStorage.getItem(`venda_${row.id}_${index}_horario`);
-                            horarioVenda = horarioSalvo ? new Date(horarioSalvo) : new Date('2000-01-01T00:00:00');
-                          }
-
-                          return (
-                            <div key={index}>
-                              {horarioVenda.toLocaleTimeString('pt-BR', {
-                                hour: '2-digit',
-                                minute: '2-digit',
-                                hour12: false
-                              })}
-                            </div>
-                          );
-                        })}
-                      </TableCell>
-                      <TableCell className="tabela-row-vendas" align="right">
-                        {row.produtos.map((item) => (
-                          <div key={item.produto.id}>
-                            <strong>{item.produto.nome}</strong> - {item.qtdVendida} un - <strong>R${item.produto.preco.toFixed(2)}</strong>
-                            <br />
-                            <small style={{ color: "gray" }}>
-                              {item.produto.subtipo.nome} -{" "}
-                              {item.produto.marca.nome}
-                            </small>
-                          </div>
-                        ))}
-                      </TableCell>
-                      <TableCell className="tabela-row-vendas" align="right">
-                        {row.produtos.map((item, index) => (
-                          <div key={index}>
-                            R${(item.produto.preco * item.qtdVendida).toFixed(2)}
-                          </div>
-                        ))}
-                      </TableCell>
-                      <TableCell className="tabela-row-vendas" align="right">R$ {precoTotalVenda.toFixed(2)}</TableCell>
+                .filter((row) => row.saidaEstoques?.length > 0)
+                .map((row, rowIndex) => (
+                  row.saidaEstoques.map((item, index) => (
+                    <TableRow
+                      key={`${rowIndex}-${index}`}
+                      sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
+                    >
+                      <TableCell component="th" scope="row"> {row.dtSaida} </TableCell>
+                      <TableCell className="tabela-row-vendas">{item.produto.nome}</TableCell>
+                      <TableCell className="tabela-row-vendas">{item.qtdCaixasSaida}</TableCell>
+                      <TableCell className="tabela-row-vendas">{subtotal} </TableCell>
+                      <TableCell className="tabela-row-vendas" align="right">R$ {subtotal.toFixed(2)}</TableCell>
                     </TableRow>
-                  );
-                })}
+                  ))
+                ))
+                }
             </TableBody>
           </Table>
         </TableContainer>
@@ -395,6 +353,15 @@ const Vendas = () => {
             <div>Carregando produtos...</div>
           ) : (
             <>
+            <TextField
+                type="date"
+                value={dataBusca}
+                onChange={(e) => setDataBusca(e.target.value)}
+                fullWidth
+                InputLabelProps={{
+                  shrink: true,
+                }}
+              />
               {novasVendas.map((venda, index) => (
                 <div
                   key={index}
@@ -428,7 +395,7 @@ const Vendas = () => {
 
                   <TextField
                     type="number"
-                    label="Quantidade"
+                    label="Qtd de caixas que serão retiradas "
                     value={venda.quantidade}
                     onChange={(e) =>
                       handleChangeNovaVenda(index, "quantidade", e.target.value)
@@ -439,18 +406,8 @@ const Vendas = () => {
                       min: 1,
                     }}
                   />
-
-                  {venda.precoTotal > 0 && (
-                    <div style={{ marginTop: "8px", color: "#666" }}>
-                      Subtotal: R$ {venda.precoTotal.toFixed(2)}
-                    </div>
-                  )}
                 </div>
               ))}
-
-              <div style={{ marginTop: "20px", padding: "15px" }}>
-                <h3>Total Geral: R$ {precoTotal.toFixed(2)}</h3>
-              </div>
 
               <Button
                 onClick={handleAdicionarCampo}
@@ -468,7 +425,7 @@ const Vendas = () => {
           </Button>
           <Button
             className="botaoModal"
-            onClick={handleSubmitAdicionar}
+            onClick={handleConfirmarSaida}
             disabled={
               isLoadingProdutos ||
               novasVendas.some((v) => !v.produtoId || !v.quantidade)
