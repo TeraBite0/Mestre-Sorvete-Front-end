@@ -182,7 +182,7 @@ const Vendas = () => {
     setPrecoTotal(0);
   };
 
-  const handleConfirmarSaida = async () => {
+  const handleConfirmarSaida = async (novasVendas) => {
     debugger
     const token = sessionStorage.getItem('token');
 
@@ -192,19 +192,24 @@ const Vendas = () => {
     }
 
     try {
-      const saida = [
-        {
-          produtoId: 10,
-          qtdCaixasSaida: 4,
-        },
-      ];
+      const saida = []
 
-      const payload = {
+      novasVendas.map((venda) => {
+        const dadosProduto = 
+          {
+            produtoId: venda.produtoId,
+            qtdCaixasSaida: venda.quantidade,
+          }
+
+        saida.push(dadosProduto);
+      })
+
+      const saidaEstoque = {
         dtSaida: dataBusca,
         saidaEstoques: saida,
       };
 
-      const response = await axios.post("http://localhost:8080/saidas-estoque", payload, {
+      const response = await axios.post("http://localhost:8080/saidas-estoque", saidaEstoque, {
         headers: {
           Authorization: `Bearer ${token}`,
           "Content-Type": "application/json",
@@ -387,7 +392,7 @@ const Vendas = () => {
                     <option value="">Selecione o produto</option>
                     {produtosDisponiveis.map((produto) => (
                       <option key={produto.id} value={produto.id}>
-                        {`${produto.nome} - ${produto.marca.nome
+                        {`${produto.nome} - ${produto.marca
                           } (R$ ${produto.preco?.toFixed(2)})`}
                       </option>
                     ))}
@@ -425,7 +430,7 @@ const Vendas = () => {
           </Button>
           <Button
             className="botaoModal"
-            onClick={handleConfirmarSaida}
+            onClick={() => handleConfirmarSaida(novasVendas)}  
             disabled={
               isLoadingProdutos ||
               novasVendas.some((v) => !v.produtoId || !v.quantidade)
