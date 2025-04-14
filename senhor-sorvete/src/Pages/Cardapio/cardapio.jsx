@@ -175,29 +175,32 @@ const Cardapio = () => {
     const matchesTermo = termo
       ? produto.nome.toLowerCase().includes(termo.toLowerCase())
       : true;
+
     const matchesPrice = produto.preco <= priceRange;
+
     const matchesCategory =
-      selectedCategories.length === 0 ||
-      selectedCategories.includes(produto.subtipo.nome) ||
-      selectedCategories.includes(produto.subtipo.tipoPai.nome);
-    const matchesType =
-      selectedTypes.length === 0 ||
-      selectedTypes.includes(produto.subtipo.tipoPai.nome);
+    selectedCategories.length === 0 ||
+    (produto.subtipo && selectedCategories.includes(produto.subtipo.nome)) ||
+    (produto.subtipo && produto.subtipo.tipoPai && selectedCategories.includes(produto.subtipo.tipoPai.nome));
+  
+  const matchesType =
+    selectedTypes.length === 0 ||
+    (produto.subtipo && produto.subtipo.tipoPai && selectedTypes.includes(produto.subtipo.tipoPai.nome));
 
-    const matchesPopular =
-      !isPopularToggled ||
-      produtosPopulares.some(
-        (popularProduto) => popularProduto.id === produto.id
-      );
-
-    return (
-      matchesTermo &&
-      matchesPrice &&
-      matchesCategory &&
-      matchesType &&
-      matchesPopular
+  const matchesPopular =
+    !isPopularToggled ||
+    produtosPopulares.some(
+      (popularProduto) => popularProduto.id === produto.id
     );
-  });
+
+  return (
+    matchesTermo &&
+    matchesPrice &&
+    matchesCategory &&
+    matchesType &&
+    matchesPopular
+  );
+});
 
   // const categorias = [
   //   ...new Set(
