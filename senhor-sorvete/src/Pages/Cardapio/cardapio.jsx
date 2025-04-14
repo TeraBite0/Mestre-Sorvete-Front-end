@@ -375,13 +375,13 @@ const Cardapio = () => {
                     {produto.nome}
                   </div>
                   <p>R$ {produto.preco.toFixed(2)}</p>
-                  <button
+                  {/* <button
                     className="notifyMe"
                     onClick={() => addToCart(produto)}
                     disabled={produto.emEstoque}
                   >
                     {produto.emEstoque ? "Em Estoque" : "Notifique-me"}
-                  </button>
+                  </button> */}
                 </div>
               ))
             )}
