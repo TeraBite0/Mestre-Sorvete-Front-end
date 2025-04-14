@@ -22,7 +22,6 @@ const Gastronomia = (props) => {
           placeholder="Imagem com dois sorvetes de casquinhas de chocolate"
           titulo="MELHORES SABORES"
           texto="Sorvetes em uma incrível variedade de sabores encantam todos os paladares: desde os clássicos e atemporais como baunilha, chocolate e morango, até opções mais sofisticadas, como pistache e tiramisu, que oferecem uma experiência mais refinada."
-          link="https://areademulher.r7.com/curiosidades/o-que-o-seu-sorvete-favorito-diz-sobre-sua-personalidade/"
         />
 
         <Artigo
@@ -30,7 +29,6 @@ const Gastronomia = (props) => {
           placeholder="Imagem sobre a história do sorvete"
           titulo="PRIMEIRO SORVETE CRIADO"
           texto="O primeiro sabor de sorvete, uma mistura primitiva e refrescante, foi criado pelos chineses há cerca de 3.000 anos. Essa iguaria consistia em uma combinação simples, mas inovadora, de neve ou gelo triturado, misturado com frutas e mel, proporcionando uma sobremesa gelada que trazia alívio e prazer nos climas quentes."
-          link="https://www.perfetto.com.br/blog/voce-sabe-como-surgiu-o-sorvete-conheca-a-historia-dessa-iguaria/"
         />
       </div>
 

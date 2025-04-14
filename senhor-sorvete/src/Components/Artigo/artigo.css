@@ -16,14 +16,14 @@
 .informacoes img {
     width: 100px;
     height: 100px;
-    border-radius: 8px;
+    border-radius: 5px;
     margin-bottom: 15px;
 }
 
 .texto-artigo {
-    width: 60%;
+    width: 65%;
     text-align: justify;
-    margin-left: 15px;
+    margin-left: 10px;
     padding-right: 15px;
 }
 
@@ -42,9 +42,9 @@
 
 .link-saiba-mais {
     font-family: "Poppins", sans-serif;
-    font-weight: 500;
+    font-weight: 700;
     font-size: 14px;
-    color: #0066cc;
+    color: #772321;
     text-decoration: none;
     margin-top: 10px;
     display: inline-block;
@@ -52,7 +52,7 @@
 
 .link-saiba-mais:hover {
     text-decoration: underline;
-    color: #004d99;
+    color: #772321;
 }
 
 @media (max-width: 768px) {
