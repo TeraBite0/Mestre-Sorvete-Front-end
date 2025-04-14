@@ -62,7 +62,6 @@ const ListarProdutos = () => {
     const [tipos, setTipos] = useState([]);
     const [novoSubtipo, setNovoSubtipo] = useState({subtipo: '', tipo: ''});
     const [novoTipo, setNovoTipo] = useState('');
-    const [qtdPorCaixas, setQtdPorCaiax] = useState('');
 
     useEffect(() => {
         buscarProdutos();

@@ -18,6 +18,10 @@ import DialogActions from "@mui/material/DialogActions";
 import Button from "@mui/material/Button";
 import TextField from "@mui/material/TextField";
 import { toast } from "react-toastify";
+import EditIcon from "@mui/icons-material/Edit";
+import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
+import { Tooltip } from "@mui/material";
+
 
 const Vendas = () => {
   const [rows, setRows] = useState([]);
@@ -30,13 +34,23 @@ const Vendas = () => {
       precoTotal: 0,
     },
   ]);
-  const [precoTotal, setPrecoTotal] = useState(0);
   const [openBuscar, setOpenBuscar] = useState(false);
   const [dataBusca, setDataBusca] = useState("");
   const [resultadoBusca, setResultadoBusca] = useState(null);
   const [vendasDoDia, setVendasDoDia] = useState([]);
   const [produtosDisponiveis, setProdutosDisponiveis] = useState([]);
   const [isLoadingProdutos, setIsLoadingProdutos] = useState(false);
+  const [openEditar, setOpenEditar] = useState(false);
+  const [editarSaida, setEditarSaida] = useState({
+    dtSaida: '',
+    saidaEstoque: [ 
+      {
+        produto: 0,
+        qtdCaixasSaida: 0,
+      },
+    ],
+    index: 0  
+  });
 
   const agruparVendasPorData = (vendas) => {
     return vendas
@@ -84,7 +98,7 @@ const Vendas = () => {
         },
       })
       .then((response) => {
-        if(response.data.length != 0){
+        if(response.data.length !== 0){
           const vendasAgrupadas = agruparVendasPorData(response.data);
           setRows(vendasAgrupadas);
         }
@@ -124,6 +138,33 @@ const Vendas = () => {
   //   );
   // };
 
+  const handleChangeEditarSaida = (index, field, value) => {
+    setEditarSaida((prevState) => {
+      const novaSaidaEstoques = [...prevState.saidaEstoques];
+      const item = { ...novaSaidaEstoques[index] };
+  
+      if (field === "produtoId") {
+        const produtoSelecionado = produtosDisponiveis.find(
+          (p) => p.id === parseInt(value)
+        );
+        if (produtoSelecionado) {
+          item.produto = produtoSelecionado;
+        }
+      } else if (field === "quantidade") {
+        const quantidade = parseInt(value) || 0;
+        item.qtdCaixasSaida = quantidade;
+      }
+  
+      novaSaidaEstoques[index] = item;
+  
+      return {
+        ...prevState,
+        saidaEstoques: novaSaidaEstoques,
+      };
+    });
+  };
+  
+
   const handleChangeNovaVenda = (index, field, value) => {
     setNovasVendas((prevVendas) => {
       const updatedVendas = [...prevVendas];
@@ -145,13 +186,6 @@ const Vendas = () => {
       }
 
       updatedVendas[index] = venda;
-
-      // Atualizar o preço total
-      const novoPrecoTotal = updatedVendas.reduce(
-        (total, v) => total + (v.precoTotal || 0),
-        0
-      );
-      setPrecoTotal(novoPrecoTotal);
 
       return updatedVendas;
     });
@@ -179,7 +213,18 @@ const Vendas = () => {
         precoTotal: 0,
       },
     ]);
-    setPrecoTotal(0);
+  };
+
+  const handleCloseEditar = () => {
+    setOpenEditar(false);
+    setNovasVendas([
+      {
+        produtoId: "",
+        quantidade: 1,
+        precoUnitario: 0,
+        precoTotal: 0,
+      },
+    ]);
   };
 
   const handleConfirmarSaida = async (novasVendas) => {
@@ -209,7 +254,7 @@ const Vendas = () => {
         saidaEstoques: saida,
       };
 
-      const response = await axios.post("http://localhost:8080/saidas-estoque", saidaEstoque, {
+      await axios.post("http://localhost:8080/saidas-estoque", saidaEstoque, {
         headers: {
           Authorization: `Bearer ${token}`,
           "Content-Type": "application/json",
@@ -219,14 +264,6 @@ const Vendas = () => {
       setOpenAdicionar(false);
       window.location.reload();
 
-      // if (response.data.length === 0) {
-      //   setResultadoBusca("Nenhuma venda encontrada nesta data.");
-      //   setVendasDoDia([]);
-      // } else {
-      //   console.log("Dados da venda:", response.data); 
-      //   setVendasDoDia(response.data);
-      //   setResultadoBusca("Vendas encontradas!");
-      // }
     } catch (error) {
       console.error("Erro ao buscar venda:", error.response || error.message);
       toast.error("Erro ao buscar venda.");
@@ -276,7 +313,114 @@ const Vendas = () => {
     setVendasDoDia([]);
   }
 
-  const subtotal = 20*4
+  const handleConfirmarEdicaoSaida = async (editarSaida) => {
+    debugger
+    const token = sessionStorage.getItem("token");
+
+    const saidaEditada = {
+      id: editarSaida.saidaEstoques[0].id,
+      produtoId: editarSaida.saidaEstoques[0].produto.id,
+      qtdCaixasSaida: editarSaida.saidaEstoques[0].qtdCaixasSaida
+    }
+debugger
+    try {
+      const response = await axios.put(`http://localhost:8080/saidas-estoque/${saidaEditada.id}`, saidaEditada, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      setOpenAdicionar(false);
+      window.location.reload();
+    } catch (error) {
+      console.error("Erro ao carregar produtos:", error);
+      toast.error("Erro ao carregar lista de produtos.");
+    } finally {
+      setIsLoadingProdutos(false);
+    }
+    console.log(editarSaida)
+
+    setOpenEditar(false)
+  }
+
+  const handleEditar = async (item, id) => { 
+    const estoqueSelecionado = item.saidaEstoques?.find((s) => s.id === id);
+
+    setEditarSaida({
+      dtSaida: item.dtSaida,
+      saidaEstoques: estoqueSelecionado ? [estoqueSelecionado] : []
+    });
+    console.log(editarSaida)
+    setIsLoadingProdutos(true);
+    const token = sessionStorage.getItem("token");
+
+    try {
+      const response = await axios.get("http://localhost:8080/produtos", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      setProdutosDisponiveis(response.data);
+    } catch (error) {
+      console.error("Erro ao carregar produtos:", error);
+      toast.error("Erro ao carregar lista de produtos.");
+    } finally {
+      setIsLoadingProdutos(false);
+    }
+
+    setOpenEditar(true)
+  }
+
+  const handleDeletar = async (novasVendas) => {
+    const token = sessionStorage.getItem("token");
+
+    const saida = []
+
+    novasVendas.map((venda) => {
+      const dadosProduto = 
+        {
+          id: 1,
+          produtoId: venda.produtoId,
+          qtdCaixasSaida: venda.quantidade,
+        }
+
+      saida.push(dadosProduto);
+    })
+
+    const saidaEstoque = {
+      dtSaida: dataBusca,
+      saidaEstoques: saida,
+    };
+
+    try {
+      await axios.delete("http://localhost:8080/saidas-estoque", {
+        data: saidaEstoque, // o body da requisição
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+      });
+      
+      // setProdutosDisponiveis(response.data);
+      
+      setOpenAdicionar(false);
+      window.location.reload();
+    } catch (error) {
+      console.error("Erro ao carregar produtos:", error);
+      toast.error("Erro ao carregar lista de produtos.");
+    } finally {
+      setIsLoadingProdutos(false);
+    }
+  };
+
+  const handleChangeEditarQtdCaixaSaida = (index, campo, valor) => {
+    const saidasAtualizadas = [...editarSaida.saidaEstoques];
+    saidasAtualizadas[index][campo] = valor;
+  
+    setEditarSaida({
+      ...editarSaida,
+      saidaEstoques: saidasAtualizadas,
+    });
+  };
 
   return (
     <div className="container-vendas">
@@ -324,8 +468,7 @@ const Vendas = () => {
                 <TableCell className="tabela-Head">Data da Compra</TableCell>
                 <TableCell className="tabela-Head">Produtos</TableCell>
                 <TableCell className="tabela-Head">Qtd de Caixas Saídas</TableCell>
-                <TableCell className="tabela-Head">Subtotal</TableCell>
-                <TableCell className="tabela-Head" align="right">Valor Total</TableCell>
+                <TableCell className="tabela-Head">Ações</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
@@ -339,9 +482,23 @@ const Vendas = () => {
                     >
                       <TableCell component="th" scope="row"> {row.dtSaida} </TableCell>
                       <TableCell className="tabela-row-vendas">{item.produto.nome}</TableCell>
-                      <TableCell className="tabela-row-vendas">{item.qtdCaixasSaida}</TableCell>
-                      <TableCell className="tabela-row-vendas">{subtotal} </TableCell>
-                      <TableCell className="tabela-row-vendas" align="right">R$ {subtotal.toFixed(2)}</TableCell>
+                      <TableCell className="tabela-row-vendas">{item.qtdCaixasSaida}</TableCell> 
+                      <Tooltip
+                            title="Editar saída"
+                            placement="bottom"
+                            arrow
+                            enterDelay={200}
+                            leaveDelay={200}
+                        >
+                            <button onClick={() => handleEditar(row, item.id)} >
+                                <EditIcon />
+                            </button>
+
+                            <button 
+                              onClick={() => handleDeletar(novasVendas)}>
+                                <DeleteForeverIcon/>
+                            </button>
+                        </Tooltip>
                     </TableRow>
                   ))
                 ))
@@ -350,6 +507,87 @@ const Vendas = () => {
           </Table>
         </TableContainer>
       </div>
+
+        <Dialog open={openEditar} onClose={handleCloseEditar}>
+        <DialogTitle>Editar Saída</DialogTitle>
+        <DialogContent>
+          {isLoadingProdutos ? (
+            <div>Carregando produtos...</div>
+          ) : (
+            <>
+            <TextField
+                type="date"
+                value={editarSaida.dtSaida}
+                onChange={(e) => setDataBusca(e.target.value)}
+                fullWidth
+                InputLabelProps={{
+                  shrink: true,
+                }}
+              />
+              {editarSaida.saidaEstoques?.map((saida, index) => (
+                <div
+                  key={index}
+                  style={{
+                    marginBottom: "20px",
+                    padding: "10px",
+                    border: "1px solid #eee",
+                    borderRadius: "4px",
+                  }}
+                >
+                  <TextField
+                    select
+                    value={saida.produtoId}
+                    onChange={(e) =>
+                      handleChangeEditarSaida(index, "produtoId", e.target.value)
+                    }
+                    fullWidth
+                    margin="dense"
+                    SelectProps={{
+                      native: true,
+                    }}
+                  >
+                    <option value="">{`${saida.produto.nome} - ${saida.produto.marca
+                          } (R$ ${saida.produto.preco?.toFixed(2)})`}</option>
+                    {produtosDisponiveis.map((produto) => (
+                      <option key={produto.id} value={produto.id}>
+                        {`${produto.nome} - ${produto.marca
+                          } (R$ ${produto.preco?.toFixed(2)})`}
+                      </option>
+                    ))}
+                  </TextField>
+
+                  <TextField
+                    type="number"
+                    label="Qtd de caixas que serão editadas"
+                    value={saida.qtdCaixasSaida}
+                    onChange={(e) =>
+                      handleChangeEditarQtdCaixaSaida(index, "qtdCaixasSaida", e.target.value)
+                    }
+                    fullWidth
+                    margin="normal"
+                    inputProps={{
+                      min: 1,
+                    }}
+                  />
+                </div>
+              ))}
+            </>
+          )}
+        </DialogContent>
+        <DialogActions>
+        
+          <Button className="botaoModal" onClick={handleCloseEditar}>
+            Cancelar
+          </Button>
+          <Button
+            className="botaoModal"
+            onClick={() => handleConfirmarEdicaoSaida(editarSaida)}  
+          >
+            Confirmar
+          </Button> 
+        </DialogActions>
+      </Dialog>
+
 
       <Dialog open={openAdicionar} onClose={handleCloseAdicionar}>
         <DialogTitle>Adicionar Venda</DialogTitle>
@@ -363,8 +601,10 @@ const Vendas = () => {
                 value={dataBusca}
                 onChange={(e) => setDataBusca(e.target.value)}
                 fullWidth
-                InputLabelProps={{
-                  shrink: true,
+                inputProps={{
+                  max: new Date(
+                    new Date().toLocaleString("en-US", { timeZone: "America/Sao_Paulo" })
+                  ).toISOString().split('T')[0], // pega o dia de hoje no formato "yyyy-mm-dd"
                 }}
               />
               {novasVendas.map((venda, index) => (
@@ -486,6 +726,8 @@ const Vendas = () => {
           <Button className="botaoModal" onClick={handleSubmitBuscar}>Buscar</Button>
         </DialogActions>
       </Dialog>
+
+      
     </div>
   );
 };
