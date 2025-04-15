@@ -342,12 +342,16 @@ debugger
     setOpenEditar(false)
   }
 
+  const encontrarEstoquePorId = (item, id) => {
+    return item.saidaEstoques?.find((s) => s.id === id);
+  };
+
   const handleEditar = async (item, id) => { 
-    const estoqueSelecionado = item.saidaEstoques?.find((s) => s.id === id);
+    const dadosEstoque = encontrarEstoquePorId(item, id)
 
     setEditarSaida({
       dtSaida: item.dtSaida,
-      saidaEstoques: estoqueSelecionado ? [estoqueSelecionado] : []
+      saidaEstoques: dadosEstoque ? [dadosEstoque] : []
     });
     console.log(editarSaida)
     setIsLoadingProdutos(true);
@@ -370,25 +374,20 @@ debugger
     setOpenEditar(true)
   }
 
-  const handleDeletar = async (novasVendas) => {
+  const handleDeletar = async (editarSaida, id) => {
     const token = sessionStorage.getItem("token");
 
-    const saida = []
+    const dadosEstoque = encontrarEstoquePorId(editarSaida, id)
 
-    novasVendas.map((venda) => {
-      const dadosProduto = 
-        {
-          id: 1,
-          produtoId: venda.produtoId,
-          qtdCaixasSaida: venda.quantidade,
-        }
-
-      saida.push(dadosProduto);
-    })
+    const produto = {
+      id: dadosEstoque.id,
+      produtoId: dadosEstoque.produto.id,
+      qtdCaixasSaida: dadosEstoque.qtdCaixasSaida,
+    }
 
     const saidaEstoque = {
-      dtSaida: dataBusca,
-      saidaEstoques: saida,
+      dtSaida: editarSaida.dtSaida,
+      saidaEstoques: produto ? [produto] : []
     };
 
     try {
@@ -495,7 +494,7 @@ debugger
                             </button>
 
                             <button 
-                              onClick={() => handleDeletar(novasVendas)}>
+                              onClick={() => handleDeletar(row, item.id)}>
                                 <DeleteForeverIcon/>
                             </button>
                         </Tooltip>
@@ -516,6 +515,7 @@ debugger
           ) : (
             <>
             <TextField
+                disabled="true"
                 type="date"
                 value={editarSaida.dtSaida}
                 onChange={(e) => setDataBusca(e.target.value)}
