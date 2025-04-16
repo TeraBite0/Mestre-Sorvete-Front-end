@@ -155,7 +155,6 @@ const ListarProdutos = () => {
     };
 
     const adicionarNovoTipo = async () => {
-        debugger
         if (!novoTipo.trim()) {
             toast.error("O nome do tipo não pode ser vazio");
             return;
@@ -198,6 +197,7 @@ const ListarProdutos = () => {
             setTipos(prev => [...prev, data]);
 
             setModalNovoTipoAberto(false);
+            setModalNovoSubtipoAberto(true)
             setNovoTipo("");
 
             toast.success("Tipo adicionado com sucesso!");
@@ -1489,6 +1489,7 @@ const ListarProdutos = () => {
                         noOptionsText="Nenhuma opção encontrada"
                         onChange={(event, newValue) => {
                             if (newValue?.isAddNew) {
+                                setModalNovoSubtipoAberto(false)
                                 setModalNovoTipoAberto(true);
                                 return;
                             }
@@ -1541,7 +1542,7 @@ const ListarProdutos = () => {
                 <DialogActions>
                     <Button
                         className="botaoModal"
-                        onClick={() => setModalNovoTipoAberto(false)}
+                        onClick={() => {setModalNovoTipoAberto(false); setModalNovoSubtipoAberto(true)}}
                     >
                         Cancelar
                     </Button>
