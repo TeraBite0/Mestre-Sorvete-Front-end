@@ -423,7 +423,9 @@ debugger
 
   return (
     <div className="container-vendas">
-      <HeaderGerenciamento />
+      <div className="header-tabela">
+                <HeaderGerenciamento />
+            </div>
 
       <div className="botao-voltar-vendas">
         <BotaoVoltarGerenciamento />
@@ -433,7 +435,7 @@ debugger
         <div className="container-botoes">
           <BotaoGerenciamento botao="Buscar" onClick={handleOpenBuscar} />
           <BotaoGerenciamento
-            botao="+ Nova Venda"
+            botao="+ Nova Saída"
             onClick={handleOpenAdicionar}
           />
         </div>
