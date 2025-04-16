@@ -86,7 +86,12 @@ const Estoque = () => {
       })),
     },
     {
-      name: "dtCompra",
+      name: "nomeFornecedor",
+      label: "Nome do Fornecedor",
+      type: "text"
+    },
+    {
+      name: "dtPedido",
       label: "Data da compra",
       type: "date",
     },
@@ -113,28 +118,45 @@ const Estoque = () => {
   ];
 
   const validacaoAdicionarLote = {
-    produtoId: { required: true },
-    dtCompra: { required: true },
-    dtVencimento: { required: true },
+    nomeFornecedor: { required: true },
     dtEntrega: { required: true },
-    qtdProdutoComprado: {
-      required: true,
-      pattern: /^[1-9]\d*$/,
-      message: "Quantidade deve ser um número positivo",
-    },
+    dtVencimento: { required: true },
+    dtPedido: { required: true },
     valorLote: {
       required: true,
       pattern: /^\d*\.?\d+$/,
       message: "Valor deve ser maior que zero",
     },
+    loteProdutos: {
+      produtoId: { required: true },
+      qtdProdutoComprado: {
+        required: true,
+        pattern: /^[1-9]\d*$/,
+        message: "Quantidade deve ser um número positivo",
+      },
+    }
   };
 
   const handleSubmitLote = async (formData) => {
     const token = sessionStorage.getItem("token");
     setLoading(true);
 
+    const jsonParaCriarLote = {
+      nomeFornecedor: formData.nomeFornecedor,
+      dtEntrega: formData.dtEntrega,
+      dtVencimento: formData.dtVencimento,
+      dtPedido: formData.dtPedido,
+      valorLote: Number(formData.valorLote),
+      loteProdutos: [
+        {
+          produtoId: Number(formData.produtoId),
+          qtdCaixasCompradas: Number(formData.qtdProdutoComprado),
+        }
+      ]
+    };
+
     try {
-      await axios.post('http://localhost:8080/estoque', formData, {
+      await axios.post('http://localhost:8080/lotes', jsonParaCriarLote, {
         headers: {
           'Authorization': `Bearer ${token}`,
           'Content-Type': 'application/json'
@@ -163,8 +185,12 @@ const Estoque = () => {
   const transformBeforeSubmit = (data) => {
     return {
       ...data,
-      produtoId: Number(data.produtoId),
-      qtdProdutoComprado: Number(data.qtdProdutoComprado),
+      loteProdutos: [
+        {
+          produtoId: Number(data.produtoId),
+          qtdCaixasCompradas: Number(data.qtdProdutoComprado),
+        }
+      ],
       valorLote: Number(data.valorLote),
     };
   };
