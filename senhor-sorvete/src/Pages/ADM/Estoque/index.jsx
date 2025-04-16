@@ -5,6 +5,7 @@ import BotaoVoltarGerenciamento from "../../../Components/BotaoVoltarGerenciamen
 import Pesquisa from "../../../Components/Pesquisa";
 import BotaoGerenciamento from "../../../Components/BotaoGerenciamento";
 import ModalGerenciamento from "../../../Components/ModalGerenciamento";
+import { useNavigate } from "react-router-dom";
 import {
   Table,
   TableBody,
@@ -52,6 +53,7 @@ const Estoque = () => {
   const [pesquisa, setPesquisa] = useState("");
   const [produtos, setProdutos] = useState([]);
   const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchEstoque = async () => {
@@ -205,6 +207,10 @@ const Estoque = () => {
 
     return nomeInclusao || marcaInclusao;
   });
+  
+  const handleSelecionarProduto = (produto) => {
+    navigate("/adm/produto-estoque");
+  };
 
   return (
     <>
@@ -265,14 +271,19 @@ const Estoque = () => {
               </TableHead>
               <TableBody>
                 {produtosFiltrados.map((produto) => (
-                  <TableRow key={produto.id || produto.codigo} className={`tabela-row-vendas ${!produto.isAtivo ? 'desativado' : ''}`}>
-                    <TableCell style={{ padding: '10px' }}>
+                  <TableRow 
+                      key={produto.id || produto.codigo} 
+                      onClick={() => handleSelecionarProduto(produto)} 
+                      style={{ cursor: 'pointer' }} 
+                      className={`tabela-row-vendas tabela-row-estoque ${!produto.isAtivo ? 'desativado' : ''}`}
+                  >
+                    <TableCell class={`table-cell-grid-estoque`}>
                       {produto.id || produto.codigo}
                     </TableCell>
-                    <TableCell style={{ padding: '10px' }}>
+                    <TableCell class={`table-cell-grid-estoque`}>
                       {produto.nome || produto.produto}
                     </TableCell>
-                    <TableCell style={{ padding: '10px' }}>
+                    <TableCell class={`table-cell-grid-estoque`}>
                       {produto.marca}
                     </TableCell>
                     <TableCell style={{

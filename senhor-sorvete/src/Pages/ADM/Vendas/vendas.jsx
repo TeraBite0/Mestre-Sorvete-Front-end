@@ -239,7 +239,7 @@ const Vendas = () => {
     try {
       const saida = []
 
-      novasVendas.map((venda) => {
+      novasVendas.forEach((venda) => {
         const dadosProduto = 
           {
             produtoId: venda.produtoId,
@@ -324,7 +324,7 @@ const Vendas = () => {
     }
 debugger
     try {
-      const response = await axios.put(`http://localhost:8080/saidas-estoque/${saidaEditada.id}`, saidaEditada, {
+      await axios.put(`http://localhost:8080/saidas-estoque/${saidaEditada.id}`, saidaEditada, {
         headers: {
           Authorization: `Bearer ${token}`,
         },

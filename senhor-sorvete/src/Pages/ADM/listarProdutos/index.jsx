@@ -634,7 +634,6 @@ const ListarProdutos = () => {
             // Se houver uma nova imagem, faz o upload
             if (arquivoImagem) {
                 try {
-                    const produtoId = novoProduto.id;
                     // urlImagem = await enviarImagemParaAzure(arquivoImagem, produtoId);
                     // Descomentar quando a função de upload estiver pronta
                 } catch (erroUpload) {
@@ -883,7 +882,6 @@ const ListarProdutos = () => {
                 throw new Error(`Erro ao ${isAtivoGenerico ? "ativar" : "desativar"} produto`);
             }
     
-            const dados = await response.json();
             setProdutos(prev =>
                 prev.map(p => p.id === produto.id ? { ...p, isAtivo: isAtivoGenerico } : p)
             );

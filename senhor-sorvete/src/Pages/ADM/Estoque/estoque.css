@@ -49,3 +49,15 @@
   font-size: 14px;
   color: #555;
 }
+
+.tabela-row-estoque:hover{
+  background-color: #2F615E;
+
+  .table-cell-grid-estoque {
+    color: #fff
+  }  
+}
+
+.table-cell-grid-estoque{
+  padding: 10px
+}
