@@ -472,7 +472,7 @@ debugger
                 <TableCell className="tabela-Head">Ações</TableCell>
               </TableRow>
             </TableHead>
-            <TableBody>
+            <TableBody className={`tabela-row-vendas`}>
               {rows
                 .filter((row) => row.saidaEstoques?.length > 0)
                 .map((row, rowIndex) => (
@@ -484,22 +484,32 @@ debugger
                       <TableCell component="th" scope="row"> {row.dtSaida} </TableCell>
                       <TableCell className="tabela-row-vendas">{item.produto.nome}</TableCell>
                       <TableCell className="tabela-row-vendas">{item.qtdCaixasSaida}</TableCell> 
-                      <Tooltip
-                            title="Editar saída"
-                            placement="bottom"
-                            arrow
-                            enterDelay={200}
-                            leaveDelay={200}
-                        >
-                            <button onClick={() => handleEditar(row, item.id)} >
-                                <EditIcon />
-                            </button>
+                      <TableCell className="tabela-row-vendas">
+                        <Tooltip
+                              title="Editar saída"
+                              placement="bottom"
+                              arrow
+                              enterDelay={200}
+                              leaveDelay={200}
+                          >
+                              <button onClick={() => handleEditar(row, item.id)} >
+                                  <EditIcon />
+                              </button>
 
-                            <button 
-                              onClick={() => handleDeletar(row, item.id)}>
-                                <DeleteForeverIcon/>
-                            </button>
-                        </Tooltip>
+                          </Tooltip>
+                          <Tooltip
+                              title="Editar saída"
+                              placement="bottom"
+                              arrow
+                              enterDelay={200}
+                              leaveDelay={200}
+                          >
+                              <button 
+                                onClick={() => handleDeletar(row, item.id)}>
+                                  <DeleteForeverIcon/>
+                              </button>
+                          </Tooltip>
+                        </TableCell> 
                     </TableRow>
                   ))
                 ))
