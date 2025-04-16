@@ -498,7 +498,7 @@ debugger
 
                           </Tooltip>
                           <Tooltip
-                              title="Editar saída"
+                              title="Deletar saída"
                               placement="bottom"
                               arrow
                               enterDelay={200}
