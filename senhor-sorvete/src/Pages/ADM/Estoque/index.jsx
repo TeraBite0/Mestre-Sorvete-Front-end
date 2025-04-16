@@ -75,14 +75,6 @@ const Estoque = () => {
   const abrirModalAdicionarLote = () => setAbrirAdicionarLote(true);
   const fecharModalAdicionarLote = () => setAbrirAdicionarLote(false);
 
-  const renderProdutoCell = (value, defaultValue = '-') => {
-    return value || defaultValue;
-  };
-
-  const calcularQuantidadeProduto = (produto) => {
-    return produto.qtdCaixasEstoque * produto.qtdPorCaixas;
-  };
-
   const camposAdicionarLote = [
     {
       name: "produtoId",
@@ -243,7 +235,6 @@ const Estoque = () => {
                   <TableCell className='tabela-head-cell' style={{ paddingLeft: '10px' }}>Marca</TableCell>
                   <TableCell className='tabela-head-cell' style={{estiloQuantidade }}align="center">Qtd Caixas</TableCell>
                   <TableCell className='tabela-head-cell' style={{estiloQuantidade }}align="center">Qtd por Caixas</TableCell>
-                  <TableCell className='tabela-head-cell' style={{estiloQuantidade }}align="center">Total de Produtos</TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
@@ -271,9 +262,6 @@ const Estoque = () => {
                     }}
                       align="center">
                       {produto.qtdPorCaixas}
-                    </TableCell>
-                    <TableCell align="center">
-                      {calcularQuantidadeProduto(produto)}
                     </TableCell>
                   </TableRow>
                 ))}
