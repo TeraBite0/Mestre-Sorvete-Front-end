@@ -399,7 +399,7 @@ const Recomendacoes = () => {
                             {produtos
                                 .filter(produto => produto && typeof produto === 'object' && produto.id)
                                 .map(produto => (
-                                    <TableRow key={produto.id} className={`tabela-row-vendas`}>
+                                    <TableRow key={produto.id} className={`tabela-row-saidas`}>
                                         <TableCell>
                                             <img
                                                 src={renderProdutoCell(produto.imagemUrl, 'url-placeholder.png')}

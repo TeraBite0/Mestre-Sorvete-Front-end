@@ -14,7 +14,6 @@ import {
 import { Bar, Line } from "react-chartjs-2";
 import HeaderGerenciamento from "../../../Components/HeaderGerenciamento";
 import BotaoVoltarGerenciamento from "../../../Components/BotaoVoltarGerenciamento";
-import { toast } from "react-toastify";
 import "./dashboard.css";
 
 // Registro dos componentes do Chart.js
@@ -216,10 +215,6 @@ const Dashboard = () => {
       return data && !isNaN(data.getTime())
         ? data.toLocaleDateString("pt-BR", { month: "long" })
         : "Data inválida";
-      console.log(
-        "Temperaturas:",
-        dashboardData.resumoDeVendas.map((resumo) => resumo.temperaturaMedia)
-      );
     }),
     datasets: [
       {

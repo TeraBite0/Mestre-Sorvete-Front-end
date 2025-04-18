@@ -23,10 +23,10 @@ import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
 import { Tooltip } from "@mui/material";
 
 
-const Vendas = () => {
+const Saidas = () => {
   const [rows, setRows] = useState([]);
   const [openAdicionar, setOpenAdicionar] = useState(false);
-  const [novasVendas, setNovasVendas] = useState([
+  const [novasSaidas, setNovasSaidas] = useState([
     {
       produtoId: "",
       quantidade: 1,
@@ -37,7 +37,7 @@ const Vendas = () => {
   const [openBuscar, setOpenBuscar] = useState(false);
   const [dataBusca, setDataBusca] = useState("");
   const [resultadoBusca, setResultadoBusca] = useState(null);
-  const [vendasDoDia, setVendasDoDia] = useState([]);
+  const [saidasDoDia, setSaidasDoDia] = useState([]);
   const [produtosDisponiveis, setProdutosDisponiveis] = useState([]);
   const [isLoadingProdutos, setIsLoadingProdutos] = useState(false);
   const [openEditar, setOpenEditar] = useState(false);
@@ -52,8 +52,8 @@ const Vendas = () => {
     index: 0  
   });
 
-  const agruparVendasPorData = (vendas) => {
-    return vendas
+  const agruparSaidasPorData = (saidas) => {
+    return saidas
       .reduce((acc, venda) => {
         const dataCompra = venda.dataCompra
           ? new Date(venda.dataCompra).toLocaleDateString("pt-BR")
@@ -99,13 +99,13 @@ const Vendas = () => {
       })
       .then((response) => {
         if(response.data.length !== 0){
-          const vendasAgrupadas = agruparVendasPorData(response.data);
-          setRows(vendasAgrupadas);
+          const saidasAgrupadas = agruparSaidasPorData(response.data);
+          setRows(saidasAgrupadas);
         }
       })
       .catch((error) => {
-        console.error("Error loading vendas:", error);
-        toast.error("Erro ao carregar vendas.");
+        console.error("Error loading saídas:", error);
+        toast.error("Erro ao carregar saídas.");
       });
   }, []);
 
@@ -165,10 +165,10 @@ const Vendas = () => {
   };
   
 
-  const handleChangeNovaVenda = (index, field, value) => {
-    setNovasVendas((prevVendas) => {
-      const updatedVendas = [...prevVendas];
-      const venda = { ...updatedVendas[index] };
+  const handleChangeNovaSaída = (index, field, value) => {
+    setNovasSaidas((prevSaidas) => {
+      const updatedSaidas = [...prevSaidas];
+      const venda = { ...updatedSaidas[index] };
 
       if (field === "produtoId") {
         const produtoSelecionado = produtosDisponiveis.find(
@@ -185,14 +185,14 @@ const Vendas = () => {
         venda.precoTotal = venda.precoUnitario * quantidade;
       }
 
-      updatedVendas[index] = venda;
+      updatedSaidas[index] = venda;
 
-      return updatedVendas;
+      return updatedSaidas;
     });
   };
 
   const handleAdicionarCampo = () => {
-    setNovasVendas((prev) => [
+    setNovasSaidas((prev) => [
       ...prev,
       {
         produtoId: "",
@@ -205,7 +205,7 @@ const Vendas = () => {
 
   const handleCloseAdicionar = () => {
     setOpenAdicionar(false);
-    setNovasVendas([
+    setNovasSaidas([
       {
         produtoId: "",
         quantidade: 1,
@@ -217,7 +217,7 @@ const Vendas = () => {
 
   const handleCloseEditar = () => {
     setOpenEditar(false);
-    setNovasVendas([
+    setNovasSaidas([
       {
         produtoId: "",
         quantidade: 1,
@@ -227,7 +227,7 @@ const Vendas = () => {
     ]);
   };
 
-  const handleConfirmarSaida = async (novasVendas) => {
+  const handleConfirmarSaida = async (novasSaidas) => {
     debugger
     const token = sessionStorage.getItem('token');
 
@@ -239,7 +239,7 @@ const Vendas = () => {
     try {
       const saida = []
 
-      novasVendas.forEach((venda) => {
+      novasSaidas.forEach((venda) => {
         const dadosProduto = 
           {
             produtoId: venda.produtoId,
@@ -267,8 +267,8 @@ const Vendas = () => {
     } catch (error) {
       console.error("Erro ao buscar venda:", error.response || error.message);
       toast.error("Erro ao buscar venda.");
-      setVendasDoDia([]);
-      setResultadoBusca("Erro ao buscar vendas.");
+      setSaidasDoDia([]);
+      setResultadoBusca("Erro ao buscar saídas.");
     }
   };
 
@@ -282,7 +282,7 @@ const Vendas = () => {
 
     try {
       const dataFormatada = dataBusca;
-      const response = await axios.get("http://localhost:8080/vendas/data", {
+      const response = await axios.get("http://localhost:8080/saidas-estoque/data", {
         params: { data: dataFormatada },
         headers: {
           Authorization: `Bearer ${token}`,
@@ -292,17 +292,17 @@ const Vendas = () => {
 
       if (response.data.length === 0) {
         setResultadoBusca("Nenhuma venda encontrada nesta data.");
-        setVendasDoDia([]);
+        setSaidasDoDia([]);
       } else {
         console.log("Dados da venda:", response.data); // Para debug
-        setVendasDoDia(response.data);
-        setResultadoBusca("Vendas encontradas!");
+        setSaidasDoDia(response.data);
+        setResultadoBusca("Saidas encontradas!");
       }
     } catch (error) {
       console.error("Erro ao buscar venda:", error.response || error.message);
       toast.error("Erro ao buscar venda.");
-      setVendasDoDia([]);
-      setResultadoBusca("Erro ao buscar vendas.");
+      setSaidasDoDia([]);
+      setResultadoBusca("Erro ao buscar saídas.");
     }
   };
 
@@ -310,7 +310,7 @@ const Vendas = () => {
     setOpenBuscar(false);
     setDataBusca("");
     setResultadoBusca(null);
-    setVendasDoDia([]);
+    setSaidasDoDia([]);
   }
 
   const handleConfirmarEdicaoSaida = async (editarSaida) => {
@@ -422,16 +422,16 @@ debugger
   };
 
   return (
-    <div className="container-vendas">
+    <div className="container-saidas">
       <div className="header-tabela">
                 <HeaderGerenciamento />
             </div>
 
-      <div className="botao-voltar-vendas">
+      <div className="botao-voltar-saidas">
         <BotaoVoltarGerenciamento />
       </div>
       <div className="container-informacoes">
-        <h1>Vendas</h1>
+        <h1>Saídas</h1>
         <div className="container-botoes">
           <BotaoGerenciamento botao="Buscar" onClick={handleOpenBuscar} />
           <BotaoGerenciamento
@@ -441,7 +441,7 @@ debugger
         </div>
       </div>
 
-      <div className="tabela-vendas">
+      <div className="tabela-saidas">
         <TableContainer component={Paper}
           className="tabela-container"
           sx={{
@@ -460,7 +460,7 @@ debugger
               }
             }}
             size="small"
-            aria-label="tabela de vendas"
+            aria-label="tabela de saídas"
           >
           </Table>
           <Table sx={{ minWidth: 500 }} size="small" aria-label="a dense table">
@@ -472,7 +472,7 @@ debugger
                 <TableCell className="tabela-Head">Ações</TableCell>
               </TableRow>
             </TableHead>
-            <TableBody className={`tabela-row-vendas`}>
+            <TableBody className={`tabela-row-saidas`}>
               {rows
                 .filter((row) => row.saidaEstoques?.length > 0)
                 .map((row, rowIndex) => (
@@ -482,9 +482,9 @@ debugger
                       sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
                     >
                       <TableCell component="th" scope="row"> {row.dtSaida} </TableCell>
-                      <TableCell className="tabela-row-vendas">{item.produto.nome}</TableCell>
-                      <TableCell className="tabela-row-vendas">{item.qtdCaixasSaida}</TableCell> 
-                      <TableCell className="tabela-row-vendas">
+                      <TableCell className="tabela-row-saidas">{item.produto.nome}</TableCell>
+                      <TableCell className="tabela-row-saidas">{item.qtdCaixasSaida}</TableCell> 
+                      <TableCell className="tabela-row-saidas">
                         <Tooltip
                               title="Editar saída"
                               placement="bottom"
@@ -602,7 +602,7 @@ debugger
 
 
       <Dialog open={openAdicionar} onClose={handleCloseAdicionar}>
-        <DialogTitle>Adicionar Venda</DialogTitle>
+        <DialogTitle>Adicionar Saída</DialogTitle>
         <DialogContent>
           {isLoadingProdutos ? (
             <div>Carregando produtos...</div>
@@ -619,7 +619,7 @@ debugger
                   ).toISOString().split('T')[0], // pega o dia de hoje no formato "yyyy-mm-dd"
                 }}
               />
-              {novasVendas.map((venda, index) => (
+              {novasSaidas.map((venda, index) => (
                 <div
                   key={index}
                   style={{
@@ -633,7 +633,7 @@ debugger
                     select
                     value={venda.produtoId}
                     onChange={(e) =>
-                      handleChangeNovaVenda(index, "produtoId", e.target.value)
+                      handleChangeNovaSaída(index, "produtoId", e.target.value)
                     }
                     fullWidth
                     margin="dense"
@@ -655,7 +655,7 @@ debugger
                     label="Qtd de caixas que serão retiradas "
                     value={venda.quantidade}
                     onChange={(e) =>
-                      handleChangeNovaVenda(index, "quantidade", e.target.value)
+                      handleChangeNovaSaída(index, "quantidade", e.target.value)
                     }
                     fullWidth
                     margin="normal"
@@ -682,10 +682,10 @@ debugger
           </Button>
           <Button
             className="botaoModal"
-            onClick={() => handleConfirmarSaida(novasVendas)}  
+            onClick={() => handleConfirmarSaida(novasSaidas)}  
             disabled={
               isLoadingProdutos ||
-              novasVendas.some((v) => !v.produtoId || !v.quantidade)
+              novasSaidas.some((v) => !v.produtoId || !v.quantidade)
             }
           >
             Confirmar
@@ -694,7 +694,7 @@ debugger
       </Dialog>
 
       <Dialog open={openBuscar} onClose={handleCloseBuscar}>
-        <DialogTitle>Buscar Venda</DialogTitle>
+        <DialogTitle>Buscar Saída</DialogTitle>
         <DialogContent>
           <TextField
             type="date"
@@ -708,13 +708,13 @@ debugger
           {resultadoBusca && (
             <div>
               <p>{resultadoBusca}</p>
-              {vendasDoDia.length > 0 && (
+              {saidasDoDia.length > 0 && (
                 <div>
-                  {vendasDoDia.map((venda) => {
+                  {saidasDoDia.map((venda) => {
 
                     return (
                       <div key={venda.id} className="mb-4 border-b pb-2">
-                        <h3>Venda #{venda.id}</h3>
+                        <h3>Saída #{venda.id}</h3>
                         <div>
                           <strong>Produtos:</strong>
                           <ul>
@@ -744,4 +744,4 @@ debugger
   );
 };
 
-export default Vendas;
+export default Saidas;

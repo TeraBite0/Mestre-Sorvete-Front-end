@@ -1,11 +1,11 @@
-.container-vendas {
+.container-saidas {
   margin: auto;
   height: 100vh;
   display: flex;
   flex-direction: column;
 }
 
-.botao-voltar-vendas {
+.botao-voltar-saidas {
   margin: 0 3rem;
 }
 
@@ -18,7 +18,7 @@
   margin: 1rem auto;
 }
 
-.container-vendas h1 {
+.container-saidas h1 {
   font-size: 1.9rem;
   margin: 0;
 }
@@ -30,7 +30,7 @@
   gap: 1rem;
 }
 
-.tabela-vendas {
+.tabela-saidas {
   padding: 5px;
   margin: 0 4rem;
   flex: 1;
@@ -69,7 +69,7 @@
   border: 2px solid #f1f1f1;
 }
 
-.tabela-row-vendas {
+.tabela-row-saidas {
   padding: 5px !important;
   text-align: left;
   font-family: "Poppins", system-ui;
@@ -85,7 +85,7 @@
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
-.tabela-vendas .tabela-container .MuiTableCell-head {
+.tabela-saidas .tabela-container .MuiTableCell-head {
   color: white !important;
   font-weight: bold;
   font-size: 17px !important;

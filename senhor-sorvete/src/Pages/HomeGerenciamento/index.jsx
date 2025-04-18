@@ -45,10 +45,10 @@ const HomeGerenciamento = () => {
 
         <div className="cards-rumo">
           <CardsGerenciamento
-            titulo="Vendas"
+            titulo="Saídas"
             subtitulo="Registre as saidas de estoque"
             imagem={imagens[4]}
-            href="/adm/vendas"
+            href="/adm/saidas"
           />
           <CardsGerenciamento
             titulo="Recomendação"

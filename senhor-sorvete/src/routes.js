@@ -9,7 +9,7 @@ import ListarProdutos from "../src/Pages/ADM/listarProdutos";
 import Destaque from "./Pages/ADM/Destaque";
 import Recomendacoes from "./Pages/ADM/Recomendacoes"
 import Estoque from "./Pages/ADM/Estoque";
-import Vendas from "./Pages/ADM/Vendas/vendas";
+import Saidas from "./Pages/ADM/Saidas/saidas";
 import CadastrarSenha from "./Pages/ADM/CadastrarSenha";
 import ProdutoEstoque from "./Pages/ADM/ProdutoEstoque";
 import Dashboard from "./Pages/ADM/Dashboard";
@@ -30,7 +30,7 @@ const AppRoutes = () => {
                 <Route path="/adm/destaque" element={<Destaque/>}></Route>
                 <Route path="/adm/recomendacoes" element={<Recomendacoes/>}></Route>
                 <Route path="/adm/estoque" element={<Estoque/>}/>
-                <Route path= "/adm/vendas" element={<Vendas/>}/>
+                <Route path= "/adm/saidas" element={<Saidas/>}/>
                 <Route path="/adm/cadastrar-senha" element={<CadastrarSenha/>}/>
                 <Route path="/adm/dashboard" element={<Dashboard/>}/>
                 <Route path="*" element={<NotFound />} />

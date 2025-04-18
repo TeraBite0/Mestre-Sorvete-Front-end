@@ -989,7 +989,7 @@ const ListarProdutos = () => {
                             {produtos
                                 .filter(produto => produto && typeof produto === 'object' && produto.id)
                                 .map(produto => (
-                                    <TableRow key={produto.id} className={`tabela-row-vendas ${!produto.isAtivo ? 'desativado' : ''}`}>
+                                    <TableRow key={produto.id} className={`tabela-row-saidas ${!produto.isAtivo ? 'desativado' : ''}`}>
                                         <TableCell>
                                             <img
                                                 src={renderProdutoCell(produto.imagemUrl, 'url-placeholder.png')}

@@ -20,7 +20,6 @@ import {
 } from "@mui/material";
 import axios from "axios";
 import { toast } from "react-toastify";
-import { Pointer } from "lucide-react";
 
 const obterCorQtdCaixaEstoque = (qtdCaixasEstoque) => {
   if (qtdCaixasEstoque === 0) return "#818d91";
@@ -280,7 +279,7 @@ const Estoque = () => {
                       key={produto.id || produto.codigo} 
                       onClick={() => handleSelecionarProduto(produto)} 
                       style={{ cursor: 'pointer' }} 
-                      className={`tabela-row-vendas tabela-row-estoque ${!produto.isAtivo ? 'desativado' : ''}`}
+                      className={`tabela-row-saidas tabela-row-estoque ${!produto.isAtivo ? 'desativado' : ''}`}
                   >
                     <TableCell class={`table-cell-grid-estoque`}>
                       {produto.id || produto.codigo}
