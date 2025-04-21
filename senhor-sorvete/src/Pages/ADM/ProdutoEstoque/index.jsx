@@ -1,43 +1,44 @@
-import React from 'react';
+import React, { useState, useEffect } from "react";
 import './produtoEstoque.css';
 import HeaderGerenciamento from "../../../Components/HeaderGerenciamento";
 import BotaoVoltarGerenciamento from '../../../Components/BotaoVoltarGerenciamento';
 import BotaoGerenciamento from "../../../Components/BotaoGerenciamento";
+// import React, { useState } from "react";
+import { useParams } from 'react-router-dom';
+import axios from "axios";
+import { toast } from "react-toastify";
+import { Tooltip } from "@mui/material";
+import EditIcon from "@mui/icons-material/Edit";
+import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
 
 import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper } from '@mui/material';
 
-const criarDados = (codigo, dataCompra, dataVencimento, valorLote, unidadesCompradas) => {
-    return { codigo, dataCompra, dataVencimento, valorLote, unidadesCompradas };
-};
-
-const estiloTabela = {
-    tableLayout: 'fixed',
-    width: '100%',
-};
-
-const estiloCabecalhoTabela = {
-    fontWeight: 'bold',
-    backgroundColor: '#f5f5f5',
-    textAlign: 'center',
-    borderRight: '1px solid #ddd',
-    padding: '12px 8px',
-    whiteSpace: 'nowrap',
-    overflow: 'hidden',
-    textOverflow: 'ellipsis',
-};
-
-const estiloCelulaTabela = {
-    borderRight: '1px solid #ddd',
-    fontSize: '15px',
-    padding: '12px 8px',
-    whiteSpace: 'nowrap',
-    overflow: 'hidden',
-    textOverflow: 'ellipsis',
-    textAlign: 'center',
-};
-
 const ProdutoEstoque = () => {
+    const [lotesDoProduto, setLotesDoProduto] = useState([]);
+    const { id } = useParams();
     const hoje = new Date();
+
+    useEffect(() => {
+        if(id === undefined || id === null) return
+        const fetchEstoque = async () => {
+            const token = sessionStorage.getItem('token');
+            try {
+            const response = await axios.get(`http://localhost:8080/lotes/produtos/${id}`, {
+                headers: {
+                Authorization: `Bearer ${token}`
+                }
+
+            });
+
+            setLotesDoProduto(response.data);
+            console.log(response.data)
+            } catch (error) {
+            toast.error('Erro ao buscar lotes do produto');
+            console.log(error);
+            }
+        };
+        fetchEstoque();
+    }, []);
     
     const getCorVencimento = (dataVencimento) => {
         const vencimento = new Date(dataVencimento.split('/').reverse().join('-'));
@@ -48,18 +49,12 @@ const ProdutoEstoque = () => {
         return '#6FDB64'; // Normais
     };
 
-    const produtos = [
-        criarDados(1001, "10/10/2023", "10/12/2024", 150.00, 50),
-        criarDados(1002, "15/10/2023", "15/11/2023", 200.50, 75),
-        criarDados(1003, "20/10/2023", "20/10/2023", 89.99, 30),
-        criarDados(1004, "25/10/2023", "25/07/2024", 300.00, 100),
-        criarDados(1005, "01/11/2023", "01/11/2024", 175.50, 60),
-        criarDados(1006, "05/11/2023", "05/12/2023", 120.75, 40),
-        criarDados(1007, "10/11/2023", "10/11/2024", 250.00, 80),
-        criarDados(1008, "15/11/2023", "15/03/2024", 95.25, 35),
-        criarDados(1009, "20/11/2023", "20/11/2024", 180.00, 65),
-        criarDados(1010, "25/11/2023", "25/05/2024", 135.50, 45),
-    ];
+    function formatarNumero(numero) {
+        return numero.toLocaleString("pt-BR", {
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2
+        });
+    }
 
     return (
         <>
@@ -67,40 +62,107 @@ const ProdutoEstoque = () => {
             <div className='estoqueContainer'>
                 <div className='barraTopoWrapper'>
                     <BotaoVoltarGerenciamento pagina="/adm/estoque" texto="Voltar ao Estoque" />
-                    <span>Marca</span>
                     <div className='wopperWrapper'>
                         <BotaoGerenciamento botao="Buscar" />
                     </div>
                 </div>
-                <TableContainer component={Paper}>
-                    <Table sx={estiloTabela} aria-label="tabela de estoque">
-                        <TableHead>
-                            <TableRow>
-                                <TableCell style={estiloCabecalhoTabela}>Código</TableCell>
-                                <TableCell style={estiloCabecalhoTabela}>Data da Compra</TableCell>
-                                <TableCell style={estiloCabecalhoTabela}>Data de Vencimento</TableCell>
-                                <TableCell style={estiloCabecalhoTabela}>Valor do Lote</TableCell>
-                                <TableCell style={estiloCabecalhoTabela}>Unidades Compradas</TableCell>
-                            </TableRow>
+
+                <div>
+                    <span>{lotesDoProduto[0]?.loteProdutos[0]?.produto?.nome}</span>
+                </div>
+
+                <div >
+                    <TableContainer
+                    component={Paper}
+                    className='container-tabela'
+                    sx={{
+                        maxHeight: '60vh',  // altura máxima
+                        overflow: 'auto'
+                    }}
+                    >
+                    <Table
+                        sx={{
+                        width: '100%',
+                        '& .MuiTableCell-root': {
+                            padding: '5px',
+                        },
+                        '& .MuiTableCell-root:last-child': {
+                            width: '70px', // Ajusta a largura da última coluna (Editar)
+                        }
+                        }}
+                        size="small"
+                        
+                    >
+                        
+                        <TableHead className='tabela-Head'>
+                        <TableRow>
+                            <TableCell className='tabela-head-cell' style={{textAlignLast: "center", width: "135px"}}>Status</TableCell>
+                            <TableCell className='tabela-head-cell' style={{textAlignLast: "center", width: "130px"}}>Data da Compra</TableCell>
+                            <TableCell className='tabela-head-cell' style={{textAlignLast: "center", width: "130px"}}>Data de Entrega</TableCell>
+                            <TableCell className='tabela-head-cell' style={{textAlignLast: "center", width: "130px"}}align="center">Valor do Lote</TableCell>
+                            <TableCell className='tabela-head-cell' style={{textAlignLast: "center"}}align="center">Unidades Compradas</TableCell>
+                            <TableCell className='tabela-head-cell' style={{textAlignLast: "center", width: "10px"}}align="center">Observação</TableCell>
+                            <TableCell className='tabela-head-cell' style={{textAlignLast: "center"}}align="center">Ações</TableCell>
+                        </TableRow>
                         </TableHead>
                         <TableBody>
-                            {produtos.map((produto) => (
-                                <TableRow key={produto.codigo}>
-                                    <TableCell style={estiloCelulaTabela}>{produto.codigo}</TableCell>
-                                    <TableCell style={estiloCelulaTabela}>{produto.dataCompra}</TableCell>
-                                    <TableCell style={{
-                                        ...estiloCelulaTabela,
-                                        backgroundColor: getCorVencimento(produto.dataVencimento)
-                                    }}>
-                                        {produto.dataVencimento}
-                                    </TableCell>
-                                    <TableCell style={estiloCelulaTabela}>R$ {produto.valorLote.toFixed(2)}</TableCell>
-                                    <TableCell style={estiloCelulaTabela}>{produto.unidadesCompradas}</TableCell>
-                                </TableRow>
-                            ))}
+                        {(lotesDoProduto || []).map((produto) => (
+                            <TableRow 
+                                key={produto.codigo} 
+                            >
+                            <TableCell style={{textAlignLast: "center"}} class={`table-cell-grid-estoque`}>
+                                {produto.status}
+                            </TableCell>
+                            <TableCell style={{textAlignLast: "center"}} class={`table-cell-grid-estoque`}>
+                                {produto.dtPedido}
+                            </TableCell>
+                            <TableCell style={{textAlignLast: "center"}} class={`table-cell-grid-estoque`}>
+                                {produto.dtEntrega}
+                            </TableCell>
+                            <TableCell style={{textAlignLast: "center"}} class={`table-cell-grid-estoque`}>
+                                R${formatarNumero(produto.valorLote)}
+                            </TableCell>
+                            <TableCell style={{textAlignLast: "center"}} class={`table-cell-grid-estoque`}>
+                                {produto.loteProdutos[0].qtdCaixasCompradas}
+                            </TableCell>
+                            <TableCell style={{textAlignLast: "center"}} class={`table-cell-grid-estoque`}>
+                                {produto.observacao || "-"}
+                            </TableCell>
+                            <TableCell className="tabela-row-saidas">
+                                <Tooltip
+                                    title="Editar saída"
+                                    placement="bottom"
+                                    arrow
+                                    enterDelay={200}
+                                    leaveDelay={200}
+                                >
+                                    <button 
+                                    // onClick={() => handleEditar(row, item.id)} 
+                                        >
+                                        <EditIcon />
+                                    </button>
+
+                                </Tooltip>
+                                <Tooltip
+                                    title="Deletar saída"
+                                    placement="bottom"
+                                    arrow
+                                    enterDelay={200}
+                                    leaveDelay={200}
+                                >
+                                    <button 
+                                        // onClick={() => handleDeletar(row, item.id)}
+                                        >
+                                        <DeleteForeverIcon/>
+                                    </button>
+                                </Tooltip>
+                                </TableCell> 
+                            </TableRow>
+                        ))}
                         </TableBody>
                     </Table>
-                </TableContainer>
+                    </TableContainer>
+                </div>
             </div>
         </>
     );

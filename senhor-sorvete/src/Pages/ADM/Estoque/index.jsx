@@ -6,8 +6,6 @@ import Pesquisa from "../../../Components/Pesquisa";
 import BotaoGerenciamento from "../../../Components/BotaoGerenciamento";
 import ModalGerenciamento from "../../../Components/ModalGerenciamento";
 import { useNavigate } from "react-router-dom";
-import EditIcon from "@mui/icons-material/Edit";
-import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
 import {
   Table,
   TableBody,
@@ -16,7 +14,6 @@ import {
   TableHead,
   TableRow,
   Paper,
-  Tooltip,
 } from "@mui/material";
 import axios from "axios";
 import { toast } from "react-toastify";
@@ -112,7 +109,7 @@ const Estoque = () => {
     },
     {
       name: "qtdProdutoComprado",
-      label: "Quantidade comprada",
+      label: "Quantidade de caixas comprada",
       type: "number",
     },
     {
@@ -211,8 +208,8 @@ const Estoque = () => {
     return nomeInclusao || marcaInclusao;
   });
   
-  const handleSelecionarProduto = (produto) => {
-    navigate("/adm/produto-estoque");
+  const handleSelecionarProduto = (id) => {
+    navigate(`/adm/produto-estoque/${id}`);
   };
 
   return (
@@ -270,14 +267,13 @@ const Estoque = () => {
                   <TableCell className='tabela-head-cell' style={{ paddingLeft: '10px' }}>Marca</TableCell>
                   <TableCell className='tabela-head-cell' style={{estiloQuantidade }}align="center">Qtd Caixas</TableCell>
                   <TableCell className='tabela-head-cell' style={{estiloQuantidade }}align="center">Qtd por Caixas</TableCell>
-                  <TableCell className='tabela-head-cell' style={{estiloQuantidade }}align="center">Ações</TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
                 {produtosFiltrados.map((produto) => (
                   <TableRow 
                       key={produto.id || produto.codigo} 
-                      onClick={() => handleSelecionarProduto(produto)} 
+                      onClick={() => handleSelecionarProduto(produto.id)} 
                       style={{ cursor: 'pointer' }} 
                       className={`tabela-row-saidas tabela-row-estoque ${!produto.isAtivo ? 'desativado' : ''}`}
                   >
@@ -304,45 +300,6 @@ const Estoque = () => {
                       align="center">
                       {produto.qtdPorCaixas}
                     </TableCell>
-
-                    <TableCell style={{
-                      ...estiloQuantidade,
-                      backgroundColor: "#fff",
-                    }}
-                      align="center">
-                        <Tooltip
-                              title="Editar Lote"
-                              placement="bottom"
-                              arrow
-                              enterDelay={200}
-                              leaveDelay={200}
-                          >
-                              <button 
-                              onClick={(e) => {
-                                e.stopPropagation(); 
-                                abrirModalAdicionarLote();
-                              }} 
-                                >
-                                  <EditIcon />
-                              </button>
-
-                          </Tooltip>
-                          <Tooltip
-                              title="Deletar Lote"
-                              placement="bottom"
-                              arrow
-                              enterDelay={200}
-                              leaveDelay={200}
-                          >
-                              <button 
-                                // onClick={(e) => 
-                                // e.stopPropagation(); 
-                                // handleDeletar(row, item.id)}
-                                >
-                                  <DeleteForeverIcon/>
-                              </button>
-                          </Tooltip>
-                        </TableCell> 
                   </TableRow>
                 ))}
               </TableBody>

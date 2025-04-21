@@ -8,7 +8,7 @@ const HomeGerenciamento = () => {
     <img src="/Imagens/list-icon.png" alt=""/>,
     <img src="/Imagens/destaque-icon.png" alt="" />,
     <img src="/Imagens/estoque-icon.png" alt=""/>,
-    <img src="/Imagens/vendas-icon.png" alt=""/>,
+    <img src="/Imagens/saidas-icon.png" alt=""/>,
     <img src="/Imagens/calendario-icon.png" alt=""/>,
     <img src="/Imagens/retornar-site.png" alt=""/>
   ];

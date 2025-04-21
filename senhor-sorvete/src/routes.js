@@ -36,7 +36,7 @@ const AppRoutes = () => {
                 <Route path="*" element={<NotFound />} />
 
                 {/* TODO: TROCAR O CAMINHO PARA ":idEstoque" para receber o id do produto na URL */}
-                <Route path="/adm/produto-estoque" element={<ProdutoEstoque/>}/>
+                <Route path="/adm/produto-estoque/:id" element={<ProdutoEstoque/>}/>
 
             </Routes>
         </BrowserRouter>
