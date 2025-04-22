@@ -10,13 +10,16 @@ import { toast } from "react-toastify";
 import { Tooltip } from "@mui/material";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
+import ModalEditarLote from "../../../Components/ModalEditarLote";
 
 import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper } from '@mui/material';
 
 const ProdutoEstoque = () => {
+    const [abrirEditarLote, setAbrirEditarLote] = useState(false);
     const [lotesDoProduto, setLotesDoProduto] = useState([]);
     const { id } = useParams();
     const hoje = new Date();
+    const [loading, setLoading] = useState(false);
 
     useEffect(() => {
         if(id === undefined || id === null) return
@@ -39,6 +42,9 @@ const ProdutoEstoque = () => {
         };
         fetchEstoque();
     }, []);
+
+    const abrirModalEditarLote = () => setAbrirEditarLote(true);
+    const fecharModalEditarLote = () => setAbrirEditarLote(false);
     
     const getCorVencimento = (dataVencimento) => {
         const vencimento = new Date(dataVencimento.split('/').reverse().join('-'));
@@ -55,6 +61,99 @@ const ProdutoEstoque = () => {
             maximumFractionDigits: 2
         });
     }
+
+    const validacaoAdicionarLote = {
+        nomeFornecedor: { required: true },
+        dtEntrega: { required: true },
+        dtVencimento: { required: true },
+        dtPedido: { required: true },
+        valorLote: {
+          required: true,
+          pattern: /^\d*\.?\d+$/,
+          message: "Valor deve ser maior que zero",
+        },
+        loteProdutos: {
+          produtoId: { required: true },
+          qtdProdutoComprado: {
+            required: true,
+            pattern: /^[1-9]\d*$/,
+            message: "Quantidade deve ser um número positivo",
+          },
+        }
+      };
+
+      const transformBeforeSubmit = (data) => {
+        return {
+          ...data,
+          loteProdutos: [
+            {
+              produtoId: Number(data.produtoId),
+              qtdCaixasCompradas: Number(data.qtdProdutoComprado),
+            }
+          ],
+          valorLote: Number(data.valorLote),
+        };
+      };
+
+    // const handleSubmitLote = async (formData) => {
+    //     const token = sessionStorage.getItem("token");
+    //     setLoading(true);
+    
+    //     const jsonParaCriarLote = {
+    //       nomeFornecedor: formData.nomeFornecedor,
+    //       dtEntrega: formData.dtEntrega,
+    //       dtVencimento: formData.dtVencimento,
+    //       dtPedido: formData.dtPedido,
+    //       valorLote: Number(formData.valorLote),
+    //       loteProdutos: [
+    //         {
+    //           produtoId: Number(formData.produtoId),
+    //           qtdCaixasCompradas: Number(formData.qtdProdutoComprado),
+    //         }
+    //       ]
+    //     };
+
+    const camposAdicionarLote = [
+        {
+          name: "produtoId",
+          label: "Produto",
+          type: "select",
+        //   options: produtos.map((p) => ({
+        //     value: p.codigo || p.id,
+        //     label: `${p.nome || p.produto} - ${p.marca}`,
+        //   })),
+        },
+        {
+          name: "nomeFornecedor",
+          label: "Nome do Fornecedor",
+          type: "text"
+        },
+        {
+          name: "dtPedido",
+          label: "Data da compra",
+          type: "date",
+        },
+        {
+          name: "dtVencimento",
+          label: "Data de vencimento",
+          type: "date",
+        },
+        {
+          name: "dtEntrega",
+          label: "Previsão de entrega",
+          type: "date",
+        },
+        {
+          name: "qtdProdutoComprado",
+          label: "Quantidade de caixas comprada",
+          type: "number",
+        },
+        {
+          name: "valorLote",
+          label: "Valor do lote",
+          type: "number",
+        },
+      ];
 
     return (
         <>
@@ -136,9 +235,7 @@ const ProdutoEstoque = () => {
                                     enterDelay={200}
                                     leaveDelay={200}
                                 >
-                                    <button 
-                                    // onClick={() => handleEditar(row, item.id)} 
-                                        >
+                                    <button onClick={() => abrirModalEditarLote()} >
                                         <EditIcon />
                                     </button>
 
@@ -164,6 +261,17 @@ const ProdutoEstoque = () => {
                     </TableContainer>
                 </div>
             </div>
+
+            <ModalEditarLote
+                open={abrirEditarLote}
+                onClose={fecharModalEditarLote}
+                title="Editar Lote"
+                fields={camposAdicionarLote}
+                // onSubmit={handleSubmitLote}
+                validation={validacaoAdicionarLote}
+                transformBeforeSubmit={transformBeforeSubmit}
+                loading={loading}
+            />
         </>
     );
 };
