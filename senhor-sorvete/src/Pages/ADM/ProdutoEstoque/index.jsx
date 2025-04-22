@@ -24,7 +24,6 @@ const ProdutoEstoque = () => {
     useEffect(() => {
         if(id === undefined || id === null) return
         const fetchEstoque = async () => {
-            debugger
             const token = sessionStorage.getItem('token');
             try {
             const response = await axios.get(`http://localhost:8080/lotes/produtos/${id}`, {
@@ -155,6 +154,24 @@ const ProdutoEstoque = () => {
         },
       ];
 
+    const handleDeletar = async (id) => {
+        const token = sessionStorage.getItem("token");
+        debugger
+        try {
+            await axios.delete(`http://localhost:8080/lotes/${id}`, {
+            headers: {
+                Authorization: `Bearer ${token}`,
+                "Content-Type": "application/json",
+            },
+            });
+            
+            window.location.reload();
+        } catch (error) {
+            console.error("Erro ao carregar produtos:", error);
+            toast.error("Erro ao carregar lista de produtos.");
+        }
+    };
+
     return (
         <>
             <HeaderGerenciamento />
@@ -247,9 +264,7 @@ const ProdutoEstoque = () => {
                                     enterDelay={200}
                                     leaveDelay={200}
                                 >
-                                    <button 
-                                        // onClick={() => handleDeletar(row, item.id)}
-                                        >
+                                    <button onClick={() => handleDeletar(produto.id)} >
                                         <DeleteForeverIcon/>
                                     </button>
                                 </Tooltip>
