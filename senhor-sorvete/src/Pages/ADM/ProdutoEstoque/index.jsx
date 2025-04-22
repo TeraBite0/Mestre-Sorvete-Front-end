@@ -24,13 +24,13 @@ const ProdutoEstoque = () => {
     useEffect(() => {
         if(id === undefined || id === null) return
         const fetchEstoque = async () => {
+            debugger
             const token = sessionStorage.getItem('token');
             try {
             const response = await axios.get(`http://localhost:8080/lotes/produtos/${id}`, {
                 headers: {
                 Authorization: `Bearer ${token}`
                 }
-
             });
 
             setLotesDoProduto(response.data);

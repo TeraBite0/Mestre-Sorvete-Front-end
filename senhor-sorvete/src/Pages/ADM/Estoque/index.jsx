@@ -51,6 +51,7 @@ const estiloQuantidade = {
 const Estoque = () => {
   const [abrirAdicionarLote, setAbrirAdicionarLote] = useState(false);
   const [pesquisa, setPesquisa] = useState("");
+  const [fornecedores, setFornecedores] = useState([]);
   const [produtos, setProdutos] = useState([]);
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
@@ -74,7 +75,24 @@ const Estoque = () => {
     fetchEstoque();
   }, []);
 
-  const abrirModalAdicionarLote = () => setAbrirAdicionarLote(true);
+  const abrirModalAdicionarLote = async () => {
+    
+    const token = sessionStorage.getItem('token');
+      try {
+        const response = await axios.get('http://localhost:8080/fornecedores', {
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+        });
+    
+        setFornecedores(response.data);
+        setAbrirAdicionarLote(true);
+      } catch (error) {
+        toast.error('Erro ao buscar estoque');
+        console.log(error);
+      }
+  }
+    
   const fecharModalAdicionarLote = () => setAbrirAdicionarLote(false);
 
   const camposAdicionarLote = [
@@ -90,7 +108,11 @@ const Estoque = () => {
     {
       name: "nomeFornecedor",
       label: "Nome do Fornecedor",
-      type: "text"
+      type: "select",
+      options: fornecedores.map((f) => ({
+        value: f.nome,
+        label: `${f.nome}`,
+      })),
     },
     {
       name: "dtPedido",
