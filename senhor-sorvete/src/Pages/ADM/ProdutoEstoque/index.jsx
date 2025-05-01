@@ -11,15 +11,17 @@ import { Tooltip } from "@mui/material";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
 import ModalEditarLote from "../../../Components/ModalEditarLote";
-
+import ModalConfirmarDeletar from "../../../Components/ModalConfirmarDeletar"
 import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper } from '@mui/material';
 
 const ProdutoEstoque = () => {
     const [abrirEditarLote, setAbrirEditarLote] = useState(false);
+    const [abrirConfirmarDeletar, setAbrirConfirmarDeletar] = useState(false);
     const [lotesDoProduto, setLotesDoProduto] = useState([]);
     const { id } = useParams();
     const hoje = new Date();
     const [loading, setLoading] = useState(false);
+    const [idProduto, setIdProduto] = useState();
 
     useEffect(() => {
         if(id === undefined || id === null) return
@@ -44,6 +46,12 @@ const ProdutoEstoque = () => {
 
     const abrirModalEditarLote = () => setAbrirEditarLote(true);
     const fecharModalEditarLote = () => setAbrirEditarLote(false);
+
+    const abrirModalConfirmarDeletar = (id) => {
+        setIdProduto(id)
+        setAbrirConfirmarDeletar(true);
+    }
+    const fecharModalConfirmarDeletar = () => setAbrirConfirmarDeletar(false);
     
     const getCorVencimento = (dataVencimento) => {
         const vencimento = new Date(dataVencimento.split('/').reverse().join('-'));
@@ -154,10 +162,10 @@ const ProdutoEstoque = () => {
         },
       ];
 
-    const handleDeletar = async (id) => {
+    const handleDeletar = async () => {
         const token = sessionStorage.getItem("token");
         try {
-            await axios.delete(`http://localhost:8080/lotes/${id}`, {
+            await axios.delete(`http://localhost:8080/lotes/${idProduto}`, {
             headers: {
                 Authorization: `Bearer ${token}`,
                 "Content-Type": "application/json",
@@ -257,13 +265,13 @@ const ProdutoEstoque = () => {
 
                                 </Tooltip>
                                 <Tooltip
-                                    title="Deletar saída"
+                                    title="Deletar lote"
                                     placement="bottom"
                                     arrow
                                     enterDelay={200}
                                     leaveDelay={200}
                                 >
-                                    <button onClick={() => handleDeletar(produto.id)} >
+                                    <button onClick={() => abrirModalConfirmarDeletar(produto.id)} >
                                         <DeleteForeverIcon/>
                                     </button>
                                 </Tooltip>
@@ -285,6 +293,14 @@ const ProdutoEstoque = () => {
                 validation={validacaoAdicionarLote}
                 transformBeforeSubmit={transformBeforeSubmit}
                 loading={loading}
+            />
+
+            <ModalConfirmarDeletar
+                open={abrirConfirmarDeletar}
+                onClose={fecharModalConfirmarDeletar}
+                onDeletar={handleDeletar}
+                title="Confirmar Deletar Lote"
+                texto="Atenção, tem certeza de que deseja excluir este lote?"
             />
         </>
     );
