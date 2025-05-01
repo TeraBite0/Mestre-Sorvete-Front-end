@@ -76,7 +76,6 @@ const Estoque = () => {
   }, []);
 
   const abrirModalAdicionarLote = async () => {
-    
     const token = sessionStorage.getItem('token');
       try {
         const response = await axios.get('http://localhost:8080/fornecedores', {
@@ -92,7 +91,7 @@ const Estoque = () => {
         console.log(error);
       }
   }
-    
+  
   const fecharModalAdicionarLote = () => setAbrirAdicionarLote(false);
 
   const camposAdicionarLote = [
@@ -109,10 +108,13 @@ const Estoque = () => {
       name: "nomeFornecedor",
       label: "Nome do Fornecedor",
       type: "select",
-      options: fornecedores.map((f) => ({
-        value: f.nome,
-        label: `${f.nome}`,
-      })),
+      options: [
+        ...fornecedores.map((f) => ({
+          value: f.nome,
+          label: f.nome,
+        })),
+        { value: 'add-new', label: '+ Adicionar Novo Fornecedor' }
+      ]
     },
     {
       name: "dtPedido",
@@ -287,7 +289,7 @@ const Estoque = () => {
                   <TableCell className='tabela-head-cell' style={{ paddingLeft: '10px' }}>Código</TableCell>
                   <TableCell className='tabela-head-cell' style={{ paddingLeft: '10px' }}>Nome</TableCell>
                   <TableCell className='tabela-head-cell' style={{ paddingLeft: '10px' }}>Marca</TableCell>
-                  <TableCell className='tabela-head-cell' style={{estiloQuantidade }}align="center">Qtd Caixas</TableCell>
+                  <TableCell className='tabela-head-cell' style={{estiloQuantidade }}align="center">Qtd de Caixas</TableCell>
                   <TableCell className='tabela-head-cell' style={{estiloQuantidade }}align="center">Qtd por Caixas</TableCell>
                 </TableRow>
               </TableHead>

@@ -156,7 +156,6 @@ const ProdutoEstoque = () => {
 
     const handleDeletar = async (id) => {
         const token = sessionStorage.getItem("token");
-        debugger
         try {
             await axios.delete(`http://localhost:8080/lotes/${id}`, {
             headers: {
@@ -184,7 +183,7 @@ const ProdutoEstoque = () => {
                 </div>
 
                 <div>
-                    <span>{lotesDoProduto[0]?.loteProdutos[0]?.produto?.nome}</span>
+                    <h3>{lotesDoProduto[0]?.loteProdutos[0]?.produto?.nome} - {lotesDoProduto[0]?.loteProdutos[0]?.produto?.marca}  </h3>
                 </div>
 
                 <div >

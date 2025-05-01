@@ -11,6 +11,9 @@ import {
   FormHelperText,
 } from "@mui/material";
 import BotaoGerenciamento from "../BotaoGerenciamento";
+import ModalAdicionarFornecedor from "../../Components/ModalAdicionarFornecedor";
+import axios from "axios";
+import { toast } from "react-toastify";
 
 const estiloModal = {
   position: "absolute",
@@ -40,6 +43,7 @@ const ModalGerenciamento = ({
 }) => {
   const [formData, setFormData] = useState({});
   const [errors, setErrors] = useState({});
+  const [abrirAdicionarFornecedor, setAbrirAdicionarFornecedor] = useState(false);
 
   useEffect(() => {
     if (open) {
@@ -49,6 +53,10 @@ const ModalGerenciamento = ({
   }, [open]);
 
   const handleFieldChange = (fieldName, value) => {
+    if (value === "add-new") {
+      abrirModalAdicionarFornecedor();
+      return;
+    }
     setFormData((prev) => ({
       ...prev,
       [fieldName]: value,
@@ -60,6 +68,13 @@ const ModalGerenciamento = ({
         [fieldName]: null,
       }));
     }
+  };
+
+  const abrirModalAdicionarFornecedor = () => setAbrirAdicionarFornecedor(true);
+
+  const fecharModalAdicionarFornecedor = () => { 
+    setAbrirAdicionarFornecedor(false)
+    onClose()
   };
 
   const validateFields = () => {
@@ -146,6 +161,7 @@ const ModalGerenciamento = ({
   };
 
   return (
+    <>
     <Modal
       open={open}
       onClose={onClose}
@@ -177,7 +193,15 @@ const ModalGerenciamento = ({
         </Box>
       </Box>
     </Modal>
+
+    <ModalAdicionarFornecedor
+      open={abrirAdicionarFornecedor}
+      onClose={fecharModalAdicionarFornecedor}
+      title="Adicionar Fornecedor"
+    />
+    </>
   );
+
 };
 
 export default ModalGerenciamento;
