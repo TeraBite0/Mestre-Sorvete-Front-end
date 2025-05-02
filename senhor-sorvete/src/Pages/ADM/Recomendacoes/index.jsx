@@ -158,7 +158,6 @@ const Recomendacoes = () => {
             if (!token) {
                 throw new Error('Token de autenticação não encontrado');
             }
-            debugger
 
             const atualizarRecomendacao = JSON.parse(JSON.stringify({ produtoId: produto.id }));
 

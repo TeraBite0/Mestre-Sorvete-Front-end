@@ -21,10 +21,13 @@ import { toast } from "react-toastify";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
 import { Tooltip } from "@mui/material";
+import ModalConfirmarDeletar from "../../../Components/ModalConfirmarDeletar"
 
 
 const Saidas = () => {
   const [rows, setRows] = useState([]);
+  const [linha, setLinha] = useState([]);
+  const [idProduto, setIdProduto] = useState();
   const [openAdicionar, setOpenAdicionar] = useState(false);
   const [novasSaidas, setNovasSaidas] = useState([
     {
@@ -34,6 +37,7 @@ const Saidas = () => {
       precoTotal: 0,
     },
   ]);
+  const [abrirConfirmarDeletar, setAbrirConfirmarDeletar] = useState(false);
   const [openBuscar, setOpenBuscar] = useState(false);
   const [dataBusca, setDataBusca] = useState("");
   const [resultadoBusca, setResultadoBusca] = useState(null);
@@ -228,7 +232,6 @@ const Saidas = () => {
   };
 
   const handleConfirmarSaida = async (novasSaidas) => {
-    debugger
     const token = sessionStorage.getItem('token');
 
     if (!token) {
@@ -314,7 +317,6 @@ const Saidas = () => {
   }
 
   const handleConfirmarEdicaoSaida = async (editarSaida) => {
-    debugger
     const token = sessionStorage.getItem("token");
 
     const saidaEditada = {
@@ -322,7 +324,7 @@ const Saidas = () => {
       produtoId: editarSaida.saidaEstoques[0].produto.id,
       qtdCaixasSaida: editarSaida.saidaEstoques[0].qtdCaixasSaida
     }
-debugger
+
     try {
       await axios.put(`http://localhost:8080/saidas-estoque/${saidaEditada.id}`, saidaEditada, {
         headers: {
@@ -374,10 +376,9 @@ debugger
     setOpenEditar(true)
   }
 
-  const handleDeletar = async (editarSaida, id) => {
+  const handleDeletar = async () => {
     const token = sessionStorage.getItem("token");
-
-    const dadosEstoque = encontrarEstoquePorId(editarSaida, id)
+    const dadosEstoque = encontrarEstoquePorId(linha, idProduto)
 
     const produto = {
       id: dadosEstoque.id,
@@ -386,7 +387,7 @@ debugger
     }
 
     const saidaEstoque = {
-      dtSaida: editarSaida.dtSaida,
+      dtSaida: linha.dtSaida,
       saidaEstoques: produto ? [produto] : []
     };
 
@@ -420,6 +421,13 @@ debugger
       saidaEstoques: saidasAtualizadas,
     });
   };
+
+  const abrirModalConfirmarDeletar = (row, id) => {
+    setLinha(row)
+    setIdProduto(id)
+    setAbrirConfirmarDeletar(true);
+  }
+  const fecharModalConfirmarDeletar = () => setAbrirConfirmarDeletar(false);
 
   return (
     <div className="container-saidas">
@@ -505,7 +513,7 @@ debugger
                               leaveDelay={200}
                           >
                               <button 
-                                onClick={() => handleDeletar(row, item.id)}>
+                                onClick={() => abrirModalConfirmarDeletar(row, item.id)}>
                                   <DeleteForeverIcon/>
                               </button>
                           </Tooltip>
@@ -739,7 +747,13 @@ debugger
         </DialogActions>
       </Dialog>
 
-      
+      <ModalConfirmarDeletar
+          open={abrirConfirmarDeletar}
+          onClose={fecharModalConfirmarDeletar}
+          onDeletar={handleDeletar}
+          title="Confirmar Deletar Saída"
+          texto="Atenção, tem certeza de que deseja excluir está saída?"
+      />
     </div>
   );
 };

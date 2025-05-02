@@ -701,7 +701,6 @@ const ListarProdutos = () => {
     // Método para atualizar produto (PUT) com imagem
     const atualizarProduto = async (produto, dadosAtualizados) => {
         try {
-            debugger
             setCarregando(true);
 
             const token = sessionStorage.getItem('token');
@@ -846,7 +845,6 @@ const ListarProdutos = () => {
 
     // Método para preparar a visualização
     const handleVisualizacao = (produto) => {
-        debugger
         setProdutoSelecionado(produto);
         setNovoProduto({
             id: produto.id,
@@ -868,7 +866,6 @@ const ListarProdutos = () => {
     const handleToggleAtivo = async (produto) => {
         const token = sessionStorage.getItem('token');
         const isAtivoGenerico = !produto.isAtivo; // Inverte o status atual
-        debugger
         try {
             const response = await fetch(`http://localhost:8080/produtos/ativar/${produto.id}?isAtivo=${isAtivoGenerico}`, {
                 method: "PATCH",
