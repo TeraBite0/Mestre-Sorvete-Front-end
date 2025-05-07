@@ -99,23 +99,35 @@
     border: 2px solid #C13584;
 }
 
-@media (max-width: 768px) {
+@media (max-width: 1024px) {
+
+    .contato-full-componentes{
+        display: block;
+    }
+
     .contato {
         /* max-height: 50vh; */
         padding: 20px;
+        /* margin-top: 30px; */
+        height: 70vh;
     }
 
     .contato img {
-        width: 150px;
-        height: 150px;
+        width: 100px;
+        height: 100px;
     }
 
     .contato h2 {
-        font-size: 24px;
+        font-size: 22px;
     }
 
     .contato-container .botao {
         width: 200px;
         height: 45px;
+    }
+
+    .section-5 iframe {
+        width: 280px;
+        height: 250px;
     }
 }
