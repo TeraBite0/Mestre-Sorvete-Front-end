@@ -382,6 +382,10 @@ button {
     margin-bottom: 20px;
   }
 
+  .content .button {
+    justify-content: center;
+  }
+
   .section-1 img {
     width: 100%;
     max-height: 50vh;
@@ -437,7 +441,7 @@ button {
   .section-5 {
     flex-direction: column;
     gap: 5vh;
-    width: 100%;
+    width: 92%;
 
     iframe {
       width: 300px;

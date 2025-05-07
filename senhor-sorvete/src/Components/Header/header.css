@@ -66,6 +66,7 @@ body {
 @media (max-width: 768px) {
     .containerHeader {
         justify-content: space-between;
+        padding: 0px 2rem;
     }
 
     .hamburguer {
