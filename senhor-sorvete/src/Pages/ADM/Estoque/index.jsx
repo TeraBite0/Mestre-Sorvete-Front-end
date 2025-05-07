@@ -60,7 +60,7 @@ const Estoque = () => {
     const fetchEstoque = async () => {
       const token = sessionStorage.getItem('token');
       try {
-        const response = await axios.get('http://localhost:8080/produtos', {
+        const response = await axios.get('http://10.0.0.25:8080/produtos', {
           headers: {
             Authorization: `Bearer ${token}`
           }
@@ -78,7 +78,7 @@ const Estoque = () => {
   const abrirModalAdicionarLote = async () => {
     const token = sessionStorage.getItem('token');
       try {
-        const response = await axios.get('http://localhost:8080/fornecedores', {
+        const response = await axios.get('http://10.0.0.25:8080/fornecedores', {
           headers: {
             Authorization: `Bearer ${token}`
           }
@@ -172,7 +172,7 @@ const Estoque = () => {
     };
 
     try {
-      await axios.post('http://localhost:8080/lotes', jsonParaCriarLote, {
+      await axios.post('http://10.0.0.25:8080/lotes', jsonParaCriarLote, {
         headers: {
           'Authorization': `Bearer ${token}`,
           'Content-Type': 'application/json'
@@ -183,7 +183,7 @@ const Estoque = () => {
       fecharModalAdicionarLote();
 
       // Atualiza a lista de produtos
-      const response = await axios.get('http://localhost:8080/produtos', {
+      const response = await axios.get('http://10.0.0.25:8080/produtos', {
         headers: {
           Authorization: `Bearer ${token}`
         }
