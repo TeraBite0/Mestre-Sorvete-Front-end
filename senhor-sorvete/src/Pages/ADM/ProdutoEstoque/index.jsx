@@ -22,6 +22,15 @@ const ProdutoEstoque = () => {
     const hoje = new Date();
     const [loading, setLoading] = useState(false);
     const [idProduto, setIdProduto] = useState();
+    const [produtos, setProdutos] = useState([]);
+    const [fornecedores, setFornecedores] = useState([]);  
+    const [status, setStatus] = useState([
+        { id: 1, nome: "Aguardando entrega" },
+        { id: 2, nome: "Entregue" },
+        { id: 3, nome: "Cancelado" },
+        { id: 4, nome: "Entregue com pendência" },
+        { id: 5, nome: "Concluído com pendência" }
+      ]);
 
     useEffect(() => {
         if(id === undefined || id === null) return
@@ -34,6 +43,9 @@ const ProdutoEstoque = () => {
                 }
             });
 
+            buscarProdutos();
+            buscarFornecedores();
+
             setLotesDoProduto(response.data);
             console.log(response.data)
             } catch (error) {
@@ -43,6 +55,83 @@ const ProdutoEstoque = () => {
         };
         fetchEstoque();
     }, []);
+
+    const buscarProdutos = async () => {
+        const token = sessionStorage.getItem('token');
+        try {
+        const response = await axios.get(`http://localhost:8080/produtos`, {
+            headers: {
+            Authorization: `Bearer ${token}`
+            }
+        });
+
+        setProdutos(response.data);
+        } catch (error) {
+        toast.error('Erro ao buscar produtos');
+        console.log(error);
+        }
+    }
+
+    const buscarFornecedores = async () => {
+        const token = sessionStorage.getItem('token');
+        try {
+        const response = await axios.get(`http://localhost:8080/fornecedores`, {
+            headers: {
+            Authorization: `Bearer ${token}`
+            }
+        });
+
+        setFornecedores(response.data);
+        } catch (error) {
+        toast.error('Erro ao buscar fornecedores');
+        console.log(error);
+        }
+    }
+
+    const handleSubmitLote = async (formData) => {
+        const token = sessionStorage.getItem("token");
+        setLoading(true);
+    
+        const jsonParaCriarLote = {
+          nomeFornecedor: formData.nomeFornecedor,
+          dtEntrega: formData.dtEntrega,
+          dtVencimento: formData.dtVencimento,
+          dtPedido: formData.dtPedido,
+          valorLote: Number(formData.valorLote),
+          loteProdutos: [
+            {
+              produtoId: Number(formData.produtoId),
+              qtdCaixasCompradas: Number(formData.qtdProdutoComprado),
+            }
+          ]
+        };
+    
+        try {
+          await axios.post('http://localhost:8080/lotes', jsonParaCriarLote, {
+            headers: {
+              'Authorization': `Bearer ${token}`,
+              'Content-Type': 'application/json'
+            }
+          });
+    
+          toast.success("Lote adicionado com sucesso!");
+          fecharModalEditarLote();
+    
+          // Atualiza a lista de produtos
+          const response = await axios.get('http://localhost:8080/produtos', {
+            headers: {
+              Authorization: `Bearer ${token}`
+            }
+          });
+          setProdutos(response.data);
+    
+        } catch (error) {
+          console.error('Erro ao adicionar lote:', error);
+          toast.error(error.response?.data?.message || 'Erro ao adicionar lote');
+        } finally {
+          setLoading(false);
+        }
+      };
 
     const abrirModalEditarLote = () => setAbrirEditarLote(true);
     const fecharModalEditarLote = () => setAbrirEditarLote(false);
@@ -122,28 +211,34 @@ const ProdutoEstoque = () => {
 
     const camposAdicionarLote = [
         {
+            name: "status",
+            label: "Status do lote",
+            type: "select",
+            options: status.map((s) => ({
+                value: s.id,
+                label: s.nome
+            }))
+          },
+        {
           name: "produtoId",
           label: "Produto",
           type: "select",
-        //   options: produtos.map((p) => ({
-        //     value: p.codigo || p.id,
-        //     label: `${p.nome || p.produto} - ${p.marca}`,
-        //   })),
+          options: produtos.map((p) => ({
+            value: p.codigo || p.id,
+            label: `${p.nome || p.produto} - ${p.marca}`,
+          })),
         },
         {
           name: "nomeFornecedor",
           label: "Nome do Fornecedor",
-          type: "text"
-        },
-        {
-          name: "dtPedido",
-          label: "Data da compra",
-          type: "date",
-        },
-        {
-          name: "dtVencimento",
-          label: "Data de vencimento",
-          type: "date",
+          type: "select",
+          options: [
+            ...fornecedores.map((f) => ({
+              value: f.nome,
+              label: f.nome,
+            })),
+            { value: 'add-new', label: '+ Adicionar Novo Fornecedor' }
+          ]
         },
         {
           name: "dtEntrega",
@@ -289,7 +384,7 @@ const ProdutoEstoque = () => {
                 onClose={fecharModalEditarLote}
                 title="Editar Lote"
                 fields={camposAdicionarLote}
-                // onSubmit={handleSubmitLote}
+                onSubmit={handleSubmitLote}
                 validation={validacaoAdicionarLote}
                 transformBeforeSubmit={transformBeforeSubmit}
                 loading={loading}

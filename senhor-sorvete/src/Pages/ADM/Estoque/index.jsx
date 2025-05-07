@@ -117,16 +117,6 @@ const Estoque = () => {
       ]
     },
     {
-      name: "dtPedido",
-      label: "Data da compra",
-      type: "date",
-    },
-    {
-      name: "dtVencimento",
-      label: "Data de vencimento",
-      type: "date",
-    },
-    {
       name: "dtEntrega",
       label: "Previsão de entrega",
       type: "date",
@@ -289,8 +279,8 @@ const Estoque = () => {
                   <TableCell className='tabela-head-cell' style={{ paddingLeft: '10px' }}>Código</TableCell>
                   <TableCell className='tabela-head-cell' style={{ paddingLeft: '10px' }}>Nome</TableCell>
                   <TableCell className='tabela-head-cell' style={{ paddingLeft: '10px' }}>Marca</TableCell>
-                  <TableCell className='tabela-head-cell' style={{estiloQuantidade }}align="center">Qtd de Caixas</TableCell>
-                  <TableCell className='tabela-head-cell' style={{estiloQuantidade }}align="center">Qtd por Caixas</TableCell>
+                  <TableCell className='tabela-head-cell' style={{estiloQuantidade }}>Unidades por Caixas</TableCell>
+                  <TableCell className='tabela-head-cell' style={{estiloQuantidade }}align="center">Quantidade de Caixas</TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
@@ -310,19 +300,15 @@ const Estoque = () => {
                     <TableCell class={`table-cell-grid-estoque`}>
                       {produto.marca}
                     </TableCell>
+                    <TableCell class={`table-cell-grid-estoque`}>
+                      {produto.qtdPorCaixas}
+                    </TableCell>
                     <TableCell style={{
                       ...estiloQuantidade,
                       backgroundColor: obterCorQtdCaixaEstoque(produto.qtdCaixasEstoque),
                     }}
                       align="center">
                       {produto.qtdCaixasEstoque}
-                    </TableCell>
-                    <TableCell style={{
-                      ...estiloQuantidade,
-                      backgroundColor: obterCorQtdPorCaixa(produto.qtdPorCaixas),
-                    }}
-                      align="center">
-                      {produto.qtdPorCaixas}
                     </TableCell>
                   </TableRow>
                 ))}
