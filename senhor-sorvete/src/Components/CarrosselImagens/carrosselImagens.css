@@ -95,6 +95,13 @@
 
 }
 
+@media screen and (max-width: 1024px) {
+  .card-item img {
+    width: 100%;
+    height: 115px;
+  }
+}
+
 @media screen and (max-width: 768px) {
   .card {
     min-width: 200px;
@@ -111,6 +118,11 @@
 
   .card p {
     font-size: 1rem;
+  }
+
+  .card-item img {
+    width: 100%;
+    height: 60%;
   }
 
 }

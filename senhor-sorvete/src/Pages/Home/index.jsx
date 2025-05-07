@@ -114,6 +114,7 @@ const Home = (props) => {
               </button>
             </div>
           </div>
+          <div class="img-home-page-section-1"></div>
           <img
             src="Imagens/imagem-principal-homepage.png"
             alt="Imagem principal banner"
