@@ -411,11 +411,13 @@ body {
     .mainContent {
         width: 100%;
         gap: 1rem;
+        display: block;
+
     }
 
-    .mainContentWrapper {
+    /* .mainContentWrapper {
         margin: 5px 15px;
-    }
+    } */
 
     .trendingButton {
         height: 2rem;
@@ -438,15 +440,24 @@ body {
         grid-template-columns: repeat(1, 12rem);
         gap: .7rem;
         padding: .5rem;
+        width: 95%;
     }
 
     .product {
         padding: .5rem;
     }
 
-    .sidebar,
+    .sidebar{
+        height: 150px;
+    }
+
     .notifications {
         padding: 1rem;
+        width: 100%;
+    }
+
+    .sidebarWrapper{
+        width: 100%;
     }
 
     .notifications h2 {

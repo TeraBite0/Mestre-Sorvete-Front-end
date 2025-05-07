@@ -307,7 +307,7 @@ const Cardapio = () => {
                     {cartItems.map((item, index) => (
                       <li key={index}>
                         <img
-                          src={`https://terabite.blob.core.windows.net/terabite-container/${item.id}`}
+                          src={`${item.imagemUrl}`}
                           alt={item.nome}
                           onError={(e) => {
                             e.target.src = "Imagens/sorvete-baunilha.jpg";
@@ -365,7 +365,7 @@ const Cardapio = () => {
               filteredProdutos.map((produto, index) => (
                 <div key={index} className="product">
                   <img
-                    src={`https://terabite.blob.core.windows.net/terabite-container/${produto.id}`}
+                    src={`${produto.imagemUrl}`}
                     alt={`${produto.nome} Ice Cream`}
                     className="w-full h-48 object-cover rounded-2xl mb-4"
                     onError={(e) => {

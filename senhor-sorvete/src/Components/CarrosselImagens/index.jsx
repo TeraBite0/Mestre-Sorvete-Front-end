@@ -38,6 +38,7 @@ export default function BasicDemo() {
         <Link to="/cardapio">
           <img
             src="Imagens/casquinhas-de-chocolate.jpeg"
+            // src={destaque.produto.imagemUrl}
             alt={`${destaque.nome} Ice Cream`}
           />
           <h3>{destaque.produto.nome}</h3>

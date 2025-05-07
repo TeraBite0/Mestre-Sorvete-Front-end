@@ -159,6 +159,7 @@ const Home = (props) => {
                   //   src={destaqueDia.imagemUrl} // Aqui você usa a URL da imagem retornada pela API
                   // alt={`Sugestão do Dia - ${destaqueDia.nome}`}
                   src="Imagens/imagem-3-homepage.png"
+                  // src={destaqueDia.imagemUrl}
                   alt={`Sugestão do Dia - ${destaqueDia.id}`}
                 />
               ) : (
