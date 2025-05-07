@@ -81,7 +81,7 @@ const Dashboard = () => {
   const fetchGerarCsv = async () => {
     const token = sessionStorage.getItem("token");
     try {
-      const response = await fetch('http://localhost:8080/csv/download', {
+      const response = await fetch('http://10.0.0.25:8080/csv/download', {
         method: 'GET',
         headers: {
           Authorization: `Bearer ${token}`,
@@ -125,7 +125,7 @@ const Dashboard = () => {
     setError(null);
 
     try {
-      const response = await fetch("http://localhost:8080/dashboard/", {
+      const response = await fetch("http://10.0.0.25:8080/dashboard/", {
         method: "GET",
         headers: {
           Authorization: `Bearer ${token}`,

@@ -37,7 +37,7 @@ const ProdutoEstoque = () => {
         const fetchEstoque = async () => {
             const token = sessionStorage.getItem('token');
             try {
-            const response = await axios.get(`http://localhost:8080/lotes/produtos/${id}`, {
+            const response = await axios.get(`http://10.0.0.25:8080/lotes/produtos/${id}`, {
                 headers: {
                 Authorization: `Bearer ${token}`
                 }
@@ -59,7 +59,7 @@ const ProdutoEstoque = () => {
     const buscarProdutos = async () => {
         const token = sessionStorage.getItem('token');
         try {
-        const response = await axios.get(`http://localhost:8080/produtos`, {
+        const response = await axios.get(`http://10.0.0.25:8080/produtos`, {
             headers: {
             Authorization: `Bearer ${token}`
             }
@@ -75,7 +75,7 @@ const ProdutoEstoque = () => {
     const buscarFornecedores = async () => {
         const token = sessionStorage.getItem('token');
         try {
-        const response = await axios.get(`http://localhost:8080/fornecedores`, {
+        const response = await axios.get(`http://10.0.0.25:8080/fornecedores`, {
             headers: {
             Authorization: `Bearer ${token}`
             }
@@ -107,7 +107,7 @@ const ProdutoEstoque = () => {
         };
     
         try {
-          await axios.post('http://localhost:8080/lotes', jsonParaCriarLote, {
+          await axios.post('http://10.0.0.25:8080/lotes', jsonParaCriarLote, {
             headers: {
               'Authorization': `Bearer ${token}`,
               'Content-Type': 'application/json'
@@ -118,7 +118,7 @@ const ProdutoEstoque = () => {
           fecharModalEditarLote();
     
           // Atualiza a lista de produtos
-          const response = await axios.get('http://localhost:8080/produtos', {
+          const response = await axios.get('http://10.0.0.25:8080/produtos', {
             headers: {
               Authorization: `Bearer ${token}`
             }
@@ -260,7 +260,7 @@ const ProdutoEstoque = () => {
     const handleDeletar = async () => {
         const token = sessionStorage.getItem("token");
         try {
-            await axios.delete(`http://localhost:8080/lotes/${idProduto}`, {
+            await axios.delete(`http://10.0.0.25:8080/lotes/${idProduto}`, {
             headers: {
                 Authorization: `Bearer ${token}`,
                 "Content-Type": "application/json",
