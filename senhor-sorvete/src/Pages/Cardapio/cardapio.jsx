@@ -55,30 +55,30 @@ const Cardapio = () => {
 
   // Solução provisória ao erro do populares, **REMOVER QUANDO CONCERTADO!!!!**
   // Basicamente essa função uso os dados dos produtos buscados anteriormente
-    // const fetchPopular = async () => {
-    //   setIsLoadingPopular(true);
-    //   try {
-    //     const response = await axios.get("http://localhost:8080/produtos/populares");
-    //     if (response.status === 200) {
-    //       const popularProductsWithFullData = response.data.map(popularProduct => {
-    //         const fullProductDetails = produtos.find(
-    //           produto => produto.nome.toLowerCase() === popularProduct.nome.toLowerCase()
-    //         );
+  // const fetchPopular = async () => {
+  //   setIsLoadingPopular(true);
+  //   try {
+  //     const response = await axios.get("http://localhost:8080/produtos/populares");
+  //     if (response.status === 200) {
+  //       const popularProductsWithFullData = response.data.map(popularProduct => {
+  //         const fullProductDetails = produtos.find(
+  //           produto => produto.nome.toLowerCase() === popularProduct.nome.toLowerCase()
+  //         );
 
-    //         return (
-    //           fullProductDetails || {
-    //             id: null,
-    //             nome: popularProduct.nome,
-    //             preco: popularProduct.preco,
-    //             subtipo: {
-    //               nome: "Desconhecido",
-    //               tipoPai: { nome: "Desconhecido" },
-    //             },
-    //             emEstoque: false,
-    //           }
-    //         );
-    //       }
-    //       );
+  //         return (
+  //           fullProductDetails || {
+  //             id: null,
+  //             nome: popularProduct.nome,
+  //             preco: popularProduct.preco,
+  //             subtipo: {
+  //               nome: "Desconhecido",
+  //               tipoPai: { nome: "Desconhecido" },
+  //             },
+  //             emEstoque: false,
+  //           }
+  //         );
+  //       }
+  //       );
 
   //       setPopular(popularProductsWithFullData);
   //       setIsPopularToggled(!isPopularToggled);
@@ -130,7 +130,7 @@ const Cardapio = () => {
     const processedItems = [];
     const failedItems = [];
 
-    const notifications = cartItems.map(async (item) => {
+    const reserva = cartItems.map(async (item) => {
       try {
         const response = await axios.post("http://localhost:8080/notificacoes", {
           email,
@@ -146,7 +146,7 @@ const Cardapio = () => {
       }
     });
 
-    await Promise.allSettled(notifications);
+    await Promise.allSettled(reserva);
 
     if (processedItems.length > 0) {
       toast.success(
@@ -162,14 +162,39 @@ const Cardapio = () => {
   };
 
   const addToCart = (produto) => {
-    if (!cartItems.some((item) => item.id === produto.id)) {
-      setCartItems([...cartItems, { ...produto, price: produto.preco }]);
-    }
+    setCartItems((prevItems) => {
+      const itemExists = prevItems.find((item) => item.id === produto.id);
+
+      if (itemExists) {
+        // Produto já no carrinho: incrementa quantidade
+        return prevItems.map((item) =>
+          item.id === produto.id
+            ? { ...item, quantity: (item.quantity || 1) + 1 }
+            : item
+        );
+      } else {
+        // Produto novo no carrinho: adiciona com quantity = 1 e preço corrigido
+        return [...prevItems, { ...produto, price: produto.preco, quantity: 1 }];
+      }
+    });
   };
 
-  const removeFromCart = (produtoId) => {
-    setCartItems(cartItems.filter((item) => item.id !== produtoId));
+
+  const removeFromCart = (id) => {
+    setCartItems((prevItems) => {
+      return prevItems
+        .map((item) => {
+          if (item.id === id) {
+            const newQuantity = (item.quantity || 1) - 1;
+            if (newQuantity <= 0) return null; // remove se chegou a 0
+            return { ...item, quantity: newQuantity };
+          }
+          return item;
+        })
+        .filter((item) => item !== null); // remove os nulos (quantidade 0)
+    });
   };
+
 
   const filteredProdutos = produtos.filter((produto) => {
     const matchesTermo = termo
@@ -179,28 +204,28 @@ const Cardapio = () => {
     const matchesPrice = produto.preco <= priceRange;
 
     const matchesCategory =
-    selectedCategories.length === 0 ||
-    (produto.subtipo && selectedCategories.includes(produto.subtipo.nome)) ||
-    (produto.subtipo && produto.subtipo.tipoPai && selectedCategories.includes(produto.subtipo.tipoPai.nome));
-  
-  const matchesType =
-    selectedTypes.length === 0 ||
-    (produto.subtipo && produto.subtipo.tipoPai && selectedTypes.includes(produto.subtipo.tipoPai.nome));
+      selectedCategories.length === 0 ||
+      (produto.subtipo && selectedCategories.includes(produto.subtipo.nome)) ||
+      (produto.subtipo && produto.subtipo.tipoPai && selectedCategories.includes(produto.subtipo.tipoPai.nome));
 
-  const matchesPopular =
-    !isPopularToggled ||
-    produtosPopulares.some(
-      (popularProduto) => popularProduto.id === produto.id
+    const matchesType =
+      selectedTypes.length === 0 ||
+      (produto.subtipo && produto.subtipo.tipoPai && selectedTypes.includes(produto.subtipo.tipoPai.nome));
+
+    const matchesPopular =
+      !isPopularToggled ||
+      produtosPopulares.some(
+        (popularProduto) => popularProduto.id === produto.id
+      );
+
+    return (
+      matchesTermo &&
+      matchesPrice &&
+      matchesCategory &&
+      matchesType &&
+      matchesPopular
     );
-
-  return (
-    matchesTermo &&
-    matchesPrice &&
-    matchesCategory &&
-    matchesType &&
-    matchesPopular
-  );
-});
+  });
 
   // const categorias = [
   //   ...new Set(
@@ -211,17 +236,51 @@ const Cardapio = () => {
   //   ),
   // ];
 
-  const validateEmail = (email) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+  // const validateEmail = (email) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+
+  // // const handleConfirm = () => {
+  // //   if (!validateEmail(email)) {
+  // //     setEmailError("Por favor, insira um email válido.");
+  // //     return;
+  // //   }
+  // //   setEmailError("");
+  // //   closeModal();
+  // //   sendNotification();
+  // // };
 
   const handleConfirm = () => {
-    if (!validateEmail(email)) {
-      setEmailError("Por favor, insira um email válido.");
+
+    const numeroVendedor = 5511988469500; // Número do vendedor
+
+    if (cartItems.length === 0) {
+      toast.error("Nenhum item no carrinho para enviar.");
       return;
     }
-    setEmailError("");
-    closeModal();
-    sendNotification();
-  };
+
+    const produtosReservados = cartItems.map((item) => `${item.nome} - ${item.quantity}x - R$ ${item.price.toFixed(2).replace(".", ",")}`).join("\n");
+    const valorTotal = cartItems
+      .reduce((total, item) => total + item.price * (item.quantity || 1), 0)
+      .toFixed(2)
+      .replace(".", ",");
+
+    const dataAtual = new Date();
+    const dataFormatada = dataAtual.toLocaleDateString("pt-BR");
+
+    const mensagem = encodeURIComponent(
+      `Olá, Josué! Gostaria de realizar uma reserva.\n\n` +
+      `📅 *Data da reserva:* ${dataFormatada}\n\n` +
+      `🛍️ *Produtos reservados:*\n${produtosReservados}\n\n` +
+      `💰 *Valor total:* R$ ${valorTotal}\n\n` +
+      `Aguardo a confirmação. Desde já, obrigado!`
+    );
+
+    window.open(
+      `https://api.whatsapp.com/send?phone=${numeroVendedor}&text=${mensagem}`,
+      "_blank"
+    );
+
+
+  }
 
   const openModal = () => setIsModalOpen(true);
   const closeModal = () => {
@@ -288,8 +347,8 @@ const Cardapio = () => {
                 setSelectedTypes={setSelectedTypes}
               />
             </aside>
-            <aside className="notifications">
-              <h2>Notificações</h2>
+            <aside className="reserva">
+              <h2>Reservas</h2>
               {cartItems.length === 0 ? (
                 <p
                   style={{
@@ -315,17 +374,19 @@ const Cardapio = () => {
                           }}
                         />
                         <div className="cartItemDetails">
-                          <h4 title={item.nome}>{item.nome}</h4>
-                          <p>R$ {item.price.toFixed(2)}</p>
+                          <h4>{item.nome}</h4>
+                          <div className="quantityWrapper">
+                            <button onClick={() => removeFromCart(item.id)}>-</button>
+                            <span>{item.quantity || 1}</span>
+                            <button onClick={() => addToCart(item)}>+</button>
+                          </div>
+                          <p>Total: R$ {(item.price * (item.quantity || 1)).toFixed(2)}</p>
                         </div>
-                        <button onClick={() => removeFromCart(item.id)}>
-                          Remover
-                        </button>
                       </li>
                     ))}
                   </ul>
                   <button className="checkoutButton" onClick={openModal}>
-                    Seja Notificado
+                    Realizar Reserva
                   </button>
                 </>
               )}
@@ -378,13 +439,13 @@ const Cardapio = () => {
                     {produto.nome}
                   </div>
                   <p>R$ {produto.preco.toFixed(2)}</p>
-                  {/* <button
+                  <button
                     className="notifyMe"
                     onClick={() => addToCart(produto)}
-                    disabled={produto.emEstoque}
+                    // disabled={produto.emEstoque}
                   >
-                    {produto.emEstoque ? "Em Estoque" : "Notifique-me"}
-                  </button> */}
+                    <span>Reserva</span>
+                  </button>
                 </div>
               ))
             )}
@@ -443,21 +504,22 @@ const Cardapio = () => {
             width: 400,
           }}
         >
-          <h2>Seja Notificado!</h2>
-          <TextField
-            label="Digite seu e-mail"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            error={Boolean(emailError)}
-            helperText={emailError}
-            fullWidth
-            margin="normal"
-          />
+          <h2>Reserva!</h2>
+          <p>Ao confirmar, você será redirecionado para o WhatsApp para finalizar sua reserva.</p>
+          {/* <TextField
+            // label="Digite seu e-mail"
+            // value={email}
+            // onChange={(e) => setEmail(e.target.value)}
+            // error={Boolean(emailError)}
+            // helperText={emailError}
+            // fullWidth
+            // margin="normal"
+          /> */}
           <div style={{ display: "flex", justifyContent: "flex-end" }}>
             <Button onClick={closeModal} variant="outlined" color="error">
               Cancelar
             </Button>
-            <Button onClick={handleConfirm} variant="contained" color="primary">
+            <Button onClick={handleConfirm} variant="contained" color="primary" style={{ marginLeft: "10px" }}>
               Confirmar
             </Button>
           </div>

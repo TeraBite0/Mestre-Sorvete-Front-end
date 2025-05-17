@@ -147,7 +147,7 @@ body {
 }
 
 .sidebar,
-.notifications {
+.reserva {
     background-color: white;
     padding: 1.5rem;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
@@ -168,7 +168,7 @@ body {
     max-width: 200px;
 }
 
-.notifications {
+.reserva {
     overflow-y: auto;
     height: auto;
     max-height: 32vh;
@@ -176,18 +176,18 @@ body {
     box-sizing: border-box;
 }
 
-.notifications h2 {
+.reserva h2 {
     font-size: 18px;
     margin-top: 0;
     margin-bottom: 15px;
 }
 
-.notifications ul {
+.reserva ul {
     list-style: none;
     padding: 0;
 }
 
-.notifications ul li {
+.reserva ul li {
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -197,7 +197,7 @@ body {
     margin-bottom: 10px;
 }
 
-.notifications img {
+.reserva img {
     height: 4rem;
     width: 4rem;
     object-fit: cover;
@@ -227,7 +227,7 @@ body {
     font-size: 12px;
 }
 
-.notifications button {
+.reserva button {
     background-color: #8B0000;
     color: white;
     border: none;
@@ -238,6 +238,37 @@ body {
     transition: background-color 0.3s;
     flex-shrink: 0;
 }
+
+.quantityWrapper {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 6px 0;
+}
+
+.quantityWrapper button {
+  background-color: #8B0000;
+  color: white;
+  border: none;
+  padding: 2px 8px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: bold;
+  transition: background-color 0.2s ease;
+}
+
+.quantityWrapper button:hover {
+  background-color: #b22222;
+}
+
+.quantityWrapper span {
+  min-width: 20px;
+  text-align: center;
+  font-size: 14px;
+  color: #333;
+}
+
 
 .cartTotal {
     display: flex;
@@ -337,9 +368,16 @@ body {
     transition: all 0.3s;
 }
 
-.notifyMe button {
+.notifyMe button span {
     font-family: "Poppins", sans-serif;
+    
 }
+
+.notifyMe span {
+    font-size: 16px;
+    font-weight: 700;
+}
+
 
 .notifyMe:hover {
     background-color: #6d0000;
@@ -451,7 +489,7 @@ body {
         height: 150px;
     }
 
-    .notifications {
+    .reserva {
         padding: 1rem;
         width: 100%;
     }
@@ -460,11 +498,11 @@ body {
         width: 100%;
     }
 
-    .notifications h2 {
+    .reserva h2 {
         font-size: 16px;
     }
 
-    .notifications ul li {
+    .reserva ul li {
         display: inherit;
     }
 }
