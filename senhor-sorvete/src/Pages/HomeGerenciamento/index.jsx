@@ -1,3 +1,4 @@
+import React, { useState } from "react";
 import HeaderGerencimento from "../../Components/HeaderGerenciamento";
 import CardsGerenciamento from "../../Components/CardsGerenciamento";
 import "./homeGerenciamento.css";
@@ -12,6 +13,13 @@ const HomeGerenciamento = () => {
     <img src="/Imagens/calendario-icon.png" alt=""/>,
     <img src="/Imagens/retornar-site.png" alt=""/>
   ];
+
+  const [mostrarModal, setMostrarModal] = useState(false);
+
+  const confirmarLogout = () => {
+    sessionStorage.clear();
+    window.location.href = "/";
+  };
 
   return (
     <div>
@@ -66,9 +74,19 @@ const HomeGerenciamento = () => {
             titulo="Página inicial"
             subtitulo="Retornar ao site"
             imagem={imagens[6]}
-            href="/"
+            onClick={() => setMostrarModal(true)} 
           />
         </div>
+
+        {mostrarModal && (
+          <div className="modal-confirmacao">
+            <div className="modal-conteudo">
+              <p>Deseja realmente sair?</p>
+              <button onClick={confirmarLogout}>Sim</button>
+              <button onClick={() => setMostrarModal(false)}>Não</button>
+            </div>
+          </div> 
+        )}
       </div>
     </div>
   );

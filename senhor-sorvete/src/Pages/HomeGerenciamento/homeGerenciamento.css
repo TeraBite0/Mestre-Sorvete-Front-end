@@ -21,6 +21,43 @@
   margin-bottom: .5rem;
 }
 
+.modal-confirmacao {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0,0,0,0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 999;
+}
+
+.modal-conteudo {
+  background: white;
+  padding: 20px;
+  border-radius: 8px;
+  text-align: center;
+}
+
+.modal-conteudo p {
+  font-size: 20px;
+  font-weight: 600;
+}
+
+.modal-conteudo button {
+  background-color: #6d0000;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+  margin-left: 5px;
+  font-weight: bold;
+  font-size: 16px;
+}
+
 @media (max-width: 768px) {
   .containerFerramentas h2 {
     margin-bottom: 30px;

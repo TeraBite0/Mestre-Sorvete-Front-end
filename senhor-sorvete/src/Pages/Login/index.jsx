@@ -71,7 +71,7 @@ const Login = () => {
           <button type="submit">Entrar</button>
           {/* <a href="/adm/cadastrar-senha">Esqueci minha senha</a> */}
         </form>
-          <p style={{ marginTop: '2rem', fontSize: '16px' }}>
+          <p style={{ marginTop: '2rem', fontSize: '16px', width: '70%'}}>
         Ao entrar, você declara estar ciente e de acordo com os{' '}
         <a href="/Components/LGPD" target="_blank" rel="noopener noreferrer">
           <b>termos da Política de Privacidade</b>
