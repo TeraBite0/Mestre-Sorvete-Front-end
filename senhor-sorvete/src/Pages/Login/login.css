@@ -52,8 +52,9 @@
     border-radius: 10px;
     cursor: pointer;
     color: #772321;
-    font-weight: 700;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+    font-weight: bold;
+    font-size: 17px;
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
     margin: 0 20%;
 }
 

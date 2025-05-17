@@ -13,6 +13,7 @@ import Saidas from "./Pages/ADM/Saidas/saidas";
 import CadastrarSenha from "./Pages/ADM/CadastrarSenha";
 import ProdutoEstoque from "./Pages/ADM/ProdutoEstoque";
 import Dashboard from "./Pages/ADM/Dashboard";
+import LGPD from "./Components/LGPD";
 import NotFound from "./Pages/NotFound";
 
 const AppRoutes = () => {
@@ -33,6 +34,7 @@ const AppRoutes = () => {
                 <Route path= "/adm/saidas" element={<Saidas/>}/>
                 <Route path="/adm/cadastrar-senha" element={<CadastrarSenha/>}/>
                 <Route path="/adm/dashboard" element={<Dashboard/>}/>
+                <Route path="/Components/LGPD" element={<LGPD/>}/>
                 <Route path="*" element={<NotFound />} />
 
                 {/* TODO: TROCAR O CAMINHO PARA ":idEstoque" para receber o id do produto na URL */}

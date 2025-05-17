@@ -1,0 +1,39 @@
+.lgpd {
+      max-width: 700px;
+  margin: 2rem auto;
+  padding: 1.5rem 2rem;
+  background: #f9f9f9;
+  border-radius: 8px;
+  box-shadow: 0 0 10px rgba(0,0,0,0.1);
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  color: #333;
+  line-height: 1.6;
+}
+
+.lgpd h1  {
+    display: flex;
+    justify-content: center;
+    color: #6d0000;
+  margin-top: 1.5rem;  
+}
+
+.lgpd h2 {
+    color:#6d0000;
+  margin-top: 1.5rem;  
+}
+
+.lgpd span {
+    display: flex;
+    justify-content: center;
+    font-size: 16px;
+}
+
+.lgpd p ul{
+    font-size: 2rem;
+    margin-top: 1rem;
+}
+
+.lgpd ul {
+     list-style-type: disc;
+  padding-left: 1.5rem;
+}
