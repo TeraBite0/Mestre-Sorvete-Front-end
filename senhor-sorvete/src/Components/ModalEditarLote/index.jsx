@@ -83,9 +83,9 @@ const ModalGerenciamento = ({
   };
 
   const handleSave = async () => {
-    // if (!validateFields()) {
-    //   return;
-    // }
+    if (!validateFields()) {
+      return;
+     }
 
     const transformedData = transformBeforeSubmit(formData);
 

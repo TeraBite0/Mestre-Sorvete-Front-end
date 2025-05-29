@@ -25,12 +25,12 @@ const obterCorQtdCaixaEstoque = (qtdCaixasEstoque) => {
   return "#90EE90";
 };
 
-const obterCorQtdPorCaixa = (qtdPorCaixas) => {
-  if (qtdPorCaixas === 0) return "#818d91";
-  if (qtdPorCaixas <= 10) return "#fc8886";
-  if (qtdPorCaixas <= 30) return "#fafa9d";
-  return "#90EE90";
-};
+// const obterCorQtdPorCaixa = (qtdPorCaixas) => {
+//   if (qtdPorCaixas === 0) return "#818d91";
+//   if (qtdPorCaixas <= 10) return "#fc8886";
+//   if (qtdPorCaixas <= 30) return "#fafa9d";
+//   return "#90EE90";
+// };
 
 // const estiloCabecalhoTabela = {
 //   fontWeight: "bold",

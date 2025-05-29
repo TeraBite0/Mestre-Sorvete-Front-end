@@ -12,7 +12,6 @@ import WhatshotIcon from "@mui/icons-material/Whatshot";
 
 import Modal from "@mui/material/Modal";
 import Box from "@mui/material/Box";
-import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
 import Skeleton from "@mui/material/Skeleton";
 
@@ -26,10 +25,10 @@ const Cardapio = () => {
   const [email, setEmail] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isMaisModalOpen, setIsMaisModalOpen] = useState(false);
-  const [emailError, setEmailError] = useState("");
-  const [produtosPopulares, setPopular] = useState([]);
+  const [setEmailError] = useState("");
+  const [produtosPopulares] = useState([]);
   const [selectedTypes, setSelectedTypes] = useState([]);
-  const [isPopularToggled, setIsPopularToggled] = useState(false);
+  const [isPopularToggled] = useState(false);
 
   const sidebarRef = useRef(null);
   const mainContentRef = useRef(null);
@@ -123,43 +122,43 @@ const Cardapio = () => {
   //     }
   // };
 
-  const openMaisModal = () => setIsMaisModalOpen(true);
+ // const openMaisModal = () => setIsMaisModalOpen(true);
   const closeMaisModal = () => setIsMaisModalOpen(false);
 
-  const sendNotification = async () => {
-    const processedItems = [];
-    const failedItems = [];
+  // const sendNotification = async () => {
+  //   const processedItems = [];
+  //   const failedItems = [];
 
-    const reserva = cartItems.map(async (item) => {
-      try {
-        const response = await axios.post("http://localhost:8080/notificacoes", {
-          email,
-          idProduto: item.id,
-        });
+  //   const reserva = cartItems.map(async (item) => {
+  //     try {
+  //       const response = await axios.post("http://localhost:8080/notificacoes", {
+  //         email,
+  //         idProduto: item.id,
+  //       });
 
-        if (response.status === 201) {
-          processedItems.push(item);
-        }
-      } catch (error) {
-        console.error(`Erro ao mandar notificação para ${item.nome}`, error);
-        failedItems.push(item);
-      }
-    });
+  //       if (response.status === 201) {
+  //         processedItems.push(item);
+  //       }
+  //     } catch (error) {
+  //       console.error(`Erro ao mandar notificação para ${item.nome}`, error);
+  //       failedItems.push(item);
+  //     }
+  //   });
 
-    await Promise.allSettled(reserva);
+  //   await Promise.allSettled(reserva);
 
-    if (processedItems.length > 0) {
-      toast.success(
-        `Itens processados: ${processedItems.length}/${cartItems.length}`
-      );
-    }
+  //   if (processedItems.length > 0) {
+  //     toast.success(
+  //       `Itens processados: ${processedItems.length}/${cartItems.length}`
+  //     );
+  //   }
 
-    if (failedItems.length > 0) {
-      if (failedItems.length === 1)
-        toast.error(`Falha ao processar ${failedItems.length} item`);
-      else toast.error(`Falha ao processar ${failedItems.length} itens`);
-    }
-  };
+  //   if (failedItems.length > 0) {
+  //     if (failedItems.length === 1)
+  //       toast.error(`Falha ao processar ${failedItems.length} item`);
+  //     else toast.error(`Falha ao processar ${failedItems.length} itens`);
+  //   }
+  // };
 
   const addToCart = (produto) => {
     setCartItems((prevItems) => {
