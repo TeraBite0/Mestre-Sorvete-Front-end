@@ -22,7 +22,7 @@ const Cardapio = () => {
   const [selectedCategories, setSelectedCategories] = useState([]);
   const [produtos, setProdutos] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
-  const [email, setEmail] = useState("");
+  const [setEmail] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isMaisModalOpen, setIsMaisModalOpen] = useState(false);
   const [setEmailError] = useState("");
@@ -50,7 +50,7 @@ const Cardapio = () => {
     fetchProdutos();
   }, []);
 
-  const [isLoadingPopular, setIsLoadingPopular] = useState(false);
+  const [isLoadingPopular] = useState(false);
 
   // Solução provisória ao erro do populares, **REMOVER QUANDO CONCERTADO!!!!**
   // Basicamente essa função uso os dados dos produtos buscados anteriormente

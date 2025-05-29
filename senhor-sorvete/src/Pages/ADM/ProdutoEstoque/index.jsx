@@ -18,12 +18,12 @@ const ProdutoEstoque = () => {
     const [abrirConfirmarDeletar, setAbrirConfirmarDeletar] = useState(false);
     const [lotesDoProduto, setLotesDoProduto] = useState([]);
     const { id } = useParams();
-    const hoje = new Date();
+    // const hoje = new Date();
     const [loading, setLoading] = useState(false);
     const [idProduto, setIdProduto] = useState();
     const [produtos, setProdutos] = useState([]);
     const [fornecedores, setFornecedores] = useState([]);  
-    const [status, setStatus] = useState([
+    const [status] = useState([
         { id: 1, nome: "Aguardando entrega" },
         { id: 2, nome: "Entregue" },
         { id: 3, nome: "Cancelado" },
@@ -53,7 +53,7 @@ const ProdutoEstoque = () => {
             }
         };
         fetchEstoque();
-    }, []);
+    }, [id]);
 
     const buscarProdutos = async () => {
         const token = sessionStorage.getItem('token');
