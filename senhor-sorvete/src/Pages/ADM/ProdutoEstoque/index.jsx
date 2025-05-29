@@ -3,7 +3,6 @@ import './produtoEstoque.css';
 import HeaderGerenciamento from "../../../Components/HeaderGerenciamento";
 import BotaoVoltarGerenciamento from '../../../Components/BotaoVoltarGerenciamento';
 import BotaoGerenciamento from "../../../Components/BotaoGerenciamento";
-// import React, { useState } from "react";
 import { useParams } from 'react-router-dom';
 import axios from "axios";
 import { toast } from "react-toastify";
@@ -19,12 +18,12 @@ const ProdutoEstoque = () => {
     const [abrirConfirmarDeletar, setAbrirConfirmarDeletar] = useState(false);
     const [lotesDoProduto, setLotesDoProduto] = useState([]);
     const { id } = useParams();
-    const hoje = new Date();
+    // const hoje = new Date();
     const [loading, setLoading] = useState(false);
     const [idProduto, setIdProduto] = useState();
     const [produtos, setProdutos] = useState([]);
     const [fornecedores, setFornecedores] = useState([]);  
-    const [status, setStatus] = useState([
+    const [status] = useState([
         { id: 1, nome: "Aguardando entrega" },
         { id: 2, nome: "Entregue" },
         { id: 3, nome: "Cancelado" },
@@ -54,7 +53,7 @@ const ProdutoEstoque = () => {
             }
         };
         fetchEstoque();
-    }, []);
+    }, [id]);
 
     const buscarProdutos = async () => {
         const token = sessionStorage.getItem('token');
@@ -142,14 +141,14 @@ const ProdutoEstoque = () => {
     }
     const fecharModalConfirmarDeletar = () => setAbrirConfirmarDeletar(false);
     
-    const getCorVencimento = (dataVencimento) => {
-        const vencimento = new Date(dataVencimento.split('/').reverse().join('-'));
-        const diasAteVencimento = Math.floor((vencimento - hoje) / (1000 * 60 * 60 * 24));
+    // const getCorVencimento = (dataVencimento) => {
+    //     const vencimento = new Date(dataVencimento.split('/').reverse().join('-'));
+    //     const diasAteVencimento = Math.floor((vencimento - hoje) / (1000 * 60 * 60 * 24));
         
-        if (diasAteVencimento < 0) return '#A9A9A9'; // Vencidos
-        if (diasAteVencimento <= 30) return '#F1C97B'; // Próximos do vencimento
-        return '#6FDB64'; // Normais
-    };
+    //     if (diasAteVencimento < 0) return '#A9A9A9'; // Vencidos
+    //     if (diasAteVencimento <= 30) return '#F1C97B'; // Próximos do vencimento
+    //     return '#6FDB64'; // Normais
+    // };
 
     function formatarNumero(numero) {
         return numero.toLocaleString("pt-BR", {

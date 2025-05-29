@@ -12,8 +12,7 @@ import {
 } from "@mui/material";
 import BotaoGerenciamento from "../BotaoGerenciamento";
 import ModalAdicionarFornecedor from "../../Components/ModalAdicionarFornecedor";
-import axios from "axios";
-import { toast } from "react-toastify";
+
 
 const estiloModal = {
   position: "absolute",
