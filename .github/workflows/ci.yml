@@ -1,0 +1,29 @@
+name: "Site Senhor Sorvete - CI"
+description: "CI - Build do site Senhor Sorvete (sem deploy)"
+
+on:
+  pull_request:
+    branches:
+      - main
+    types: [opened, synchronize, reopened]
+
+jobs:
+  ci_test_job:
+    runs-on: ubuntu-latest
+    name: CI - Build and Test
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          submodules: true
+          lfs: false
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+
+      - name: Install dependencies and build
+        run: |
+          cd senhor-sorvete
+          npm install
+          npm run build
