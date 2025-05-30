@@ -4,15 +4,13 @@ FROM node:18 AS build
 WORKDIR /app
 
 # Copia o package.json e package-lock.json
-COPY senhor-sorvete/package*.json ./
+COPY package*.json ./
 
 # Instala as dependências
 RUN npm install
 
 # Copia o restante do código
-COPY . ./
-
-
+COPY . .
 
 # Gera o build de produção
 RUN npm run build
