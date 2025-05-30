@@ -10,7 +10,9 @@ COPY senhor-sorvete/package*.json ./
 RUN npm install
 
 # Copia o restante do código
-COPY senhor-sorvete/ ./
+COPY . ./
+
+
 
 # Gera o build de produção
 RUN npm run build
