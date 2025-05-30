@@ -61,12 +61,15 @@ jobs:
               sudo systemctl enable docker
               sudo systemctl start docker
               sudo usermod -aG docker $USER
+              # IMPORTANTE: A adição ao grupo docker só terá efeito em uma nova sessão.
+              # Para evitar problemas imediatos, usamos 'sudo' nos comandos Docker abaixo.
             else
               echo "Docker já está instalado."
             fi
 
             # Deploy da nova imagem
-            docker pull ${{ secrets.DOCKER_USERNAME }}/senhorsorvete:latest
-            docker stop senhor-sorvete || true
-            docker rm senhor-sorvete || true
-            docker run -d --name senhor-sorvete -p 80:80 ${{ secrets.DOCKER_USERNAME }}/senhorsorvete:latest
+            # Usando 'sudo' para garantir as permissões necessárias
+            sudo docker pull ${{ secrets.DOCKER_USERNAME }}/senhorsorvete:latest
+            sudo docker stop senhor-sorvete || true
+            sudo docker rm senhor-sorvete || true
+            sudo docker run -d --name senhor-sorvete -p 80:80 ${{ secrets.DOCKER_USERNAME }}/senhorsorvete:latest
