@@ -124,7 +124,7 @@ const Home = (props) => {
         <section className="section-2" id="section-2">
           <div className="sobre-container">
             <div className="sobre-img">
-              <img src="Imagens/imagem-2-homepage.png" alt="Imagem sobre nós" />
+              <img src="Imagens/valores.png" alt="Imagem sobre nós" />
             </div>
             <div className="sobre-text">
               <h2>Missão</h2>
@@ -200,7 +200,7 @@ const Home = (props) => {
             </button>
           </div>
           <div className="more-img">
-            <img src="Imagens/imagem-4-homepage.png" alt="Imagem placeholder" />
+            <img src="Imagens/maispng.png" alt="Imagem placeholder" />
           </div>
         </section>
 

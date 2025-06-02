@@ -1,183 +1,120 @@
-import React, { useState, useEffect } from "react";
-import {
-  Modal,
-  Box,
-  Typography,
-  TextField,
-  Select,
-  MenuItem,
-  FormControl,
-  InputLabel,
-  FormHelperText,
-} from "@mui/material";
-import BotaoGerenciamento from "../BotaoGerenciamento";
+import { Autocomplete, Button, Dialog, DialogActions, DialogContent, DialogTitle, TextField } from "@mui/material";
+import axios from "axios";
+import { useEffect, useState } from "react";
+import { toast } from "react-toastify";
 
-const estiloModal = {
-  position: "absolute",
-  top: "50%",
-  left: "50%",
-  transform: "translate(-50%, -50%)",
-  width: 400,
-  height: "auto",
-  maxHeight: "80vh",
-  overflowY: "auto",
-  bgcolor: "background.paper",
-  border: "2px solid #000",
-  boxShadow: 24,
-  p: 4,
-};
-
-const ModalGerenciamento = ({
+const ModalEditarProduto = ({
   open,
   onClose,
-  title,
-  fields,
-  onSave,
-  onSubmit = null,
-  loading = false,
-  validation = {},
-  transformBeforeSubmit = (data) => data,
+  produtoAtual,
+  idLote,
 }) => {
-  const [formData, setFormData] = useState({});
-  const [errors, setErrors] = useState({});
+  const [observacao, setObservacao] = useState("");
+  const [selectedProduto, setSelectedProduto] = useState(
+    produtoAtual || null
+  );
+  const [status] = useState([
+    { id: 1, nome: "Aguardando entrega", status: "AGUARDANDO_ENTREGA" },
+    { id: 2, nome: "Entregue", status: "ENTREGUE" },
+    { id: 3, nome: "Cancelado", status: "CANCELADO" },
+    { id: 4, nome: "Entregue com pendência", status: "ENTREGUE_COM_PENDENCIA" },
+    { id: 5, nome: "Concluído com pendência", status: "CONCLUIDO_COM_PENDENCIA" }
+  ]);
 
   useEffect(() => {
-    if (open) {
-      setFormData({});
-      setErrors({});
-    }
-  }, [open]);
+    setSelectedProduto(produtoAtual);
+  }, [produtoAtual]);
 
-  const handleFieldChange = (fieldName, value) => {
-    setFormData((prev) => ({
-      ...prev,
-      [fieldName]: value,
-    }));
+  const handleAtualizarStatus = async () => {
+    const token = sessionStorage.getItem("token");
 
-    if (errors[fieldName]) {
-      setErrors((prev) => ({
-        ...prev,
-        [fieldName]: null,
-      }));
-    }
-  };
-
-  const validateFields = () => {
-    const newErrors = {};
-    fields.forEach((field) => {
-      const fieldValidation = validation[field.name];
-      if (fieldValidation) {
-        const value = formData[field.name];
-        if (fieldValidation.required && !value) {
-          newErrors[field.name] = "Campo obrigatório";
-        } else if (
-          fieldValidation.pattern &&
-          !fieldValidation.pattern.test(value)
-        ) {
-          newErrors[field.name] = fieldValidation.message || "Valor inválido";
+    const corpoParaAtualizarStatus = {
+      status: selectedProduto?.status || "",
+      observacao: observacao || "",
+    };
+    debugger
+    try {
+      await axios.patch(
+        `http://localhost:8080/lotes/${idLote}`,
+        corpoParaAtualizarStatus,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json"
+          }
         }
-      }
-    });
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
-  };
-
-  const handleSave = async () => {
-    if (!validateFields()) {
-      return;
-     }
-
-    const transformedData = transformBeforeSubmit(formData);
-
-    if (onSubmit) {
-      await onSubmit(transformedData);
-    } else if (onSave) {
-      onSave(transformedData);
-    }
-  };
-
-  const renderField = (field) => {
-    if (field.type === "select") {
-      return (
-        <FormControl
-          key={field.name}
-          fullWidth
-          margin="normal"
-          error={!!errors[field.name]}
-        >
-          <InputLabel>{field.label}</InputLabel>
-          <Select
-            value={formData[field.name] || ""}
-            onChange={(e) => handleFieldChange(field.name, e.target.value)}
-            label={field.label}
-            disabled={loading}
-          >
-            {field.options?.map((option) => (
-              <MenuItem key={option.value} value={option.value}>
-                {option.label}
-              </MenuItem>
-            ))}
-          </Select>
-          {errors[field.name] && (
-            <FormHelperText>{errors[field.name]}</FormHelperText>
-          )}
-        </FormControl>
       );
+      window.location.reload();
+    } catch (error) {
+      console.error("Erro ao atualizar status do lote produtos:", error);
+      toast.error(error.response?.data?.mensagem || "Erro ao atualizar status do lote.");
     }
-
-    return (
-      <TextField
-        key={field.name}
-        fullWidth
-        label={field.label}
-        name={field.name}
-        type={field.type || "text"}
-        value={formData[field.name] || ""}
-        onChange={(e) => handleFieldChange(field.name, e.target.value)}
-        error={!!errors[field.name]}
-        helperText={errors[field.name]}
-        InputLabelProps={field.type === "date" ? { shrink: true } : undefined}
-        variant="outlined"
-        margin="normal"
-        disabled={loading}
-        {...field.props}
-      />
-    );
   };
 
   return (
-    <Modal
-      open={open}
-      onClose={onClose}
-      aria-labelledby={`modal-${title.toLowerCase().replace(" ", "-")}`}
-    >
-      <Box sx={estiloModal}>
-        <Typography
-          id={`modal-${title.toLowerCase().replace(" ", "-")}`}
-          variant="h6"
-          component="h2"
-          mb={2}
+    <Dialog open={open} onClose={onClose}>
+      <DialogTitle className="tituloModal">
+        {"Editar Status do Lote"}
+      </DialogTitle>
+      <DialogContent>
+        <Autocomplete
+          autoFocus
+          fullWidth
+          options={status}
+          value={status.find((s) => s.id === selectedProduto?.id) || null}
+          onChange={(event, newValue) => {
+            if (newValue) {
+              setSelectedProduto(newValue);
+            } else {
+              setSelectedProduto(null);
+            }
+          }}
+          getOptionLabel={(option) => option.nome || ''}
+          renderInput={(params) => (
+            <TextField
+              {...params}
+              margin="dense"
+              label="Selecione um Status do Lote"
+              fullWidth
+            />
+          )}
+        />
+
+        <TextField
+          margin="dense"
+          name="observacao"
+          value={observacao}
+          onChange={event => setObservacao(event.target.value)}
+          label="Observação"
+          type="text"
+          fullWidth
+        />
+
+      </DialogContent>
+      <DialogActions>
+        <Button
+          className="botaoModal"
+          onClick={onClose}
+          variant="contained"
+          style={{ marginTop: "10px", marginLeft: "10px" }}
         >
-          {title}
-        </Typography>
+          Cancelar
+        </Button>
 
-        {fields.map((field) => renderField(field))}
+        <Button
+          className="botaoModal"
+          onClick={handleAtualizarStatus}
+          variant="contained"
+          disabled={!selectedProduto}
+          style={{ marginTop: "10px" }}
+        >
+          Atualizar Status
+        </Button>
 
-        <Box className="modal-button-container">
-          <BotaoGerenciamento
-            botao="Cancelar"
-            onClick={onClose}
-            disabled={loading}
-          />
-          <BotaoGerenciamento
-            botao="Salvar"
-            onClick={handleSave}
-            disabled={loading}
-          />
-        </Box>
-      </Box>
-    </Modal>
+
+      </DialogActions>
+    </Dialog>
   );
 };
 
-export default ModalGerenciamento;
+export default ModalEditarProduto;

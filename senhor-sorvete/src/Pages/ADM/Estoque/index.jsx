@@ -144,7 +144,7 @@ const Estoque = () => {
 
   const camposAdicionarLote = [
     {
-      name: "produtoId",
+      name: "produto",
       label: "Produto",
       type: "select",
       options: produtos.map((p) => ({
@@ -152,6 +152,14 @@ const Estoque = () => {
         label: `${p.nome || p.produto} - ${p.marca}`,
       })),
     },
+    {
+      name: "qtdCaixasCompradas",
+      label: "Quantidade de caixas comprada",
+      type: "number",
+    },
+  ];
+
+  const camposEmComum = [
     {
       name: "nomeFornecedor",
       label: "Nome do Fornecedor",
@@ -167,12 +175,7 @@ const Estoque = () => {
     {
       name: "dtEntrega",
       label: "Previsão de entrega",
-      type: "date",
-    },
-    {
-      name: "qtdProdutoComprado",
-      label: "Quantidade de caixas comprada",
-      type: "number",
+      type: "date",      
     },
     {
       name: "valorLote",
@@ -193,7 +196,7 @@ const Estoque = () => {
     },
     loteProdutos: {
       produtoId: { required: true },
-      qtdProdutoComprado: {
+      qtdCaixasCompradas: {
         required: true,
         pattern: /^[1-9]\d*$/,
         message: "Quantidade deve ser um número positivo",
@@ -211,12 +214,10 @@ const Estoque = () => {
       dtVencimento: formData.dtVencimento,
       dtPedido: formData.dtPedido,
       valorLote: Number(formData.valorLote),
-      loteProdutos: [
-        {
-          produtoId: Number(formData.produtoId),
-          qtdCaixasCompradas: Number(formData.qtdProdutoComprado),
-        }
-      ]
+      loteProdutos: formData.loteProdutos.map((produto) => ({
+        produtoId: Number(produto.produtoId),
+        qtdCaixasCompradas: Number(produto.qtdCaixasCompradas),
+      })),
     };
 
     try {
@@ -246,15 +247,22 @@ const Estoque = () => {
     }
   };
 
-  const transformBeforeSubmit = (data) => {
+  const transformBeforeSubmit = (data, index) => {
+    const loteProdutos = [];
+
+    for (let i = 0; i < index; i++) {
+      const produtoKey = i === 0 ? 'produto' : 'produto' + i;
+      const qtdKey = i === 0 ? 'qtdCaixasCompradas' : 'qtdCaixasCompradas' + i;
+    
+      loteProdutos.push({
+        produtoId: Number(data[produtoKey]),
+        qtdCaixasCompradas: Number(data[qtdKey])
+      });
+    }
+
     return {
       ...data,
-      loteProdutos: [
-        {
-          produtoId: Number(data.produtoId),
-          qtdCaixasCompradas: Number(data.qtdProdutoComprado),
-        }
-      ],
+      loteProdutos: loteProdutos,
       valorLote: Number(data.valorLote),
     };
   };
@@ -288,6 +296,10 @@ const Estoque = () => {
             />
           </div>
           <div className="botoes-container">
+            <BotaoGerenciamento
+              botao="Baixar relatório Excel"
+              onClick={baixarRelatorioExcel}
+            />
             <BotaoGerenciamento
               botao="Adicionar Lote"
               onClick={abrirModalAdicionarLote}
@@ -371,6 +383,7 @@ const Estoque = () => {
         onClose={fecharModalAdicionarLote}
         title="Adicionar Lote"
         fields={camposAdicionarLote}
+        dadosEmComun={camposEmComum}
         onSubmit={handleSubmitLote}
         validation={validacaoAdicionarLote}
         transformBeforeSubmit={transformBeforeSubmit}

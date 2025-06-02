@@ -2,7 +2,6 @@ import React, { useState, useEffect } from "react";
 import './produtoEstoque.css';
 import HeaderGerenciamento from "../../../Components/HeaderGerenciamento";
 import BotaoVoltarGerenciamento from '../../../Components/BotaoVoltarGerenciamento';
-import BotaoGerenciamento from "../../../Components/BotaoGerenciamento";
 import { useParams } from 'react-router-dom';
 import axios from "axios";
 import { toast } from "react-toastify";
@@ -124,6 +123,79 @@ const ProdutoEstoque = () => {
                 <div>
                     <h3>{lotesDoProduto[0]?.loteProdutos[0]?.produto?.nome} - {lotesDoProduto[0]?.loteProdutos[0]?.produto?.marca}  </h3>
                 </div>
+
+      } catch (error) {
+        toast.error('Erro ao buscar lotes do produto');
+        console.log(error);
+      }
+    };
+    fetchEstoque();
+  }, [id]);
+
+  const abrirEditarStatus = (idLote) => {
+    setIdLote(idLote)
+    setAbrirModalEditarLoteStatus(true)
+  };
+  const fecharEditarStatus = () => setAbrirModalEditarLoteStatus(false);
+
+  const fecharModalConfirmarDeletar = () => setAbrirConfirmarDeletar(false);
+
+  function formatarNumero(numero) {
+    return numero.toLocaleString("pt-BR", {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2
+    });
+  }
+
+  const estiloQuantidade = {
+    width: "12px",
+    maxWidth: "90px",
+    minWidth: "90px",
+  };
+
+  const obterCorStatusLote = (status) => {
+    if (status === "Aguardando entrega") return "#fafa9d";
+    if (status === "Entregue") return "#90EE90";
+    if (status === "Cancelado") return "#fc8886";
+    if (status === "Entrege com pendência") return "#fafa9d";
+    if (status === "Concluído com pendência") return "#818d91";
+    return "#fff";
+  };
+
+  const handleDeletar = async () => {
+    const token = sessionStorage.getItem("token");
+    try {
+      await axios.delete(`http://localhost:8080/lotes/${idProduto}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+      });
+
+      window.location.reload();
+    } catch (error) {
+      console.error("Erro ao carregar produtos:", error);
+      toast.error("Erro ao carregar lista de produtos.");
+    }
+  };
+
+  const handleNomeProdutoLote = (lote) => {
+    lote[0].loteProdutos.forEach((l) => {
+      if (l.produto.id === Number(id)){
+        setNomeProduto(`${l.produto.nome} - ${l.produto.marca}`);
+      }
+    })
+  }
+
+  return (
+    <>
+      <HeaderGerenciamento />
+      <div className='estoqueContainer'>
+        <div className='barraTopoWrapper'>
+          <BotaoVoltarGerenciamento pagina="/adm/estoque" texto="Voltar ao Estoque" />
+        </div>
+
+        <h3>{nomeProduto}</h3>
 
         <div >
           <TableContainer
