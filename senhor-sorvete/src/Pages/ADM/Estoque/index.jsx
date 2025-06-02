@@ -75,6 +75,54 @@ const Estoque = () => {
     fetchEstoque();
   }, []);
 
+  const baixarRelatorioExcel = async () => {
+    const token = sessionStorage.getItem('token');
+      try {
+         await axios.get('http://localhost:8080/relatorio', {
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+        });
+      } catch (error) {
+        toast.error('Erro ao baixar relatório Excel');
+        console.log(error);
+      }
+  }
+
+  const baixarRelatorioExcels = async () => {
+    const token = sessionStorage.getItem('token');
+    
+    try {
+      const response = await axios.get('http://localhost:8080/relatorio', {
+        headers: {
+          Authorization: `Bearer ${token}`
+        },
+        responseType: 'blob' // IMPORTANTE!
+      });
+  
+      // Cria uma URL do arquivo
+      const url = window.URL.createObjectURL(new Blob([response.data]));
+      const link = document.createElement('a');
+      link.href = url;
+      
+      // Define o nome do arquivo
+      link.setAttribute('download', 'relatorio.xlsx');
+  
+      // Adiciona e clica no link
+      document.body.appendChild(link);
+      link.click();
+  
+      // Limpa o link
+      link.parentNode.removeChild(link);
+      window.URL.revokeObjectURL(url);
+  
+    } catch (error) {
+      toast.error('Erro ao baixar relatório Excel');
+      console.log(error);
+    }
+  };
+  
+
   const abrirModalAdicionarLote = async () => {
     const token = sessionStorage.getItem('token');
       try {
