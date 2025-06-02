@@ -75,6 +75,54 @@ const Estoque = () => {
     fetchEstoque();
   }, []);
 
+  const baixarRelatorioExcel = async () => {
+    const token = sessionStorage.getItem('token');
+      try {
+         await axios.get('http://localhost:8080/relatorio', {
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+        });
+      } catch (error) {
+        toast.error('Erro ao baixar relatório Excel');
+        console.log(error);
+      }
+  }
+
+  const baixarRelatorioExcels = async () => {
+    const token = sessionStorage.getItem('token');
+    
+    try {
+      const response = await axios.get('http://localhost:8080/relatorio', {
+        headers: {
+          Authorization: `Bearer ${token}`
+        },
+        responseType: 'blob' // IMPORTANTE!
+      });
+  
+      // Cria uma URL do arquivo
+      const url = window.URL.createObjectURL(new Blob([response.data]));
+      const link = document.createElement('a');
+      link.href = url;
+      
+      // Define o nome do arquivo
+      link.setAttribute('download', 'relatorio.xlsx');
+  
+      // Adiciona e clica no link
+      document.body.appendChild(link);
+      link.click();
+  
+      // Limpa o link
+      link.parentNode.removeChild(link);
+      window.URL.revokeObjectURL(url);
+  
+    } catch (error) {
+      toast.error('Erro ao baixar relatório Excel');
+      console.log(error);
+    }
+  };
+  
+
   const abrirModalAdicionarLote = async () => {
     const token = sessionStorage.getItem('token');
       try {
@@ -96,7 +144,7 @@ const Estoque = () => {
 
   const camposAdicionarLote = [
     {
-      name: "produtoId",
+      name: "produto",
       label: "Produto",
       type: "select",
       options: produtos.map((p) => ({
@@ -104,6 +152,14 @@ const Estoque = () => {
         label: `${p.nome || p.produto} - ${p.marca}`,
       })),
     },
+    {
+      name: "qtdCaixasCompradas",
+      label: "Quantidade de caixas comprada",
+      type: "number",
+    },
+  ];
+
+  const camposEmComum = [
     {
       name: "nomeFornecedor",
       label: "Nome do Fornecedor",
@@ -119,12 +175,7 @@ const Estoque = () => {
     {
       name: "dtEntrega",
       label: "Previsão de entrega",
-      type: "date",
-    },
-    {
-      name: "qtdProdutoComprado",
-      label: "Quantidade de caixas comprada",
-      type: "number",
+      type: "date",      
     },
     {
       name: "valorLote",
@@ -145,7 +196,7 @@ const Estoque = () => {
     },
     loteProdutos: {
       produtoId: { required: true },
-      qtdProdutoComprado: {
+      qtdCaixasCompradas: {
         required: true,
         pattern: /^[1-9]\d*$/,
         message: "Quantidade deve ser um número positivo",
@@ -163,12 +214,10 @@ const Estoque = () => {
       dtVencimento: formData.dtVencimento,
       dtPedido: formData.dtPedido,
       valorLote: Number(formData.valorLote),
-      loteProdutos: [
-        {
-          produtoId: Number(formData.produtoId),
-          qtdCaixasCompradas: Number(formData.qtdProdutoComprado),
-        }
-      ]
+      loteProdutos: formData.loteProdutos.map((produto) => ({
+        produtoId: Number(produto.produtoId),
+        qtdCaixasCompradas: Number(produto.qtdCaixasCompradas),
+      })),
     };
 
     try {
@@ -198,15 +247,22 @@ const Estoque = () => {
     }
   };
 
-  const transformBeforeSubmit = (data) => {
+  const transformBeforeSubmit = (data, index) => {
+    const loteProdutos = [];
+
+    for (let i = 0; i < index; i++) {
+      const produtoKey = i === 0 ? 'produto' : 'produto' + i;
+      const qtdKey = i === 0 ? 'qtdCaixasCompradas' : 'qtdCaixasCompradas' + i;
+    
+      loteProdutos.push({
+        produtoId: Number(data[produtoKey]),
+        qtdCaixasCompradas: Number(data[qtdKey])
+      });
+    }
+
     return {
       ...data,
-      loteProdutos: [
-        {
-          produtoId: Number(data.produtoId),
-          qtdCaixasCompradas: Number(data.qtdProdutoComprado),
-        }
-      ],
+      loteProdutos: loteProdutos,
       valorLote: Number(data.valorLote),
     };
   };
@@ -240,6 +296,10 @@ const Estoque = () => {
             />
           </div>
           <div className="botoes-container">
+            <BotaoGerenciamento
+              botao="Baixar relatório Excel"
+              onClick={baixarRelatorioExcel}
+            />
             <BotaoGerenciamento
               botao="Adicionar Lote"
               onClick={abrirModalAdicionarLote}
@@ -323,6 +383,7 @@ const Estoque = () => {
         onClose={fecharModalAdicionarLote}
         title="Adicionar Lote"
         fields={camposAdicionarLote}
+        dadosEmComun={camposEmComum}
         onSubmit={handleSubmitLote}
         validation={validacaoAdicionarLote}
         transformBeforeSubmit={transformBeforeSubmit}

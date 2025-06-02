@@ -9,9 +9,12 @@ import {
   FormControl,
   InputLabel,
   FormHelperText,
+  Button,
 } from "@mui/material";
 import BotaoGerenciamento from "../BotaoGerenciamento";
 import ModalAdicionarFornecedor from "../../Components/ModalAdicionarFornecedor";
+import axios from "axios";
+import { toast } from "react-toastify";
 
 
 const estiloModal = {
@@ -34,6 +37,7 @@ const ModalGerenciamento = ({
   onClose,
   title,
   fields,
+  dadosEmComun,
   onSave,
   onSubmit = null,
   loading = false,
@@ -43,13 +47,33 @@ const ModalGerenciamento = ({
   const [formData, setFormData] = useState({});
   const [errors, setErrors] = useState({});
   const [abrirAdicionarFornecedor, setAbrirAdicionarFornecedor] = useState(false);
+  const [localFields, setLocalFields] = useState(fields);
+  const [produtos, setProdutos] = useState([]);
+  const [index, setIndex] = useState(1);
 
   useEffect(() => {
     if (open) {
       setFormData({});
+      setLocalFields(fields);
+      buscarProdutos();
       setErrors({});
     }
-  }, [open]);
+  }, [open, fields]);
+
+  const buscarProdutos = async () => {
+    const token = sessionStorage.getItem('token');
+    try {
+      const response = await axios.get('http://localhost:8080/produtos', {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      });
+      setProdutos(response.data);
+    } catch (error) {
+      toast.error('Erro ao buscar estoque');
+      console.log(error);
+    }
+  };
 
   const handleFieldChange = (fieldName, value) => {
     if (value === "add-new") {
@@ -71,14 +95,14 @@ const ModalGerenciamento = ({
 
   const abrirModalAdicionarFornecedor = () => setAbrirAdicionarFornecedor(true);
 
-  const fecharModalAdicionarFornecedor = () => { 
+  const fecharModalAdicionarFornecedor = () => {
     setAbrirAdicionarFornecedor(false)
     onClose()
   };
 
   const validateFields = () => {
     const newErrors = {};
-    fields.forEach((field) => {
+    localFields.forEach((field) => {
       const fieldValidation = validation[field.name];
       if (fieldValidation) {
         const value = formData[field.name];
@@ -101,13 +125,31 @@ const ModalGerenciamento = ({
       return;
     }
 
-    const transformedData = transformBeforeSubmit(formData);
+    const transformedData = transformBeforeSubmit(formData, index);
 
     if (onSubmit) {
       await onSubmit(transformedData);
     } else if (onSave) {
       onSave(transformedData);
     }
+  };
+
+  const handleAdicionarCampo = () => {
+    setIndex(index + 1);
+    setLocalFields([...localFields, {
+      name: `produto${index}`,
+      label: `Produto`,
+      type: "select",
+      options: produtos.map((p) => ({
+        value: p.codigo || p.id,
+        label: `${p.nome || p.produto} - ${p.marca}`,
+      })),
+    }, 
+    {
+      name: `qtdCaixasCompradas${index}`,
+      label: "Quantidade de caixas comprada",
+      type: "number",
+    }]);
   };
 
   const renderField = (field) => {
@@ -161,43 +203,71 @@ const ModalGerenciamento = ({
 
   return (
     <>
-    <Modal
-      open={open}
-      onClose={onClose}
-      aria-labelledby={`modal-${title.toLowerCase().replace(" ", "-")}`}
-    >
-      <Box sx={estiloModal}>
-        <Typography
-          id={`modal-${title.toLowerCase().replace(" ", "-")}`}
-          variant="h6"
-          component="h2"
-          mb={2}
-        >
-          {title}
-        </Typography>
+      <Modal
+        open={open}
+        onClose={onClose}
+        aria-labelledby={`modal-${title.toLowerCase().replace(" ", "-")}`}
+      >
+        <Box sx={estiloModal}
+          style={{ width: "1100px", height: "400px" }}>
+          <Typography
+            id={`modal-${title.toLowerCase().replace(" ", "-")}`}
+            variant="h6"
+            component="h2"
+            mb={2}
+          >
+            {title}
+          </Typography>
 
-        {fields.map((field) => renderField(field))}
+          <div style={{ display: "flex", gap: "20px", justifyContent: "space-evenly" }}>
+            <div style={{ height: "330px", display: "flex", flexDirection: "column", justifyContent: "space-between" }}>
+              <div
+                style={{
+                  height: "250px",
+                  width: "450px",
+                  marginBottom: "20px",
+                  padding: "10px",
+                  border: "1px solid #eee",
+                  borderRadius: "4px",
+                  overflowY: "scroll"
+                }}>
 
-        <Box className="modal-button-container">
-          <BotaoGerenciamento
-            botao="Cancelar"
-            onClick={onClose}
-            disabled={loading}
-          />
-          <BotaoGerenciamento
-            botao="Salvar"
-            onClick={handleSave}
-            disabled={loading}
-          />
+                {localFields.map((field) => renderField(field))}
+
+              </div>
+              <div style={{ display: "flex", justifyContent: "center" }}>
+                <Button variant="outlined" onClick={handleAdicionarCampo}>
+                  Add produto
+                </Button>
+              </div>
+            </div>
+            <div style={{ height: "330px", display: "flex", flexDirection: "column", justifyContent: "space-between" }}>
+              {dadosEmComun.map((field) => renderField(field))}
+              <Box className="modal-button-container">
+                <BotaoGerenciamento
+                  botao="Cancelar"
+                  onClick={onClose}
+                  disabled={loading}
+                />
+                <BotaoGerenciamento
+                  botao="Salvar"
+                  onClick={handleSave}
+                  disabled={loading}
+                />
+              </Box>
+            </div>
+
+          </div>
+
+
         </Box>
-      </Box>
-    </Modal>
+      </Modal>
 
-    <ModalAdicionarFornecedor
-      open={abrirAdicionarFornecedor}
-      onClose={fecharModalAdicionarFornecedor}
-      title="Adicionar Fornecedor"
-    />
+      <ModalAdicionarFornecedor
+        open={abrirAdicionarFornecedor}
+        onClose={fecharModalAdicionarFornecedor}
+        title="Adicionar Fornecedor"
+      />
     </>
   );
 
