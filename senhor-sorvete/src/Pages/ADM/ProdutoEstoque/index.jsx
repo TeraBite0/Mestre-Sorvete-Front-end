@@ -14,6 +14,7 @@ const ProdutoEstoque = () => {
   const [abrirConfirmarDeletar, setAbrirConfirmarDeletar] = useState(false);
   const [abrirModalEditarLoteStatus, setAbrirModalEditarLoteStatus] = useState(false);
   const [lotesDoProduto, setLotesDoProduto] = useState([]);
+  const [idLote, setIdLote] = useState();
   const { id } = useParams();
   const [idProduto] = useState();
   const [nomeProduto, setNomeProduto] = useState("");
@@ -53,7 +54,10 @@ const ProdutoEstoque = () => {
     fetchEstoque();
   }, [id]);
 
-  const abrirEditarStatus = () => setAbrirModalEditarLoteStatus(true);
+  const abrirEditarStatus = (idLote) => {
+    setIdLote(idLote)
+    setAbrirModalEditarLoteStatus(true)
+  };
   const fecharEditarStatus = () => setAbrirModalEditarLoteStatus(false);
 
   const fecharModalConfirmarDeletar = () => setAbrirConfirmarDeletar(false);
@@ -153,7 +157,7 @@ const ProdutoEstoque = () => {
                 {(lotesDoProduto || []).map((produto) => (
                   <TableRow 
                       key={produto.id || produto.codigo} 
-                      onClick={() => abrirEditarStatus()} 
+                      onClick={() => abrirEditarStatus(produto.id)} 
                       style={{ cursor: 'pointer' }} 
                       className={`tabela-row-saidas tabela-row-estoque`}
                   >
@@ -207,6 +211,7 @@ const ProdutoEstoque = () => {
       <ModalEditarLote 
         open={abrirModalEditarLoteStatus}
         onClose={fecharEditarStatus}
+        idLote={idLote}
         title="Editar Status do Lote"
       />
     </>

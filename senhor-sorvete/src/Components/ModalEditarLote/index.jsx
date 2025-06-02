@@ -1,79 +1,109 @@
-import { Button, Dialog, DialogContent, DialogTitle, TextField } from "@mui/material";
+import { Autocomplete, Button, Dialog, DialogActions, DialogContent, DialogTitle, TextField } from "@mui/material";
+import axios from "axios";
 import { useEffect, useState } from "react";
+import { toast } from "react-toastify";
 
 const ModalEditarProduto = ({
   open,
   onClose,
-  todosProdutos,
   produtoAtual,
-  onSave,
+  idLote,
 }) => {
+  const [observacao, setObservacao] = useState("");
   const [selectedProduto, setSelectedProduto] = useState(
     produtoAtual || null
   );
-  const [status, setStatus] = useState([
-    { id: 1, nome: "Aguardando entrega" },
-    { id: 2, nome: "Entregue" },
-    { id: 3, nome: "Cancelado" },
-    { id: 4, nome: "Entregue com pendência" },
-    { id: 5, nome: "Concluído com pendência" }
+  const [status] = useState([
+    { id: 1, nome: "Aguardando entrega", status: "AGUARDANDO_ENTREGA" },
+    { id: 2, nome: "Entregue", status: "ENTREGUE" },
+    { id: 3, nome: "Cancelado", status: "CANCELADO" },
+    { id: 4, nome: "Entregue com pendência", status: "ENTREGUE_COM_PENDENCIA" },
+    { id: 5, nome: "Concluído com pendência", status: "CONCLUIDO_COM_PENDENCIA" }
   ]);
 
   useEffect(() => {
     setSelectedProduto(produtoAtual);
   }, [produtoAtual]);
 
-  const handleChangeProduto = (event) => {
-    const produtoSelecionado = todosProdutos.find(
-      (produto) => produto.id === parseInt(event.target.value)
-    );
-    setSelectedProduto(produtoSelecionado);
-  };
+  const handleAtualizarStatus = async () => {
+    const token = sessionStorage.getItem("token");
 
-  // const handleSave = () => {
-  //   if (selectedProduto) {
-  //     setProdutoRecomendado(selectedProduto);
-  //     setProdutosInicio([selectedProduto]);
-  //     setModalOpen(false);
-  //   } else {
-  //     toast.error("Selecione um produto");
-  //   }
-  // };
+    const corpoParaAtualizarStatus = {
+      status: selectedProduto?.status || "",
+      observacao: observacao || "",
+    };
+    debugger
+    try {
+      await axios.patch(
+        `http://localhost:8080/lotes/${idLote}`,
+        corpoParaAtualizarStatus,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json"
+          }
+        }
+      );
+      window.location.reload();
+    } catch (error) {
+      console.error("Erro ao atualizar status do lote produtos:", error);
+      toast.error(error.response?.data?.mensagem || "Erro ao atualizar status do lote.");
+    }
+  };
 
   return (
     <Dialog open={open} onClose={onClose}>
-      <DialogTitle>Editar Status do Lote</DialogTitle>
+      <DialogTitle className="tituloModal">
+        {"Editar Status do Lote"}
+      </DialogTitle>
       <DialogContent>
-        <TextField
-          select
-          value={selectedProduto?.id || ""}
-          onChange={handleChangeProduto}
+        <Autocomplete
+          autoFocus
           fullWidth
-          margin="dense"
-          label="Selecione um Status do Lote"
-          SelectProps={{
-            native: true,
+          options={status}
+          value={status.find((s) => s.id === selectedProduto?.id) || null}
+          onChange={(event, newValue) => {
+            if (newValue) {
+              setSelectedProduto(newValue);
+            } else {
+              setSelectedProduto(null);
+            }
           }}
-        >
-          {status.map((s) => (
-            <option key={s.id} value={s.id}>
-              {`${s.nome}`}
-            </option>
-          ))}
-        </TextField>
+          getOptionLabel={(option) => option.nome || ''}
+          renderInput={(params) => (
+            <TextField
+              {...params}
+              margin="dense"
+              label="Selecione um Status do Lote"
+              fullWidth
+            />
+          )}
+        />
 
         <TextField
-            margin="dense"
-            name="observacoes"
-            label="Observações"
-            type="text"
-            fullWidth
-            // value={novoProduto.qtdPorCaixas}
-            // onChange={handleInputChange}
+          margin="dense"
+          name="observacao"
+          value={observacao}
+          onChange={event => setObservacao(event.target.value)}
+          label="Observação"
+          type="text"
+          fullWidth
         />
+
+      </DialogContent>
+      <DialogActions>
         <Button
           className="botaoModal"
-          // onClick={handleSave}
+          onClick={onClose}
+          variant="contained"
+          style={{ marginTop: "10px", marginLeft: "10px" }}
+        >
+          Cancelar
+        </Button>
+
+        <Button
+          className="botaoModal"
+          onClick={handleAtualizarStatus}
           variant="contained"
           disabled={!selectedProduto}
           style={{ marginTop: "10px" }}
@@ -81,16 +111,8 @@ const ModalEditarProduto = ({
           Atualizar Status
         </Button>
 
-        <Button
-          className="botaoModal"
-          onClose={onClose}
-          variant="contained"
-          disabled={!selectedProduto}
-          style={{ marginTop: "10px", marginLeft: "10px" }}
-        >
-          Cancelar
-        </Button>
-      </DialogContent>
+
+      </DialogActions>
     </Dialog>
   );
 };
