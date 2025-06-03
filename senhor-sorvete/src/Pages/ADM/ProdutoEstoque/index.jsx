@@ -1,12 +1,12 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import './produtoEstoque.css';
 import HeaderGerenciamento from "../../../Components/HeaderGerenciamento";
 import BotaoVoltarGerenciamento from '../../../Components/BotaoVoltarGerenciamento';
 import { useParams } from 'react-router-dom';
 import axios from "axios";
 import { toast } from "react-toastify";
-import ModalConfirmarDeletar from "../../../Components/ModalConfirmarDeletar"
-import ModalEditarLote from "../../../Components/ModalEditarLote"
+import ModalConfirmarDeletar from "../../../Components/ModalConfirmarDeletar";
+import ModalEditarLote from "../../../Components/ModalEditarLote";
 
 import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper } from '@mui/material';
 
@@ -16,18 +16,20 @@ const ProdutoEstoque = () => {
   const [lotesDoProduto, setLotesDoProduto] = useState([]);
   const [idLote, setIdLote] = useState();
   const { id } = useParams();
-  const [idProduto] = useState();
   const [nomeProduto, setNomeProduto] = useState("");
-  // const [status, setStatus] = useState([
-  //   { id: 1, nome: "Aguardando entrega" },
-  //   { id: 2, nome: "Entregue" },
-  //   { id: 3, nome: "Cancelado" },
-  //   { id: 4, nome: "Entregue com pendência" },
-  //   { id: 5, nome: "Concluído com pendência" }
-  // ]);
+
+  const handleNomeProdutoLote = useCallback((lote) => {
+    if (lote && lote[0] && lote[0].loteProdutos) {
+      lote[0].loteProdutos.forEach((l) => {
+        if (l.produto.id === Number(id)) {
+          setNomeProduto(`${l.produto.nome} - ${l.produto.marca}`);
+        }
+      });
+    }
+  }, [id, setNomeProduto]);
 
   useEffect(() => {
-    if (id === undefined || id === null) return
+    if (id === undefined || id === null) return;
     const fetchEstoque = async () => {
       const token = sessionStorage.getItem('token');
       try {
@@ -36,6 +38,7 @@ const ProdutoEstoque = () => {
             Authorization: `Bearer ${token}`
           }
         });
+      
 
         const data = response.data;
         setLotesDoProduto(data);
@@ -43,21 +46,21 @@ const ProdutoEstoque = () => {
         if (data.length > 0) {
           handleNomeProdutoLote(data);
         } else {
-          setNomeProduto("Não a histórico de lote com esse produto.");
+          setNomeProduto("Não há histórico de lote com esse produto.");
         }
-
       } catch (error) {
         toast.error('Erro ao buscar lotes do produto');
         console.log(error);
       }
     };
     fetchEstoque();
-  }, [id]);
+  }, [id, handleNomeProdutoLote]);
 
   const abrirEditarStatus = (idLote) => {
-    setIdLote(idLote)
-    setAbrirModalEditarLoteStatus(true)
+    setIdLote(idLote);
+    setAbrirModalEditarLoteStatus(true);
   };
+
   const fecharEditarStatus = () => setAbrirModalEditarLoteStatus(false);
 
   const fecharModalConfirmarDeletar = () => setAbrirConfirmarDeletar(false);
@@ -79,7 +82,7 @@ const ProdutoEstoque = () => {
     if (status === "Aguardando entrega") return "#fafa9d";
     if (status === "Entregue") return "#90EE90";
     if (status === "Cancelado") return "#fc8886";
-    if (status === "Entrege com pendência") return "#fafa9d";
+    if (status === "Entregue com pendência") return "#fafa9d";
     if (status === "Concluído com pendência") return "#818d91";
     return "#fff";
   };
@@ -87,27 +90,18 @@ const ProdutoEstoque = () => {
   const handleDeletar = async () => {
     const token = sessionStorage.getItem("token");
     try {
-      await axios.delete(`http://localhost:8080/lotes/${idProduto}`, {
+      await axios.delete(`http://localhost:8080/lotes/${idLote}`, {
         headers: {
           Authorization: `Bearer ${token}`,
           "Content-Type": "application/json",
         },
       });
-
       window.location.reload();
     } catch (error) {
-      console.error("Erro ao carregar produtos:", error);
-      toast.error("Erro ao carregar lista de produtos.");
+      console.error("Erro ao deletar lote:", error);
+      toast.error("Erro ao deletar lote.");
     }
   };
-
-  const handleNomeProdutoLote = (lote) => {
-    lote[0].loteProdutos.forEach((l) => {
-      if (l.produto.id === Number(id)){
-        setNomeProduto(`${l.produto.nome} - ${l.produto.marca}`);
-      }
-    })
-  }
 
   return (
     <>
@@ -119,12 +113,12 @@ const ProdutoEstoque = () => {
 
         <h3>{nomeProduto}</h3>
 
-        <div >
+        <div>
           <TableContainer
             component={Paper}
             className='container-tabela'
             sx={{
-              maxHeight: '60vh',  // altura máxima
+              maxHeight: '60vh',
               overflow: 'auto'
             }}
           >
@@ -135,53 +129,53 @@ const ProdutoEstoque = () => {
                   padding: '5px',
                 },
                 '& .MuiTableCell-root:last-child': {
-                  width: '70px', // Ajusta a largura da última coluna (Editar)
+                  width: '70px',
                 }
               }}
               size="small"
-
             >
-
               <TableHead className='tabela-Head'>
                 <TableRow>
-                  <TableCell className='tabela-head-cell' style={{ textAlignLast: "center", width: "135px" }}>Id do Lote</TableCell>
-                  <TableCell className='tabela-head-cell' style={{ textAlignLast: "center", width: "130px" }}>Data da Compra</TableCell>
-                  <TableCell className='tabela-head-cell' style={{ textAlignLast: "center", width: "130px" }}>Data de Entrega</TableCell>
-                  <TableCell className='tabela-head-cell' style={{ estiloQuantidade, textAlignLast: "center", width: "135px" }}>Status</TableCell>
-                  <TableCell className='tabela-head-cell' style={{ textAlignLast: "center", width: "10px" }} align="center">Observação</TableCell>
-                  <TableCell className='tabela-head-cell' style={{ textAlignLast: "center" }} align="center">Unidades Compradas</TableCell>
-                  <TableCell className='tabela-head-cell' style={{ textAlignLast: "center", width: "130px" }} align="center">Valor do Lote</TableCell>
+                  <TableCell className='tabela-head-cell' style={{ textAlign: "center", width: "135px" }}>Id do Lote</TableCell>
+                  <TableCell className='tabela-head-cell' style={{ textAlign: "center", width: "130px" }}>Data da Compra</TableCell>
+                  <TableCell className='tabela-head-cell' style={{ textAlign: "center", width: "130px" }}>Data de Entrega</TableCell>
+                  <TableCell className='tabela-head-cell' style={{ textAlign: "center", ...estiloQuantidade }}>Status</TableCell>
+                  <TableCell className='tabela-head-cell' style={{ textAlign: "center", width: "10px" }} align="center">Observação</TableCell>
+                  <TableCell className='tabela-head-cell' style={{ textAlign: "center" }} align="center">Unidades Compradas</TableCell>
+                  <TableCell className='tabela-head-cell' style={{ textAlign: "center", width: "130px" }} align="center">Valor do Lote</TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
                 {(lotesDoProduto || []).map((produto) => (
-                  <TableRow 
-                      key={produto.id || produto.codigo} 
-                      onClick={() => abrirEditarStatus(produto.id)} 
-                      style={{ cursor: 'pointer' }} 
-                      className={`tabela-row-saidas tabela-row-estoque`}
+                  <TableRow
+                    key={produto.id || produto.codigo}
+                    onClick={() => abrirEditarStatus(produto.id)}
+                    style={{ cursor: 'pointer' }}
+                    className="tabela-row-saidas tabela-row-estoque"
                   >
-                    <TableCell style={{ textAlignLast: "center" }} class={`table-cell-grid-estoque`}>
+                    <TableCell style={{ textAlign: "center" }} className="table-cell-grid-estoque">
                       {produto.id}
                     </TableCell>
-                    <TableCell style={{ textAlignLast: "center" }} class={`table-cell-grid-estoque`}>
+                    <TableCell style={{ textAlign: "center" }} className="table-cell-grid-estoque">
                       {produto.dtPedido}
                     </TableCell>
-                    <TableCell style={{ textAlignLast: "center" }} class={`table-cell-grid-estoque`}>
+                    <TableCell style={{ textAlign: "center" }} className="table-cell-grid-estoque">
                       {produto.dtEntrega}
                     </TableCell>
-                    <TableCell style={{
-                      ...estiloQuantidade,
-                      textAlignLast: "center",
-                      backgroundColor: obterCorStatusLote(produto.status),
-                    }}
-                      align="center">
+                    <TableCell
+                      style={{
+                        ...estiloQuantidade,
+                        textAlign: "center",
+                        backgroundColor: obterCorStatusLote(produto.status),
+                      }}
+                      align="center"
+                    >
                       {produto.status}
                     </TableCell>
-                    <TableCell style={{ textAlignLast: "center" }} class={`table-cell-grid-estoque`}>
+                    <TableCell style={{ textAlign: "center" }} className="table-cell-grid-estoque">
                       {produto.observacao || "-"}
                     </TableCell>
-                    <TableCell style={{ textAlignLast: "center" }} class={`table-cell-grid-estoque`}>
+                    <TableCell style={{ textAlign: "center" }} className="table-cell-grid-estoque">
                       {produto.loteProdutos.reduce((total, l) => {
                         if (l.produto.id === Number(id)) {
                           return total + l.qtdCaixasCompradas;
@@ -189,7 +183,7 @@ const ProdutoEstoque = () => {
                         return total;
                       }, 0)}
                     </TableCell>
-                    <TableCell style={{ textAlWignLast: "center" }} class={`table-cell-grid-estoque`}>
+                    <TableCell style={{ textAlign: "center" }} className="table-cell-grid-estoque">
                       R${formatarNumero(produto.valorLote)}
                     </TableCell>
                   </TableRow>
@@ -208,7 +202,7 @@ const ProdutoEstoque = () => {
         texto="Atenção, tem certeza de que deseja excluir este lote?"
       />
 
-      <ModalEditarLote 
+      <ModalEditarLote
         open={abrirModalEditarLoteStatus}
         onClose={fecharEditarStatus}
         idLote={idLote}
