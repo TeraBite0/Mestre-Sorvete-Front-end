@@ -38,6 +38,7 @@ const ProdutoEstoque = () => {
             Authorization: `Bearer ${token}`
           }
         });
+      
 
         const data = response.data;
         setLotesDoProduto(data);
