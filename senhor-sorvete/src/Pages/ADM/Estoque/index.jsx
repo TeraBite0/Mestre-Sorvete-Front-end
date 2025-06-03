@@ -75,21 +75,21 @@ const Estoque = () => {
     fetchEstoque();
   }, []);
 
-  const baixarRelatorioExcel = async () => {
-    const token = sessionStorage.getItem('token');
-      try {
-         await axios.get('http://localhost:8080/relatorio', {
-          headers: {
-            Authorization: `Bearer ${token}`
-          }
-        });
-      } catch (error) {
-        toast.error('Erro ao baixar relatório Excel');
-        console.log(error);
-      }
-  }
+  // const baixarRelatorioExcel = async () => {
+  //   const token = sessionStorage.getItem('token');
+  //     try {
+  //        await axios.get('http://localhost:8080/relatorio', {
+  //         headers: {
+  //           Authorization: `Bearer ${token}`
+  //         }
+  //       });
+  //     } catch (error) {
+  //       toast.error('Erro ao baixar relatório Excel');
+  //       console.log(error);
+  //     }
+  // }
 
-  const baixarRelatorioExcels = async () => {
+  const baixarRelatorioExcel= async () => {
     const token = sessionStorage.getItem('token');
     
     try {

@@ -53,7 +53,7 @@ const ProdutoEstoque = () => {
       }
     };
     fetchEstoque();
-  }, [id]);
+  }, [id, handleNomeProdutoLote]);
 
   const abrirEditarStatus = (idLote) => {
     setIdLote(idLote)
