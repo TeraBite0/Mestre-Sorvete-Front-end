@@ -63,7 +63,7 @@ const ModalGerenciamento = ({
   const buscarProdutos = async () => {
     const token = sessionStorage.getItem('token');
     try {
-      const response = await axios.get('http://localhost:8080/produtos', {
+      const response = await axios.get('http://50.19.70.8:8080/produtos', {
         headers: {
           Authorization: `Bearer ${token}`
         }
@@ -144,7 +144,7 @@ const ModalGerenciamento = ({
         value: p.codigo || p.id,
         label: `${p.nome || p.produto} - ${p.marca}`,
       })),
-    }, 
+    },
     {
       name: `qtdCaixasCompradas${index}`,
       label: "Quantidade de caixas comprada",

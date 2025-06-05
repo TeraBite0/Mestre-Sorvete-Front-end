@@ -38,7 +38,7 @@ const Cardapio = () => {
       setIsLoading(true);
       try {
         const response = await axios.get(
-          "http://localhost:8080/produtos/ativos"
+          "http://50.19.70.8:8080/produtos/ativos"
         );
         setProdutos(response.data);
       } catch (error) {
@@ -57,7 +57,7 @@ const Cardapio = () => {
   // const fetchPopular = async () => {
   //   setIsLoadingPopular(true);
   //   try {
-  //     const response = await axios.get("http://localhost:8080/produtos/populares");
+  //     const response = await axios.get("http://50.19.70.8:8080/produtos/populares");
   //     if (response.status === 200) {
   //       const popularProductsWithFullData = response.data.map(popularProduct => {
   //         const fullProductDetails = produtos.find(
@@ -104,7 +104,7 @@ const Cardapio = () => {
   // const fetchPopular = async () => {
   //     setIsLoadingPopular(true); // Ativa o estado de carregamento
   //     try {
-  //         const response = await axios.get("http://localhost:8080/produtos/populares");
+  //         const response = await axios.get("http://50.19.70.8:8080/produtos/populares");
   //         if (response.status === 200) {
   //             setPopular(response.data);
   //             setIsPopularToggled(!isPopularToggled);
@@ -122,7 +122,7 @@ const Cardapio = () => {
   //     }
   // };
 
- // const openMaisModal = () => setIsMaisModalOpen(true);
+  // const openMaisModal = () => setIsMaisModalOpen(true);
   const closeMaisModal = () => setIsMaisModalOpen(false);
 
   // const sendNotification = async () => {
@@ -131,7 +131,7 @@ const Cardapio = () => {
 
   //   const reserva = cartItems.map(async (item) => {
   //     try {
-  //       const response = await axios.post("http://localhost:8080/notificacoes", {
+  //       const response = await axios.post("http://50.19.70.8:8080/notificacoes", {
   //         email,
   //         idProduto: item.id,
   //       });
@@ -441,7 +441,7 @@ const Cardapio = () => {
                   <button
                     className="notifyMe"
                     onClick={() => addToCart(produto)}
-                    // disabled={produto.emEstoque}
+                  // disabled={produto.emEstoque}
                   >
                     <span>Reserva</span>
                   </button>

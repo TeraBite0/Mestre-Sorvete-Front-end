@@ -60,7 +60,7 @@ const ListarProdutos = () => {
     const [modalNovoTipoAberto, setModalNovoTipoAberto] = useState(false);
     const [novaMarca, setNovaMarca] = useState('');
     const [tipos, setTipos] = useState([]);
-    const [novoSubtipo, setNovoSubtipo] = useState({subtipo: '', tipo: ''});
+    const [novoSubtipo, setNovoSubtipo] = useState({ subtipo: '', tipo: '' });
     const [novoTipo, setNovoTipo] = useState('');
 
     useEffect(() => {
@@ -72,7 +72,7 @@ const ListarProdutos = () => {
         setCarregando(true);
         try {
             // Buscar todos os Produtos
-            const resposta = await fetch('http://localhost:8080/produtos', {
+            const resposta = await fetch('http://50.19.70.8:8080/produtos', {
                 headers: {
                     Authorization: `Bearer ${token}`
                 }
@@ -126,7 +126,7 @@ const ListarProdutos = () => {
         }
 
         try {
-            const response = await fetch('http://localhost:8080/marcas', {
+            const response = await fetch('http://50.19.70.8:8080/marcas', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -160,7 +160,7 @@ const ListarProdutos = () => {
             return;
         }
 
-        if(tipos.some(
+        if (tipos.some(
             (tipo) => tipo.nome.toLowerCase() === novoTipo.trim().toLowerCase()
         )) {
             toast.error("Este tipo já existe");
@@ -178,7 +178,7 @@ const ListarProdutos = () => {
         }
 
         try {
-            const response = await fetch('http://localhost:8080/tipos', {
+            const response = await fetch('http://50.19.70.8:8080/tipos', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -236,7 +236,7 @@ const ListarProdutos = () => {
         }
 
         try {
-            const response = await fetch('http://localhost:8080/subtipos', {
+            const response = await fetch('http://50.19.70.8:8080/subtipos', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -265,7 +265,7 @@ const ListarProdutos = () => {
     };
     // const obterTokenSasAzure = async () => {
     //     const token = sessionStorage.getItem('token');
-    //     const resposta = await fetch('http://localhost:8080/azure', {
+    //     const resposta = await fetch('http://50.19.70.8:8080/azure', {
     //         method: 'GET',
     //         headers: {
     //             'Authorization': `Bearer ${token}`
@@ -316,7 +316,7 @@ const ListarProdutos = () => {
                 .normalize("NFD")
                 .replace(/[\u0300-\u036f]/g, "");
 
-            const response = await fetch(`http://localhost:8080/produtos/filtrar-nome-marca?termo=${termoNormalizado}`, {
+            const response = await fetch(`http://50.19.70.8:8080/produtos/filtrar-nome-marca?termo=${termoNormalizado}`, {
                 headers: {
                     Authorization: `Bearer ${token}`
                 }
@@ -337,7 +337,7 @@ const ListarProdutos = () => {
                 preco: typeof produto.preco === 'number' ? produto.preco : 0,
                 qtdPorCaixas: typeof produto.qtdPorCaixas === 'number' ? produto.qtdPorCaixas : 0,
                 imagemUrl: "https://terabite.blob.core.windows.net/terabite-container/" + produto.id || '',
-                 // Define true como padrão
+                // Define true como padrão
 
             }));
 
@@ -352,7 +352,7 @@ const ListarProdutos = () => {
 
     // metodo para abrir um modal
     const abrirModal = async () => {
-        
+
         setNovoProduto({ nome: "", marca: "", preco: "", imagemUrl: "" });
         setImagemPreview(null);
         setArquivoImagem(null);
@@ -364,9 +364,9 @@ const ListarProdutos = () => {
         setCarregando(true);
         try {
             const urls = [
-                { key: "marcas", url: "http://localhost:8080/marcas" },
-                { key: "subtipos", url: "http://localhost:8080/subtipos" },
-                { key: "tipos", url: "http://localhost:8080/tipos" }
+                { key: "marcas", url: "http://50.19.70.8:8080/marcas" },
+                { key: "subtipos", url: "http://50.19.70.8:8080/subtipos" },
+                { key: "tipos", url: "http://50.19.70.8:8080/tipos" }
             ];
 
             const respostas = await Promise.all(
@@ -408,7 +408,7 @@ const ListarProdutos = () => {
     };
 
     const handleInputChangeSubtipo = (evento) => {
-        const {name, value} = evento.target;
+        const { name, value } = evento.target;
 
         setNovoSubtipo((anterior) => ({
             ...anterior,
@@ -653,7 +653,7 @@ const ListarProdutos = () => {
                 temLactose: typeof novoProduto.temLactose === "boolean" ? novoProduto.temLactose : false,
                 temGluten: typeof novoProduto.temGluten === "boolean" ? novoProduto.temGluten : false
             };
-            const resposta = await fetch('http://localhost:8080/produtos', {
+            const resposta = await fetch('http://50.19.70.8:8080/produtos', {
                 method: 'POST',
                 headers: {
                     'Authorization': `Bearer ${token}`,
@@ -733,7 +733,7 @@ const ListarProdutos = () => {
                 imagemUrl: urlImagem
             };
 
-            const resposta = await fetch(`http://localhost:8080/produtos/${produto.id}`, {
+            const resposta = await fetch(`http://50.19.70.8:8080/produtos/${produto.id}`, {
                 method: "PUT",
                 headers: {
                     'Content-Type': 'application/json',
@@ -811,9 +811,9 @@ const ListarProdutos = () => {
         setCarregando(true);
         try {
             const urls = [
-                { key: "marcas", url: "http://localhost:8080/marcas" },
-                { key: "subtipos", url: "http://localhost:8080/subtipos" },
-                { key: "tipos", url: "http://localhost:8080/tipos" }
+                { key: "marcas", url: "http://50.19.70.8:8080/marcas" },
+                { key: "subtipos", url: "http://50.19.70.8:8080/subtipos" },
+                { key: "tipos", url: "http://50.19.70.8:8080/tipos" }
             ];
 
             const respostas = await Promise.all(
@@ -867,29 +867,29 @@ const ListarProdutos = () => {
         const token = sessionStorage.getItem('token');
         const isAtivoGenerico = !produto.isAtivo; // Inverte o status atual
         try {
-            const response = await fetch(`http://localhost:8080/produtos/ativar/${produto.id}?isAtivo=${isAtivoGenerico}`, {
+            const response = await fetch(`http://50.19.70.8:8080/produtos/ativar/${produto.id}?isAtivo=${isAtivoGenerico}`, {
                 method: "PATCH",
                 headers: {
                     'Content-Type': 'application/json',
                     Authorization: `Bearer ${token}`
                 }
             });
-    
+
             if (!response.ok) {
                 throw new Error(`Erro ao ${isAtivoGenerico ? "ativar" : "desativar"} produto`);
             }
-    
+
             setProdutos(prev =>
                 prev.map(p => p.id === produto.id ? { ...p, isAtivo: isAtivoGenerico } : p)
             );
-    
+
             toast.success(`Produto ${isAtivoGenerico ? "ativado" : "desativado"} com sucesso!`);
         } catch (erro) {
             console.error(`Erro ao ${isAtivoGenerico ? "ativar" : "desativar"} produto: `, erro);
             toast.error(`Erro ao ${isAtivoGenerico ? "ativar" : "desativar"} produto`);
         }
     };
-    
+
 
     // metodo para saber se o produto está ativo
     const handleEstaAtivo = (event) => {
@@ -1477,7 +1477,7 @@ const ListarProdutos = () => {
                         value={novoSubtipo.subtipo || ""}
                         onChange={handleInputChangeSubtipo}
                     />
-                    
+
                     <Autocomplete
                         autoFocus
                         fullWidth
@@ -1539,7 +1539,7 @@ const ListarProdutos = () => {
                 <DialogActions>
                     <Button
                         className="botaoModal"
-                        onClick={() => {setModalNovoTipoAberto(false); setModalNovoSubtipoAberto(true)}}
+                        onClick={() => { setModalNovoTipoAberto(false); setModalNovoSubtipoAberto(true) }}
                     >
                         Cancelar
                     </Button>
@@ -1550,7 +1550,7 @@ const ListarProdutos = () => {
             </Dialog>
         </>
 
-        
+
     );
 };
 

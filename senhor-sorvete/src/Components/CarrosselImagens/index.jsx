@@ -18,11 +18,11 @@ export default function BasicDemo() {
   useEffect(() => {
     const fetchRecomendacoes = async () => {
       try {
-        const response = await axios.get("http://localhost:8080/produtos/recomendacao")
+        const response = await axios.get("http://50.19.70.8:8080/produtos/recomendacao")
         setRecomendacoes(response.data);
       } catch (error) {
         console.error("Erro ao buscar recomendacoes:", error);
-      } 
+      }
     };
     fetchRecomendacoes();
     const interval = setInterval(() => {

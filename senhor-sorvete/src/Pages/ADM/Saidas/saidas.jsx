@@ -47,13 +47,13 @@ const Saidas = () => {
   const [openEditar, setOpenEditar] = useState(false);
   const [editarSaida, setEditarSaida] = useState({
     dtSaida: '',
-    saidaEstoque: [ 
+    saidaEstoque: [
       {
         produto: 0,
         qtdCaixasSaida: 0,
       },
     ],
-    index: 0  
+    index: 0
   });
 
   const agruparSaidasPorData = (saidas) => {
@@ -96,13 +96,13 @@ const Saidas = () => {
     }
 
     axios
-      .get("http://localhost:8080/saidas-estoque", {
+      .get("http://50.19.70.8:8080/saidas-estoque", {
         headers: {
           Authorization: `Bearer ${token}`,
         },
       })
       .then((response) => {
-        if(response.data.length !== 0){
+        if (response.data.length !== 0) {
           const saidasAgrupadas = agruparSaidasPorData(response.data);
           setRows(saidasAgrupadas);
         }
@@ -118,7 +118,7 @@ const Saidas = () => {
     const token = sessionStorage.getItem("token");
 
     try {
-      const response = await axios.get("http://localhost:8080/produtos", {
+      const response = await axios.get("http://50.19.70.8:8080/produtos", {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -146,7 +146,7 @@ const Saidas = () => {
     setEditarSaida((prevState) => {
       const novaSaidaEstoques = [...prevState.saidaEstoques];
       const item = { ...novaSaidaEstoques[index] };
-  
+
       if (field === "produtoId") {
         const produtoSelecionado = produtosDisponiveis.find(
           (p) => p.id === parseInt(value)
@@ -158,16 +158,16 @@ const Saidas = () => {
         const quantidade = parseInt(value) || 0;
         item.qtdCaixasSaida = quantidade;
       }
-  
+
       novaSaidaEstoques[index] = item;
-  
+
       return {
         ...prevState,
         saidaEstoques: novaSaidaEstoques,
       };
     });
   };
-  
+
 
   const handleChangeNovaSaída = (index, field, value) => {
     setNovasSaidas((prevSaidas) => {
@@ -243,11 +243,11 @@ const Saidas = () => {
       const saida = []
 
       novasSaidas.forEach((venda) => {
-        const dadosProduto = 
-          {
-            produtoId: venda.produtoId,
-            qtdCaixasSaida: venda.quantidade,
-          }
+        const dadosProduto =
+        {
+          produtoId: venda.produtoId,
+          qtdCaixasSaida: venda.quantidade,
+        }
 
         saida.push(dadosProduto);
       })
@@ -257,13 +257,13 @@ const Saidas = () => {
         saidaEstoques: saida,
       };
 
-      await axios.post("http://localhost:8080/saidas-estoque", saidaEstoque, {
+      await axios.post("http://50.19.70.8:8080/saidas-estoque", saidaEstoque, {
         headers: {
           Authorization: `Bearer ${token}`,
           "Content-Type": "application/json",
         },
       });
-      
+
       setOpenAdicionar(false);
       window.location.reload();
 
@@ -285,7 +285,7 @@ const Saidas = () => {
 
     try {
       const dataFormatada = dataBusca;
-      const response = await axios.get("http://localhost:8080/saidas-estoque/data", {
+      const response = await axios.get("http://50.19.70.8:8080/saidas-estoque/data", {
         params: { data: dataFormatada },
         headers: {
           Authorization: `Bearer ${token}`,
@@ -326,7 +326,7 @@ const Saidas = () => {
     }
 
     try {
-      await axios.put(`http://localhost:8080/saidas-estoque/${saidaEditada.id}`, saidaEditada, {
+      await axios.put(`http://50.19.70.8:8080/saidas-estoque/${saidaEditada.id}`, saidaEditada, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -348,7 +348,7 @@ const Saidas = () => {
     return item.saidaEstoques?.find((s) => s.id === id);
   };
 
-  const handleEditar = async (item, id) => { 
+  const handleEditar = async (item, id) => {
     const dadosEstoque = encontrarEstoquePorId(item, id)
 
     setEditarSaida({
@@ -360,7 +360,7 @@ const Saidas = () => {
     const token = sessionStorage.getItem("token");
 
     try {
-      const response = await axios.get("http://localhost:8080/produtos", {
+      const response = await axios.get("http://50.19.70.8:8080/produtos", {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -392,16 +392,16 @@ const Saidas = () => {
     };
 
     try {
-      await axios.delete("http://localhost:8080/saidas-estoque", {
+      await axios.delete("http://50.19.70.8:8080/saidas-estoque", {
         data: saidaEstoque, // o body da requisição
         headers: {
           Authorization: `Bearer ${token}`,
           "Content-Type": "application/json",
         },
       });
-      
+
       // setProdutosDisponiveis(response.data);
-      
+
       setOpenAdicionar(false);
       window.location.reload();
     } catch (error) {
@@ -415,7 +415,7 @@ const Saidas = () => {
   const handleChangeEditarQtdCaixaSaida = (index, campo, valor) => {
     const saidasAtualizadas = [...editarSaida.saidaEstoques];
     saidasAtualizadas[index][campo] = valor;
-  
+
     setEditarSaida({
       ...editarSaida,
       saidaEstoques: saidasAtualizadas,
@@ -432,8 +432,8 @@ const Saidas = () => {
   return (
     <div className="container-saidas">
       <div className="header-tabela">
-                <HeaderGerenciamento />
-            </div>
+        <HeaderGerenciamento />
+      </div>
 
       <div className="botao-voltar-saidas">
         <BotaoVoltarGerenciamento />
@@ -491,50 +491,50 @@ const Saidas = () => {
                     >
                       <TableCell component="th" scope="row"> {row.dtSaida} </TableCell>
                       <TableCell className="tabela-row-saidas">{item.produto.nome}</TableCell>
-                      <TableCell className="tabela-row-saidas">{item.qtdCaixasSaida}</TableCell> 
+                      <TableCell className="tabela-row-saidas">{item.qtdCaixasSaida}</TableCell>
                       <TableCell className="tabela-row-saidas">
                         <Tooltip
-                              title="Editar saída"
-                              placement="bottom"
-                              arrow
-                              enterDelay={200}
-                              leaveDelay={200}
-                          >
-                              <button onClick={() => handleEditar(row, item.id)} >
-                                  <EditIcon />
-                              </button>
+                          title="Editar saída"
+                          placement="bottom"
+                          arrow
+                          enterDelay={200}
+                          leaveDelay={200}
+                        >
+                          <button onClick={() => handleEditar(row, item.id)} >
+                            <EditIcon />
+                          </button>
 
-                          </Tooltip>
-                          <Tooltip
-                              title="Deletar saída"
-                              placement="bottom"
-                              arrow
-                              enterDelay={200}
-                              leaveDelay={200}
-                          >
-                              <button 
-                                onClick={() => abrirModalConfirmarDeletar(row, item.id)}>
-                                  <DeleteForeverIcon/>
-                              </button>
-                          </Tooltip>
-                        </TableCell> 
+                        </Tooltip>
+                        <Tooltip
+                          title="Deletar saída"
+                          placement="bottom"
+                          arrow
+                          enterDelay={200}
+                          leaveDelay={200}
+                        >
+                          <button
+                            onClick={() => abrirModalConfirmarDeletar(row, item.id)}>
+                            <DeleteForeverIcon />
+                          </button>
+                        </Tooltip>
+                      </TableCell>
                     </TableRow>
                   ))
                 ))
-                }
+              }
             </TableBody>
           </Table>
         </TableContainer>
       </div>
 
-        <Dialog open={openEditar} onClose={handleCloseEditar}>
+      <Dialog open={openEditar} onClose={handleCloseEditar}>
         <DialogTitle>Editar Saída</DialogTitle>
         <DialogContent>
           {isLoadingProdutos ? (
             <div>Carregando produtos...</div>
           ) : (
             <>
-            <TextField
+              <TextField
                 disabled="true"
                 type="date"
                 value={editarSaida.dtSaida}
@@ -567,7 +567,7 @@ const Saidas = () => {
                     }}
                   >
                     <option value="">{`${saida.produto.nome} - ${saida.produto.marca
-                          } (R$ ${saida.produto.preco?.toFixed(2)})`}</option>
+                      } (R$ ${saida.produto.preco?.toFixed(2)})`}</option>
                     {produtosDisponiveis.map((produto) => (
                       <option key={produto.id} value={produto.id}>
                         {`${produto.nome} - ${produto.marca
@@ -595,16 +595,16 @@ const Saidas = () => {
           )}
         </DialogContent>
         <DialogActions>
-        
+
           <Button className="botaoModal" onClick={handleCloseEditar}>
             Cancelar
           </Button>
           <Button
             className="botaoModal"
-            onClick={() => handleConfirmarEdicaoSaida(editarSaida)}  
+            onClick={() => handleConfirmarEdicaoSaida(editarSaida)}
           >
             Confirmar
-          </Button> 
+          </Button>
         </DialogActions>
       </Dialog>
 
@@ -616,7 +616,7 @@ const Saidas = () => {
             <div>Carregando produtos...</div>
           ) : (
             <>
-            <TextField
+              <TextField
                 type="date"
                 value={dataBusca}
                 onChange={(e) => setDataBusca(e.target.value)}
@@ -690,7 +690,7 @@ const Saidas = () => {
           </Button>
           <Button
             className="botaoModal"
-            onClick={() => handleConfirmarSaida(novasSaidas)}  
+            onClick={() => handleConfirmarSaida(novasSaidas)}
             disabled={
               isLoadingProdutos ||
               novasSaidas.some((v) => !v.produtoId || !v.quantidade)
@@ -748,11 +748,11 @@ const Saidas = () => {
       </Dialog>
 
       <ModalConfirmarDeletar
-          open={abrirConfirmarDeletar}
-          onClose={fecharModalConfirmarDeletar}
-          onDeletar={handleDeletar}
-          title="Confirmar Deletar Saída"
-          texto="Atenção, tem certeza de que deseja excluir está saída?"
+        open={abrirConfirmarDeletar}
+        onClose={fecharModalConfirmarDeletar}
+        onDeletar={handleDeletar}
+        title="Confirmar Deletar Saída"
+        texto="Atenção, tem certeza de que deseja excluir está saída?"
       />
     </div>
   );

@@ -42,7 +42,7 @@ const Recomendacoes = () => {
         temLactose: false,
         temGluten: false,
     });
-    
+
     const [pesquisa, setPesquisa] = useState('');
     const [produtoSelecionado, setProdutoSelecionado] = useState(null);
     const [carregando, setCarregando] = useState(false);
@@ -50,8 +50,8 @@ const Recomendacoes = () => {
     const [marcas, setMarcas] = useState([]);
     const [subtipos, setSubtipos] = useState([]);
     const [modalVisualizarProdutoAberto, setModalVisualizarProdutoAberto] = useState(false);
-    const [ setModalNovaMarcaAberto] = useState(false);
-    const [ setModalNovoSubtipoAberto] = useState(false);
+    const [setModalNovaMarcaAberto] = useState(false);
+    const [setModalNovoSubtipoAberto] = useState(false);
     const [tipos, setTipos] = useState([]);
     const [todosProdutos, setTodosProdutos] = useState([]);
 
@@ -62,9 +62,9 @@ const Recomendacoes = () => {
 
     const buscarTodosProdutos = async () => {
         const token = sessionStorage.getItem('token');
-        try{
+        try {
             // Buscar todos os Produtos
-            const resposta = await fetch('http://localhost:8080/produtos/ativos', {
+            const resposta = await fetch('http://50.19.70.8:8080/produtos/ativos', {
                 headers: {
                     Authorization: `Bearer ${token}`
                 }
@@ -102,7 +102,7 @@ const Recomendacoes = () => {
         setCarregando(true);
         try {
             // Buscar todos os Produtos
-            const resposta = await fetch('http://localhost:8080/produtos/recomendacao', {
+            const resposta = await fetch('http://50.19.70.8:8080/produtos/recomendacao', {
                 headers: {
                     Authorization: `Bearer ${token}`
                 }
@@ -139,18 +139,18 @@ const Recomendacoes = () => {
 
     // metodo para fechar modal
     const fecharModal = () => {
-        setNovoProduto({ nome: "", marca: "", preco: "", imagemUrl: "" }); 
+        setNovoProduto({ nome: "", marca: "", preco: "", imagemUrl: "" });
         setProdutoSelecionado(null);
         setErros({});
         setModalAberto(false);
         setModalVisualizarProdutoAberto(false);
     };
 
-    
+
 
     // Método para atualizar produto (PUT) com imagem
     const atualizarRecomendacao = async (produto, idRecomendacao) => {
-        
+
         try {
             setCarregando(true);
 
@@ -161,7 +161,7 @@ const Recomendacoes = () => {
 
             const atualizarRecomendacao = JSON.parse(JSON.stringify({ produtoId: produto.id }));
 
-            const resposta = await fetch(`http://localhost:8080/produtos/recomendacao/${idRecomendacao}`, {
+            const resposta = await fetch(`http://50.19.70.8:8080/produtos/recomendacao/${idRecomendacao}`, {
                 method: "PUT",
                 headers: {
                     'Content-Type': 'application/json',
@@ -208,9 +208,9 @@ const Recomendacoes = () => {
         setCarregando(true);
         try {
             const urls = [
-                { key: "marcas", url: "http://localhost:8080/marcas" },
-                { key: "subtipos", url: "http://localhost:8080/subtipos" },
-                { key: "tipos", url: "http://localhost:8080/tipos" }
+                { key: "marcas", url: "http://50.19.70.8:8080/marcas" },
+                { key: "subtipos", url: "http://50.19.70.8:8080/subtipos" },
+                { key: "tipos", url: "http://50.19.70.8:8080/tipos" }
             ];
 
             const respostas = await Promise.all(
@@ -285,10 +285,10 @@ const Recomendacoes = () => {
     // metodo para pegar o produto selecionado
     const handleChangeProduto = (event) => {
         const produtoSelecionado = todosProdutos.find(
-          (produto) => produto.id === parseInt(event.target.value)
+            (produto) => produto.id === parseInt(event.target.value)
         );
         setSelectedProduto(produtoSelecionado);
-      };
+    };
 
 
     // Função renderProdutoCell definida antes de usá-la
@@ -306,7 +306,7 @@ const Recomendacoes = () => {
                 .normalize("NFD")
                 .replace(/[\u0300-\u036f]/g, "");
 
-            const response = await fetch(`http://localhost:8080/produtos/filtrar-nome-marca?termo=${termoNormalizado}`, {
+            const response = await fetch(`http://50.19.70.8:8080/produtos/filtrar-nome-marca?termo=${termoNormalizado}`, {
                 headers: {
                     Authorization: `Bearer ${token}`
                 }
@@ -327,7 +327,7 @@ const Recomendacoes = () => {
                 preco: typeof produto.preco === 'number' ? produto.preco : 0,
                 qtdPorCaixas: typeof produto.qtdPorCaixas === 'number' ? produto.qtdPorCaixas : 0,
                 imagemUrl: "https://terabite.blob.core.windows.net/terabite-container/" + produto.id || '',
-                 // Define true como padrão
+                // Define true como padrão
 
             }));
 
@@ -360,7 +360,7 @@ const Recomendacoes = () => {
                     }}
                 />
             </div>
-            
+
             <div className='tabela-produtos'>
                 <TableContainer
                     component={Paper}
@@ -465,15 +465,15 @@ const Recomendacoes = () => {
                         buscarTodosProdutos
                         SelectProps={{
                             native: true,
-                          }}
+                        }}
                     >
                         <option value="">Selecione um produto</option>
-                            {todosProdutos.map((produto) => (
+                        {todosProdutos.map((produto) => (
                             <option key={produto.id} value={produto.id}>
                                 {`${produto.nome} - ${produto.marca
-                                } (R$ ${produto.preco?.toFixed(2)})`}
+                                    } (R$ ${produto.preco?.toFixed(2)})`}
                             </option>
-                            ))}
+                        ))}
                     </TextField>
                 </DialogContent>
                 <DialogActions>
