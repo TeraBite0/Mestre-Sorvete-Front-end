@@ -33,7 +33,7 @@ const ProdutoEstoque = () => {
     const fetchEstoque = async () => {
       const token = sessionStorage.getItem('token');
       try {
-        const response = await axios.get(`http://10.0.0.26:80/api/lotes/produtos/${id}`, {
+        const response = await axios.get(`http://50.19.70.8:80/api/lotes/produtos/${id}`, {
           headers: {
             Authorization: `Bearer ${token}`
           }
@@ -90,7 +90,7 @@ const ProdutoEstoque = () => {
   const handleDeletar = async () => {
     const token = sessionStorage.getItem("token");
     try {
-      await axios.delete(`http://10.0.0.26:80/api/lotes/${idLote}`, {
+      await axios.delete(`http://50.19.70.8:80/api/lotes/${idLote}`, {
         headers: {
           Authorization: `Bearer ${token}`,
           "Content-Type": "application/json",
