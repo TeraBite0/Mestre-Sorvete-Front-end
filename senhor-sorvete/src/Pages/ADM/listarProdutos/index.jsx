@@ -72,7 +72,7 @@ const ListarProdutos = () => {
         setCarregando(true);
         try {
             // Buscar todos os Produtos
-            const resposta = await fetch('http://10.0.0.26:8080/api/produtos', {
+            const resposta = await fetch('http://10.0.0.26:80/api/produtos', {
                 headers: {
                     Authorization: `Bearer ${token}`
                 }
@@ -126,7 +126,7 @@ const ListarProdutos = () => {
         }
 
         try {
-            const response = await fetch('http://10.0.0.26:8080/api/marcas', {
+            const response = await fetch('http://10.0.0.26:80/api/marcas', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -178,7 +178,7 @@ const ListarProdutos = () => {
         }
 
         try {
-            const response = await fetch('http://10.0.0.26:8080/api/tipos', {
+            const response = await fetch('http://10.0.0.26:80/api/tipos', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -236,7 +236,7 @@ const ListarProdutos = () => {
         }
 
         try {
-            const response = await fetch('http://10.0.0.26:8080/api/subtipos', {
+            const response = await fetch('http://10.0.0.26:80/api/subtipos', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -265,7 +265,7 @@ const ListarProdutos = () => {
     };
     // const obterTokenSasAzure = async () => {
     //     const token = sessionStorage.getItem('token');
-    //     const resposta = await fetch('http://10.0.0.26:8080/api/azure', {
+    //     const resposta = await fetch('http://10.0.0.26:80/api/azure', {
     //         method: 'GET',
     //         headers: {
     //             'Authorization': `Bearer ${token}`
@@ -316,7 +316,7 @@ const ListarProdutos = () => {
                 .normalize("NFD")
                 .replace(/[\u0300-\u036f]/g, "");
 
-            const response = await fetch(`http://10.0.0.26:8080/api/produtos/filtrar-nome-marca?termo=${termoNormalizado}`, {
+            const response = await fetch(`http://10.0.0.26:80/api/produtos/filtrar-nome-marca?termo=${termoNormalizado}`, {
                 headers: {
                     Authorization: `Bearer ${token}`
                 }
@@ -364,9 +364,9 @@ const ListarProdutos = () => {
         setCarregando(true);
         try {
             const urls = [
-                { key: "marcas", url: "http://10.0.0.26:8080/api/marcas" },
-                { key: "subtipos", url: "http://10.0.0.26:8080/api/subtipos" },
-                { key: "tipos", url: "http://10.0.0.26:8080/api/tipos" }
+                { key: "marcas", url: "http://10.0.0.26:80/api/marcas" },
+                { key: "subtipos", url: "http://10.0.0.26:80/api/subtipos" },
+                { key: "tipos", url: "http://10.0.0.26:80/api/tipos" }
             ];
 
             const respostas = await Promise.all(
@@ -653,7 +653,7 @@ const ListarProdutos = () => {
                 temLactose: typeof novoProduto.temLactose === "boolean" ? novoProduto.temLactose : false,
                 temGluten: typeof novoProduto.temGluten === "boolean" ? novoProduto.temGluten : false
             };
-            const resposta = await fetch('http://10.0.0.26:8080/api/produtos', {
+            const resposta = await fetch('http://10.0.0.26:80/api/produtos', {
                 method: 'POST',
                 headers: {
                     'Authorization': `Bearer ${token}`,
@@ -733,7 +733,7 @@ const ListarProdutos = () => {
                 imagemUrl: urlImagem
             };
 
-            const resposta = await fetch(`http://10.0.0.26:8080/api/produtos/${produto.id}`, {
+            const resposta = await fetch(`http://10.0.0.26:80/api/produtos/${produto.id}`, {
                 method: "PUT",
                 headers: {
                     'Content-Type': 'application/json',
@@ -811,9 +811,9 @@ const ListarProdutos = () => {
         setCarregando(true);
         try {
             const urls = [
-                { key: "marcas", url: "http://10.0.0.26:8080/api/marcas" },
-                { key: "subtipos", url: "http://10.0.0.26:8080/api/subtipos" },
-                { key: "tipos", url: "http://10.0.0.26:8080/api/tipos" }
+                { key: "marcas", url: "http://10.0.0.26:80/api/marcas" },
+                { key: "subtipos", url: "http://10.0.0.26:80/api/subtipos" },
+                { key: "tipos", url: "http://10.0.0.26:80/api/tipos" }
             ];
 
             const respostas = await Promise.all(
@@ -867,7 +867,7 @@ const ListarProdutos = () => {
         const token = sessionStorage.getItem('token');
         const isAtivoGenerico = !produto.isAtivo; // Inverte o status atual
         try {
-            const response = await fetch(`http://10.0.0.26:8080/api/produtos/ativar/${produto.id}?isAtivo=${isAtivoGenerico}`, {
+            const response = await fetch(`http://10.0.0.26:80/api/produtos/ativar/${produto.id}?isAtivo=${isAtivoGenerico}`, {
                 method: "PATCH",
                 headers: {
                     'Content-Type': 'application/json',

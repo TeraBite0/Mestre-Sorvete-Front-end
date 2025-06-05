@@ -18,7 +18,7 @@ export default function BasicDemo() {
   useEffect(() => {
     const fetchRecomendacoes = async () => {
       try {
-        const response = await axios.get("http://10.0.0.26:8080/api/produtos/recomendacao")
+        const response = await axios.get("http://10.0.0.26:80/api/produtos/recomendacao")
         setRecomendacoes(response.data);
       } catch (error) {
         console.error("Erro ao buscar recomendacoes:", error);
