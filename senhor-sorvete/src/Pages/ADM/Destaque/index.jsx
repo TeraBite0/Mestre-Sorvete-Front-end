@@ -34,7 +34,7 @@ const Destaque = () => {
   // Função para buscar o produto recomendado
   const fetchProdutoRecomendado = async (token) => {
     try {
-      const response = await axios.get('http://localhost:8080/produtos/destaque', {
+      const response = await axios.get('http://50.19.70.8:8080/produtos/destaque', {
         headers: { 'Authorization': `Bearer ${token}` }
       });
 
@@ -60,7 +60,7 @@ const Destaque = () => {
   // Função para buscar todos os produtos
   const fetchTodosProdutos = async (token) => {
     try {
-      const response = await axios.get('http://localhost:8080/produtos', {
+      const response = await axios.get('http://50.19.70.8:8080/produtos', {
         headers: { 'Authorization': `Bearer ${token}` }
       });
 
@@ -122,16 +122,16 @@ const Destaque = () => {
     }
 
     try {
-      const response = await fetch(`http://localhost:8080/produtos/destaque`, {
-          method: "PUT",
-          headers: {
-              'Content-Type': 'application/json',
-              Authorization: `Bearer ${token}`
-          },
-          body: JSON.stringify({
-            produtoId: produtoRecomendado.id,
-            texto: valor
-          })
+      const response = await fetch(`http://50.19.70.8:8080/produtos/destaque`, {
+        method: "PUT",
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`
+        },
+        body: JSON.stringify({
+          produtoId: produtoRecomendado.id,
+          texto: valor
+        })
       });
 
       if (response.status === 200) {
@@ -317,21 +317,21 @@ const Destaque = () => {
           <h3>Nova Descrição: </h3>
         </div>
         <div className="campo-texto-destaque-do-dia">
-          <textarea 
-            class="input-texto-destaque-do-dia" 
-            type="text" 
-            readOnly="true" 
+          <textarea
+            class="input-texto-destaque-do-dia"
+            type="text"
+            readOnly="true"
             disabled="true"
-            placeholder="Descrição atual sobre o produto, para sugestão do dia..." 
-            value={produtos.map((produto) => (produto.texto))}  />
-          <textarea 
-            class="input-texto-destaque-do-dia" 
-            type="text" 
+            placeholder="Descrição atual sobre o produto, para sugestão do dia..."
+            value={produtos.map((produto) => (produto.texto))} />
+          <textarea
+            class="input-texto-destaque-do-dia"
+            type="text"
             value={valor}  // Vincula o valor do input ao estado
             onChange={handleChange}
             placeholder="Coloque uma descrição sobre o produto, para sugestão do dia..." />
         </div>
-          <BotaoGerenciamento botao="Atualizar Sugestão" onClick={atualizarProduto}/>  
+        <BotaoGerenciamento botao="Atualizar Sugestão" onClick={atualizarProduto} />
       </div>
 
       <ModalEditarProduto

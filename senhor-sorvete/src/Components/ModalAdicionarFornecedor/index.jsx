@@ -1,23 +1,23 @@
 import React, { useState } from "react";
 import {
-  TextField,
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  DialogActions,
-  Button,
+    TextField,
+    Dialog,
+    DialogTitle,
+    DialogContent,
+    DialogActions,
+    Button,
 } from "@mui/material";
 import { toast } from "react-toastify";
 
 const ModalAdicionarFornecedor = ({
-  open,
-  onClose,
-  title,
+    open,
+    onClose,
+    title,
 }) => {
     const [novoFornecedor, setNovoFornecedor] = useState('');
 
     const adicionarNovoFornecedor = async () => {
-       if (!novoFornecedor.trim()) {
+        if (!novoFornecedor.trim()) {
             toast.error("O nome do fornecedor não pode ser vazio");
             return;
         }
@@ -34,7 +34,7 @@ const ModalAdicionarFornecedor = ({
         }
 
         try {
-            const response = await fetch('http://localhost:8080/fornecedores', {
+            const response = await fetch('http://50.19.70.8:8080/fornecedores', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -48,7 +48,7 @@ const ModalAdicionarFornecedor = ({
                 console.error("Erro do servidor:", errorData);
                 throw new Error(`Erro ao adicionar fornecedor: ${errorData.message || 'Erro desconhecido'}`);
             }
-            
+
             onClose()
             toast.success("Fornecedor adicionado com sucesso!");
         } catch (error) {
@@ -57,31 +57,31 @@ const ModalAdicionarFornecedor = ({
         }
     };
 
-  return (
-    <Dialog
-        open={open}
-        onClose={onClose}>
-        <DialogTitle>{title}</DialogTitle>
-        <DialogContent>
-            <TextField
-                autoFocus
-                margin="dense"
-                label="Nome da Marca"
-                fullWidth
-                value={novoFornecedor}
-                onChange={(e) => setNovoFornecedor(e.target.value)}
-            />
-        </DialogContent>
-        <DialogActions>
-            <Button className="botaoModal" onClick={onClose}>
-                Cancelar
-            </Button>
-            <Button className="botaoModal" onClick={adicionarNovoFornecedor}>
-                Adicionar
-            </Button>
-        </DialogActions>
-    </Dialog>
-  );
+    return (
+        <Dialog
+            open={open}
+            onClose={onClose}>
+            <DialogTitle>{title}</DialogTitle>
+            <DialogContent>
+                <TextField
+                    autoFocus
+                    margin="dense"
+                    label="Nome da Marca"
+                    fullWidth
+                    value={novoFornecedor}
+                    onChange={(e) => setNovoFornecedor(e.target.value)}
+                />
+            </DialogContent>
+            <DialogActions>
+                <Button className="botaoModal" onClick={onClose}>
+                    Cancelar
+                </Button>
+                <Button className="botaoModal" onClick={adicionarNovoFornecedor}>
+                    Adicionar
+                </Button>
+            </DialogActions>
+        </Dialog>
+    );
 };
 
 export default ModalAdicionarFornecedor;

@@ -60,7 +60,7 @@ const Estoque = () => {
     const fetchEstoque = async () => {
       const token = sessionStorage.getItem('token');
       try {
-        const response = await axios.get('http://localhost:8080/produtos', {
+        const response = await axios.get('http://50.19.70.8:8080/produtos', {
           headers: {
             Authorization: `Bearer ${token}`
           }
@@ -78,7 +78,7 @@ const Estoque = () => {
   // const baixarRelatorioExcel = async () => {
   //   const token = sessionStorage.getItem('token');
   //     try {
-  //        await axios.get('http://localhost:8080/relatorio', {
+  //        await axios.get('http://50.19.70.8:8080/relatorio', {
   //         headers: {
   //           Authorization: `Bearer ${token}`
   //         }
@@ -89,57 +89,57 @@ const Estoque = () => {
   //     }
   // }
 
-  const baixarRelatorioExcel= async () => {
+  const baixarRelatorioExcel = async () => {
     const token = sessionStorage.getItem('token');
-    
+
     try {
-      const response = await axios.get('http://localhost:8080/relatorio', {
+      const response = await axios.get('http://50.19.70.8:8080/relatorio', {
         headers: {
           Authorization: `Bearer ${token}`
         },
         responseType: 'blob' // IMPORTANTE!
       });
-  
+
       // Cria uma URL do arquivo
       const url = window.URL.createObjectURL(new Blob([response.data]));
       const link = document.createElement('a');
       link.href = url;
-      
+
       // Define o nome do arquivo
       link.setAttribute('download', 'relatorio.xlsx');
-  
+
       // Adiciona e clica no link
       document.body.appendChild(link);
       link.click();
-  
+
       // Limpa o link
       link.parentNode.removeChild(link);
       window.URL.revokeObjectURL(url);
-  
+
     } catch (error) {
       toast.error('Erro ao baixar relatório Excel');
       console.log(error);
     }
   };
-  
+
 
   const abrirModalAdicionarLote = async () => {
     const token = sessionStorage.getItem('token');
-      try {
-        const response = await axios.get('http://localhost:8080/fornecedores', {
-          headers: {
-            Authorization: `Bearer ${token}`
-          }
-        });
-    
-        setFornecedores(response.data);
-        setAbrirAdicionarLote(true);
-      } catch (error) {
-        toast.error('Erro ao buscar estoque');
-        console.log(error);
-      }
+    try {
+      const response = await axios.get('http://50.19.70.8:8080/fornecedores', {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      });
+
+      setFornecedores(response.data);
+      setAbrirAdicionarLote(true);
+    } catch (error) {
+      toast.error('Erro ao buscar estoque');
+      console.log(error);
+    }
   }
-  
+
   const fecharModalAdicionarLote = () => setAbrirAdicionarLote(false);
 
   const camposAdicionarLote = [
@@ -175,7 +175,7 @@ const Estoque = () => {
     {
       name: "dtEntrega",
       label: "Previsão de entrega",
-      type: "date",      
+      type: "date",
     },
     {
       name: "valorLote",
@@ -221,7 +221,7 @@ const Estoque = () => {
     };
 
     try {
-      await axios.post('http://localhost:8080/lotes', jsonParaCriarLote, {
+      await axios.post('http://50.19.70.8:8080/lotes', jsonParaCriarLote, {
         headers: {
           'Authorization': `Bearer ${token}`,
           'Content-Type': 'application/json'
@@ -232,7 +232,7 @@ const Estoque = () => {
       fecharModalAdicionarLote();
 
       // Atualiza a lista de produtos
-      const response = await axios.get('http://localhost:8080/produtos', {
+      const response = await axios.get('http://50.19.70.8:8080/produtos', {
         headers: {
           Authorization: `Bearer ${token}`
         }
@@ -253,7 +253,7 @@ const Estoque = () => {
     for (let i = 0; i < index; i++) {
       const produtoKey = i === 0 ? 'produto' : 'produto' + i;
       const qtdKey = i === 0 ? 'qtdCaixasCompradas' : 'qtdCaixasCompradas' + i;
-    
+
       loteProdutos.push({
         produtoId: Number(data[produtoKey]),
         qtdCaixasCompradas: Number(data[qtdKey])
@@ -277,7 +277,7 @@ const Estoque = () => {
 
     return nomeInclusao || marcaInclusao;
   });
-  
+
   const handleSelecionarProduto = (id) => {
     navigate(`/adm/produto-estoque/${id}`);
   };
@@ -308,9 +308,9 @@ const Estoque = () => {
         </div>
 
         <div className="texto-produtos">
-        <span>Atualmente {produtos.length} produtos cadastrados</span>
+          <span>Atualmente {produtos.length} produtos cadastrados</span>
         </div>
-       
+
         <div className='tabela-produtos'>
           <TableContainer
             component={Paper}
@@ -333,23 +333,23 @@ const Estoque = () => {
               size="small"
               aria-label="tabela de produtos"
             >
-              
+
               <TableHead className='tabela-Head'>
                 <TableRow>
                   <TableCell className='tabela-head-cell' style={{ paddingLeft: '10px' }}>Código</TableCell>
                   <TableCell className='tabela-head-cell' style={{ paddingLeft: '10px' }}>Nome</TableCell>
                   <TableCell className='tabela-head-cell' style={{ paddingLeft: '10px' }}>Marca</TableCell>
-                  <TableCell className='tabela-head-cell' style={{estiloQuantidade }}>Unidades por Caixas</TableCell>
-                  <TableCell className='tabela-head-cell' style={{estiloQuantidade }}align="center">Quantidade de Caixas</TableCell>
+                  <TableCell className='tabela-head-cell' style={{ estiloQuantidade }}>Unidades por Caixas</TableCell>
+                  <TableCell className='tabela-head-cell' style={{ estiloQuantidade }} align="center">Quantidade de Caixas</TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
                 {produtosFiltrados.map((produto) => (
-                  <TableRow 
-                      key={produto.id || produto.codigo} 
-                      onClick={() => handleSelecionarProduto(produto.id)} 
-                      style={{ cursor: 'pointer' }} 
-                      className={`tabela-row-saidas tabela-row-estoque ${!produto.isAtivo ? 'desativado' : ''}`}
+                  <TableRow
+                    key={produto.id || produto.codigo}
+                    onClick={() => handleSelecionarProduto(produto.id)}
+                    style={{ cursor: 'pointer' }}
+                    className={`tabela-row-saidas tabela-row-estoque ${!produto.isAtivo ? 'desativado' : ''}`}
                   >
                     <TableCell class={`table-cell-grid-estoque`}>
                       {produto.id || produto.codigo}

@@ -20,7 +20,7 @@ const Login = () => {
 
     // Realiza a validação das informações
     axios
-      .post("http://localhost:8080/usuarios/login", {
+      .post("http://50.19.70.8:8080/usuarios/login", {
         email: email,
         senha: senha,
       })
@@ -71,12 +71,12 @@ const Login = () => {
           <button type="submit">Entrar</button>
           {/* <a href="/adm/cadastrar-senha">Esqueci minha senha</a> */}
         </form>
-          <p style={{ marginTop: '2rem', fontSize: '16px', width: '70%'}}>
-        Ao entrar, você declara estar ciente e de acordo com os{' '}
-        <a href="/Components/LGPD" target="_blank" rel="noopener noreferrer">
-          <b>termos da Política de Privacidade</b>
-        </a>.
-      </p>
+        <p style={{ marginTop: '2rem', fontSize: '16px', width: '70%' }}>
+          Ao entrar, você declara estar ciente e de acordo com os{' '}
+          <a href="/Components/LGPD" target="_blank" rel="noopener noreferrer">
+            <b>termos da Política de Privacidade</b>
+          </a>.
+        </p>
       </div>
       <div className="loginRight">
         <p>
