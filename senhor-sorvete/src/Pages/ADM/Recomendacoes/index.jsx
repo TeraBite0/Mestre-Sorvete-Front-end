@@ -64,7 +64,7 @@ const Recomendacoes = () => {
         const token = sessionStorage.getItem('token');
         try {
             // Buscar todos os Produtos
-            const resposta = await fetch('http://50.19.70.8:8080/produtos/ativos', {
+            const resposta = await fetch('http://10.0.0.26:8080/produtos/ativos', {
                 headers: {
                     Authorization: `Bearer ${token}`
                 }
@@ -102,7 +102,7 @@ const Recomendacoes = () => {
         setCarregando(true);
         try {
             // Buscar todos os Produtos
-            const resposta = await fetch('http://50.19.70.8:8080/produtos/recomendacao', {
+            const resposta = await fetch('http://10.0.0.26:8080/produtos/recomendacao', {
                 headers: {
                     Authorization: `Bearer ${token}`
                 }
@@ -161,7 +161,7 @@ const Recomendacoes = () => {
 
             const atualizarRecomendacao = JSON.parse(JSON.stringify({ produtoId: produto.id }));
 
-            const resposta = await fetch(`http://50.19.70.8:8080/produtos/recomendacao/${idRecomendacao}`, {
+            const resposta = await fetch(`http://10.0.0.26:8080/produtos/recomendacao/${idRecomendacao}`, {
                 method: "PUT",
                 headers: {
                     'Content-Type': 'application/json',
@@ -208,9 +208,9 @@ const Recomendacoes = () => {
         setCarregando(true);
         try {
             const urls = [
-                { key: "marcas", url: "http://50.19.70.8:8080/marcas" },
-                { key: "subtipos", url: "http://50.19.70.8:8080/subtipos" },
-                { key: "tipos", url: "http://50.19.70.8:8080/tipos" }
+                { key: "marcas", url: "http://10.0.0.26:8080/marcas" },
+                { key: "subtipos", url: "http://10.0.0.26:8080/subtipos" },
+                { key: "tipos", url: "http://10.0.0.26:8080/tipos" }
             ];
 
             const respostas = await Promise.all(
@@ -306,7 +306,7 @@ const Recomendacoes = () => {
                 .normalize("NFD")
                 .replace(/[\u0300-\u036f]/g, "");
 
-            const response = await fetch(`http://50.19.70.8:8080/produtos/filtrar-nome-marca?termo=${termoNormalizado}`, {
+            const response = await fetch(`http://10.0.0.26:8080/produtos/filtrar-nome-marca?termo=${termoNormalizado}`, {
                 headers: {
                     Authorization: `Bearer ${token}`
                 }
