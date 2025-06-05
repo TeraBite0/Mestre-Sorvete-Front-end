@@ -24,7 +24,7 @@ RUN rm /etc/nginx/conf.d/default.conf
 # Copia a nossa configuração customizada para o local onde o NGINX espera
 # que os arquivos de configuração de hosts virtuais estejam.
 # Isso garante que sua configuração seja carregada e não ignorada.
-COPY nginx.conf /etc/nginx/conf.d/default.conf
+COPY default.conf /etc/nginx/conf.d/default.conf
 # Copia os arquivos estáticos gerados pelo build do frontend
 # de /app/build (no estágio de build) para /usr/share/nginx/html (no estágio do NGINX)
 COPY --from=build /app/build /usr/share/nginx/html
