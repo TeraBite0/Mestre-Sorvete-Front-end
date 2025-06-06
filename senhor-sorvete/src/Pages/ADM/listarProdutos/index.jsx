@@ -91,7 +91,7 @@ const ListarProdutos = () => {
                 preco: typeof produto.preco === 'number' ? produto.preco : 0,
                 qtdCaixasEstoque: produto.qtdCaixasEstoque,
                 qtdPorCaixas: produto.qtdPorCaixas,
-                imagemUrl: "https://terabite.blob.core.windows.net/terabite-container/" + produto.id || '',
+                imagemUrl: produto.imagemUrl || '',
                 temGluten: produto.temGluten !== null ? produto.temGluten : true,
                 temLactose: produto.temLactose !== null ? produto.temLactose : true,
                 isAtivo: produto.isAtivo !== null ? produto.isAtivo : true // Garantir que isAtivo seja definido
@@ -336,7 +336,7 @@ const ListarProdutos = () => {
                 tipo: produto.tipo || '',
                 preco: typeof produto.preco === 'number' ? produto.preco : 0,
                 qtdPorCaixas: typeof produto.qtdPorCaixas === 'number' ? produto.qtdPorCaixas : 0,
-                imagemUrl: "https://terabite.blob.core.windows.net/terabite-container/" + produto.id || '',
+                imagemUrl: produto.imagemUrl || '',
                 // Define true como padrão
 
             }));
@@ -679,7 +679,7 @@ const ListarProdutos = () => {
                 tipo: dadosNovoProduto.tipo?.nome || '',
                 preco: typeof dadosNovoProduto.preco === 'number' ? dadosNovoProduto.preco : 0,
                 qtdPorCaixas: typeof dadosNovoProduto.qtdPorCaixas === 'number' ? dadosNovoProduto.qtdPorCaixas : 0,
-                imagemUrl: "https://terabite.blob.core.windows.net/terabite-container/" + dadosNovoProduto.id || '',
+                imagemUrl: dadosNovoProduto.imagemUrl|| '',
                 temLactose: dadosNovoProduto.temLactose,
                 temGluten: dadosNovoProduto.temGluten
             };
@@ -1023,7 +1023,7 @@ const ListarProdutos = () => {
                                     <TableRow key={produto.id} className={`tabela-row-saidas ${!produto.isAtivo ? 'desativado' : ''}`}>
                                         <TableCell>
                                             <img
-                                                src={renderProdutoCell(produto.imagemUrl, 'url-placeholder.png')}
+                                                src={produto.imagemUrl}
                                                 alt={produto.nome || 'Imagem do Produto'}
                                                 width="40"
                                                 height="40"

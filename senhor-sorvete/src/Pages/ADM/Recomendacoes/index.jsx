@@ -83,7 +83,7 @@ const Recomendacoes = () => {
                 preco: typeof produto.preco === 'number' ? produto.preco : 0,
                 qtdCaixasEstoque: produto.qtdCaixasEstoque,
                 qtdPorCaixas: produto.qtdPorCaixas,
-                imagemUrl: "https://terabite.blob.core.windows.net/terabite-container/" + produto.id || '',
+                imagemUrl: produto.imagemUrl || '',
                 temGluten: produto.temGluten !== null ? produto.temGluten : true,
                 temLactose: produto.temLactose !== null ? produto.temLactose : true,
                 isAtivo: produto.isAtivo !== null ? produto.isAtivo : true
@@ -111,6 +111,7 @@ const Recomendacoes = () => {
             if (!resposta.ok) throw new Error("Falha ao carregar produtos");
 
             const dados = await resposta.json();
+            debugger
 
             const produtosFormatados = dados.map(produto => ({
                 idRecomendacao: produto.id || '',
@@ -122,7 +123,7 @@ const Recomendacoes = () => {
                 preco: typeof produto.produto.preco === 'number' ? produto.produto.preco : 0,
                 qtdCaixasEstoque: produto.produto.qtdCaixasEstoque,
                 qtdPorCaixas: produto.produto.qtdPorCaixas,
-                imagemUrl: "https://terabite.blob.core.windows.net/terabite-container/" + produto.produto.id || '',
+                imagemUrl: produto.produto.imagemUrl || '',
                 temGluten: produto.produto.temGluten !== null ? produto.produto.temGluten : true,
                 temLactose: produto.produto.temLactose !== null ? produto.produto.temLactose : true,
                 isAtivo: produto.produto.isAtivo !== null ? produto.produto.isAtivo : true // Garantir que isAtivo seja definido
@@ -326,7 +327,7 @@ const Recomendacoes = () => {
                 tipo: produto.tipo || '',
                 preco: typeof produto.preco === 'number' ? produto.preco : 0,
                 qtdPorCaixas: typeof produto.qtdPorCaixas === 'number' ? produto.qtdPorCaixas : 0,
-                imagemUrl: "https://terabite.blob.core.windows.net/terabite-container/" + produto.id || '',
+                imagemUrl: produto.imagemUrl || '',
                 // Define true como padrão
 
             }));
@@ -401,7 +402,7 @@ const Recomendacoes = () => {
                                     <TableRow key={produto.id} className={`tabela-row-saidas`}>
                                         <TableCell>
                                             <img
-                                                src={renderProdutoCell(produto.imagemUrl, 'url-placeholder.png')}
+                                                src={produto.imagemUrl}
                                                 alt={produto.nome || 'Imagem do Produto'}
                                                 width="40"
                                                 height="40"
