@@ -807,6 +807,8 @@ const ListarProdutos = () => {
                 )
             );
 
+            uploadImagem(dadosParaAtualizar)
+
             toast.success("Produto atualizado com sucesso!");
             fecharModal();
             limparImagemPreview();
