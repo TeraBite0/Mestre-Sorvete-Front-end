@@ -96,7 +96,7 @@ const Saidas = () => {
     }
 
     axios
-      .get("http://54.243.180.4:80/api/saidas-estoque", {
+      .get("http://52.71.251.167:80/api/saidas-estoque", {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -118,7 +118,7 @@ const Saidas = () => {
     const token = sessionStorage.getItem("token");
 
     try {
-      const response = await axios.get("http://54.243.180.4:80/api/produtos", {
+      const response = await axios.get("http://52.71.251.167:80/api/produtos", {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -257,7 +257,7 @@ const Saidas = () => {
         saidaEstoques: saida,
       };
 
-      await axios.post("http://54.243.180.4:80/api/saidas-estoque", saidaEstoque, {
+      await axios.post("http://52.71.251.167:80/api/saidas-estoque", saidaEstoque, {
         headers: {
           Authorization: `Bearer ${token}`,
           "Content-Type": "application/json",
@@ -285,7 +285,7 @@ const Saidas = () => {
 
     try {
       const dataFormatada = dataBusca;
-      const response = await axios.get("http://54.243.180.4:80/api/saidas-estoque/data", {
+      const response = await axios.get("http://52.71.251.167:80/api/saidas-estoque/data", {
         params: { data: dataFormatada },
         headers: {
           Authorization: `Bearer ${token}`,
@@ -326,7 +326,7 @@ const Saidas = () => {
     }
 
     try {
-      await axios.put(`http://54.243.180.4:80/api/saidas-estoque/${saidaEditada.id}`, saidaEditada, {
+      await axios.put(`http://52.71.251.167:80/api/saidas-estoque/${saidaEditada.id}`, saidaEditada, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -360,7 +360,7 @@ const Saidas = () => {
     const token = sessionStorage.getItem("token");
 
     try {
-      const response = await axios.get("http://54.243.180.4:80/api/produtos", {
+      const response = await axios.get("http://52.71.251.167:80/api/produtos", {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -392,7 +392,7 @@ const Saidas = () => {
     };
 
     try {
-      await axios.delete("http://54.243.180.4:80/api/saidas-estoque", {
+      await axios.delete("http://52.71.251.167:80/api/saidas-estoque", {
         data: saidaEstoque, // o body da requisição
         headers: {
           Authorization: `Bearer ${token}`,
