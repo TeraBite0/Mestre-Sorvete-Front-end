@@ -72,7 +72,7 @@ const ListarProdutos = () => {
         setCarregando(true);
         try {
             // Buscar todos os Produtos
-            const resposta = await fetch('http://50.19.70.8:80/api/produtos', {
+            const resposta = await fetch('http://localhost:8080/produtos', {
                 headers: {
                     Authorization: `Bearer ${token}`
                 }
@@ -91,7 +91,7 @@ const ListarProdutos = () => {
                 preco: typeof produto.preco === 'number' ? produto.preco : 0,
                 qtdCaixasEstoque: produto.qtdCaixasEstoque,
                 qtdPorCaixas: produto.qtdPorCaixas,
-                imagemUrl: "https://terabite.blob.core.windows.net/terabite-container/" + produto.id || '',
+                imagemUrl: produto.imagemUrl || '',
                 temGluten: produto.temGluten !== null ? produto.temGluten : true,
                 temLactose: produto.temLactose !== null ? produto.temLactose : true,
                 isAtivo: produto.isAtivo !== null ? produto.isAtivo : true // Garantir que isAtivo seja definido
@@ -126,7 +126,7 @@ const ListarProdutos = () => {
         }
 
         try {
-            const response = await fetch('http://50.19.70.8:80/api/marcas', {
+            const response = await fetch('http://localhost:8080/marcas', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -178,7 +178,7 @@ const ListarProdutos = () => {
         }
 
         try {
-            const response = await fetch('http://50.19.70.8:80/api/tipos', {
+            const response = await fetch('http://localhost:8080/tipos', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -236,7 +236,7 @@ const ListarProdutos = () => {
         }
 
         try {
-            const response = await fetch('http://50.19.70.8:80/api/subtipos', {
+            const response = await fetch('http://localhost:8080/subtipos', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -265,7 +265,7 @@ const ListarProdutos = () => {
     };
     // const obterTokenSasAzure = async () => {
     //     const token = sessionStorage.getItem('token');
-    //     const resposta = await fetch('http://50.19.70.8:80/api/azure', {
+    //     const resposta = await fetch('http://localhost:8080/azure', {
     //         method: 'GET',
     //         headers: {
     //             'Authorization': `Bearer ${token}`
@@ -316,7 +316,7 @@ const ListarProdutos = () => {
                 .normalize("NFD")
                 .replace(/[\u0300-\u036f]/g, "");
 
-            const response = await fetch(`http://50.19.70.8:80/api/produtos/filtrar-nome-marca?termo=${termoNormalizado}`, {
+            const response = await fetch(`http://localhost:8080/produtos/filtrar-nome-marca?termo=${termoNormalizado}`, {
                 headers: {
                     Authorization: `Bearer ${token}`
                 }
@@ -336,7 +336,7 @@ const ListarProdutos = () => {
                 tipo: produto.tipo || '',
                 preco: typeof produto.preco === 'number' ? produto.preco : 0,
                 qtdPorCaixas: typeof produto.qtdPorCaixas === 'number' ? produto.qtdPorCaixas : 0,
-                imagemUrl: "https://terabite.blob.core.windows.net/terabite-container/" + produto.id || '',
+                imagemUrl: produto.imagemUrl || '',
                 // Define true como padrão
 
             }));
@@ -364,9 +364,9 @@ const ListarProdutos = () => {
         setCarregando(true);
         try {
             const urls = [
-                { key: "marcas", url: "http://50.19.70.8:80/api/marcas" },
-                { key: "subtipos", url: "http://50.19.70.8:80/api/subtipos" },
-                { key: "tipos", url: "http://50.19.70.8:80/api/tipos" }
+                { key: "marcas", url: "http://localhost:8080/marcas" },
+                { key: "subtipos", url: "http://localhost:8080/subtipos" },
+                { key: "tipos", url: "http://localhost:8080/tipos" }
             ];
 
             const respostas = await Promise.all(
@@ -653,7 +653,7 @@ const ListarProdutos = () => {
                 temLactose: typeof novoProduto.temLactose === "boolean" ? novoProduto.temLactose : false,
                 temGluten: typeof novoProduto.temGluten === "boolean" ? novoProduto.temGluten : false
             };
-            const resposta = await fetch('http://50.19.70.8:80/api/produtos', {
+            const resposta = await fetch('http://localhost:8080/produtos', {
                 method: 'POST',
                 headers: {
                     'Authorization': `Bearer ${token}`,
@@ -679,12 +679,14 @@ const ListarProdutos = () => {
                 tipo: dadosNovoProduto.tipo?.nome || '',
                 preco: typeof dadosNovoProduto.preco === 'number' ? dadosNovoProduto.preco : 0,
                 qtdPorCaixas: typeof dadosNovoProduto.qtdPorCaixas === 'number' ? dadosNovoProduto.qtdPorCaixas : 0,
-                imagemUrl: "https://terabite.blob.core.windows.net/terabite-container/" + dadosNovoProduto.id || '',
+                imagemUrl: dadosNovoProduto.imagemUrl|| '',
                 temLactose: dadosNovoProduto.temLactose,
                 temGluten: dadosNovoProduto.temGluten
             };
 
             setProdutos(produtos => [...produtos, produtoFormatado]);
+
+            uploadImagem(produtoFormatado)
 
             toast.success('Produto criado com sucesso!');
             fecharModal();
@@ -698,6 +700,38 @@ const ListarProdutos = () => {
             setCarregando(false);
         }
     };
+
+    const uploadImagem = async (produtoFormatado) => {
+        const formData = new FormData();
+        formData.append('idProduto', produtoFormatado.id);
+        formData.append('file', arquivoImagem);
+
+        const token = sessionStorage.getItem('token');
+        if (!token) {
+            throw new Error('Token de autenticação não encontrado');
+        }
+        
+        try {
+            const resposta = await fetch('http://localhost:8080/images/produto/upload', {
+            method: 'POST',
+            headers: {
+                'Authorization': `Bearer ${token}`,
+            },
+            body: formData
+            });
+        
+            if (!resposta.ok) {
+            throw new Error('Erro no upload');
+            }
+        
+            const resultado = await resposta.text();
+            console.log('Imagem enviada com sucesso:', resultado);
+        } catch (erro) {
+            toast.error(erro.message);
+            console.error('Falha ao enviar imagem:', erro);
+        }
+    };
+
     // Método para atualizar produto (PUT) com imagem
     const atualizarProduto = async (produto, dadosAtualizados) => {
         try {
@@ -733,7 +767,7 @@ const ListarProdutos = () => {
                 imagemUrl: urlImagem
             };
 
-            const resposta = await fetch(`http://50.19.70.8:80/api/produtos/${produto.id}`, {
+            const resposta = await fetch(`http://localhost:8080/produtos/${produto.id}`, {
                 method: "PUT",
                 headers: {
                     'Content-Type': 'application/json',
@@ -811,9 +845,9 @@ const ListarProdutos = () => {
         setCarregando(true);
         try {
             const urls = [
-                { key: "marcas", url: "http://50.19.70.8:80/api/marcas" },
-                { key: "subtipos", url: "http://50.19.70.8:80/api/subtipos" },
-                { key: "tipos", url: "http://50.19.70.8:80/api/tipos" }
+                { key: "marcas", url: "http://localhost:8080/marcas" },
+                { key: "subtipos", url: "http://localhost:8080/subtipos" },
+                { key: "tipos", url: "http://localhost:8080/tipos" }
             ];
 
             const respostas = await Promise.all(
@@ -867,7 +901,7 @@ const ListarProdutos = () => {
         const token = sessionStorage.getItem('token');
         const isAtivoGenerico = !produto.isAtivo; // Inverte o status atual
         try {
-            const response = await fetch(`http://50.19.70.8:80/api/produtos/ativar/${produto.id}?isAtivo=${isAtivoGenerico}`, {
+            const response = await fetch(`http://localhost:8080/produtos/ativar/${produto.id}?isAtivo=${isAtivoGenerico}`, {
                 method: "PATCH",
                 headers: {
                     'Content-Type': 'application/json',
@@ -989,7 +1023,7 @@ const ListarProdutos = () => {
                                     <TableRow key={produto.id} className={`tabela-row-saidas ${!produto.isAtivo ? 'desativado' : ''}`}>
                                         <TableCell>
                                             <img
-                                                src={renderProdutoCell(produto.imagemUrl, 'url-placeholder.png')}
+                                                src={produto.imagemUrl}
                                                 alt={produto.nome || 'Imagem do Produto'}
                                                 width="40"
                                                 height="40"

@@ -25,7 +25,7 @@ const Home = (props) => {
     const fetchDestaque = async () => {
       try {
         const resposta = await fetch(
-          "http://50.19.70.8:80/api/produtos/destaque",
+          "http://localhost:8080/produtos/destaque",
           {
             method: "GET",
             headers: {
@@ -51,7 +51,7 @@ const Home = (props) => {
 
   // const fetchDestaqueDia = async () => {
   //   try {
-  //     const resposta = await fetch("http://50.19.70.8:80/api/produtos/destaque", {
+  //     const resposta = await fetch("http://localhost:8080/produtos/destaque", {
   //       method: "GET",
   //       headers: {
   //         Accept: "*/*",
@@ -158,7 +158,7 @@ const Home = (props) => {
                 <img
                   //   src={destaqueDia.imagemUrl} // Aqui você usa a URL da imagem retornada pela API
                   // alt={`Sugestão do Dia - ${destaqueDia.nome}`}
-                  src="Imagens/imagem-3-homepage.png"
+                  src={destaqueDia.produto.imagemUrl || "Imagens/imagem-3-homepage.png"}
                   // src={destaqueDia.imagemUrl}
                   alt={`Sugestão do Dia - ${destaqueDia.id}`}
                 />

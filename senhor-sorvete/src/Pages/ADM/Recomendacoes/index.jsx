@@ -64,7 +64,7 @@ const Recomendacoes = () => {
         const token = sessionStorage.getItem('token');
         try {
             // Buscar todos os Produtos
-            const resposta = await fetch('http://50.19.70.8:80/api/produtos/ativos', {
+            const resposta = await fetch('http://localhost:8080/produtos/ativos', {
                 headers: {
                     Authorization: `Bearer ${token}`
                 }
@@ -83,7 +83,7 @@ const Recomendacoes = () => {
                 preco: typeof produto.preco === 'number' ? produto.preco : 0,
                 qtdCaixasEstoque: produto.qtdCaixasEstoque,
                 qtdPorCaixas: produto.qtdPorCaixas,
-                imagemUrl: "https://terabite.blob.core.windows.net/terabite-container/" + produto.id || '',
+                imagemUrl: produto.imagemUrl || '',
                 temGluten: produto.temGluten !== null ? produto.temGluten : true,
                 temLactose: produto.temLactose !== null ? produto.temLactose : true,
                 isAtivo: produto.isAtivo !== null ? produto.isAtivo : true
@@ -102,7 +102,7 @@ const Recomendacoes = () => {
         setCarregando(true);
         try {
             // Buscar todos os Produtos
-            const resposta = await fetch('http://50.19.70.8:80/api/produtos/recomendacao', {
+            const resposta = await fetch('http://localhost:8080/produtos/recomendacao', {
                 headers: {
                     Authorization: `Bearer ${token}`
                 }
@@ -111,6 +111,7 @@ const Recomendacoes = () => {
             if (!resposta.ok) throw new Error("Falha ao carregar produtos");
 
             const dados = await resposta.json();
+            debugger
 
             const produtosFormatados = dados.map(produto => ({
                 idRecomendacao: produto.id || '',
@@ -122,7 +123,7 @@ const Recomendacoes = () => {
                 preco: typeof produto.produto.preco === 'number' ? produto.produto.preco : 0,
                 qtdCaixasEstoque: produto.produto.qtdCaixasEstoque,
                 qtdPorCaixas: produto.produto.qtdPorCaixas,
-                imagemUrl: "https://terabite.blob.core.windows.net/terabite-container/" + produto.produto.id || '',
+                imagemUrl: produto.produto.imagemUrl || '',
                 temGluten: produto.produto.temGluten !== null ? produto.produto.temGluten : true,
                 temLactose: produto.produto.temLactose !== null ? produto.produto.temLactose : true,
                 isAtivo: produto.produto.isAtivo !== null ? produto.produto.isAtivo : true // Garantir que isAtivo seja definido
@@ -161,7 +162,7 @@ const Recomendacoes = () => {
 
             const atualizarRecomendacao = JSON.parse(JSON.stringify({ produtoId: produto.id }));
 
-            const resposta = await fetch(`http://50.19.70.8:80/api/produtos/recomendacao/${idRecomendacao}`, {
+            const resposta = await fetch(`http://localhost:8080/produtos/recomendacao/${idRecomendacao}`, {
                 method: "PUT",
                 headers: {
                     'Content-Type': 'application/json',
@@ -208,9 +209,9 @@ const Recomendacoes = () => {
         setCarregando(true);
         try {
             const urls = [
-                { key: "marcas", url: "http://50.19.70.8:80/api/marcas" },
-                { key: "subtipos", url: "http://50.19.70.8:80/api/subtipos" },
-                { key: "tipos", url: "http://50.19.70.8:80/api/tipos" }
+                { key: "marcas", url: "http://localhost:8080/marcas" },
+                { key: "subtipos", url: "http://localhost:8080/subtipos" },
+                { key: "tipos", url: "http://localhost:8080/tipos" }
             ];
 
             const respostas = await Promise.all(
@@ -306,7 +307,7 @@ const Recomendacoes = () => {
                 .normalize("NFD")
                 .replace(/[\u0300-\u036f]/g, "");
 
-            const response = await fetch(`http://50.19.70.8:80/api/produtos/filtrar-nome-marca?termo=${termoNormalizado}`, {
+            const response = await fetch(`http://localhost:8080/produtos/filtrar-nome-marca?termo=${termoNormalizado}`, {
                 headers: {
                     Authorization: `Bearer ${token}`
                 }
@@ -326,7 +327,7 @@ const Recomendacoes = () => {
                 tipo: produto.tipo || '',
                 preco: typeof produto.preco === 'number' ? produto.preco : 0,
                 qtdPorCaixas: typeof produto.qtdPorCaixas === 'number' ? produto.qtdPorCaixas : 0,
-                imagemUrl: "https://terabite.blob.core.windows.net/terabite-container/" + produto.id || '',
+                imagemUrl: produto.imagemUrl || '',
                 // Define true como padrão
 
             }));
@@ -401,7 +402,7 @@ const Recomendacoes = () => {
                                     <TableRow key={produto.id} className={`tabela-row-saidas`}>
                                         <TableCell>
                                             <img
-                                                src={renderProdutoCell(produto.imagemUrl, 'url-placeholder.png')}
+                                                src={produto.imagemUrl}
                                                 alt={produto.nome || 'Imagem do Produto'}
                                                 width="40"
                                                 height="40"
