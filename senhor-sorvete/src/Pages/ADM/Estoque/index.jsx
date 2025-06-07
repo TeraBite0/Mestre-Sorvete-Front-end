@@ -60,7 +60,7 @@ const Estoque = () => {
     const fetchEstoque = async () => {
       const token = sessionStorage.getItem('token');
       try {
-        const response = await axios.get('http://localhost:8080/produtos', {
+        const response = await axios.get('http://54.243.180.4:80/api/produtos', {
           headers: {
             Authorization: `Bearer ${token}`
           }
@@ -78,7 +78,7 @@ const Estoque = () => {
   // const baixarRelatorioExcel = async () => {
   //   const token = sessionStorage.getItem('token');
   //     try {
-  //        await axios.get('http://localhost:8080/relatorio', {
+  //        await axios.get('http://54.243.180.4:80/api/relatorio', {
   //         headers: {
   //           Authorization: `Bearer ${token}`
   //         }
@@ -93,7 +93,7 @@ const Estoque = () => {
     const token = sessionStorage.getItem('token');
 
     try {
-      const response = await axios.get('http://localhost:8080/relatorio', {
+      const response = await axios.get('http://54.243.180.4:80/api/relatorio', {
         headers: {
           Authorization: `Bearer ${token}`
         },
@@ -126,7 +126,7 @@ const Estoque = () => {
   const abrirModalAdicionarLote = async () => {
     const token = sessionStorage.getItem('token');
     try {
-      const response = await axios.get('http://localhost:8080/fornecedores', {
+      const response = await axios.get('http://54.243.180.4:80/api/fornecedores', {
         headers: {
           Authorization: `Bearer ${token}`
         }
@@ -221,7 +221,7 @@ const Estoque = () => {
     };
 
     try {
-      await axios.post('http://localhost:8080/lotes', jsonParaCriarLote, {
+      await axios.post('http://54.243.180.4:80/api/lotes', jsonParaCriarLote, {
         headers: {
           'Authorization': `Bearer ${token}`,
           'Content-Type': 'application/json'
@@ -232,7 +232,7 @@ const Estoque = () => {
       fecharModalAdicionarLote();
 
       // Atualiza a lista de produtos
-      const response = await axios.get('http://localhost:8080/produtos', {
+      const response = await axios.get('http://54.243.180.4:80/api/produtos', {
         headers: {
           Authorization: `Bearer ${token}`
         }

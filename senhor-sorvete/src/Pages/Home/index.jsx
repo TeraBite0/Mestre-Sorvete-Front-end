@@ -25,7 +25,7 @@ const Home = (props) => {
     const fetchDestaque = async () => {
       try {
         const resposta = await fetch(
-          "http://localhost:8080/produtos/destaque",
+          "http://54.243.180.4:80/api/produtos/destaque",
           {
             method: "GET",
             headers: {
@@ -51,7 +51,7 @@ const Home = (props) => {
 
   // const fetchDestaqueDia = async () => {
   //   try {
-  //     const resposta = await fetch("http://localhost:8080/produtos/destaque", {
+  //     const resposta = await fetch("http://54.243.180.4:80/api/produtos/destaque", {
   //       method: "GET",
   //       headers: {
   //         Accept: "*/*",
