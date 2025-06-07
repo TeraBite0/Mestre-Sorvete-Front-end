@@ -72,7 +72,7 @@ const ListarProdutos = () => {
         setCarregando(true);
         try {
             // Buscar todos os Produtos
-            const resposta = await fetch('http://localhost:8080/produtos', {
+            const resposta = await fetch('http://54.243.180.4:80/api/produtos', {
                 headers: {
                     Authorization: `Bearer ${token}`
                 }
@@ -126,7 +126,7 @@ const ListarProdutos = () => {
         }
 
         try {
-            const response = await fetch('http://localhost:8080/marcas', {
+            const response = await fetch('http://54.243.180.4:80/api/marcas', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -178,7 +178,7 @@ const ListarProdutos = () => {
         }
 
         try {
-            const response = await fetch('http://localhost:8080/tipos', {
+            const response = await fetch('http://54.243.180.4:80/api/tipos', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -236,7 +236,7 @@ const ListarProdutos = () => {
         }
 
         try {
-            const response = await fetch('http://localhost:8080/subtipos', {
+            const response = await fetch('http://54.243.180.4:80/api/subtipos', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -265,7 +265,7 @@ const ListarProdutos = () => {
     };
     // const obterTokenSasAzure = async () => {
     //     const token = sessionStorage.getItem('token');
-    //     const resposta = await fetch('http://localhost:8080/azure', {
+    //     const resposta = await fetch('http://54.243.180.4:80/api/azure', {
     //         method: 'GET',
     //         headers: {
     //             'Authorization': `Bearer ${token}`
@@ -316,7 +316,7 @@ const ListarProdutos = () => {
                 .normalize("NFD")
                 .replace(/[\u0300-\u036f]/g, "");
 
-            const response = await fetch(`http://localhost:8080/produtos/filtrar-nome-marca?termo=${termoNormalizado}`, {
+            const response = await fetch(`http://54.243.180.4:80/api/produtos/filtrar-nome-marca?termo=${termoNormalizado}`, {
                 headers: {
                     Authorization: `Bearer ${token}`
                 }
@@ -364,9 +364,9 @@ const ListarProdutos = () => {
         setCarregando(true);
         try {
             const urls = [
-                { key: "marcas", url: "http://localhost:8080/marcas" },
-                { key: "subtipos", url: "http://localhost:8080/subtipos" },
-                { key: "tipos", url: "http://localhost:8080/tipos" }
+                { key: "marcas", url: "http://54.243.180.4:80/api/marcas" },
+                { key: "subtipos", url: "http://54.243.180.4:80/api/subtipos" },
+                { key: "tipos", url: "http://54.243.180.4:80/api/tipos" }
             ];
 
             const respostas = await Promise.all(
@@ -653,7 +653,7 @@ const ListarProdutos = () => {
                 temLactose: typeof novoProduto.temLactose === "boolean" ? novoProduto.temLactose : false,
                 temGluten: typeof novoProduto.temGluten === "boolean" ? novoProduto.temGluten : false
             };
-            const resposta = await fetch('http://localhost:8080/produtos', {
+            const resposta = await fetch('http://54.243.180.4:80/api/produtos', {
                 method: 'POST',
                 headers: {
                     'Authorization': `Bearer ${token}`,
@@ -679,7 +679,7 @@ const ListarProdutos = () => {
                 tipo: dadosNovoProduto.tipo?.nome || '',
                 preco: typeof dadosNovoProduto.preco === 'number' ? dadosNovoProduto.preco : 0,
                 qtdPorCaixas: typeof dadosNovoProduto.qtdPorCaixas === 'number' ? dadosNovoProduto.qtdPorCaixas : 0,
-                imagemUrl: dadosNovoProduto.imagemUrl|| '',
+                imagemUrl: dadosNovoProduto.imagemUrl || '',
                 temLactose: dadosNovoProduto.temLactose,
                 temGluten: dadosNovoProduto.temGluten
             };
@@ -710,20 +710,20 @@ const ListarProdutos = () => {
         if (!token) {
             throw new Error('Token de autenticação não encontrado');
         }
-        
+
         try {
-            const resposta = await fetch('http://localhost:8080/images/produto/upload', {
-            method: 'POST',
-            headers: {
-                'Authorization': `Bearer ${token}`,
-            },
-            body: formData
+            const resposta = await fetch('http://54.243.180.4:80/api/images/produto/upload', {
+                method: 'POST',
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                },
+                body: formData
             });
-        
+
             if (!resposta.ok) {
-            throw new Error('Erro no upload');
+                throw new Error('Erro no upload');
             }
-        
+
             const resultado = await resposta.text();
             console.log('Imagem enviada com sucesso:', resultado);
         } catch (erro) {
@@ -767,7 +767,7 @@ const ListarProdutos = () => {
                 imagemUrl: urlImagem
             };
 
-            const resposta = await fetch(`http://localhost:8080/produtos/${produto.id}`, {
+            const resposta = await fetch(`http://54.243.180.4:80/api/produtos/${produto.id}`, {
                 method: "PUT",
                 headers: {
                     'Content-Type': 'application/json',
@@ -845,9 +845,9 @@ const ListarProdutos = () => {
         setCarregando(true);
         try {
             const urls = [
-                { key: "marcas", url: "http://localhost:8080/marcas" },
-                { key: "subtipos", url: "http://localhost:8080/subtipos" },
-                { key: "tipos", url: "http://localhost:8080/tipos" }
+                { key: "marcas", url: "http://54.243.180.4:80/api/marcas" },
+                { key: "subtipos", url: "http://54.243.180.4:80/api/subtipos" },
+                { key: "tipos", url: "http://54.243.180.4:80/api/tipos" }
             ];
 
             const respostas = await Promise.all(
@@ -901,7 +901,7 @@ const ListarProdutos = () => {
         const token = sessionStorage.getItem('token');
         const isAtivoGenerico = !produto.isAtivo; // Inverte o status atual
         try {
-            const response = await fetch(`http://localhost:8080/produtos/ativar/${produto.id}?isAtivo=${isAtivoGenerico}`, {
+            const response = await fetch(`http://54.243.180.4:80/api/produtos/ativar/${produto.id}?isAtivo=${isAtivoGenerico}`, {
                 method: "PATCH",
                 headers: {
                     'Content-Type': 'application/json',

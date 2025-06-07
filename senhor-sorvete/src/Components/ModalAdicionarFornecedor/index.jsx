@@ -34,7 +34,7 @@ const ModalAdicionarFornecedor = ({
         }
 
         try {
-            const response = await fetch('http://localhost:8080/fornecedores', {
+            const response = await fetch('http://54.243.180.4:80/api/fornecedores', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
