@@ -20,7 +20,7 @@ const Login = () => {
 
     // Realiza a validação das informações
     axios
-      .post("http://50.19.70.8:80/api/usuarios/login", {
+      .post("http://54.243.180.4:80/api/usuarios/login", {
         email: email,
         senha: senha,
       })
