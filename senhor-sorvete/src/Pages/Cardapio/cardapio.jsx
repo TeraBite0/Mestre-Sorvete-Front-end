@@ -284,8 +284,6 @@ const Cardapio = () => {
   const openModal = () => setIsModalOpen(true);
   const closeModal = () => {
     setIsModalOpen(false);
-    setEmailError("");
-    setEmail("");
   };
 
   return (
@@ -498,22 +496,13 @@ const Cardapio = () => {
             left: "50%",
             transform: "translate(-50%, -50%)",
             bgcolor: "background.paper",
-            p: 4,
+            p: { xs: 2, sm: 3, md: 4 },
             borderRadius: 2,
-            width: 400,
+            width: { xs: "80%", sm: 400, md: 500 }, 
           }}
         >
           <h2>Reserva!</h2>
           <p>Ao confirmar, você será redirecionado para o WhatsApp para finalizar sua reserva.</p>
-          {/* <TextField
-            // label="Digite seu e-mail"
-            // value={email}
-            // onChange={(e) => setEmail(e.target.value)}
-            // error={Boolean(emailError)}
-            // helperText={emailError}
-            // fullWidth
-            // margin="normal"
-          /> */}
           <div style={{ display: "flex", justifyContent: "flex-end" }}>
             <Button onClick={closeModal} variant="outlined" color="error">
               Cancelar
