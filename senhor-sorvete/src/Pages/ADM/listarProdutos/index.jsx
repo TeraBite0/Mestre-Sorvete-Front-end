@@ -309,7 +309,7 @@ const ListarProdutos = () => {
     const filtroPesquisa = async (termo) => {
         const token = sessionStorage.getItem("token");
         setCarregando(true);
-
+debugger
         try {
             // Normalizar e remover acentos antes de enviar
             const termoNormalizado = termo
@@ -337,6 +337,7 @@ const ListarProdutos = () => {
                 preco: typeof produto.preco === 'number' ? produto.preco : 0,
                 qtdPorCaixas: typeof produto.qtdPorCaixas === 'number' ? produto.qtdPorCaixas : 0,
                 imagemUrl: produto.imagemUrl || '',
+                isAtivo: produto.isAtivo
                 // Define true como padrão
 
             }));
