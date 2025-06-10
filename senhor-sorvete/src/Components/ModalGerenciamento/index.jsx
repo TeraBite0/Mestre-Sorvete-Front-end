@@ -63,7 +63,7 @@ const ModalGerenciamento = ({
   const buscarProdutos = async () => {
     const token = sessionStorage.getItem('token');
     try {
-      const response = await axios.get('http://54.80.52.5:80/api/produtos', {
+      const response = await axios.get('http://34.207.75.40:80/api/produtos', {
         headers: {
           Authorization: `Bearer ${token}`
         }
