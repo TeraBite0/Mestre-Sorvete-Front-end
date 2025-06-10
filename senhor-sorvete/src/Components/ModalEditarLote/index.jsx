@@ -35,7 +35,7 @@ const ModalEditarProduto = ({
     debugger
     try {
       await axios.patch(
-        `http://54.80.52.5:80/api/lotes/${idLote}`,
+        `http://34.207.75.40:80/api/lotes/${idLote}`,
         corpoParaAtualizarStatus,
         {
           headers: {

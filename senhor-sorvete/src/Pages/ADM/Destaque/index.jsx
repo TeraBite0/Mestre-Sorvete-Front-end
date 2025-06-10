@@ -34,7 +34,7 @@ const Destaque = () => {
   // Função para buscar o produto recomendado
   const fetchProdutoRecomendado = async (token) => {
     try {
-      const response = await axios.get('http://54.80.52.5:80/api/produtos/destaque', {
+      const response = await axios.get('http://34.207.75.40:80/api/produtos/destaque', {
         headers: { 'Authorization': `Bearer ${token}` }
       });
 
@@ -60,7 +60,7 @@ const Destaque = () => {
   // Função para buscar todos os produtos
   const fetchTodosProdutos = async (token) => {
     try {
-      const response = await axios.get('http://54.80.52.5:80/api/produtos', {
+      const response = await axios.get('http://34.207.75.40:80/api/produtos', {
         headers: { 'Authorization': `Bearer ${token}` }
       });
 
@@ -122,7 +122,7 @@ const Destaque = () => {
     }
 
     try {
-      const response = await fetch(`http://54.80.52.5:80/api/produtos/destaque`, {
+      const response = await fetch(`http://34.207.75.40:80/api/produtos/destaque`, {
         method: "PUT",
         headers: {
           'Content-Type': 'application/json',
