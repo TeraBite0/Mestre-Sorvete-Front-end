@@ -462,9 +462,9 @@ const Cardapio = () => {
             left: "50%",
             transform: "translate(-50%, -50%)",
             bgcolor: "background.paper",
-            p: 4,
+             p: { xs: 2, sm: 3, md: 4 },
             borderRadius: 2,
-            width: 400,
+            width: { xs: "80%", sm: 400, md: 500 },
           }}
         >
           <h2>Filtrar por Categoria</h2>

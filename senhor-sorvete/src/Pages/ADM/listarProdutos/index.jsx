@@ -337,7 +337,7 @@ const ListarProdutos = () => {
                 preco: typeof produto.preco === 'number' ? produto.preco : 0,
                 qtdPorCaixas: typeof produto.qtdPorCaixas === 'number' ? produto.qtdPorCaixas : 0,
                 imagemUrl: produto.imagemUrl || '',
-                // Define true como padrão
+                isAtivo: produto.isAtivo
 
             }));
 
