@@ -1,20 +1,20 @@
 import { BrowserRouter, Route, Routes } from "react-router-dom";
-import Home from "./Pages/home/Home";
-import Login from "./Pages/login";
-import Cardapio from "./Pages/cardapio/cardapio";
-import Gastronomia from "./Pages/gastronomia";
-import Contato from "./Pages/contato";
-import HomeGerenciamento from "./Pages/homeGerenciamento";
-import ListarProdutos from "../src/Pages/adm/listarProdutos";
-import Destaque from "./Pages/adm/destaque";
-import Recomendacoes from "./Pages/adm/recomendacoes"
-import Estoque from "./Pages/adm/estoque";
-import Saidas from "./Pages/adm/saidas/saidas";
-import CadastrarSenha from "./Pages/adm/cadastrarSenha";
-import ProdutoEstoque from "./Pages/adm/produtoEstoque";
-import Dashboard from "./Pages/adm/dashboard";
-import LGPD from "./Components/LGPD";
-import NotFound from "./Pages/notFound";
+import Home from "./app/pages/homes/Home";
+import Login from "./app/pages/login";
+import Cardapio from "./app/pages/cardapio/cardapio";
+import Gastronomia from "./app/pages/gastronomia";
+import Contato from "./app/pages/contato";
+import HomeGerenciamento from "./app/pages/homeGerenciamento";
+import ListarProdutos from "./app/pages/adm/listarProdutos";
+import Destaque from "./app/pages/adm/destaque";
+import Recomendacoes from "./app/pages/adm/recomendacoes"
+import Estoque from "./app/pages/adm/estoque";
+import Saidas from "./app/pages/adm/saidas/saidas";
+import CadastrarSenha from "./app/pages/adm/cadastrarSenha";
+import ProdutoEstoque from "./app/pages/adm/produtoEstoque";
+import Dashboard from "./app/pages/adm/dashboard";
+import LGPD from "./app/shared/components/LGPD";
+import NotFound from "./app/pages/notFound";
 
 const AppRoutes = () => {
 
@@ -34,7 +34,7 @@ const AppRoutes = () => {
                 <Route path= "/adm/saidas" element={<Saidas/>}/>
                 <Route path="/adm/cadastrar-senha" element={<CadastrarSenha/>}/>
                 <Route path="/adm/dashboard" element={<Dashboard/>}/>
-                <Route path="/Components/LGPD" element={<LGPD/>}/>
+                <Route path="/components/LGPD" element={<LGPD/>}/>
                 <Route path="*" element={<NotFound />} />
 
                 {/* TODO: TROCAR O CAMINHO PARA ":idEstoque" para receber o id do produto na URL */}
