@@ -49,28 +49,6 @@ const Home = (props) => {
     fetchDestaque();
   }, []);
 
-  // const fetchDestaqueDia = async () => {
-  //   try {
-  //     const resposta = await fetch("https://mestre-sorvete-back-end.onrender.com/produtos/destaque", {
-  //       method: "GET",
-  //       headers: {
-  //         Accept: "*/*",
-  //       },
-  //     });
-
-  //     if (resposta.status !== 200) {
-  //       // Se o status não for 200, registra o erro
-  //       console.error("Erro do servidor:", resposta.status);
-  //     } else {
-  //       // Aqui você pode processar a resposta se o status for 200
-  //       const data = await resposta.json(); // Ou outro formato conforme a resposta do servidor
-  //       console.log(data);
-  //     }
-  //   } catch (error) {
-  //     console.error("Erro ao fazer a requisição:", error);
-  //   }
-  // };
-
   const validateEmail = (email) => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     return emailRegex.test(email);
@@ -97,9 +75,7 @@ const Home = (props) => {
             <h4>Bem-vindo ao</h4>
             <h1>MESTRE SORVETE</h1>
             <p>
-              Não vendemos gelo, oferecemos sabor. <br></br>
-              Sorvete do futuro.
-              Antecipe o sabor hoje, aquilo que vai degustar amanhã.
+              Sorvete do futuro: Aqui o sabor chega primeiro e você  prova antes de todo mundo!
             </p>
             <div className="button">
               <button className="btn-primary">
@@ -129,17 +105,13 @@ const Home = (props) => {
             <div className="sobre-text">
               <h2>Missão</h2>
               <p>
-                Somos apaixonados por oferecer os melhores sorvetes do mercado,
-                selecionando cuidadosamente para revenda em nossa loja. Com um
-                compromisso com a qualidade, trazemos para você uma variedade de
-                sabores irresistíveis.
+                Transformamos cada sabor em uma experiência inesquecível, 
+                com qualidade, variedade e inovação que surpreendem e 
+                fazem o cliente querer voltar!
               </p>
               <h2>Visão</h2>
               <p>
-                Nosso objetivo é proporcionar uma experiência refrescante e
-                deliciosa em cada visita, oferecendo sorvetes que conquistam
-                todos os paladares. Visite-nos e descubra sua próxima sobremesa
-                favorita!
+                Ir cada vez mais longe, sempre de mãos dadas com nossos clientes!
               </p>
             </div>
           </div>
