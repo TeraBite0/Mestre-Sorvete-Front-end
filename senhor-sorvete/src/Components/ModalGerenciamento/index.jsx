@@ -12,7 +12,7 @@ import {
   Button,
 } from "@mui/material";
 import BotaoGerenciamento from "../BotaoGerenciamento";
-import ModalAdicionarFornecedor from "../../Components/ModalAdicionarFornecedor";
+import ModalAdicionarFornecedor from "../ModalAdicionarFornecedor";
 import axios from "axios";
 import { toast } from "react-toastify";
 
