@@ -1,7 +1,7 @@
 import { useState } from "react";
 import WhatsAppIcon from "@mui/icons-material/WhatsApp";
 import InstagramIcon from "@mui/icons-material/Instagram";
-import Header from "../../../Components/Header";
+import Header from "../../shared/components/Header";
 import "./contato.css";
 
 const Contato = () => {

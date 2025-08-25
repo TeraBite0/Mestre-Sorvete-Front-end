@@ -27,10 +27,10 @@ import TableContainer from "@mui/material/TableContainer";
 import EditIcon from "@mui/icons-material/Edit";
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import { useEffect, useState } from "react";
-import HeaderGerenciamento from "../../../../Components/HeaderGerenciamento";
-import Pesquisa from "../../../../Components/Pesquisa";
-import BotaoVoltarGerenciamento from "../../../../Components/BotaoVoltarGerenciamento";
-import BotaoGerenciamento from "../../../../Components/BotaoGerenciamento";
+import HeaderGerenciamento from "../../../shared/components/HeaderGerenciamento";
+import Pesquisa from "../../../shared/components/Pesquisa";
+import BotaoVoltarGerenciamento from "../../../shared/components/BotaoVoltarGerenciamento";
+import BotaoGerenciamento from "../../../shared/components/BotaoGerenciamento";
 import { toast } from "react-toastify";
 
 const ListarProdutos = () => {

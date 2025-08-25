@@ -1,12 +1,12 @@
 import React, { useState, useEffect, useCallback } from "react";
 import './produtoEstoque.css';
-import HeaderGerenciamento from "../../../../Components/HeaderGerenciamento";
-import BotaoVoltarGerenciamento from '../../../../Components/BotaoVoltarGerenciamento';
+import HeaderGerenciamento from "../../../shared/components/HeaderGerenciamento";
+import BotaoVoltarGerenciamento from '../../../shared/components/BotaoVoltarGerenciamento';
 import { useParams } from 'react-router-dom';
 import axios from "axios";
 import { toast } from "react-toastify";
-import ModalConfirmarDeletar from "../../../../Components/ModalConfirmarDeletar";
-import ModalEditarLote from "../../../../Components/ModalEditarLote";
+import ModalConfirmarDeletar from "../../../shared/components/ModalConfirmarDeletar";
+import ModalEditarLote from "../../../shared/components/ModalEditarLote";
 
 import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper } from '@mui/material';
 

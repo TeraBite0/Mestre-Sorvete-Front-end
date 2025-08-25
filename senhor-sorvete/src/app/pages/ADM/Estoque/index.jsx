@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from "react";
 import "./estoque.css";
-import HeaderGerenciamento from "../../../../Components/HeaderGerenciamento";
-import BotaoVoltarGerenciamento from "../../../../Components/BotaoVoltarGerenciamento";
-import Pesquisa from "../../../../Components/Pesquisa";
-import BotaoGerenciamento from "../../../../Components/BotaoGerenciamento";
-import ModalGerenciamento from "../../../../Components/ModalGerenciamento";
+import HeaderGerenciamento from "../../../shared/components/HeaderGerenciamento";
+import BotaoVoltarGerenciamento from "../../../shared/components/BotaoVoltarGerenciamento";
+import Pesquisa from "../../../shared/components/Pesquisa";
+import BotaoGerenciamento from "../../../shared/components/BotaoGerenciamento";
+import ModalGerenciamento from "../../../shared/components/ModalGerenciamento";
 import { useNavigate } from "react-router-dom";
 import {
   Table,

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import BotaoGerenciamento from "../../../../Components/BotaoGerenciamento";
+import BotaoGerenciamento from "../../../shared/components/BotaoGerenciamento";
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -12,8 +12,8 @@ import {
   LineElement,
 } from "chart.js";
 import { Bar, Line } from "react-chartjs-2";
-import HeaderGerenciamento from "../../../../Components/HeaderGerenciamento";
-import BotaoVoltarGerenciamento from "../../../../Components/BotaoVoltarGerenciamento";
+import HeaderGerenciamento from "../../../shared/components/HeaderGerenciamento";
+import BotaoVoltarGerenciamento from "../../../shared/components/BotaoVoltarGerenciamento";
 import "./dashboard.css";
 
 // Registro dos componentes do Chart.js

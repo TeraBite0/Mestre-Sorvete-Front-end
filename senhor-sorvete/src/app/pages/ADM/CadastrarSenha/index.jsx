@@ -1,6 +1,6 @@
 import "./cadastrarSenha.css";
-import HeaderGerenciamento from "../../../../Components/HeaderGerenciamento";
-import BotaoGerenciamento from "../../../../Components/BotaoGerenciamento";
+import HeaderGerenciamento from "../../../shared/components/HeaderGerenciamento";
+import BotaoGerenciamento from "../../../shared/components/BotaoGerenciamento";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useNavigate } from "react-router-dom";

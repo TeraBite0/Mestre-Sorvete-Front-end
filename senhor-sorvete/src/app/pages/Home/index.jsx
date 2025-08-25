@@ -1,10 +1,10 @@
 import "./home.css";
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import Header from "../../../Components/Header";
-import Footer from "../../../Components/Footer";
-import IconeWhatsapp from "../../../Components/IconeWhatsapp";
-import CarrosselImagens from "../../../Components/CarrosselImagens";
+import Header from "../../shared/components/Header";
+import Footer from "../../shared/components/Footer";
+import IconeWhatsapp from "../../shared/components/IconeWhatsapp";
+import CarrosselImagens from "../../shared/components/CarrosselImagens";
 import { Link } from "react-router-dom";
 
 const Home = (props) => {

@@ -13,7 +13,7 @@ import Saidas from "./app/pages/ADM/Saidas/saidas";
 import CadastrarSenha from "./app/pages/ADM/CadastrarSenha";
 import ProdutoEstoque from "./app/pages/ADM/ProdutoEstoque";
 import Dashboard from "./app/pages/ADM/Dashboard";
-import LGPD from "./Components/LGPD";
+import LGPD from "./app/shared/components/LGPD";
 import NotFound from "./app/pages/NotFound";
 
 const AppRoutes = () => {

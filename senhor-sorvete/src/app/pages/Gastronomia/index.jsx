@@ -1,8 +1,8 @@
 import "./gastronomia.css";
-import Header from "../../../Components/Header";
-import Footer from "../../../Components/Footer";
-import TextoVideo from "../../../Components/TextoVideo";
-import Artigo from "../../../Components/Artigo";
+import Header from "../../shared/components/Header";
+import Footer from "../../shared/components/Footer";
+import TextoVideo from "../../shared/components/TextoVideo";
+import Artigo from "../../shared/components/Artigo";
 
 const Gastronomia = (props) => {
   return (

@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 import "./vendas.css";
-import HeaderGerenciamento from "../../../../Components/HeaderGerenciamento";
-import BotaoVoltarGerenciamento from "../../../../Components/BotaoVoltarGerenciamento";
+import HeaderGerenciamento from "../../../shared/components/HeaderGerenciamento";
+import BotaoVoltarGerenciamento from "../../../shared/components/BotaoVoltarGerenciamento";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
 import TableCell from "@mui/material/TableCell";
@@ -10,7 +10,7 @@ import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
-import BotaoGerenciamento from "../../../../Components/BotaoGerenciamento";
+import BotaoGerenciamento from "../../../shared/components/BotaoGerenciamento";
 import Dialog from "@mui/material/Dialog";
 import DialogTitle from "@mui/material/DialogTitle";
 import DialogContent from "@mui/material/DialogContent";
@@ -21,7 +21,7 @@ import { toast } from "react-toastify";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
 import { Tooltip } from "@mui/material";
-import ModalConfirmarDeletar from "../../../../Components/ModalConfirmarDeletar"
+import ModalConfirmarDeletar from "../../../shared/components/ModalConfirmarDeletar"
 
 
 const Saidas = () => {

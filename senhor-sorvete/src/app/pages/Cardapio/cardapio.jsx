@@ -3,9 +3,9 @@ import axios from "axios";
 import { toast } from "react-toastify";
 
 import "./cardapio.css";
-import Filtros from "../../../Components/Filtros/Filtro.tsx";
-import Header from "../../../Components/Header/index.jsx";
-import Footer from "../../../Components/Footer/index.jsx";
+import Filtros from "../../shared/components/Filtros/Filtro.tsx";
+import Header from "../../shared/components/Header/index.jsx";
+import Footer from "../../shared/components/Footer/index.jsx";
 
 import SearchIcon from "@mui/icons-material/Search";
 import WhatshotIcon from "@mui/icons-material/Whatshot";

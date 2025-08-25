@@ -15,11 +15,11 @@ import "./destaque.css";
 import TableContainer from "@mui/material/TableContainer";
 import EditIcon from "@mui/icons-material/Edit";
 import { useEffect, useState } from "react";
-import HeaderGerenciamento from "../../../../Components/HeaderGerenciamento";
-import BotaoVoltarGerenciamento from "../../../../Components/BotaoVoltarGerenciamento";
+import HeaderGerenciamento from "../../../shared/components/HeaderGerenciamento";
+import BotaoVoltarGerenciamento from "../../../shared/components/BotaoVoltarGerenciamento";
 import { toast } from "react-toastify";
 import axios from "axios";
-import BotaoGerenciamento from "../../../../Components/BotaoGerenciamento";
+import BotaoGerenciamento from "../../../shared/components/BotaoGerenciamento";
 
 const Destaque = () => {
   const [produtos, setProdutos] = useState([]);

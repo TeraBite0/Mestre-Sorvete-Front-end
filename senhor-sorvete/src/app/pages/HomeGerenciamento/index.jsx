@@ -1,6 +1,6 @@
 import React, { useState } from "react";
-import HeaderGerencimento from "../../../Components/HeaderGerenciamento";
-import CardsGerenciamento from "../../../Components/CardsGerenciamento";
+import HeaderGerencimento from "../../shared/components/HeaderGerenciamento";
+import CardsGerenciamento from "../../shared/components/CardsGerenciamento";
 import "./homeGerenciamento.css";
 
 const HomeGerenciamento = () => {
