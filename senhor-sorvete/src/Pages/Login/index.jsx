@@ -20,7 +20,7 @@ const Login = () => {
 
     // Realiza a validação das informações
     axios
-      .post("http://34.207.75.40:80/api/usuarios/login", {
+      .post("https://mestre-sorvete-back-end.onrender.com/usuarios/login", {
         email: email,
         senha: senha,
       })

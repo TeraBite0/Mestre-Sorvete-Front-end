@@ -34,7 +34,7 @@ const ModalAdicionarFornecedor = ({
         }
 
         try {
-            const response = await fetch('http://34.207.75.40:80/api/fornecedores', {
+            const response = await fetch('https://mestre-sorvete-back-end.onrender.com/fornecedores', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

@@ -72,7 +72,7 @@ const ListarProdutos = () => {
         setCarregando(true);
         try {
             // Buscar todos os Produtos
-            const resposta = await fetch('http://34.207.75.40:80/api/produtos', {
+            const resposta = await fetch('https://mestre-sorvete-back-end.onrender.com/produtos', {
                 headers: {
                     Authorization: `Bearer ${token}`
                 }
@@ -126,7 +126,7 @@ const ListarProdutos = () => {
         }
 
         try {
-            const response = await fetch('http://34.207.75.40:80/api/marcas', {
+            const response = await fetch('https://mestre-sorvete-back-end.onrender.com/marcas', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -178,7 +178,7 @@ const ListarProdutos = () => {
         }
 
         try {
-            const response = await fetch('http://34.207.75.40:80/api/tipos', {
+            const response = await fetch('https://mestre-sorvete-back-end.onrender.com/tipos', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -236,7 +236,7 @@ const ListarProdutos = () => {
         }
 
         try {
-            const response = await fetch('http://34.207.75.40:80/api/subtipos', {
+            const response = await fetch('https://mestre-sorvete-back-end.onrender.com/subtipos', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -265,7 +265,7 @@ const ListarProdutos = () => {
     };
     // const obterTokenSasAzure = async () => {
     //     const token = sessionStorage.getItem('token');
-    //     const resposta = await fetch('http://34.207.75.40:80/api/azure', {
+    //     const resposta = await fetch('https://mestre-sorvete-back-end.onrender.com/azure', {
     //         method: 'GET',
     //         headers: {
     //             'Authorization': `Bearer ${token}`
@@ -316,7 +316,7 @@ const ListarProdutos = () => {
                 .normalize("NFD")
                 .replace(/[\u0300-\u036f]/g, "");
 
-            const response = await fetch(`http://34.207.75.40:80/api/produtos/filtrar-nome-marca?termo=${termoNormalizado}`, {
+            const response = await fetch(`https://mestre-sorvete-back-end.onrender.com/produtos/filtrar-nome-marca?termo=${termoNormalizado}`, {
                 headers: {
                     Authorization: `Bearer ${token}`
                 }
@@ -364,9 +364,9 @@ const ListarProdutos = () => {
         setCarregando(true);
         try {
             const urls = [
-                { key: "marcas", url: "http://34.207.75.40:80/api/marcas" },
-                { key: "subtipos", url: "http://34.207.75.40:80/api/subtipos" },
-                { key: "tipos", url: "http://34.207.75.40:80/api/tipos" }
+                { key: "marcas", url: "https://mestre-sorvete-back-end.onrender.com/marcas" },
+                { key: "subtipos", url: "https://mestre-sorvete-back-end.onrender.com/subtipos" },
+                { key: "tipos", url: "https://mestre-sorvete-back-end.onrender.com/tipos" }
             ];
 
             const respostas = await Promise.all(
@@ -653,7 +653,7 @@ const ListarProdutos = () => {
                 temLactose: typeof novoProduto.temLactose === "boolean" ? novoProduto.temLactose : false,
                 temGluten: typeof novoProduto.temGluten === "boolean" ? novoProduto.temGluten : false
             };
-            const resposta = await fetch('http://34.207.75.40:80/api/produtos', {
+            const resposta = await fetch('https://mestre-sorvete-back-end.onrender.com/produtos', {
                 method: 'POST',
                 headers: {
                     'Authorization': `Bearer ${token}`,
@@ -712,7 +712,7 @@ const ListarProdutos = () => {
         }
 
         try {
-            const resposta = await fetch('http://34.207.75.40:80/api/images/produto/upload', {
+            const resposta = await fetch('https://mestre-sorvete-back-end.onrender.com/images/produto/upload', {
                 method: 'POST',
                 headers: {
                     'Authorization': `Bearer ${token}`,
@@ -767,7 +767,7 @@ const ListarProdutos = () => {
                 imagemUrl: urlImagem
             };
 
-            const resposta = await fetch(`http://34.207.75.40:80/api/produtos/${produto.id}`, {
+            const resposta = await fetch(`https://mestre-sorvete-back-end.onrender.com/produtos/${produto.id}`, {
                 method: "PUT",
                 headers: {
                     'Content-Type': 'application/json',
@@ -847,9 +847,9 @@ const ListarProdutos = () => {
         setCarregando(true);
         try {
             const urls = [
-                { key: "marcas", url: "http://34.207.75.40:80/api/marcas" },
-                { key: "subtipos", url: "http://34.207.75.40:80/api/subtipos" },
-                { key: "tipos", url: "http://34.207.75.40:80/api/tipos" }
+                { key: "marcas", url: "https://mestre-sorvete-back-end.onrender.com/marcas" },
+                { key: "subtipos", url: "https://mestre-sorvete-back-end.onrender.com/subtipos" },
+                { key: "tipos", url: "https://mestre-sorvete-back-end.onrender.com/tipos" }
             ];
 
             const respostas = await Promise.all(
@@ -903,7 +903,7 @@ const ListarProdutos = () => {
         const token = sessionStorage.getItem('token');
         const isAtivoGenerico = !produto.isAtivo; // Inverte o status atual
         try {
-            const response = await fetch(`http://34.207.75.40:80/api/produtos/ativar/${produto.id}?isAtivo=${isAtivoGenerico}`, {
+            const response = await fetch(`https://mestre-sorvete-back-end.onrender.com/produtos/ativar/${produto.id}?isAtivo=${isAtivoGenerico}`, {
                 method: "PATCH",
                 headers: {
                     'Content-Type': 'application/json',

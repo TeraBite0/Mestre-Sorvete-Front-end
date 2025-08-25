@@ -18,7 +18,7 @@ export default function BasicDemo() {
   useEffect(() => {
     const fetchRecomendacoes = async () => {
       try {
-        const response = await axios.get("http://34.207.75.40:80/api/produtos/recomendacao")
+        const response = await axios.get("https://mestre-sorvete-back-end.onrender.com/produtos/recomendacao")
         setRecomendacoes(response.data);
       } catch (error) {
         console.error("Erro ao buscar recomendacoes:", error);

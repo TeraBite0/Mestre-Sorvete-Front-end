@@ -35,7 +35,7 @@ const ModalEditarProduto = ({
     debugger
     try {
       await axios.patch(
-        `http://34.207.75.40:80/api/lotes/${idLote}`,
+        `https://mestre-sorvete-back-end.onrender.com/lotes/${idLote}`,
         corpoParaAtualizarStatus,
         {
           headers: {

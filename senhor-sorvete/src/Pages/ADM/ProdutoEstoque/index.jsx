@@ -33,7 +33,7 @@ const ProdutoEstoque = () => {
     const fetchEstoque = async () => {
       const token = sessionStorage.getItem('token');
       try {
-        const response = await axios.get(`http://34.207.75.40:80/api/lotes/produtos/${id}`, {
+        const response = await axios.get(`https://mestre-sorvete-back-end.onrender.com/lotes/produtos/${id}`, {
           headers: {
             Authorization: `Bearer ${token}`
           }
@@ -90,7 +90,7 @@ const ProdutoEstoque = () => {
   const handleDeletar = async () => {
     const token = sessionStorage.getItem("token");
     try {
-      await axios.delete(`http://34.207.75.40:80/api/lotes/${idLote}`, {
+      await axios.delete(`https://mestre-sorvete-back-end.onrender.com/lotes/${idLote}`, {
         headers: {
           Authorization: `Bearer ${token}`,
           "Content-Type": "application/json",

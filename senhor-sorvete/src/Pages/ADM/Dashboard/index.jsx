@@ -81,7 +81,7 @@ const Dashboard = () => {
   const fetchGerarCsv = async () => {
     const token = sessionStorage.getItem("token");
     try {
-      const response = await fetch('http://34.207.75.40:80/api/csv/download', {
+      const response = await fetch('https://mestre-sorvete-back-end.onrender.com/csv/download', {
         method: 'GET',
         headers: {
           Authorization: `Bearer ${token}`,
@@ -125,7 +125,7 @@ const Dashboard = () => {
     setError(null);
 
     try {
-      const response = await fetch("http://34.207.75.40:80/api/dashboard/", {
+      const response = await fetch("https://mestre-sorvete-back-end.onrender.com/dashboard/", {
         method: "GET",
         headers: {
           Authorization: `Bearer ${token}`,
