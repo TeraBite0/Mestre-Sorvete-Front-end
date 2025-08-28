@@ -4,7 +4,6 @@ html,
 body {
   overflow-x: hidden;
   scroll-behavior: smooth;
-  /* font-family: "Poppins", sans-serif; */
 }
 
 /* GLOBAL */
@@ -26,11 +25,12 @@ button {
   width: auto;
 }
 
-.img-home-page-section-1{
+.img-home-page-section-1 {
   display: none;
 }
 
-.section-1 {
+/* ---------------------- HERO ---------------------- */
+.hero-section {
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -39,9 +39,8 @@ button {
   box-sizing: border-box;
 }
 
-.section-1 img {
+.hero-section img {
   height: 90vh;
-  /* max-width: 800px; */
 }
 
 .content {
@@ -49,18 +48,18 @@ button {
   padding: 20px;
 }
 
-.home h4 {
+.hero-section h4 {
   font-weight: 300;
 }
 
-.section-1 h1 {
+.hero-section h1 {
   color: #772321;
   font-size: 3rem;
   margin-bottom: 20px;
   margin-top: -20px;
 }
 
-.section-1 p {
+.hero-section p {
   font-size: 1.2rem;
   margin-bottom: 40px;
   color: #333;
@@ -76,7 +75,8 @@ button {
   text-decoration: none;
 }
 
-.section-2 {
+/* ---------------------- SOBRE ---------------------- */
+.sobre-section {
   display: flex;
   justify-content: center;
   align-items: center;
@@ -111,20 +111,18 @@ button {
   max-width: 100%;
 }
 
-/* Carrossel aqui */
-
-.section-3 {
+/* ---------------------- SUGESTÃO DO DIA ---------------------- */
+.sugestao-section {
   background: linear-gradient(180deg, #ffdb94 52%, #deaf54 100%);
   padding: 1rem;
   border-radius: 45px;
-  /* max-width: 1200px; */
   max-width: 80%;
   margin: 0 auto;
   text-align: center;
   height: 620px;
 }
 
-.section-3 h2 {
+.sugestao-section h2 {
   letter-spacing: -1px;
   color: #772321;
   font-size: 2.5rem;
@@ -132,7 +130,7 @@ button {
   text-shadow: 3px 3px 5px rgba(0, 0, 0, 0.4);
 }
 
-.section-3 .data {
+.sugestao-section .data {
   font-size: 1rem;
   color: #772321;
   font-weight: bold;
@@ -180,7 +178,8 @@ button {
   text-decoration: none;
 }
 
-.section-4 {
+/* ---------------------- MAIS ---------------------- */
+.mais-section {
   display: flex;
   justify-content: center;
   align-items: center;
@@ -188,14 +187,14 @@ button {
   padding: 7% 5%;
 }
 
-.section-4 h1 {
+.mais-section h1 {
   color: #772321;
   font-size: 2.5rem;
   margin-bottom: 20px;
   position: relative;
 }
 
-.section-4 p {
+.mais-section p {
   font-size: 1.2rem;
   color: #333;
 }
@@ -208,14 +207,16 @@ button {
   max-height: 40vh;
 }
 
-.section-5 {
+/* ---------------------- MAPA + NEWSLETTER ---------------------- */
+.mapa-section {
   display: flex;
-  justify-content: space-around;
+  justify-content: center;
+  align-items: center; 
   gap: 50px;
   padding: 0 5% 4%;
 }
 
-.classe-notificacao-e-email{
+.classe-notificacao-e-email {
   display: flex;
   height: 100%;
   width: 100%;
@@ -228,14 +229,14 @@ button {
   width: 80%;
 }
 
-.section-5 h2 {
+.mapa-section h2 {
   color: #772321;
   font-size: 2rem;
   margin-bottom: 20px;
   position: relative;
 }
 
-.section-5 p {
+.mapa-section p {
   font-size: 1rem;
   margin-bottom: 20px;
   color: #333;
@@ -265,8 +266,9 @@ button {
   width: 50%;
 }
 
+/* ---------------------- RESPONSIVIDADE ---------------------- */
 @media (max-width: 1024px) {
-  .section-1 {
+  .hero-section {
     flex-direction: column;
     padding: 0;
   }
@@ -279,10 +281,9 @@ button {
 
   .sobre-container,
   .sugestao-content,
-  .section-4 {
+  .mais-section {
     flex-direction: column;
     text-align: center;
-    /* width: 100%; */
     max-width: 1200px;
     padding: 2rem 2rem 0;
   }
@@ -293,38 +294,38 @@ button {
     display: flex;
     flex-direction: row;
 
-    h3{
+    h3 {
       width: 100%;
       font-size: 30px;
-    } 
-    p{
+    }
+    p {
       font-size: 100%;
     }
   }
 
-  .section-1 img{
+  .hero-section img {
     display: none;
   }
 
-  .section-1 img,
+  .hero-section img,
   .sugestao-img img,
   .more-img img {
     height: auto;
     width: 100%;
   }
 
-  .img-home-page-section-1{
+  .img-home-page-section-1 {
     display: flex;
     width: 100%;
     height: 200px;
     background-image: url(../../../../public/Imagens/imagem-principal-homepage.png);
     background-repeat: no-repeat;
     background-size: 90%;
-    background-attachment: fixed; 
+    background-attachment: fixed;
     background-position-y: 10px;
   }
 
-  .section-5 {
+  .mapa-section {
     flex-direction: column;
     padding: 5% 4%;
   }
@@ -337,34 +338,32 @@ button {
     justify-content: center;
     width: 70%;
   }
-
 }
 
-@media (max-width: 850px){
-
+@media (max-width: 850px) {
   .sugestao-text {
     max-width: 70%;
     text-align: center;
   }
 
-  .sugestao-content{
+  .sugestao-content {
     h3 {
       font-size: 18px;
     }
     p {
       font-size: 85%;
     }
-  } 
+  }
 
   .sugestao-content,
-  .section-4 {
+  .mais-section {
     flex-direction: column;
     align-items: center;
   }
 }
 
 @media (max-width: 680px) {
-  .section-5 {
+  .mapa-section {
     iframe {
       width: 530px;
     }
@@ -372,7 +371,7 @@ button {
 }
 
 @media (max-width: 600px) {
-  .section-1 {
+  .hero-section {
     height: auto;
     padding: 10px;
   }
@@ -386,23 +385,19 @@ button {
     justify-content: center;
   }
 
-  .section-1 img {
+  .hero-section img {
     width: 100%;
     max-height: 50vh;
   }
 
-  .img-home-page-section-1{
+  .img-home-page-section-1 {
     display: flex;
     width: 100%;
     height: 150px;
-/*     
-    background-repeat: no-repeat;
-    background-size: 90%;
-    background-attachment: fixed;  */
     background-position-y: 100px;
   }
 
-  .section-2 {
+  .sobre-section {
     padding-bottom: 0;
   }
 
@@ -411,11 +406,11 @@ button {
     text-align: center;
   }
 
-  .section-3 h2{
+  .sugestao-section h2 {
     font-size: 1.5rem;
   }
 
-  .section-3 .data {
+  .sugestao-section .data {
     margin-bottom: 0;
   }
 
@@ -423,25 +418,28 @@ button {
     margin-bottom: -10px;
   }
 
-  .sugestao-content{
-      h3 {
-        font-size: 18px;
-      }
-      p {
-        font-size: 85%;
-      }
+  .sugestao-content {
+    h3 {
+      font-size: 18px;
+    }
+    p {
+      font-size: 85%;
+    }
   }
 
   .sugestao-content,
-  .section-4 {
+  .mais-section {
     flex-direction: column;
     align-items: center;
   }
 
-  .section-5 {
+  .mapa-section {
     flex-direction: column;
     gap: 5vh;
-    width: 92%;
+    width: 90%;
+    display: flex;
+    justify-content: center;
+    align-items: center; 
 
     iframe {
       width: 300px;
@@ -453,4 +451,3 @@ button {
     width: 100%;
   }
 }
-

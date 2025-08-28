@@ -5,7 +5,7 @@ import Cardapio from "./app/pages/Cardapio/cardapio";
 import Gastronomia from "./app/pages/Gastronomia";
 import Contato from "./app/pages/Contato";
 import HomeGerenciamento from "./app/pages/HomeGerenciamento";
-import ListarProdutos from "../src/app/pages/ADM/listarProdutos";
+import ListarProdutos from "./app/pages/ADM/listarProdutos";
 import Destaque from "./app/pages/ADM/Destaque";
 import Recomendacoes from "./app/pages/ADM/Recomendacoes"
 import Estoque from "./app/pages/ADM/Estoque";

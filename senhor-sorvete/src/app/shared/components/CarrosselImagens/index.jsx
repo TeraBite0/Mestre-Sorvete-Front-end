@@ -4,9 +4,9 @@ import { Carousel } from "primereact/carousel";
 import { Link } from "react-router-dom";
 import axios from "axios";
 
-export default function BasicDemo() {
+export default function CarrosselImagens() {
   const [recomendacoes, setRecomendacoes] = useState([]);
-  const [activeIndex, setActiveIndex] = useState(0);
+  const [index, setIndex] = useState(0);
 
   const responsiveOptions = [
     { breakpoint: "1400px", numVisible: 2, numScroll: 1 },
@@ -18,34 +18,29 @@ export default function BasicDemo() {
   useEffect(() => {
     const fetchRecomendacoes = async () => {
       try {
-        const response = await axios.get("https://mestre-sorvete-back-end.onrender.com/produtos/recomendacao")
+        const response = await axios.get(
+          "https://mestre-sorvete-back-end.onrender.com/produtos/recomendacao"
+        );
         setRecomendacoes(response.data);
       } catch (error) {
         console.error("Erro ao buscar recomendacoes:", error);
       }
     };
     fetchRecomendacoes();
-    const interval = setInterval(() => {
-      setActiveIndex((prevIndex) => (prevIndex + 1) % recomendacoes.length);
-    }, 4000);
+  }, []);
 
-    return () => clearInterval(interval);
-  }, [recomendacoes.length]);
-
-  const productTemplate = (destaque) => {
-    return (
-      <div className="card-item">
-        <Link to="/cardapio">
-          <img
-            src={destaque.produto.imagemUrl || "Imagens/casquinhas-de-chocolate.jpeg"}
-            alt={`${destaque.nome} Ice Cream`}
-          />
-          <h3>{destaque.produto.nome}</h3>
-          <p>R${destaque.produto.preco},00</p>
-        </Link>
-      </div>
-    );
-  };
+  const productTemplate = (destaque) => (
+    <div className="card-item">
+      <Link to="/cardapio">
+        <img
+          src={destaque.produto.imagemUrl || "Imagens/casquinhas-de-chocolate.jpeg"}
+          alt={`${destaque.produto.nome} Ice Cream`}
+        />
+        <h3>{destaque.produto.nome}</h3>
+        <p>R${destaque.produto.preco.toFixed(2).replace(".", ",")}</p>
+      </Link>
+    </div>
+  );
 
   return (
     <div className="card">
@@ -58,8 +53,7 @@ export default function BasicDemo() {
         itemTemplate={productTemplate}
         showIndicators={false}
         circular
-        activeIndex={activeIndex}
-        autoplayInterval={3500}
+        autoplayInterval={5000} // autoplay automático
       />
     </div>
   );
