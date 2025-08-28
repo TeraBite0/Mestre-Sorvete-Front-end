@@ -1,69 +1,20 @@
 import "./home.css";
-import React, { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
 import Header from "../../shared/components/Header";
 import Footer from "../../shared/components/Footer";
 import IconeWhatsapp from "../../shared/components/IconeWhatsapp";
 import CarrosselImagens from "../../shared/components/CarrosselImagens";
-import { Link } from "react-router-dom";
+import useHome from "./hooks/useHome";
 
-const Home = (props) => {
-  // Função data atual
-  const [dataAtual, setDataAtual] = useState("");
-  const [email, setEmail] = useState("");
-  const [error, setError] = useState("");
-  const [destaqueDia, setDestaqueDia] = useState(null);
-  const navigate = useNavigate();
-
-  useEffect(() => {
-    const data = new Date();
-    const dia = String(data.getDate()).padStart(2, "0");
-    const mes = String(data.getMonth() + 1).padStart(2, "0");
-    const ano = data.getFullYear();
-    setDataAtual(`${dia}/${mes}/${ano}`);
-
-    const fetchDestaque = async () => {
-      try {
-        const resposta = await fetch(
-          "https://mestre-sorvete-back-end.onrender.com/produtos/destaque",
-          {
-            method: "GET",
-            headers: {
-              Accept: "*/*",
-            },
-          }
-        );
-
-        if (resposta.status !== 200) {
-          // Se o status não for 200, registra o erro
-          console.error("Erro do servidor:", resposta.status);
-        } else {
-          const data = await resposta.json();
-          setDestaqueDia(data); // Armazena os dados no estado
-        }
-      } catch (error) {
-        console.error("Erro ao fazer a requisição:", error);
-      }
-    };
-
-    fetchDestaque();
-  }, []);
-
-  const validateEmail = (email) => {
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    return emailRegex.test(email);
-  };
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-
-    if (validateEmail(email)) {
-      setError("");
-      navigate("/cardapio");
-    } else {
-      setError("Por favor, insira um E-mail válido.");
-    }
-  };
+const Home = () => {
+  const {
+    dataAtual,
+    email,
+    setEmail,
+    error,
+    handleSubmit,
+    destaqueDia,
+    Link,
+  } = useHome();
 
   return (
     <div className="home">
@@ -81,16 +32,16 @@ const Home = (props) => {
               <button className="btn-primary">
                 <Link
                   to="/"
-                  onClick={() =>
-                    document.getElementById("section-2").scrollIntoView()
-                  }
+                  // onClick={() =>
+                  //   // document.getElementById("section-2").scrollIntoView()
+                  // }
                 >
                   Saiba Mais
                 </Link>
               </button>
             </div>
           </div>
-          <div class="img-home-page-section-1"></div>
+          <div className="img-home-page-section-1"></div>
           <img
             src="Imagens/imagem-principal-homepage.png"
             alt="Imagem principal banner"
@@ -128,11 +79,8 @@ const Home = (props) => {
             <div className="sugestao-img sugestao-div">
               {destaqueDia ? (
                 <img
-                  //   src={destaqueDia.imagemUrl} // Aqui você usa a URL da imagem retornada pela API
-                  // alt={`Sugestão do Dia - ${destaqueDia.nome}`}
-                  src={destaqueDia.produto.imagemUrl || "Imagens/imagem-3-homepage.png"}
-                  // src={destaqueDia.imagemUrl}
-                  alt={`Sugestão do Dia - ${destaqueDia.id}`}
+                  src={destaqueDia.produto.imagemUrl || "Imagens/casquinhas-de-chocolate.jpeg"}
+                  alt={`${destaqueDia.produto.nome} Ice Cream`}
                 />
               ) : (
                 <p>Carregando recomendação...</p>
@@ -177,7 +125,7 @@ const Home = (props) => {
         </section>
 
         <section className="section-5">
-          <div className="section-5"><iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3655.090514945892!2d-46.492801125018104!3d-23.63692926437218!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x94ce69769e05f995%3A0xa5657f81c68e3102!2sMestre%20Sorvete!5e0!3m2!1spt-BR!2sbr!4v1740097443188!5m2!1spt-BR!2sbr" title="Vídeo institucional" width="620" height="350" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe></div>
+          <div className="section-5"><iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3655.090514945892!2d-46.492801125018104!3d-23.63692926437218!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x94ce69769e05f995%3A0xa5657f81c68e3102!2sMestre%20Sorvete!5e0!3m2!1spt-BR!2sbr!4v1740097443188!5m2!1spt-BR!2sbr" title="Vídeo institucional" width="620" height="350" loading="lazy"></iframe></div>
           <div className="classe-notificacao-e-email">
             <div className="notificacoes-text">
               <h2>Receber notificações</h2>

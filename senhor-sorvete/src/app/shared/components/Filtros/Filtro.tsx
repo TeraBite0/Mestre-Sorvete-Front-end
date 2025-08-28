@@ -28,7 +28,18 @@ const types = [
   "Açai Pequeno",
 ];
 
-const Filtros = ({
+type FiltrosProps = {
+  priceRange: number;
+  setPriceRange: (value: number) => void;
+  selectedCategories: string[];
+  setSelectedCategories: (categories: string[]) => void;
+  selectedTypes: string[];
+  setSelectedTypes: (types: string[]) => void;
+  category: string;
+  type: string;
+};
+
+const Filtros: React.FC<FiltrosProps> = ({
   priceRange,
   setPriceRange,
   selectedCategories,
@@ -39,7 +50,7 @@ const Filtros = ({
   const [visibleCategories, setVisibleCategories] = useState(4);
   const [visibleTypes, setVisibleTypes] = useState(4);
 
-  const handleCategoryChange = (category) => {
+  const handleCategoryChange = (category: string) => {
     if (selectedCategories.includes(category)) {
       setSelectedCategories(
         selectedCategories.filter((cat) => cat !== category)
@@ -49,7 +60,7 @@ const Filtros = ({
     }
   };
 
-  const handleTypeChange = (type) => {
+  const handleTypeChange = (type: string) => {
     if (selectedTypes.includes(type)) {
       setSelectedTypes(selectedTypes.filter((t) => t !== type));
     } else {

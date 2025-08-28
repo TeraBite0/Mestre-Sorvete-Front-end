@@ -27,6 +27,30 @@ const estiloModal = {
   p: 4,
 };
 
+interface ModalEditarLoteProps {
+  open: boolean;
+  onClose: () => void;
+  title: string;
+  fields: Array<{
+    name: string;
+    label: string;
+    type?: string;
+    options?: Array<{ value: string | number; label: string }>;
+    props?: any;
+  }>;
+  onSave?: (data: any) => void;
+  onSubmit?: ((data: any) => void) | null;
+  loading?: boolean;
+  validation?: Record<string, {
+    required?: boolean;
+    pattern?: RegExp;
+    message?: string;
+  }>;
+  transformBeforeSubmit?: (data: any) => any;
+  fieldName: string;
+  value: string | number;
+}
+
 const ModalEditarLote = ({
   open,
   onClose,
@@ -37,9 +61,9 @@ const ModalEditarLote = ({
   loading = false,
   validation = {},
   transformBeforeSubmit = (data) => data,
-}) => {
-  const [formData, setFormData] = useState({});
-  const [errors, setErrors] = useState({});
+}: ModalEditarLoteProps) => {
+  const [formData, setFormData] = useState<Record<string, any>>({});
+  const [errors, setErrors] = useState<Record<string, string | null>>({});
 
   useEffect(() => {
     if (open) {
@@ -48,7 +72,7 @@ const ModalEditarLote = ({
     }
   }, [open]);
 
-  const handleFieldChange = (fieldName, value) => {
+  const handleFieldChange = (fieldName: string, value: string) => {
     setFormData((prev) => ({
       ...prev,
       [fieldName]: value,
@@ -63,7 +87,7 @@ const ModalEditarLote = ({
   };
 
   const validateFields = () => {
-    const newErrors = {};
+    const newErrors: Record<string, string> = {};
     fields.forEach((field) => {
       const fieldValidation = validation[field.name];
       if (fieldValidation) {
@@ -92,7 +116,7 @@ const ModalEditarLote = ({
    
   };
 
-  const renderField = (field) => {
+  const renderField = (field: any) => {
     if (field.type === "select") {
       return (
         <FormControl
@@ -108,7 +132,7 @@ const ModalEditarLote = ({
             label={field.label}
             disabled={loading}
           >
-            {field.options?.map((option) => (
+            {field.options?.map((option: any) => (
               <MenuItem key={option.value} value={option.value}>
                 {option.label}
               </MenuItem>
