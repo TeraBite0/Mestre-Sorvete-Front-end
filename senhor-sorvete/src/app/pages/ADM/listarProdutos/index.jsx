@@ -92,6 +92,7 @@ const ListarProdutos = () => {
                 qtdCaixasEstoque: produto.qtdCaixasEstoque,
                 qtdPorCaixas: produto.qtdPorCaixas,
                 imagemUrl: produto.imagemUrl || '',
+                tipoImagem: produto.tipoImagem || '',
                 temGluten: produto.temGluten !== null ? produto.temGluten : true,
                 temLactose: produto.temLactose !== null ? produto.temLactose : true,
                 isAtivo: produto.isAtivo !== null ? produto.isAtivo : true // Garantir que isAtivo seja definido
@@ -744,17 +745,6 @@ const ListarProdutos = () => {
 
             let urlImagem = dadosAtualizados.imagemUrl;
 
-            // Se houver uma nova imagem, faz o upload
-            if (arquivoImagem) {
-                try {
-                    // urlImagem = await enviarImagemParaAzure(arquivoImagem, produto.id);
-                    // Descomentar quando a função de upload estiver pronta
-                } catch (erroUpload) {
-                    console.error('Erro no upload da imagem:', erroUpload);
-                    throw new Error('Falha ao enviar imagem');
-                }
-            }
-
             const dadosParaAtualizar = {
                 id: produto.id, // Importante incluir o ID
                 nome: dadosAtualizados.nome,
@@ -764,7 +754,8 @@ const ListarProdutos = () => {
                 nomeMarca: dadosAtualizados.marca,
                 temLactose: dadosAtualizados.temLactose,
                 temGluten: dadosAtualizados.temGluten,
-                imagemUrl: urlImagem
+                imagemUrl: urlImagem,
+                tipoImagem: produto.tipoImagem
             };
 
             const resposta = await fetch(`https://mestre-sorvete-back-end.onrender.com/produtos/${produto.id}`, {
@@ -801,13 +792,16 @@ const ListarProdutos = () => {
                                 parseInt(dadosAtualizadosResponse.qtdPorCaixas) || p.qtdPorCaixas,
                             imagemUrl: dadosAtualizadosResponse.imagemUrl || p.imagemUrl,
                             temLactose: dadosAtualizadosResponse.temLactose ?? p.temLactose,
-                            temGluten: dadosAtualizadosResponse.temGluten ?? p.temGluten
+                            temGluten: dadosAtualizadosResponse.temGluten ?? p.temGluten,
+                            tipoImagem: dadosAtualizadosResponse.tipoImagem || p.tipoImagem
                         }
                         : p
                 )
             );
-
-            uploadImagem(dadosParaAtualizar)
+            
+            if (arquivoImagem !== null) {
+                uploadImagem(dadosParaAtualizar)
+            }
 
             toast.success("Produto atualizado com sucesso!");
             fecharModal();
@@ -841,7 +835,8 @@ const ListarProdutos = () => {
             imagemUrl: produto.imagemUrl || '',
             temLactose: produto.temLactose,
             temGluten: produto.temGluten,
-            isAtivo: produto.isAtivo
+            isAtivo: produto.isAtivo,
+            tipoImagem: produto.tipoImagem || ''
         });
         const token = sessionStorage.getItem('token');
         setCarregando(true);
