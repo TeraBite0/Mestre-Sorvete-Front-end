@@ -1,17 +1,10 @@
 import { useState, useEffect, useRef } from "react";
 import axios from "axios";
 import { toast } from "react-toastify";
+import { CartItem } from "../types/types";
 
 const useCardapio = () => {
   const [termo, setTermo] = useState("");
-  type CartItem = {
-    id: any;
-    preco: any;
-    price?: number;
-    quantity?: number;
-    nome?: string;
-    [key: string]: any;
-  };
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
   const [priceRange, setPriceRange] = useState(15);
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
@@ -25,8 +18,10 @@ const useCardapio = () => {
   const [selectedTypes, setSelectedTypes] = useState<string[]>([]);
   const [isPopularToggled] = useState(false);
 
-  const sidebarRef = useRef(null);
-  const mainContentRef = useRef(null);
+  const sidebarRef = useRef<HTMLDivElement>(null);
+  const mainContentRef = useRef<HTMLDivElement>(null);
+
+
 
   useEffect(() => {
     const fetchProdutos = async () => {
@@ -48,7 +43,7 @@ const useCardapio = () => {
   const [isLoadingPopular] = useState(false);
   const closeMaisModal = () => setIsMaisModalOpen(false);
 
-  const addToCart = (produto: { id: any; preco: any; }) => {
+  const addToCart = (produto: CartItem) => {
     setCartItems((prevItems) => {
       const itemExists = prevItems.find((item) => item.id === produto.id);
 
@@ -59,7 +54,14 @@ const useCardapio = () => {
             : item
         );
       } else {
-        return [...prevItems, { ...produto, price: produto.preco, quantity: 1 }];
+        return [
+          ...prevItems,
+          {
+            ...produto,
+            price: produto.preco, // If preco is different from price, otherwise use produto.price
+            quantity: 1,
+          },
+        ];
       }
     });
   };

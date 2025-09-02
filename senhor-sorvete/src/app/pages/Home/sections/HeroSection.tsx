@@ -1,7 +1,5 @@
 import { ButtonNavegation } from "../../../shared/components/buttonNavegation/ButtonNavegation";
 
-
-
 const HeroSection = () => (
   <section className="hero-section">
     <div className="content">
