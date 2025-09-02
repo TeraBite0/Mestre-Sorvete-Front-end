@@ -1,7 +1,3 @@
-import React, { useState, useEffect, useRef } from "react";
-import axios from "axios";
-import { toast } from "react-toastify";
-
 import "./cardapio.css";
 import Filtros from "../../shared/components/Filtros/Filtro.tsx";
 import Header from "../../shared/components/Header/index.jsx";
@@ -14,279 +10,32 @@ import Modal from "@mui/material/Modal";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import Skeleton from "@mui/material/Skeleton";
+import useCardapio from "./hooks/useCardapio";
 
 const Cardapio = () => {
-  const [termo, setTermo] = useState("");
-  const [cartItems, setCartItems] = useState([]);
-  const [priceRange, setPriceRange] = useState(15);
-  const [selectedCategories, setSelectedCategories] = useState([]);
-  const [produtos, setProdutos] = useState([]);
-  const [isLoading, setIsLoading] = useState(true);
-  const [setEmail] = useState("");
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [isMaisModalOpen, setIsMaisModalOpen] = useState(false);
-  const [setEmailError] = useState("");
-  const [produtosPopulares] = useState([]);
-  const [selectedTypes, setSelectedTypes] = useState([]);
-  const [isPopularToggled] = useState(false);
-
-  const sidebarRef = useRef(null);
-  const mainContentRef = useRef(null);
-
-  useEffect(() => {
-    const fetchProdutos = async () => {
-      setIsLoading(true);
-      try {
-        const response = await axios.get(
-          "https://mestre-sorvete-back-end.onrender.com/produtos/ativos"
-        );
-        setProdutos(response.data);
-      } catch (error) {
-        console.error("Erro ao buscar produtos:", error);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-    fetchProdutos();
-  }, []);
-
-  const [isLoadingPopular] = useState(false);
-
-  // Solução provisória ao erro do populares, **REMOVER QUANDO CONCERTADO!!!!**
-  // Basicamente essa função uso os dados dos produtos buscados anteriormente
-  // const fetchPopular = async () => {
-  //   setIsLoadingPopular(true);
-  //   try {
-  //     const response = await axios.get("https://mestre-sorvete-back-end.onrender.com/produtos/populares");
-  //     if (response.status === 200) {
-  //       const popularProductsWithFullData = response.data.map(popularProduct => {
-  //         const fullProductDetails = produtos.find(
-  //           produto => produto.nome.toLowerCase() === popularProduct.nome.toLowerCase()
-  //         );
-
-  //         return (
-  //           fullProductDetails || {
-  //             id: null,
-  //             nome: popularProduct.nome,
-  //             preco: popularProduct.preco,
-  //             subtipo: {
-  //               nome: "Desconhecido",
-  //               tipoPai: { nome: "Desconhecido" },
-  //             },
-  //             emEstoque: false,
-  //           }
-  //         );
-  //       }
-  //       );
-
-  //       setPopular(popularProductsWithFullData);
-  //       setIsPopularToggled(!isPopularToggled);
-
-  //       if (!isPopularToggled) {
-  //         toast.success(
-  //           `${popularProductsWithFullData.length} produtos populares carregados!`
-  //         );
-  //       } else {
-  //         toast.info("Exibição de produtos populares desativada.");
-  //       }
-  //     }
-  //   } catch (error) {
-  //     toast.error(
-  //       "Erro ao buscar produtos populares. Tente novamente mais tarde."
-  //     );
-  //     console.error("Erro ao buscar produtos populares:", error);
-  //   } finally {
-  //     setIsLoadingPopular(false);
-  //   }
-  // };
-
-  //TODO: Quando o popular ser concertado no back, descomentar esse código
-  // const fetchPopular = async () => {
-  //     setIsLoadingPopular(true); // Ativa o estado de carregamento
-  //     try {
-  //         const response = await axios.get("https://mestre-sorvete-back-end.onrender.com/produtos/populares");
-  //         if (response.status === 200) {
-  //             setPopular(response.data);
-  //             setIsPopularToggled(!isPopularToggled);
-  //             if (!isPopularToggled) {
-  //                 toast.success("Produtos populares carregados com sucesso!");
-  //             } else {
-  //                 toast.info("Exibição de produtos populares desativada.");
-  //             }
-  //         }
-  //     } catch (error) {
-  //         toast.error("Erro ao buscar produtos populares. Tente novamente mais tarde.");
-  //         console.error("Erro ao buscar produtos populares:", error);
-  //     } finally {
-  //         setIsLoadingPopular(false);
-  //     }
-  // };
-
-  // const openMaisModal = () => setIsMaisModalOpen(true);
-  const closeMaisModal = () => setIsMaisModalOpen(false);
-
-  // const sendNotification = async () => {
-  //   const processedItems = [];
-  //   const failedItems = [];
-
-  //   const reserva = cartItems.map(async (item) => {
-  //     try {
-  //       const response = await axios.post("https://mestre-sorvete-back-end.onrender.com/notificacoes", {
-  //         email,
-  //         idProduto: item.id,
-  //       });
-
-  //       if (response.status === 201) {
-  //         processedItems.push(item);
-  //       }
-  //     } catch (error) {
-  //       console.error(`Erro ao mandar notificação para ${item.nome}`, error);
-  //       failedItems.push(item);
-  //     }
-  //   });
-
-  //   await Promise.allSettled(reserva);
-
-  //   if (processedItems.length > 0) {
-  //     toast.success(
-  //       `Itens processados: ${processedItems.length}/${cartItems.length}`
-  //     );
-  //   }
-
-  //   if (failedItems.length > 0) {
-  //     if (failedItems.length === 1)
-  //       toast.error(`Falha ao processar ${failedItems.length} item`);
-  //     else toast.error(`Falha ao processar ${failedItems.length} itens`);
-  //   }
-  // };
-
-  const addToCart = (produto) => {
-    setCartItems((prevItems) => {
-      const itemExists = prevItems.find((item) => item.id === produto.id);
-
-      if (itemExists) {
-        // Produto já no carrinho: incrementa quantidade
-        return prevItems.map((item) =>
-          item.id === produto.id
-            ? { ...item, quantity: (item.quantity || 1) + 1 }
-            : item
-        );
-      } else {
-        // Produto novo no carrinho: adiciona com quantity = 1 e preço corrigido
-        return [...prevItems, { ...produto, price: produto.preco, quantity: 1 }];
-      }
-    });
-  };
-
-
-  const removeFromCart = (id) => {
-    setCartItems((prevItems) => {
-      return prevItems
-        .map((item) => {
-          if (item.id === id) {
-            const newQuantity = (item.quantity || 1) - 1;
-            if (newQuantity <= 0) return null; // remove se chegou a 0
-            return { ...item, quantity: newQuantity };
-          }
-          return item;
-        })
-        .filter((item) => item !== null); // remove os nulos (quantidade 0)
-    });
-  };
-
-
-  const filteredProdutos = produtos.filter((produto) => {
-    const matchesTermo = termo
-      ? produto.nome.toLowerCase().includes(termo.toLowerCase())
-      : true;
-
-    const matchesPrice = produto.preco <= priceRange;
-
-    const matchesCategory =
-      selectedCategories.length === 0 ||
-      (produto.subtipo && selectedCategories.includes(produto.subtipo.nome)) ||
-      (produto.subtipo && produto.subtipo.tipoPai && selectedCategories.includes(produto.subtipo.tipoPai.nome));
-
-    const matchesType =
-      selectedTypes.length === 0 ||
-      (produto.subtipo && produto.subtipo.tipoPai && selectedTypes.includes(produto.subtipo.tipoPai.nome));
-
-    const matchesPopular =
-      !isPopularToggled ||
-      produtosPopulares.some(
-        (popularProduto) => popularProduto.id === produto.id
-      );
-
-    return (
-      matchesTermo &&
-      matchesPrice &&
-      matchesCategory &&
-      matchesType &&
-      matchesPopular
-    );
-  });
-
-  // const categorias = [
-  //   ...new Set(
-  //     produtos.flatMap((produto) => [
-  //       produto.subtipo.nome,
-  //       produto.subtipo.tipoPai.nome,
-  //     ])
-  //   ),
-  // ];
-
-  // const validateEmail = (email) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
-
-  // // const handleConfirm = () => {
-  // //   if (!validateEmail(email)) {
-  // //     setEmailError("Por favor, insira um email válido.");
-  // //     return;
-  // //   }
-  // //   setEmailError("");
-  // //   closeModal();
-  // //   sendNotification();
-  // // };
-
-  const handleConfirm = () => {
-
-    const numeroVendedor = 5511988469500; // Número do vendedor
-
-    if (cartItems.length === 0) {
-      toast.error("Nenhum item no carrinho para enviar.");
-      return;
-    }
-
-    const produtosReservados = cartItems.map((item) => `${item.nome} - ${item.quantity}x - R$ ${item.price.toFixed(2).replace(".", ",")}`).join("\n");
-    const valorTotal = cartItems
-      .reduce((total, item) => total + item.price * (item.quantity || 1), 0)
-      .toFixed(2)
-      .replace(".", ",");
-
-    const dataAtual = new Date();
-    const dataFormatada = dataAtual.toLocaleDateString("pt-BR");
-
-    const mensagem = encodeURIComponent(
-      `Olá, Josué! Gostaria de realizar uma reserva.\n\n` +
-      `📅 *Data da reserva:* ${dataFormatada}\n\n` +
-      `🛍️ *Produtos reservados:*\n${produtosReservados}\n\n` +
-      `💰 *Valor total:* R$ ${valorTotal}\n\n` +
-      `Aguardo a confirmação. Desde já, obrigado!`
-    );
-
-    window.open(
-      `https://api.whatsapp.com/send?phone=${numeroVendedor}&text=${mensagem}`,
-      "_blank"
-    );
-
-
-  }
-
-  const openModal = () => setIsModalOpen(true);
-  const closeModal = () => {
-    setIsModalOpen(false);
-    setEmailError("");
-    setEmail("");
-  };
+  const { termo,
+    setTermo,
+    cartItems,
+    addToCart,
+    removeFromCart,
+    priceRange,
+    setPriceRange,
+    selectedCategories,
+    setSelectedCategories,
+    produtos: filteredProdutos,
+    isLoading,
+    isModalOpen,
+    openModal,
+    closeModal,
+    handleConfirm,
+    isMaisModalOpen,
+    closeMaisModal,
+    sidebarRef,
+    mainContentRef,
+    isLoadingPopular,
+    selectedTypes,
+    setSelectedTypes,
+    isPopularToggled} = useCardapio();
 
   return (
     <div className="containerCardapio">
@@ -304,7 +53,6 @@ const Cardapio = () => {
       <nav className="navegacao">
         <button
           className={`trendingButton ${isPopularToggled ? "toggled" : ""}`}
-          // onClick={fetchPopular}
           disabled={isLoadingPopular}
           style={{
             backgroundColor: isPopularToggled ? "#772321" : "#FFF",
@@ -406,7 +154,7 @@ const Cardapio = () => {
                   <Skeleton width="40%" />
                 </div>
               ))
-            ) : produtos.length === 0 ? (
+            ) : filteredProdutos.length === 0 ? (
               <div className="error-message">
                 <p
                   style={{
@@ -441,7 +189,6 @@ const Cardapio = () => {
                   <button
                     className="notifyMe"
                     onClick={() => addToCart(produto)}
-                  // disabled={produto.emEstoque}
                   >
                     <span>Reserva</span>
                   </button>
@@ -468,25 +215,7 @@ const Cardapio = () => {
           }}
         >
           <h2>Filtrar por Categoria</h2>
-          <div>
-            {/* {categorias.map((categoria, index) => (
-              <div key={index}>
-                <label>
-                  <input
-                    type="checkbox"
-                    checked={selectedCategories.includes(categoria)}
-                    onChange={(e) => {
-                      const updatedCategories = e.target.checked
-                        ? [...selectedCategories, categoria]
-                        : selectedCategories.filter((cat) => cat !== categoria);
-                      setSelectedCategories(updatedCategories);
-                    }}
-                  />
-                  {categoria}
-                </label>
-              </div>
-            ))} */}
-          </div>
+          
         </Box>
       </Modal>
 
@@ -504,16 +233,9 @@ const Cardapio = () => {
           }}
         >
           <h2>Reserva!</h2>
+          
           <p>Ao confirmar, você será redirecionado para o WhatsApp para finalizar sua reserva.</p>
-          {/* <TextField
-            // label="Digite seu e-mail"
-            // value={email}
-            // onChange={(e) => setEmail(e.target.value)}
-            // error={Boolean(emailError)}
-            // helperText={emailError}
-            // fullWidth
-            // margin="normal"
-          /> */}
+
           <div style={{ display: "flex", justifyContent: "flex-end" }}>
             <Button onClick={closeModal} variant="outlined" color="error">
               Cancelar

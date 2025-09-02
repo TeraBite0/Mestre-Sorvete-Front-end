@@ -1,7 +1,7 @@
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import Home from "./app/pages/home/Home";
 import Login from "./app/pages/Login";
-import Cardapio from "./app/pages/Cardapio/cardapio";
+import Cardapio from "./app/pages/cardapio/cardapio";
 import Gastronomia from "./app/pages/Gastronomia";
 import Contato from "./app/pages/Contato";
 import HomeGerenciamento from "./app/pages/HomeGerenciamento";
