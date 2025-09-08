@@ -497,17 +497,16 @@ const ListarProdutos = () => {
     };
 
     const ImagemPreviewComponent = ({
-        handleImagemUpload,
         erros,
-        imagemPreview
+        backgroundImage
     }) => (
-        <>
+        <> 
             <div style={{ marginTop: '10px', display: 'flex', flexDirection: 'column', gap: '10px' }}>
                 <input
                     id="upload-imagem"
                     accept="image/*"
                     type="file"
-                    onChange={handleImagemUpload}
+                    onChange={handleFileChange}
                     style={{ display: 'none' }}
                 />
                 <label htmlFor="upload-imagem">
@@ -524,14 +523,14 @@ const ListarProdutos = () => {
                             }
                         }}
                     >
-                        {imagemPreview ? 'Alterar Imagem' : 'Upload de Imagem'}
+                        {backgroundImage ? 'Alterar Imagem' : 'Upload de Imagem'}
                     </Button>
                 </label>
 
-                {imagemPreview && (
+                {/* {backgroundImage && (
                     <div style={{ marginTop: '5px', display: 'flex', alignItems: 'center', gap: '10px' }}>
                         <img
-                            src={imagemPreview}
+                            src={backgroundImage}
                             alt="Pré-visualização"
                             style={{
                                 width: '35px',
@@ -539,10 +538,24 @@ const ListarProdutos = () => {
                                 objectFit: 'cover',
                                 borderRadius: '4px'
                             }}
+                            
                         />
                         <span style={{ fontSize: '14px', color: '#666' }}>
                             Imagem selecionada
                         </span>
+                    </div>
+                )} */}
+
+                {loading && <p>Processando...</p>}
+
+                {processedImage && (
+                    <div style={{ marginTop: "20px" }}>
+                    <img src={processedImage} alt="Com fundo" style={{
+                                width: '240px',
+                                height: '200px',
+                                objectFit: 'cover',
+                                borderRadius: '4px'
+                            }} />
                     </div>
                 )}
             </div>
@@ -705,7 +718,8 @@ const ListarProdutos = () => {
     const uploadImagem = async (produtoFormatado) => {
         const formData = new FormData();
         formData.append('idProduto', produtoFormatado.id);
-        formData.append('file', arquivoImagem);
+        formData.append('file', processedImage);
+        debugger
 
         const token = sessionStorage.getItem('token');
         if (!token) {
@@ -799,7 +813,7 @@ const ListarProdutos = () => {
                 )
             );
             
-            if (arquivoImagem !== null) {
+            if (processedImage !== null) {
                 uploadImagem(dadosParaAtualizar)
             }
 
@@ -955,6 +969,100 @@ const ListarProdutos = () => {
     const renderProdutoCell = (value, defaultValue = '-') => {
         return value || defaultValue;
     };
+
+
+    // Método para remover o fundo e adicionar novo fundo da imagem
+
+    /** @type {[File|null, Function]} */
+    const [backgroundImage, setBackgroundImage] = useState(null);
+    /** @type {[string|null, Function]} */
+    const [processedImage, setProcessedImage] = useState(null);
+    const [loading, setLoading] = useState(false);
+
+    const handleFileChange = async (e) => {
+        const files = e.target.files;
+        if (!files || files.length === 0) return;
+        const file = files[0];
+        if (!file) return;
+
+        setBackgroundImage(file);
+        setProcessedImage(null);
+
+        // assim que o usuário envia, já dispara o processo todo
+        await handleRemoveBackground(file);
+    };
+
+    const handleRemoveBackground = async (file) => {
+        setLoading(true);
+
+        const formData = new FormData();
+        formData.append("image_file", file);
+
+        try {
+        const response = await fetch("https://api.remove.bg/v1.0/removebg", {
+            method: "POST",
+            headers: {
+            "X-Api-Key": "kewAwetbxQ3ETYB8PiShRVBe", // sua chave
+            },
+            body: formData,
+        });
+
+        if (!response.ok) throw new Error("Erro ao remover fundo");
+
+        const blob = await response.blob();
+        const url = URL.createObjectURL(blob);
+
+        // agora que já removeu o fundo, já chama o próximo passo
+        await handleAddBackground(url);
+        } catch (err) {
+        if (err instanceof Error) {
+            alert("Erro: " + err.message);
+        } else {
+            alert("Erro desconhecido");
+        }
+        } finally {
+        setLoading(false);
+        }
+    };
+
+    const handleAddBackground = async (fgUrl) => {
+        const canvas = document.createElement("canvas");
+        const ctx = canvas.getContext("2d");
+
+        const background = new Image();
+        const fgImage = new Image();
+
+        background.src = "/Imagens/removerfundo.png"; // fundo escolhido
+        fgImage.src = fgUrl;
+
+        await Promise.all([
+        new Promise((resolve, reject) => {
+            background.onload = resolve;
+            background.onerror = () => reject(new Error("Erro ao carregar fundo"));
+        }),
+        new Promise((resolve, reject) => {
+            fgImage.onload = resolve;
+            fgImage.onerror = () => reject(new Error("Erro ao carregar imagem processada"));
+        }),
+        ]);
+
+        canvas.width = fgImage.width;
+        canvas.height = fgImage.height;
+
+        if (ctx) {
+        ctx.drawImage(background, 0, 0, canvas.width, canvas.height);
+        ctx.drawImage(fgImage, 0, 0, canvas.width, canvas.height);
+
+        const finalImageUrl = canvas.toDataURL("image/webp");
+        setProcessedImage(finalImageUrl);
+        } else {
+        alert("Erro: Não foi possível obter o contexto do canvas.");
+        }
+    };
+
+
+    // Final do método de remover fundo img
+
 
 
     return (
@@ -1580,7 +1688,6 @@ const ListarProdutos = () => {
                 </DialogActions>
             </Dialog>
         </>
-
 
     );
 };
