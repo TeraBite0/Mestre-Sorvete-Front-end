@@ -264,55 +264,12 @@ const ListarProdutos = () => {
             toast.error(`Erro ao adicionar subtipo: ${error.message}`);
         }
     };
-    // const obterTokenSasAzure = async () => {
-    //     const token = sessionStorage.getItem('token');
-    //     const resposta = await fetch('https://mestre-sorvete-back-end.onrender.com/azure', {
-    //         method: 'GET',
-    //         headers: {
-    //             'Authorization': `Bearer ${token}`
-    //         }
-    //     });
-
-    //     if (resposta.ok) {
-    //         const dados = await resposta.json();
-    //         return dados.sasToken;
-    //     }
-    // };
-
-    // const enviarImagemParaAzure = async (arquivo, produtoId) => {
-    //     try {
-    //         const tokenSaS = await obterTokenSasAzure();
-    //         const nomeArquivo = `${produtoId}`;
-    //         const sasUrl = `https://terabite.blob.core.windows.net/terabite-container/${nomeArquivo}?${tokenSaS}`;
-    //         const urlUpload = `${sasUrl}/`;
-
-    //         const resposta = await fetch(sasUrl, {
-    //             method: "PUT",
-    //             headers: {
-    //                 "x-ms-blob-type": "BlockBlob",
-    //                 "Content-Type": arquivo.type,
-    //             },
-    //             body: arquivo,
-    //         });
-
-    //         if (!resposta.ok) {
-    //             throw new Error("Erro ao fazer upload da imagem");
-    //         }
-
-    //         return urlUpload.split("?")[0];
-    //     } catch (erro) {
-    //         toast.error("Tente novamente mais tarde");
-    //         throw erro;
-    //     }
-    // };
-
-
+    
     const filtroPesquisa = async (termo) => {
         const token = sessionStorage.getItem("token");
         setCarregando(true);
 
         try {
-            // Normalizar e remover acentos antes de enviar
             const termoNormalizado = termo
                 .normalize("NFD")
                 .replace(/[\u0300-\u036f]/g, "");
@@ -350,13 +307,13 @@ const ListarProdutos = () => {
         }
     };
 
-
-    // metodo para abrir um modal
     const abrirModal = async () => {
 
         setNovoProduto({ nome: "", marca: "", preco: "", imagemUrl: "" });
         setImagemPreview(null);
         setArquivoImagem(null);
+        setProcessedImage(null);
+        setBackgroundImage(null);
         setProdutoSelecionado(null);
         setErros({});
         setModalAberto(true);
@@ -396,12 +353,12 @@ const ListarProdutos = () => {
         }
     };
 
-
-    // metodo para fechar modal
     const fecharModal = () => {
         setNovoProduto({ nome: "", marca: "", preco: "", imagemUrl: "" });
         setImagemPreview(null);
         setArquivoImagem(null);
+        setProcessedImage(null);
+        setBackgroundImage(null);
         setProdutoSelecionado(null);
         setErros({});
         setModalAberto(false);
@@ -420,12 +377,9 @@ const ListarProdutos = () => {
     const handleInputChange = (evento) => {
         const { name, value } = evento.target;
 
-        // Verifica se o campo é 'preco'
         if (name === "preco") {
-            // Remove todos os caracteres não numéricos
             const numeroLimpo = value.replace(/[^\d]/g, "");
 
-            // Divide por 100 para considerar casas decimais
             const valorFormatado = (Number(numeroLimpo) / 100).toLocaleString(
                 "pt-BR",
                 {
@@ -469,6 +423,8 @@ const ListarProdutos = () => {
             }
 
             setArquivoImagem(arquivo);
+            setProcessedImage(null);
+            setBackgroundImage(null);
 
             try {
                 const leitor = new FileReader();
@@ -497,8 +453,7 @@ const ListarProdutos = () => {
     };
 
     const ImagemPreviewComponent = ({
-        erros,
-        backgroundImage
+        erros
     }) => (
         <> 
             <div style={{ marginTop: '10px', display: 'flex', flexDirection: 'column', gap: '10px' }}>
@@ -527,30 +482,11 @@ const ListarProdutos = () => {
                     </Button>
                 </label>
 
-                {/* {backgroundImage && (
-                    <div style={{ marginTop: '5px', display: 'flex', alignItems: 'center', gap: '10px' }}>
-                        <img
-                            src={backgroundImage}
-                            alt="Pré-visualização"
-                            style={{
-                                width: '35px',
-                                height: '35px',
-                                objectFit: 'cover',
-                                borderRadius: '4px'
-                            }}
-                            
-                        />
-                        <span style={{ fontSize: '14px', color: '#666' }}>
-                            Imagem selecionada
-                        </span>
-                    </div>
-                )} */}
-
                 {loading && <p>Processando...</p>}
 
-                {processedImage && (
+                {backgroundImage && (
                     <div style={{ marginTop: "20px" }}>
-                    <img src={processedImage} alt="Com fundo" style={{
+                    <img src={backgroundImage} alt="Com fundo" style={{
                                 width: '240px',
                                 height: '200px',
                                 objectFit: 'cover',
@@ -600,6 +536,8 @@ const ListarProdutos = () => {
         // Verificando os valores de entrada
         console.log("Novo produto:", novoProduto);
         console.log("Arquivo imagem:", arquivoImagem);
+        console.log("Arquivo imagem sem fundo:", processedImage);
+        console.log("Arquivo imagem com fundo:", backgroundImage);
         console.log("Preço do produto:", novoProduto?.preco);
 
         if (!novoProduto) {
@@ -833,6 +771,8 @@ const ListarProdutos = () => {
     const limparImagemPreview = () => {
         setImagemPreview(null);
         setArquivoImagem(null);
+        setProcessedImage(null);
+        setBackgroundImage(null);
     };
 
     // Método para preparar a edição
@@ -972,10 +912,7 @@ const ListarProdutos = () => {
 
 
     // Método para remover o fundo e adicionar novo fundo da imagem
-
-    /** @type {[File|null, Function]} */
     const [backgroundImage, setBackgroundImage] = useState(null);
-    /** @type {[string|null, Function]} */
     const [processedImage, setProcessedImage] = useState(null);
     const [loading, setLoading] = useState(false);
 
@@ -985,10 +922,9 @@ const ListarProdutos = () => {
         const file = files[0];
         if (!file) return;
 
-        setBackgroundImage(file);
+        setBackgroundImage(null);
         setProcessedImage(null);
 
-        // assim que o usuário envia, já dispara o processo todo
         await handleRemoveBackground(file);
     };
 
@@ -999,29 +935,43 @@ const ListarProdutos = () => {
         formData.append("image_file", file);
 
         try {
-        const response = await fetch("https://api.remove.bg/v1.0/removebg", {
-            method: "POST",
-            headers: {
-            "X-Api-Key": "kewAwetbxQ3ETYB8PiShRVBe", // sua chave
-            },
-            body: formData,
-        });
+            const response = await fetch("https://api.remove.bg/v1.0/removebg", {
+                method: "POST",
+                headers: {
+                    "X-Api-Key": "2J4Zb7V3cULqcYMtRw1Pdcey",
+                },
+                body: formData,
+            });
 
-        if (!response.ok) throw new Error("Erro ao remover fundo");
+            if (!response.ok) throw new Error("Erro ao remover fundo");
+            const blob = await response.blob();
 
-        const blob = await response.blob();
-        const url = URL.createObjectURL(blob);
+            // Extrai o nome do arquivo original e a extensão
+            const originalFileName = file.name;
+            const baseName = originalFileName.substring(0, originalFileName.lastIndexOf(".")); // Remove a extensão original
+            const fileName = `${baseName}-background-removed.webp`; // Concatena o novo nome com a extensão
 
-        // agora que já removeu o fundo, já chama o próximo passo
-        await handleAddBackground(url);
+            // Converte o blob em um File
+            const fileType = "image/webp"; // Define o tipo como webp
+            const newFile = new File([blob], fileName, { type: fileType });
+
+            // Cria uma URL para a imagem processada
+            const fgImageUrl = URL.createObjectURL(newFile);
+
+            // Chama a função para adicionar o fundo
+            await handleAddBackground(fgImageUrl);
+
+            // Libera o objeto URL após o uso
+            URL.revokeObjectURL(fgImageUrl);
+
         } catch (err) {
-        if (err instanceof Error) {
-            alert("Erro: " + err.message);
-        } else {
-            alert("Erro desconhecido");
-        }
+            if (err instanceof Error) {
+                alert("Erro: " + err.message);
+            } else {
+                alert("Erro desconhecido");
+            }
         } finally {
-        setLoading(false);
+            setLoading(false);
         }
     };
 
@@ -1036,27 +986,40 @@ const ListarProdutos = () => {
         fgImage.src = fgUrl;
 
         await Promise.all([
-        new Promise((resolve, reject) => {
-            background.onload = resolve;
-            background.onerror = () => reject(new Error("Erro ao carregar fundo"));
-        }),
-        new Promise((resolve, reject) => {
-            fgImage.onload = resolve;
-            fgImage.onerror = () => reject(new Error("Erro ao carregar imagem processada"));
-        }),
+            new Promise((resolve, reject) => {
+                background.onload = resolve;
+                background.onerror = () => reject(new Error("Erro ao carregar fundo"));
+            }),
+            new Promise((resolve, reject) => {
+                fgImage.onload = resolve;
+                fgImage.onerror = () => reject(new Error("Erro ao carregar imagem processada"));
+            }),
         ]);
 
         canvas.width = fgImage.width;
         canvas.height = fgImage.height;
 
         if (ctx) {
-        ctx.drawImage(background, 0, 0, canvas.width, canvas.height);
-        ctx.drawImage(fgImage, 0, 0, canvas.width, canvas.height);
+            // Desenhe a imagem de fundo e a imagem em primeiro plano no canvas
+            ctx.drawImage(background, 0, 0, canvas.width, canvas.height);
+            ctx.drawImage(fgImage, 0, 0, canvas.width, canvas.height);
 
-        const finalImageUrl = canvas.toDataURL("image/webp");
-        setProcessedImage(finalImageUrl);
+            // Converta o canvas em um blob
+            const blob = await new Promise((resolve) => canvas.toBlob(resolve, "image/webp"));
+
+            // Crie um novo arquivo a partir do blob
+            const originalFileName = fgImage.src.split('/').pop(); // Obtém o nome original da imagem processada
+            const baseName = originalFileName.substring(0, originalFileName.lastIndexOf(".")); // Remove a extensão original
+            const fileName = `${baseName}-with-background.webp`; // Concatena o novo nome com a extensão
+            const fileType = "image/webp"; // Define o tipo como webp
+            const newFile = new File([blob], fileName, { type: fileType });
+
+            // Aqui você pode usar o objeto `newFile` como quiser
+            console.log(newFile); // Mostra o objeto File no console
+            setProcessedImage(newFile); // Ou salve o File em algum estado ou envie para o S3 diretamente
+            setBackgroundImage(URL.createObjectURL(newFile)); // Mostra a imagem com fundo na pré-visualização
         } else {
-        alert("Erro: Não foi possível obter o contexto do canvas.");
+            alert("Erro: Não foi possível obter o contexto do canvas.");
         }
     };
 

@@ -28,7 +28,7 @@ const ProcessarImagem = () => {
       const response = await fetch("https://api.remove.bg/v1.0/removebg", {
         method: "POST",
         headers: {
-          "X-Api-Key": "kewAwetbxQ3ETYB8PiShRVBe", // sua chave
+          "X-Api-Key": "2J4Zb7V3cULqcYMtRw1Pdcey", // sua chave
         },
         body: formData,
       });
