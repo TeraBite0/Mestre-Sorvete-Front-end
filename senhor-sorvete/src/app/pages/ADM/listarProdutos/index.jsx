@@ -938,7 +938,7 @@ const ListarProdutos = () => {
             const response = await fetch("https://api.remove.bg/v1.0/removebg", {
                 method: "POST",
                 headers: {
-                    "X-Api-Key": "2J4Zb7V3cULqcYMtRw1Pdcey",
+                    "X-Api-Key": "iQL7DMUUXooXcDGPe1C2KuH3",
                 },
                 body: formData,
             });

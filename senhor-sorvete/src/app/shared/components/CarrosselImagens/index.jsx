@@ -6,7 +6,6 @@ import axios from "axios";
 
 export default function CarrosselImagens() {
   const [recomendacoes, setRecomendacoes] = useState([]);
-  const [index, setIndex] = useState(0);
 
   const responsiveOptions = [
     { breakpoint: "1400px", numVisible: 2, numScroll: 1 },

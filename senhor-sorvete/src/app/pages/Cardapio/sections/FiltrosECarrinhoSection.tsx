@@ -1,4 +1,4 @@
-import Filtros from "../../../shared/components/Filtros/Filtro";
+// import Filtros from "../../../shared/components/Filtros/Filtro";
 import { CartItem } from "../types/types";
 
 type FiltrosECarrinhoProps = {
@@ -29,7 +29,10 @@ const FiltrosECarrinho = ({
   sidebarRef,
 }: FiltrosECarrinhoProps) => (
   <div className="sidebarWrapper" ref={sidebarRef}>
-    <aside className="sidebar">
+    {/*
+      Filtro não está funcionando, descomentar quando for arrumar
+    */}
+    {/* <aside className="sidebar">
       <Filtros
         priceRange={priceRange}
         setPriceRange={setPriceRange}
@@ -40,7 +43,7 @@ const FiltrosECarrinho = ({
         category={selectedCategories.length > 0 ? selectedCategories[0] : ""}
         type={selectedTypes.length > 0 ? selectedTypes[0] : ""}
       />
-    </aside>
+    </aside> */}
     <aside className="reserva">
       <h2>Reservas</h2>
       {cartItems.length === 0 ? (
