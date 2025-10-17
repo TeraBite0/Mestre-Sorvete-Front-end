@@ -42,7 +42,7 @@ export default function CarrosselImagens() {
   );
 
   return (
-    <div className="card">
+    <div className="card-carrossel">
       <h1>Eu Quero!</h1>
       <Carousel
         value={recomendacoes}

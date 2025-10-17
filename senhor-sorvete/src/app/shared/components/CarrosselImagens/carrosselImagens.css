@@ -1,28 +1,28 @@
-.card {
+.card-carrossel {
   min-width: 250px;
   padding: 0 5% 7%;
 }
 
-.card h1 {
+.card-carrossel h1 {
   color: #772321;
   font-size: 2.5rem;
   text-align: start;
   margin-left: 5%;
 }
 
-.card h3 {
+.card-carrossel h3 {
   color: #772321;
   font-size: 1.2rem;
   margin-bottom: 10px;
 }
 
-.card img {
-  width: 100%;
+.card-carrossel img {
+  /* width: 100%; */
   object-fit: cover;
   border-radius: 10px;
 }
 
-.card p {
+.card-carrossel p {
   color: #333;
   font-size: 1.2rem;
   font-weight: 600;
@@ -54,17 +54,17 @@
 .p-carousel-container {
   display: flex;
   flex-direction: row;
-  width: 80%;
+  width: 70%;
 }
 
-.card .p-carousel-item {
+.card-carrossel .p-carousel-item {
   display: flex;
   justify-content: center;
   align-items: center;
   padding: 1%;
 }
 
-.card-item {
+.card-carrossel-item {
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -76,12 +76,12 @@
   transition: 0.5s;
 }
 
-.card-item img{
+.card-carrossel img{
   width: 180px;
   height: 180px;
 }
 
-.card-item:hover {
+.card-carrossel-item:hover {
   transform: scale(1.05);
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.80);
   background-color: #772321;
@@ -96,31 +96,32 @@
 }
 
 @media screen and (max-width: 1024px) {
-  .card-item img {
+  .card-carrossel img {
     width: 100%;
     height: 115px;
   }
 }
 
 @media screen and (max-width: 768px) {
-  .card {
+  .card-carrossel {
     min-width: 200px;
+    position: relative !important;
   }
 
-  .card h1 {
+  .card-carrossel h1 {
     text-align: center;
     margin-left: 0;
   }
 
-  .card h3 {
+  .card-carrossel h3 {
     font-size: 1.2rem;
   }
 
-  .card p {
+  .card-carrossel p {
     font-size: 1rem;
   }
 
-  .card-item img {
+  .card-carrossel img {
     width: 100%;
     height: 60%;
   }

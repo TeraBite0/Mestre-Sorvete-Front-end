@@ -26,7 +26,7 @@ const Cardapio = () => {
         addToCart={cardapio.addToCart}
       />
 
-      {/* <Footer /> */}
+      <Footer />
     </div>
   );
 };
