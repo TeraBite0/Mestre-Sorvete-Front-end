@@ -1,0 +1,22 @@
+.container-produto-search {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 10;
+}
+
+.inputPesquisa {
+    font-family: "Poppins", sans-serif;
+    width: 50vw;
+    font-size: 14px;
+    border: none;
+    background-color: white;
+}
+
+.botaoPesquisa {
+    background-color: #8B0000;
+    color: white;
+    border: none;
+    padding: 0.43rem 1rem;
+    cursor: pointer;
+}

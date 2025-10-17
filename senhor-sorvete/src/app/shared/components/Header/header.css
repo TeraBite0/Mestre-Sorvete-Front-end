@@ -15,12 +15,12 @@ body {
     position: sticky;
     z-index: 100000;
     background-color: #fff;
-    max-width: 90%;
-    height: 14vh;
+    width: 100%;
+    height: 12vh;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 0 5rem;
+    padding: 0 5rem;    ;
 }
 
 .containerImgLogo img {
@@ -65,54 +65,30 @@ body {
 
 @media (max-width: 768px) {
     .containerHeader {
-        justify-content: space-between;
-        padding: 0px 2rem;
+        
+        display: block;
+        height: 12vh;
+        padding: 0;
+        width: 100%;
+        max-width: 100%;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+        ul li a{
+            font-size: 14px;
+        }
     }
 
-    .hamburguer {
-        display: block;
-        background-color: #772321;
-        color: white;
-        border: none;
-        padding: 10px 20px;
-        border-radius: 5px;
-        font-size: 1.2rem;
+    .containerImgLogo {
+        display: flex;
+        justify-content: center;
+    }
+
+    .containerImgLogo img {
+        max-height: 65px;
+        
+    }
+
+    .containerImgLogo a {
         width: auto;
     }
 
-    .containerListItem {
-        display: none;
-        position: absolute;
-        top: 8vh;
-        right: 2.6vh;
-        background-color: #772321;
-        max-width: 100%;
-        /* height: calc(40vh - 10vh); */
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        color: white;
-        z-index: 999;
-        padding: 0.5rem;
-        border-radius: 5px;
-    }
-
-    .containerListItem.open {
-        display: flex;
-    }
-
-    .containerListItem ul {
-        flex-direction: column;
-        align-items: center;
-        width: 100%;
-    }
-
-    .containerListItem li {
-        margin: 1rem 0;
-    }
-
-    .containerHeader a {
-        color: white;
-        font-size: 1.2rem;
-    }
 }

@@ -66,15 +66,17 @@ body {
 
 .navegacao {
     display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-top: -.5rem;
-    padding: 1rem 1.5rem;
+    justify-content: center;
+    align-items: end;
     box-shadow: none;
-    height: 4rem;
-    gap: .6rem;
-    /* Adaptação após ícone do VLibras */
-    margin-right: 2rem;
+    align-items: center;
+    padding-top: 6rem;
+    box-shadow: none;
+    height: 12rem;
+    background-color: #e9deb0;
+    z-index: 1;
+    width: 100%;
+    position: fixed;
 }
 
 .trendingButton {
@@ -99,40 +101,6 @@ body {
     display: flex;
     align-items: center;
     /* width: 90%; */
-}
-
-.inputPesquisa {
-    font-family: "Poppins", sans-serif;
-    width: 50vw;
-    padding: 0.35rem 1rem;
-    border-radius: 24px 0 0 24px;
-    font-size: 14px;
-    border: none;
-    background-color: white;
-}
-
-.botaoPesquisa {
-    background-color: #8B0000;
-    color: white;
-    border: none;
-    padding: 0.43rem 1rem;
-    border-radius: 0 24px 24px 0;
-    cursor: pointer;
-}
-
-.mainContentWrapper {
-    position: relative;
-    display: flex;
-    margin: 5px 25px;
-    flex-grow: 1;
-}
-
-.mainContent {
-    display: flex;
-    gap: 0;
-    margin-bottom: 40px;
-    flex: 1;
-    justify-content: space-between;
 }
 
 .sidebarWrapper {
@@ -297,110 +265,12 @@ body {
     background-color: #6d0000;
 }
 
-.products {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-    gap: 3.5rem;
-    padding: 1.5rem;
-    align-content: start;
-    max-height: 490px;
-    overflow-y: auto;
-    overflow-x: hidden;
-    background-color: #d9d0a3;
-    box-shadow: 0px 3px 10px 0px #00000067;
-    clip-path: inset(0 round 20px);
-    width: 80%; 
-    max-width: 800px; 
-    margin: 0 auto; 
-    height: min-content;
-    box-sizing: border-box;
-}
-
-/*omg*/
-
-.product {
-    background-color: white;
-    border-radius: 24px;
-    padding: 0.3rem;
-    text-align: center;
-    width: 100%;
-    height: 100%;
-    transform: scale(0.90); 
-    transition: transform 0.2s ease;
-}
-
-.product:hover {
-    transform: scale(1);
-}
-
-/* 2 colunas em tablets */
-@media (max-width: 900px) {
-    .products {
-        grid-template-columns: repeat(2, 1fr);
-    }
-}
-
-/*1 coluna em celulares */
-@media (max-width: 450px) {
-  .products {
-    grid-template-columns: 1fr !important;
-    padding: 0 !important;
-  }
-
-  .products::after {
-    content: "";
-    display: block;
-    height: 180px;
-    background: white;
-    border-radius: 24px;
-  }
-}
-
-.product:hover {
-    transform: scale(1);
-}
-
-.product-name {
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    max-width: 100%;
-    text-align: center;
-    font-size: 18px;
-    cursor: default;
-    transition: 0.5s;
-}
-
-.product-name:hover {
-    transition: 0.5s;
-    text-decoration: underline;
-}
-
-.product img {
-    width: 9rem;
-    height: 9rem;
-    object-fit: cover;
-    border-radius: 16px;
-}
-
-.product h3 {
-    margin: 10px 0;
-    font-size: 18px;
-}
-
-.product p {
-    color: #8B0000;
-    font-weight: bold;
-    font-size: 18px;
-    margin: 10px 0;
-}
-
 .notifyMe {
     background-color: white;
     border: 1px solid #e5e5e5;
     border-radius: 8px;
     padding: 0.5rem 1rem;
-    width: 100%;
+    width: 40%;
     cursor: pointer;
     transition: all 0.3s;
 }
@@ -464,17 +334,7 @@ body {
 }
 
 
-@media (min-width: 980px) and (max-width: 1280px) {
-    .products {
-        grid-template-columns: repeat(3, 12rem);
-    }
-}
 
-@media (min-width: 768px) and (max-width: 979px) {
-    .products {
-        grid-template-columns: repeat(2, 12rem);
-    }
-}
 
 @media (max-width: 768px) {
     .listaNavegacao {
@@ -483,16 +343,14 @@ body {
         align-items: center;
     }
 
-    .mainContent {
-        width: 100%;
-        gap: 1rem;
-        display: block;
-
-    }
-
-    /* .mainContentWrapper {
-        margin: 5px 15px;
+    /* .navegacao {
+        padding-top: 6rem;
+        height: 12rem;
     } */
+
+    .banner {
+        display: none;
+    }
 
     .trendingButton {
         height: 2rem;
@@ -502,23 +360,10 @@ body {
         margin-left: 0;
     }
 
-    .inputPesquisa {
-        width: 30vw;
-    }
-
     .sidebarWrapper {
         width: 40%;
         transition: all 0.3s ease;
     }
-
-    .products {
-        grid-template-columns: repeat(1, 12rem);
-        gap: .7rem;
-        padding: .5rem;
-        width: 95%;
-    }
-
-   
 
     .sidebar{
         height: 150px;
@@ -539,5 +384,19 @@ body {
 
     .reserva ul li {
         display: inherit;
+    }
+
+    .p-inputgroup {
+        width: 70% !important;
+    }
+
+    .card {
+        display: flex;
+        justify-content: space-between;
+        width: 100%;
+        position: fixed;
+        z-index: 3;
+        padding-top: 2.5rem;
+        background-color: #e9deb0;
     }
 }

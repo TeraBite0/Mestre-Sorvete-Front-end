@@ -1,0 +1,168 @@
+.container-prod-cardapio {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 2rem;
+  margin-top: 120px;
+  width: 100%;
+}
+
+.products {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 2rem;
+  padding: 1.5rem;
+  justify-items: center;
+  background-color: #d9d0a3;
+  box-shadow: 0px 3px 10px 0px #00000067;
+  width: 900px;
+  box-sizing: border-box;
+}
+
+.product {
+  background-color: white;
+  width: 85%;
+  grid-template-columns: repeat(3, 12rem);
+  padding: 0.3rem;
+  border-radius: 12px;
+  display: flex;
+  justify-content: center;
+  background-color: white;
+  height: 300px;
+  padding: 0.3rem;
+  flex-direction: column;
+  align-items: center;
+}
+
+.product-name {
+    white-space: normal;
+    overflow-wrap: break-word;
+    word-break: break-word;
+    font-size: 18px;
+    cursor: default;
+    transition: 0.5s;
+    text-align: center;
+}
+
+.product img {
+    width: 9rem;
+    height: 9rem;
+    object-fit: cover;
+    border-radius: 16px;
+}
+
+.product h3 {
+    margin: 10px 0;
+    font-size: 18px;
+}
+
+.product p {
+    color: #8B0000;
+    font-weight: bold;
+    font-size: 18px;
+    margin: 10px 0;
+}
+
+.im-prod-cardapio {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+}
+
+.card-prod-cardapio {   
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
+
+.botao-comprar {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.botaoPesquisa {
+    background-color: #8B0000;
+    color: white;
+    border: none;
+    padding: 0.43rem 1rem;
+    cursor: pointer;
+}
+
+@media (min-width: 980px) and (max-width: 1280px) {
+    /* .products {
+        grid-template-columns: repeat(3, 12rem);
+    } */
+}
+
+@media (max-width: 930px) {
+    .products {
+        grid-template-columns: repeat(3, 1fr);
+        width: 95%;
+    }
+
+    /* .product {
+        width: 160px;
+        height: 300px;
+    }
+    
+    .product img{
+        width: 80%;
+        height: 80%;
+        object-fit: cover;
+        border-radius: 16px;
+    } */
+}
+
+@media (max-width: 730px) {
+    .products {
+        width: 700px;
+    }
+
+    .product {
+        width: 160px;
+        height: 300px;
+    }
+    
+    .product img{
+        width: 130px;
+        height: 120px;
+        object-fit: cover;
+        border-radius: 16px;
+    }
+}
+
+@media (max-width: 600px) {
+  .products {
+    grid-template-columns: 1fr;
+    padding: 0.5rem;
+  }
+
+  .product {
+    display: flex;
+    flex-direction: row;
+    height: 150px;
+    width: 100%;
+
+    img {
+        width: 120px;
+        height: 120px;
+    }
+  }
+
+  .im-prod-cardapio {
+    width: 30%;
+    display: block;
+  }
+
+  .card-prod-cardapio {   
+    width: 50%;
+    padding-left: 20px
+  }
+
+  .product-name {
+    font-size: 15px;
+
+  }
+}
