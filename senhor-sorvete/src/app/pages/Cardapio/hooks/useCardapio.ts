@@ -21,8 +21,6 @@ const useCardapio = () => {
   const sidebarRef = useRef<HTMLDivElement>(null);
   const mainContentRef = useRef<HTMLDivElement>(null);
 
-
-
   useEffect(() => {
     const fetchProdutos = async () => {
       setIsLoading(true);
@@ -58,14 +56,13 @@ const useCardapio = () => {
           ...prevItems,
           {
             ...produto,
-            price: produto.preco, // If preco is different from price, otherwise use produto.price
+            price: produto.preco,
             quantity: 1,
           },
         ];
       }
     });
   };
-
 
   const removeFromCart = (id: number) => {
     setCartItems((prevItems: any) => {
@@ -115,7 +112,6 @@ const useCardapio = () => {
   });
 
   const handleConfirm = () => {
-
     const numeroVendedor = 5511988469500;
 
     if (cartItems.length === 0) {

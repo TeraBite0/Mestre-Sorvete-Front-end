@@ -5,18 +5,25 @@ import "primereact/resources/themes/lara-light-blue/theme.css";
 import "primereact/resources/primereact.min.css";
 import "primeicons/primeicons.css";
 import "./produtoCardapio.css";
+import { useSelector } from "react-redux";
+import { RootState } from "../../../../../store/store";
+import useProdutoCardapio from "./hook/useProdutoCardapio";
 
 interface ListaProdutosCardapioSectionProps {
-  produtos: any[];
   isLoading: boolean;
   addToCart: (produto: any) => void;
 }
 
 const ListaProdutosCardapioSection: React.FC<ListaProdutosCardapioSectionProps> = ({
-  produtos,
   isLoading,
   addToCart,
 }) => {
+  useProdutoCardapio();
+  const produtos = useSelector((state: RootState) => {
+    const { listaProdutosAtivos, produtosFiltrados } = state.produtos;
+    return produtosFiltrados.length > 0 ? produtosFiltrados : listaProdutosAtivos;
+  });
+
   const ProdutoCardapioItemSection: React.FC<{ produto: any; addToCart: (produto: any) => void; }> = ({ produto, addToCart }) =>
   (
     <div className="product">
