@@ -22,6 +22,7 @@ const MapaNewsletterSection = ({
       />
     </div>
     <div className="classe-notificacao-e-email">
+      {/*
       <div className="notificacoes-text">
         <h2>Receber notificações</h2>
         <p>
@@ -47,6 +48,7 @@ const MapaNewsletterSection = ({
 
         </form>
       </div>
+      */}
     </div>
   </section>
 );

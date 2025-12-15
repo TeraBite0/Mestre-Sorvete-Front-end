@@ -21,7 +21,7 @@ const Home = () => {
 
         <HeroSection />
         <SobreSection />
-        <CarrosselImagens />
+        {/* <CarrosselImagens /> */}
         <SugestaoDoDiaSection dataAtual={dataAtual} destaqueDia={destaqueDia} />
         <MaisSection />
         <MapaNewsletterSection

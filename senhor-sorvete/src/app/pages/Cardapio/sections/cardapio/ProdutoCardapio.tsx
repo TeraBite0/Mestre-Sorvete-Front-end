@@ -1,6 +1,6 @@
 import React from "react";
 import Skeleton from "@mui/material/Skeleton";
-import { Button } from "primereact/button";
+// import { Button } from "primereact/button";
 import "primereact/resources/themes/lara-light-blue/theme.css";
 import "primereact/resources/primereact.min.css";
 import "primeicons/primeicons.css";
@@ -24,7 +24,9 @@ const ListaProdutosCardapioSection: React.FC<ListaProdutosCardapioSectionProps> 
     return produtosFiltrados.length > 0 ? produtosFiltrados : listaProdutosAtivos;
   });
 
-  const ProdutoCardapioItemSection: React.FC<{ produto: any; addToCart: (produto: any) => void; }> = ({ produto, addToCart }) =>
+  const ProdutoCardapioItemSection: React.FC<{ 
+    produto: any; 
+    addToCart: (produto: any) => void; }> = ({ produto, addToCart }) =>
   (
     <div className="product">
       <div className="im-prod-cardapio">
@@ -47,13 +49,13 @@ const ListaProdutosCardapioSection: React.FC<ListaProdutosCardapioSectionProps> 
         <p>R$ {produto.preco.toFixed(2)}</p>
       </div>
 
-      <div className="botao-comprar">
+      {/* <div className="botao-comprar">
         <Button
           icon="pi pi-shopping-cart"
           className="p-button-success botaoPesquisa"
           onClick={() => addToCart(produto)}
         />
-      </div>
+      </div> */}
     </div>
   );
 

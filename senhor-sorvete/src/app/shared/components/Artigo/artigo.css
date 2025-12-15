@@ -88,3 +88,18 @@
         font-size: 12px;
     }
 }
+
+.btn-primary a {
+  color: white;
+  text-decoration: none;
+}
+
+.informacoes button {
+  background-color: #772321;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 5px;
+  font-size: 1.2rem;
+  width: auto;
+}

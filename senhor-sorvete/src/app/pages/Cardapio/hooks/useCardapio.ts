@@ -42,6 +42,7 @@ const useCardapio = () => {
   const closeMaisModal = () => setIsMaisModalOpen(false);
 
   const addToCart = (produto: CartItem) => {
+    console.log("Adicionando ao carrinho:", produto);
     setCartItems((prevItems) => {
       const itemExists = prevItems.find((item) => item.id === produto.id);
 
@@ -62,6 +63,7 @@ const useCardapio = () => {
         ];
       }
     });
+    console.log("Carrinho atualizado:", cartItems);
   };
 
   const removeFromCart = (id: number) => {

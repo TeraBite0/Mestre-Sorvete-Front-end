@@ -3,13 +3,14 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 interface ProdutosState {
   listaProdutosAtivos: any[];
   produtosFiltrados: [],
+  carrinho: any[];
 
 }
 
 const initialState: ProdutosState = {
   listaProdutosAtivos: [],
   produtosFiltrados: [],
-
+  carrinho: [],
 };
 
 export const produtosSlice = createSlice({
@@ -22,8 +23,11 @@ export const produtosSlice = createSlice({
     setProdutosFiltrados: (state, action) => {
         state.produtosFiltrados = action.payload;
     },
+    setCarrinho: (state, action) => {
+        state.carrinho = action.payload;
+    }
   },
 });
 
-export const { setListaProdutosAtivos, setProdutosFiltrados } = produtosSlice.actions;
+export const { setListaProdutosAtivos, setProdutosFiltrados, setCarrinho } = produtosSlice.actions;
 export default produtosSlice.reducer;
