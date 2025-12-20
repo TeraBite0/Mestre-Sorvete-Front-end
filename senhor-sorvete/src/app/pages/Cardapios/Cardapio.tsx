@@ -1,13 +1,11 @@
+import "./cardapio.css";
+import useCardapio from "./hooks/useCardapio";
 import Header from "../../shared/components/Header";
 import Footer from "../../shared/components/Footer";
-import "./cardapio.css";
 import ProdutoSearchBarSection from "./sections/produtoSearchBar/ProdutoSearchBarSection";
-// import ListaProdutosCardapioSection from "./sections/ListaProdutosCardapioSection";
-import useCardapio from "./hooks/useCardapio";
 import ListaProdutosCardapioSection from "./sections/cardapio/ProdutoCardapio";
 
-const Cardapio = () => {
-  const cardapio = useCardapio();
+const Cardapio = () => { useCardapio();
 
   return (
     <div className="containerCardapio">
@@ -18,10 +16,9 @@ const Cardapio = () => {
       </nav>
 
       
-      <ListaProdutosCardapioSection
-        isLoading={cardapio.isLoading}
-        addToCart={cardapio.addToCart}
-      />
+      <div>
+        <ListaProdutosCardapioSection />
+      </div>
 
       <Footer />
     </div>

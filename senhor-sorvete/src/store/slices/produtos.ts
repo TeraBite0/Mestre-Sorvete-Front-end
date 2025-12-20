@@ -1,16 +1,18 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { loadStateFromLocalStorage } from '../../utils/localStorageUtils';
 
 interface ProdutosState {
   listaProdutosAtivos: any[];
   produtosFiltrados: [],
   carrinho: any[];
-
+  minhaLista: any[];
 }
 
 const initialState: ProdutosState = {
-  listaProdutosAtivos: [],
-  produtosFiltrados: [],
-  carrinho: [],
+  listaProdutosAtivos: loadStateFromLocalStorage("listaProdutosAtivos") || [],
+  produtosFiltrados: loadStateFromLocalStorage("produtosFiltrados") || [],
+  carrinho: loadStateFromLocalStorage("carrinho") || [],
+  minhaLista: loadStateFromLocalStorage("minhaLista") || [],
 };
 
 export const produtosSlice = createSlice({
@@ -25,9 +27,12 @@ export const produtosSlice = createSlice({
     },
     setCarrinho: (state, action) => {
         state.carrinho = action.payload;
-    }
+    },
+    setMinhaLista: (state, action) => {
+        state.minhaLista = action.payload;
+    },
   },
 });
 
-export const { setListaProdutosAtivos, setProdutosFiltrados, setCarrinho } = produtosSlice.actions;
+export const { setListaProdutosAtivos, setProdutosFiltrados, setCarrinho, setMinhaLista } = produtosSlice.actions;
 export default produtosSlice.reducer;

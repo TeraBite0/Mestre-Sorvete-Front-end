@@ -1,5 +1,3 @@
-import { ButtonNavegation } from "../../../shared/components/buttonNavegation/ButtonNavegation";
-
 const MapaNewsletterSection = ({
   email,
   setEmail,

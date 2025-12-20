@@ -28,10 +28,6 @@
   object-fit: cover;
 }
 
-.cart-details {
-  flex: 1;
-}
-
 .cart-details h4 {
   margin: 0;
   font-size: 1.1rem;
@@ -67,14 +63,8 @@
 }
 
 .cart-summary {
-  display: flex;
-  justify-content: space-between;
+  /* display: flex; */
+  margin-left: 30px;
+  justify-content: space-around;
   align-items: center;
-  padding: 14px 24px;
-  background-color: #fbe9e7;
-  border-top: 2px solid #efebe9;
-  border-bottom: 2px solid #efebe9;
-  color: #4e342e;
-  font-size: 1.1rem;
-  font-weight: bold;
 }

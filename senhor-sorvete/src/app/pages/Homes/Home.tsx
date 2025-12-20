@@ -2,7 +2,6 @@ import "./home.css";
 import Header from "../../shared/components/Header";
 import Footer from "../../shared/components/Footer";
 import IconeWhatsapp from "../../shared/components/IconeWhatsapp";
-import CarrosselImagens from "../../shared/components/CarrosselImagens";
 import useHome from "./hooks/useHome";
 import HeroSection from "./sections/HeroSection";
 import SobreSection from "./sections/SobreSection";

@@ -2,14 +2,18 @@ import { useState, useEffect, useRef } from "react";
 import axios from "axios";
 import { toast } from "react-toastify";
 import { CartItem } from "../types/types";
+import { useDispatch } from "react-redux";
+import { useSelector } from "react-redux";
+import { setListaProdutosAtivos } from "../../../../store/slices/produtos";
 
 const useCardapio = () => {
+  const dispatch = useDispatch();
+  const listaProdutosAtivos = useSelector((state: any) => state.produtos.listaProdutosAtivos);
   const [termo, setTermo] = useState("");
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
   const [priceRange, setPriceRange] = useState(15);
-  const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
-  const [produtos, setProdutos] = useState([]);
-  const [isLoading, setIsLoading] = useState(true);
+  const [selectedCategories, setSelectedCategories] = useState<string[]>([]);  
+  const [isLoading] = useState(true);
   const [email, setEmail] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isMaisModalOpen, setIsMaisModalOpen] = useState(false);
@@ -23,20 +27,27 @@ const useCardapio = () => {
 
   useEffect(() => {
     const fetchProdutos = async () => {
-      setIsLoading(true);
+      if (listaProdutosAtivos.length !== 0) {
+        return;
+      }
+
       try {
-        const response = await axios.get(
-          "https://mestre-sorvete-back-end.onrender.com/produtos/ativos"
-        );
-        setProdutos(response.data);
+        const response = await axios.get("https://mestre-sorvete-back-end.onrender.com/produtos/ativos");
+        const produtos = formatarProduto(response.data);
+        dispatch(setListaProdutosAtivos(produtos));
       } catch (error) {
         console.error("Erro ao buscar produtos:", error);
-      } finally {
-        setIsLoading(false);
       }
     };
     fetchProdutos();
-  }, []);
+  }, [ listaProdutosAtivos , dispatch]);
+
+  const formatarProduto = (produtos: any[]) => {
+    return produtos.map((produto) => ({
+      ...produto,
+      isMinhaLista: false,
+    }));
+  };
 
   const [isLoadingPopular] = useState(false);
   const closeMaisModal = () => setIsMaisModalOpen(false);
@@ -77,12 +88,12 @@ const useCardapio = () => {
           }
           return item;
         })
-        .filter((item: any) => item !== null); 
+        .filter((item: any) => item !== null);
     });
   };
 
 
-  const filteredProdutos = produtos.filter((produto: any) => {
+  const filteredProdutos = listaProdutosAtivos.filter((produto: any) => {
     const matchesTermo = termo
       ? produto.nome.toLowerCase().includes(termo.toLowerCase())
       : true;

@@ -70,7 +70,7 @@ body {
     align-items: end;
     box-shadow: none;
     align-items: center;
-    padding-top: 6rem;
+    padding-top: 9rem;
     box-shadow: none;
     height: 12rem;
     background-color: #e9deb0;
@@ -332,10 +332,6 @@ body {
 .category-option input[type="checkbox"] {
     margin-right: 10px;
 }
-
-
-
-
 @media (max-width: 768px) {
     .listaNavegacao {
         gap: .3rem;
@@ -343,10 +339,10 @@ body {
         align-items: center;
     }
 
-    /* .navegacao {
+    .navegacao {
         padding-top: 6rem;
-        height: 12rem;
-    } */
+        height: 13rem;
+    }
 
     .banner {
         display: none;
